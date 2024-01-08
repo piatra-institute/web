@@ -12,7 +12,7 @@ const libreBaskerville = Libre_Baskerville({
 
 export const metadata: Metadata = {
     title: 'piatra.institute',
-    description: 'love, care, & fundamental research',
+    description: 'love · care · deep research',
 };
 
 export default function RootLayout({
