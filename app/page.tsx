@@ -5,7 +5,7 @@ import Image from 'next/image';
 export default function Home() {
     return (
         <main className="h-screen flex items-center justify-center p-10">
-            <div className="max-w-5xl w-full items-center justify-center grid text-center">
+            <div className="max-w-5xl w-full items-center justify-center grid text-center text-lime-50">
                 <Image
                     src="/piatra-institute.png"
                     height={450}
@@ -15,7 +15,7 @@ export default function Home() {
                 />
 
                 <h1
-                    className="m-2 mx-2 p-2 bg-white text-black uppercase text-base font-bold sm:text-2xl sm:mx-8"
+                    className="m-2 mx-2 p-2 bg-lime-50 text-black uppercase text-base font-bold sm:text-2xl sm:mx-8"
                 >
                     piatra . institute
                 </h1>
