@@ -11,7 +11,8 @@ export default function Home() {
                     height={450}
                     width={450}
                     alt="piatra.institute"
-                    className="pointer-events-none"
+                    className="pointer-events-none justify-self-center"
+                    priority
                 />
 
                 <h1
@@ -19,6 +20,12 @@ export default function Home() {
                 >
                     piatra . institute
                 </h1>
+
+                <h2
+                    className="text-xs my-2"
+                >
+                    Piatra Institute of Arts & Technologies Recursively Applied
+                </h2>
 
                 <div
                     className="p-4"
