@@ -1,7 +1,6 @@
 import { Metadata, ResolvingMetadata } from 'next';
 
 import {
-    getInterviewIDs,
     findInterview,
     renderDate,
 } from '../logic';
@@ -27,14 +26,6 @@ export async function generateMetadata(
     return {
         title: interview.metadata.title,
         description: interview.metadata.description,
-    };
-}
-
-
-export async function getStaticPaths() {
-    return {
-        paths: getInterviewIDs(),
-        fallback: false,
     };
 }
 
