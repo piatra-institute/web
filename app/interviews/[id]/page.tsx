@@ -5,6 +5,8 @@ import {
     renderDate,
 } from '../logic';
 
+import Question from '@/components/Question';
+
 
 
 type Props = {
@@ -85,43 +87,12 @@ export default async function Interviews({
             <div
                 className="max-w-[700px] m-4"
             >
-                {questions.map((question: any) => {
-                    const {
-                        text,
-                        references,
-                        context,
-                    } = question;
-
-                    return (
-                        <div
-                            key={Math.random() + ''}
-                            className="mb-4"
-                        >
-                            <div>
-                                {text}
-                            </div>
-
-                            {references.map((reference: any) => {
-                                return (
-                                    <div
-                                        key={Math.random() + ''}
-                                        className="mt-2"
-                                    >
-                                        {reference}
-                                    </div>
-                                );
-                            })}
-
-                            {context && (
-                                <div
-                                    className="mt-2"
-                                >
-                                    {context}
-                                </div>
-                            )}
-                        </div>
-                    );
-                })}
+                {questions.map(question => (
+                    <Question
+                        key={Math.random() + ''}
+                        data={question}
+                    />
+                ))}
             </div>
         </div>
     );
