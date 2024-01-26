@@ -51,7 +51,13 @@ export default async function Interviews({
 }: Props) {
     const data = await getData(params.id);
     if (!data || !data.props) {
-        return;
+        return (
+            <div
+                className="flex flex-col items-center justify-center w-full h-full"
+            >
+                not found
+            </div>
+        );
     }
     const {
         date,
