@@ -1,10 +1,11 @@
+import Link from 'next/link';
 import Image from 'next/image';
 
 
 
 export default function Home() {
     return (
-        <main className="h-screen flex items-center justify-center p-10">
+        <main className="h-screen flex items-center justify-center p-10 select-none">
             <div className="max-w-5xl w-full items-center justify-center grid text-center text-lime-50">
                 <Image
                     src="/piatra-institute.png"
@@ -41,10 +42,30 @@ export default function Home() {
                     <p className="m-1">
                         <span className="text-sm uppercase">& deep research</span>
                     </p>
+                </div>
 
-                    {/* <p>
-                        data · concepts · tools
-                    </p> */}
+                <div
+                    className="flex flex-row justify-center space-x-3"
+                >
+                    <Link href="/tools">
+                        <span
+                            className="text-xs uppercase underline"
+                        >
+                            tools
+                        </span>
+                    </Link>
+
+                    <div>
+                        ·
+                    </div>
+
+                    <Link href="/interviews">
+                        <span
+                            className="text-xs uppercase underline"
+                        >
+                            interviews
+                        </span>
+                    </Link>
                 </div>
             </div>
         </main>
