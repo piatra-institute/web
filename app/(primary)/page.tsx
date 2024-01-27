@@ -47,11 +47,11 @@ export default function Home() {
                 <div
                     className="flex flex-row justify-center space-x-3"
                 >
-                    <Link href="/tools">
+                    <Link href="/platforms">
                         <span
                             className="text-xs uppercase underline"
                         >
-                            tools
+                            platforms
                         </span>
                     </Link>
 

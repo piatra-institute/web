@@ -4,11 +4,11 @@ import Link from 'next/link';
 
 
 export const metadata: Metadata = {
-    title: 'tools',
+    title: 'platforms',
 };
 
 
-const tools = [
+const platforms = [
     {
         name: 'sonocracy',
         description: 'platform to vote for volume control in venues, bid for songs',
@@ -30,16 +30,16 @@ export default function Tools() {
             <h1
                 className="text-2xl font-bold mb-10"
             >
-                tools
+                platforms
             </h1>
 
             <div>
-                {tools.map((tool) => {
+                {platforms.map((platform) => {
                     const {
                         name,
                         description,
                         link,
-                    } = tool;
+                    } = platform;
 
                     return (
                         <div
