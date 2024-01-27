@@ -58,7 +58,7 @@ export default function Concern({
                     className="mt-2 mb-4"
                 >
                     <div
-                        className="text-xs uppercase"
+                        className="text-xs uppercase mb-2"
                     >
                         references
                     </div>
@@ -101,12 +101,16 @@ export default function Concern({
                     className="mt-2"
                 >
                     <div
-                        className="text-xs uppercase"
+                        className="text-xs uppercase mb-2"
                     >
                         context
                     </div>
 
-                    {context}
+                    <p
+                        className="leading-8"
+                    >
+                        {context}
+                    </p>
                 </div>
             )}
         </div>
