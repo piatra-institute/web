@@ -5,7 +5,7 @@ import {
     renderDate,
 } from '../logic';
 
-import Question from '@/components/Question';
+import Concern from '@/components/Concern';
 
 
 
@@ -65,7 +65,7 @@ export default async function Discussions({
         date,
         person,
         title,
-        questions,
+        concerns,
     } = data.props;
 
     return (
@@ -87,10 +87,10 @@ export default async function Discussions({
             <div
                 className="max-w-[700px] m-4"
             >
-                {questions.map(question => (
-                    <Question
+                {concerns.map(concern => (
+                    <Concern
                         key={Math.random() + ''}
-                        data={question}
+                        data={concern}
                     />
                 ))}
             </div>

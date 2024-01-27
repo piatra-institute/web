@@ -5,15 +5,15 @@ import {
 } from 'react';
 
 import {
-    Question as IQuestion,
+    Concern as IConcern,
 } from '@/data';
 
 
 
-export default function Question({
+export default function Concern({
     data,
 }: {
-    data: IQuestion,
+    data: IConcern,
 }) {
     const {
         text,

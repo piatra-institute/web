@@ -1,4 +1,4 @@
-export interface Question {
+export interface Concern {
     text: string;
     references: string[];
     context: string;
@@ -13,7 +13,7 @@ export interface Discussion {
         title: string;
         description: string;
     };
-    questions: Question[];
+    concerns: Concern[];
 }
 
 export interface DiscussionsData {
