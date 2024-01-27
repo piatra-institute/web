@@ -33,16 +33,19 @@ export default function Concern({
             className="flex flex-col mb-6"
         >
             <div
-                onClick={() => setShowContext(!showContext)}
-                className="cursor-pointer select-none flex gap-1 items-center"
+                className="select-none flex gap-1 items-center"
             >
                 <span
-                    className="text-2xl min-w-[30px]"
+                    className="text-2xl min-w-[35px] cursor-pointer"
+                    onClick={() => setShowContext(!showContext)}
                 >
                     {showContext ? '-' : '+'}
                 </span>
 
-                <span>
+                <span
+                    className="cursor-pointer -ml-2"
+                    onClick={() => setShowContext(!showContext)}
+                >
                     {text}
                 </span>
             </div>
