@@ -1,7 +1,7 @@
 import { Metadata, ResolvingMetadata } from 'next';
 
 import {
-    findInterview,
+    findDiscussion,
     renderDate,
 } from '../logic';
 
@@ -20,14 +20,14 @@ export async function generateMetadata(
 ): Promise<Metadata> {
     const id = params.id;
 
-    const interview = findInterview(params.id);
-    if (!interview) {
+    const discussion = findDiscussion(params.id);
+    if (!discussion) {
         return {};
     }
 
     return {
-        title: interview.metadata.title,
-        description: interview.metadata.description,
+        title: discussion.metadata.title,
+        description: discussion.metadata.description,
     };
 }
 
@@ -35,20 +35,20 @@ export async function generateMetadata(
 async function getData(
     id: string,
 ) {
-    const interview = findInterview(id);
-    if (!interview) {
+    const discussion = findDiscussion(id);
+    if (!discussion) {
         return {};
     }
 
     return {
         props: {
-            ...interview,
+            ...discussion,
         },
     };
 }
 
 
-export default async function Interviews({
+export default async function Discussions({
     params,
 }: Props) {
     const data = await getData(params.id);
@@ -70,7 +70,7 @@ export default async function Interviews({
 
     return (
         <div
-            className="flex flex-col items-center justify-center w-full h-full"
+            className="flex flex-col items-center w-full h-full p-8"
         >
             <h1
                 className="text-xl font-bold mb-4"

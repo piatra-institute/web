@@ -59,11 +59,11 @@ export default function Home() {
                         ·
                     </div>
 
-                    <Link href="/interviews">
+                    <Link href="/discussions">
                         <span
                             className="text-xs uppercase underline"
                         >
-                            interviews
+                            discussions
                         </span>
                     </Link>
                 </div>

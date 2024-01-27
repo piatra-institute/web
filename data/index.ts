@@ -1,14 +1,10 @@
-import data from './data.json';
-
-
-
 export interface Question {
     text: string;
     references: string[];
     context: string;
 }
 
-export interface Interview {
+export interface Discussion {
     id: string;
     date: string;
     person: string;
@@ -20,9 +16,6 @@ export interface Interview {
     questions: Question[];
 }
 
-export interface Data {
-    interviews: Interview[];
+export interface DiscussionsData {
+    discussions: Discussion[];
 }
-
-
-export default data as Data;
