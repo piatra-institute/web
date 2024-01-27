@@ -3,12 +3,12 @@ const fs = require('fs');
 
 
 const fetchInterviews = async () => {
-    const dataFile = './app/interviews/data.json';
+    const dataFile = './app/discussions/data.json';
 
-    const link = process.env.INTERVIEWS_URL;
+    const link = process.env.DISCUSSIONS_URL;
     if (!link) {
         const emptyData = {
-            interviews: [],
+            discussions: [],
         };
         await fs.promises.writeFile(dataFile, JSON.stringify(emptyData));
         return;
