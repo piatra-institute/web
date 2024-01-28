@@ -12,11 +12,39 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY!,
 });
 
+const REQUEST_LIMIT = 10;
+
+class RequestLimiter {
+    requestsLastDay: number = 0;
+
+    constructor() {
+        setInterval(() => {
+            this.requestsLastDay = 0;
+        }, 1_000 * 60 * 60 * 24);
+    }
+
+    public increase() {
+        if (this.requestsLastDay < REQUEST_LIMIT) {
+            this.requestsLastDay++;
+            return true;
+        }
+
+        return false;
+    }
+}
+
+const requestLimiter = new RequestLimiter();
+
 
 async function regenerate(
     concern: Concern,
 ) {
     try {
+        const canRequest = requestLimiter.increase();
+        if (!canRequest) {
+            return;
+        }
+
         const completion = await openai.chat.completions.create({
             messages: [
                 {

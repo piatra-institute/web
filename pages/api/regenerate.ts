@@ -11,6 +11,13 @@ export default async function handler(
     request: NextApiRequest,
     response: NextApiResponse,
 ) {
+    if (request.method !== 'POST') {
+        response.status(400).json({
+            status: false,
+        });
+        return;
+    }
+
     try {
         const {
             concern,
@@ -21,6 +28,7 @@ export default async function handler(
             response.status(400).json({
                 status: false,
             });
+            return;
         }
 
         response.json({
