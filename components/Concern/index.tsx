@@ -49,7 +49,7 @@ export default function Concern({
         setLoadingContext(false);
     }
 
-    const regenerateContext = () => {
+    const regenerateContext = async () => {
         if (loadingContext) {
             return;
         }
@@ -57,13 +57,28 @@ export default function Concern({
         setInitialContext(false);
         setLoadingContext(true);
 
-        // TODO
-        // request regeneration
-        // setContextValue(response);
+        try {
+            const request = await fetch('/api/regenerate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    concern: data,
+                }),
+            });
+            const response = await request.json();
+            if (!response || !response.status) {
+                viewInitialContext();
+                return;
+            }
 
-        setTimeout(() => {
+            const context = JSON.parse(response.data).context;
+            setContextValue(context);
             setLoadingContext(false);
-        }, 3_000);
+        } catch (error) {
+            viewInitialContext();
+        }
     }
 
 
