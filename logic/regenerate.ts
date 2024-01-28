@@ -23,7 +23,7 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY!,
 });
 
-
+const REGENERATE_REQUEST_RECYCLE = process.env.REGENERATE_REQUEST_LIMIT === 'true';
 const REGENERATE_REQUEST_LIMIT = parseInt(process.env.REGENERATE_REQUEST_LIMIT || '') ?? 10;
 
 class RegenerateRequestLimiter {
@@ -103,7 +103,7 @@ async function regenerate(
 ) {
     try {
         const canRequest = regenerateRequestLimiter.increase();
-        if (!canRequest) {
+        if (!canRequest || REGENERATE_REQUEST_RECYCLE) {
             return await getRandomCompletion(concern);
         }
 
