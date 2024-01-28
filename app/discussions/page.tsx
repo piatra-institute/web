@@ -27,7 +27,9 @@ export default async function Discussion() {
                 discussions
             </h1>
 
-            <div>
+            <div
+                className="p-6"
+            >
                 {discussions.map((discussion) => {
                     const {
                         id,
