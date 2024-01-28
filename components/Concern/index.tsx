@@ -164,8 +164,8 @@ export default function Concern({
                         <button
                             className={`
                                 text-xs uppercase font-bold select-none px-1 py-0.5
-                                border-b-2 ${initialContext || loadingContext ? 'border-gray-600' : 'border-white'}
-                                ${loadingContext ? 'animate-pulse cursor-wait' : 'cursor-pointer'}
+                                border-b-2 ${initialContext ? 'border-gray-600' : 'border-white'}
+                                ${loadingContext ? 'animate-pulse cursor-wait border-white' : 'cursor-pointer'}
                             `}
                             onClick={() => regenerateContext()}
                         >
