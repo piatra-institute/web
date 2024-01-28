@@ -54,12 +54,14 @@ export default function Concern({
             return;
         }
 
-        setContextValue('foo');
         setInitialContext(false);
         setLoadingContext(true);
 
+        // TODO
+        // request regeneration
+        // setContextValue(response);
+
         setTimeout(() => {
-            setContextValue('bar');
             setLoadingContext(false);
         }, 3_000);
     }
