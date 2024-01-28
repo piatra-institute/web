@@ -92,10 +92,10 @@ export default function Concern({
 
     return (
         <div
-            className={`flex flex-col ${expand ? 'mb-8' : 'mb-6'}`}
+            className={`flex flex-col ${expand ? 'mb-8' : 'mb-6'} p-2`}
         >
             <div
-                className="select-none flex gap-1 items-center"
+                className="select-none flex gap-1 items-center mb-2"
             >
                 <button
                     className="text-2xl min-w-[35px] cursor-pointer"
@@ -137,7 +137,7 @@ export default function Concern({
                                     >
                                         <a
                                             href={reference}
-                                            className="underline"
+                                            className="underline break-all"
                                             target="_blank"
                                             rel="noreferrer"
                                         >

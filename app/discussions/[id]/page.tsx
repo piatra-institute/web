@@ -86,7 +86,7 @@ export default async function Discussions({
             </h2>
 
             <div
-                className="max-w-[700px] m-4"
+                className="min-w-[300px] m-4 md:max-w-[700px]"
             >
                 {concerns.map(concern => (
                     <Concern
