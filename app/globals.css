@@ -27,3 +27,10 @@ html, body {
 p {
     margin-bottom: 1rem;
 }
+
+blockquote {
+    background-color: #1f2937;
+    padding: 1rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
