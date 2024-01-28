@@ -33,6 +33,7 @@ export default async function Discussion() {
                 {discussions.map((discussion) => {
                     const {
                         id,
+                        path,
                         person,
                         title,
                         date,
@@ -44,7 +45,7 @@ export default async function Discussion() {
                             className="mb-8"
                         >
                             <Link
-                                href={`/discussions/${id}`}
+                                href={`/discussions/${path}`}
                             >
                                 <div
                                     className="mb-2 underline"
