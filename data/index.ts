@@ -1,4 +1,5 @@
 export interface Concern {
+    id: string;
     text: string;
     references: string[];
     context: string;

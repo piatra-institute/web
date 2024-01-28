@@ -2,9 +2,20 @@
 
 import OpenAI from 'openai';
 
+import { v4 as uuidv4 } from 'uuid';
+
+import {
+    eq,
+} from 'drizzle-orm';
+
 import {
     Concern,
 } from '@/data';
+
+import database from '@/database';
+import {
+    discussions_completions,
+} from '@/database/schema/dicussions_completions';
 
 
 
@@ -12,9 +23,10 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY!,
 });
 
-const REQUEST_LIMIT = 10;
 
-class RequestLimiter {
+const REGENERATE_REQUEST_LIMIT = parseInt(process.env.REGENERATE_REQUEST_LIMIT || '') ?? 10;
+
+class RegenerateRequestLimiter {
     requestsLastDay: number = 0;
 
     constructor() {
@@ -24,8 +36,8 @@ class RequestLimiter {
     }
 
     public increase() {
-        if (this.requestsLastDay < REQUEST_LIMIT) {
-            this.requestsLastDay++;
+        if (this.requestsLastDay < REGENERATE_REQUEST_LIMIT) {
+            this.requestsLastDay += 1;
             return true;
         }
 
@@ -33,16 +45,57 @@ class RequestLimiter {
     }
 }
 
-const requestLimiter = new RequestLimiter();
+const regenerateRequestLimiter = new RegenerateRequestLimiter();
+
+
+async function getRandomCompletion(
+    concern: Concern,
+) {
+    const result = await database.select().from(discussions_completions).where(
+        eq(discussions_completions.concernID, concern.id),
+    );
+    if (result.length === 0) {
+        return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * result.length);
+    const randomResult = result[randomIndex];
+
+    return JSON.stringify({
+        ...concern,
+        context: randomResult.completion,
+    });
+}
+
+
+async function storeCompletion(
+    concern: Concern,
+    data: string,
+) {
+    try {
+        const context = JSON.parse(data).context;
+
+        await database.insert(discussions_completions).values({
+            id: uuidv4(),
+            createdAt: Date.now() + '',
+            concernID: concern.id,
+            completion: context,
+        });
+    } catch (error) {
+        console.log(error);
+
+        return;
+    }
+}
 
 
 async function regenerate(
     concern: Concern,
 ) {
     try {
-        const canRequest = requestLimiter.increase();
+        const canRequest = regenerateRequestLimiter.increase();
         if (!canRequest) {
-            return;
+            return await getRandomCompletion(concern);
         }
 
         const completion = await openai.chat.completions.create({
@@ -72,7 +125,17 @@ async function regenerate(
             response_format: { type: 'json_object' },
         });
 
-        return completion.choices[0].message.content;
+        const data = completion.choices[0].message.content;
+        if (!data) {
+            return;
+        }
+
+        await storeCompletion(
+            concern,
+            data,
+        );
+
+        return data;
     } catch (error) {
         console.log(error);
 

@@ -61,6 +61,7 @@ export default async function Discussions({
             </div>
         );
     }
+
     const {
         date,
         person,
@@ -89,7 +90,7 @@ export default async function Discussions({
             >
                 {concerns.map(concern => (
                     <Concern
-                        key={Math.random() + ''}
+                        key={concern.id}
                         data={concern}
                     />
                 ))}
