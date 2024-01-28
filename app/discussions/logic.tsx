@@ -16,10 +16,10 @@ export const getDiscussions = () => {
 }
 
 
-export const findDiscussion = (
-    id: string,
+export const findDiscussionByPath = (
+    path: string,
 ) => {
-    return data.discussions.find(discussion => discussion.id === id);
+    return data.discussions.find(discussion => discussion.path === path);
 }
 
 

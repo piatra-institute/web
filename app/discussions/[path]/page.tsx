@@ -1,7 +1,7 @@
 import { Metadata, ResolvingMetadata } from 'next';
 
 import {
-    findDiscussion,
+    findDiscussionByPath,
     renderDate,
 } from '../logic';
 
@@ -10,17 +10,15 @@ import Concern from '@/components/Concern';
 
 
 type Props = {
-    params: { id: string };
+    params: { path: string };
     searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export async function generateMetadata(
-    { params, searchParams }: Props,
-    parent: ResolvingMetadata,
+    { params }: Props,
+    _parent: ResolvingMetadata,
 ): Promise<Metadata> {
-    const id = params.id;
-
-    const discussion = findDiscussion(params.id);
+    const discussion = findDiscussionByPath(params.path);
     if (!discussion) {
         return {};
     }
@@ -33,9 +31,9 @@ export async function generateMetadata(
 
 
 async function getData(
-    id: string,
+    path: string,
 ) {
-    const discussion = findDiscussion(id);
+    const discussion = findDiscussionByPath(path);
     if (!discussion) {
         return {};
     }
@@ -51,7 +49,7 @@ async function getData(
 export default async function Discussions({
     params,
 }: Props) {
-    const data = await getData(params.id);
+    const data = await getData(params.path);
     if (!data || !data.props) {
         return (
             <div

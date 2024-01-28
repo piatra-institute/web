@@ -7,6 +7,7 @@ export interface Concern {
 
 export interface Discussion {
     id: string;
+    path: string;
     date: string;
     person: string;
     title: string;
