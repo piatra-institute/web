@@ -33,7 +33,9 @@ export default function Platforms() {
                 platforms
             </h1>
 
-            <div>
+            <div
+                className="p-6"
+            >
                 {platforms.map((platform) => {
                     const {
                         name,
