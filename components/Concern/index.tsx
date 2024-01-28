@@ -120,7 +120,7 @@ export default function Concern({
                     className="mt-4 mb-2 px-3"
                 >
                     <div
-                        className="text-xs uppercase mb-2"
+                        className="text-xs uppercase mb-2 border-b-2 border-transparent"
                     >
                         references
                     </div>
@@ -169,7 +169,7 @@ export default function Concern({
                         className="flex gap-4 items-center mb-2"
                     >
                         <div
-                            className="text-xs uppercase"
+                            className="text-xs uppercase border-b-2 border-transparent"
                         >
                             context
                         </div>
