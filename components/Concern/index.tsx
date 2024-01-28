@@ -23,28 +23,65 @@ export default function Concern({
 
 
     const [
-        showContext,
-        setShowContext,
+        expand,
+        setExpand,
     ] = useState(false);
+
+    const [
+        loadingContext,
+        setLoadingContext,
+    ] = useState(false);
+
+    const [
+        initialContext,
+        setInitialContext,
+    ] = useState(true);
+
+    const [
+        contextValue,
+        setContextValue,
+    ] = useState(context || '');
+
+
+    const viewInitialContext = () => {
+        setContextValue(context || '');
+        setInitialContext(true);
+        setLoadingContext(false);
+    }
+
+    const regenerateContext = () => {
+        if (loadingContext) {
+            return;
+        }
+
+        setContextValue('foo');
+        setInitialContext(false);
+        setLoadingContext(true);
+
+        setTimeout(() => {
+            setContextValue('bar');
+            setLoadingContext(false);
+        }, 3_000);
+    }
 
 
     return (
         <div
-            className="flex flex-col mb-6"
+            className={`flex flex-col ${expand ? 'mb-8' : 'mb-6'}`}
         >
             <div
                 className="select-none flex gap-1 items-center"
             >
-                <span
+                <button
                     className="text-2xl min-w-[35px] cursor-pointer"
-                    onClick={() => setShowContext(!showContext)}
+                    onClick={() => setExpand(!expand)}
                 >
-                    {showContext ? '-' : '+'}
-                </span>
+                    {expand ? '-' : '+'}
+                </button>
 
                 <span
-                    className="cursor-pointer -ml-2"
-                    onClick={() => setShowContext(!showContext)}
+                    className="cursor-pointer -ml-1"
+                    onClick={() => setExpand(!expand)}
                 >
                     {text}
                 </span>
@@ -52,10 +89,10 @@ export default function Concern({
 
             {references
             && references.length > 0
-            && showContext
+            && expand
             && (
                 <div
-                    className="mt-2 mb-4"
+                    className="mt-4 mb-2"
                 >
                     <div
                         className="text-xs uppercase mb-2"
@@ -63,54 +100,81 @@ export default function Concern({
                         references
                     </div>
 
-                    {references.map(reference => {
-                        if (reference.startsWith('https')) {
-                            return (
-                                <div
-                                    key={Math.random() + ''}
-                                    className="mt-2"
-                                >
-                                    <a
-                                        href={reference}
-                                        className="underline"
-                                        target="_blank"
-                                        rel="noreferrer"
+                    <ul
+                        className="list-disc pl-4"
+                    >
+                        {references.map(reference => {
+                            if (reference.startsWith('https')) {
+                                return (
+                                    <li
+                                        key={Math.random() + ''}
+                                        className="mt-2"
                                     >
-                                        {reference.replace('https://', '')}
-                                    </a>
-                                </div>
-                            );
-                        }
+                                        <a
+                                            href={reference}
+                                            className="underline"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            {reference.replace('https://', '')}
+                                        </a>
+                                    </li>
+                                );
+                            }
 
-                        return (
-                            <div
-                                key={Math.random() + ''}
-                                className="mt-2"
-                            >
-                                {reference}
-                            </div>
-                        );
-                    })}
+                            return (
+                                <li
+                                    key={Math.random() + ''}
+                                    className="mt-2 text-sm leading-relaxed"
+                                    dangerouslySetInnerHTML={{ __html: reference }}
+                                />
+                            );
+                        })}
+                    </ul>
                 </div>
             )}
 
-            {context
-            && showContext
+            {contextValue
+            && expand
             && (
                 <div
                     className="mt-2"
                 >
                     <div
-                        className="text-xs uppercase mb-2"
+                        className="flex gap-4 items-center mb-2"
                     >
-                        context
+                        <div
+                            className="text-xs uppercase"
+                        >
+                            context
+                        </div>
+
+                        <button
+                            className={`
+                                text-xs uppercase font-bold cursor-pointer select-none px-1 py-0.5
+                                border-b-2 ${initialContext && !loadingContext ? 'border-white' : 'border-gray-600'}
+                            `}
+                            onClick={() => viewInitialContext()}
+                        >
+                            initial
+                        </button>
+
+                        <button
+                            className={`
+                                text-xs uppercase font-bold select-none px-1 py-0.5
+                                border-b-2 ${initialContext || loadingContext ? 'border-gray-600' : 'border-white'}
+                                ${loadingContext ? 'animate-pulse cursor-wait' : 'cursor-pointer'}
+                            `}
+                            onClick={() => regenerateContext()}
+                        >
+                            regenerate
+                        </button>
                     </div>
 
-                    <p
-                        className="leading-8"
-                    >
-                        {context}
-                    </p>
+                    <div
+                        className="leading-releaxed"
+                        dangerouslySetInnerHTML={{ __html: contextValue }}
+                    />
                 </div>
             )}
         </div>
