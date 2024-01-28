@@ -58,6 +58,15 @@ async function getRandomCompletion(
         return;
     }
 
+    // Simulate a random delay.
+    await new Promise((resolve) => {
+        const randomTimeout = Math.floor(Math.random() * 1_000 * 10);
+
+        setTimeout(() => {
+            resolve(true);
+        }, randomTimeout);
+    });
+
     const randomIndex = Math.floor(Math.random() * result.length);
     const randomResult = result[randomIndex];
 
