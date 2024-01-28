@@ -117,7 +117,7 @@ export default function Concern({
             && expand
             && (
                 <div
-                    className="mt-4 mb-2"
+                    className="mt-4 mb-2 px-3"
                 >
                     <div
                         className="text-xs uppercase mb-2"
@@ -163,7 +163,7 @@ export default function Concern({
             && expand
             && (
                 <div
-                    className="mt-2"
+                    className="mt-2 px-3"
                 >
                     <div
                         className="flex gap-4 items-center mb-2"
