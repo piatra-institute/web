@@ -3,6 +3,7 @@
 import {
     useState,
     useEffect,
+    useCallback,
 } from 'react';
 
 import {
@@ -61,6 +62,31 @@ export default function Concern({
         setCompletionsIndex(-1);
     }
 
+    const getCompletions = useCallback(async () => {
+        try {
+            const request = await fetch('/api/get_regenerated_provocation_context', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    concern: data,
+                }),
+            });
+            const response = await request.json();
+            if (!response || !response.status) {
+                return;
+            }
+
+            const completions = response.data;
+            setCompletions(completions);
+        } catch (error) {
+            console.error(error);
+        }
+    }, [
+        data,
+    ]);
+
     const regenerateContext = async () => {
         if (loadingContext) {
             return;
@@ -96,6 +122,8 @@ export default function Concern({
             const context = JSON.parse(response.data).context;
             setContextValue(context);
             setLoadingContext(false);
+
+            await getCompletions();
         } catch (error) {
             showError();
         }
@@ -107,33 +135,10 @@ export default function Concern({
             return;
         }
 
-        const getCompletions = async () => {
-            try {
-                const request = await fetch('/api/get_regenerated_provocation_context', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        concern: data,
-                    }),
-                });
-                const response = await request.json();
-                if (!response || !response.status) {
-                    return;
-                }
-
-                const completions = response.data;
-                setCompletions(completions);
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
         getCompletions();
     }, [
+        getCompletions,
         expand,
-        data,
     ]);
 
 
