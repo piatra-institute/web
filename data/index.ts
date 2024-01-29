@@ -5,7 +5,7 @@ export interface Concern {
     context: string;
 }
 
-export interface Discussion {
+export interface Provocation {
     id: string;
     path: string;
     date: string;
@@ -18,8 +18,8 @@ export interface Discussion {
     concerns: Concern[];
 }
 
-export interface DiscussionsData {
-    discussions: Discussion[];
+export interface ProvocationsData {
+    provocations: Provocation[];
 }
 
 

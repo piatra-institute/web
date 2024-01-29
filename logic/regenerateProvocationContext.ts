@@ -17,7 +17,7 @@ import {
 
 
 
-async function regenerateDiscussionContext(
+async function regenerateProvocationContext(
     concern: Concern,
 ) {
     try {
@@ -72,4 +72,4 @@ async function regenerateDiscussionContext(
 }
 
 
-export default regenerateDiscussionContext;
+export default regenerateProvocationContext;

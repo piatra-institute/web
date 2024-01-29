@@ -78,7 +78,7 @@ export default function Concern({
         }
 
         try {
-            const request = await fetch('/api/regenerate_discussion_context', {
+            const request = await fetch('/api/regenerate_provocation_context', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -109,7 +109,7 @@ export default function Concern({
 
         const getCompletions = async () => {
             try {
-                const request = await fetch('/api/get_regenerated_discussion_context', {
+                const request = await fetch('/api/get_regenerated_provocation_context', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

@@ -6,15 +6,15 @@ import {
 
 
 
-export const discussions_completions = sqliteTable(
-    'discussions_completions',
+export const provocations_completions = sqliteTable(
+    'provocations_completions',
     {
         id: text('id').notNull().primaryKey(),
         createdAt: text('created_at').notNull(),
         concernID: text('concern_id').notNull(),
         completion: text('completion').notNull(),
     },
-    (discussions_completions) => ({
-        concernIDx: index('concernIDx').on(discussions_completions.concernID),
+    (provocations_completions) => ({
+        concernIDx: index('concernIDx').on(provocations_completions.concernID),
     }),
 );

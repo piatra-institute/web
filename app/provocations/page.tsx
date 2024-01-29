@@ -3,19 +3,19 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import {
-    getDiscussions,
+    getProvocations,
     renderDate,
 } from './logic';
 
 
 
 export const metadata: Metadata = {
-    title: 'discussions',
+    title: 'provocations',
 };
 
 
-export default async function Discussion() {
-    const discussions = getDiscussions();
+export default async function Provocation() {
+    const provocations = getProvocations();
 
     return (
         <div
@@ -24,20 +24,20 @@ export default async function Discussion() {
             <h1
                 className="text-2xl font-bold mb-10"
             >
-                discussions
+                provocations
             </h1>
 
             <div
                 className="p-6"
             >
-                {discussions.map((discussion) => {
+                {provocations.map((provocation) => {
                     const {
                         id,
                         path,
                         person,
                         title,
                         date,
-                    } = discussion;
+                    } = provocation;
 
                     return (
                         <div
@@ -45,7 +45,7 @@ export default async function Discussion() {
                             className="mb-8"
                         >
                             <Link
-                                href={`/discussions/${path}`}
+                                href={`/provocations/${path}`}
                             >
                                 <div
                                     className="mb-2 underline"

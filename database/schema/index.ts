@@ -1,1 +1,1 @@
-export * from './dicussions_completions';
+export * from './provocations_completions';

@@ -10,16 +10,16 @@ import {
 
 import database from '@/database';
 import {
-    discussions_completions,
-} from '@/database/schema/dicussions_completions';
+    provocations_completions,
+} from '@/database/schema/provocations_completions';
 
 
 
 export async function getAllCompletions(
     concern: Concern,
 ) {
-    const completions = await database.select().from(discussions_completions).where(
-        eq(discussions_completions.concernID, concern.id),
+    const completions = await database.select().from(provocations_completions).where(
+        eq(provocations_completions.concernID, concern.id),
     );
 
     return completions;
@@ -60,7 +60,7 @@ export async function storeCompletion(
     try {
         const context = JSON.parse(data).context;
 
-        const result = await database.insert(discussions_completions).values({
+        const result = await database.insert(provocations_completions).values({
             id: uuidv4(),
             createdAt: Date.now() + '',
             concernID: concern.id,

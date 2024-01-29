@@ -3,7 +3,7 @@ import {
     NextApiResponse,
 } from 'next';
 
-import regenerateDiscussionContext from '@/logic/regenerateDiscussionContext';
+import regenerateProvocationContext from '@/logic/regenerateProvocationContext';
 
 
 
@@ -23,7 +23,7 @@ export default async function handler(
             concern,
         } = request.body;
 
-        const result = await regenerateDiscussionContext(concern);
+        const result = await regenerateProvocationContext(concern);
         if (!result) {
             response.status(400).json({
                 status: false,

@@ -8,7 +8,7 @@ import {
 
 
 
-async function getRegeneratedDiscussionContext(
+async function getRegeneratedProvocationContext(
     concern: Concern,
 ) {
     try {
@@ -23,4 +23,4 @@ async function getRegeneratedDiscussionContext(
 }
 
 
-export default getRegeneratedDiscussionContext;
+export default getRegeneratedProvocationContext;

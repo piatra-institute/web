@@ -1,7 +1,7 @@
 import { Metadata, ResolvingMetadata } from 'next';
 
 import {
-    findDiscussionByPath,
+    findProvocationByPath,
     renderDate,
 } from '../logic';
 
@@ -18,14 +18,14 @@ export async function generateMetadata(
     { params }: Props,
     _parent: ResolvingMetadata,
 ): Promise<Metadata> {
-    const discussion = findDiscussionByPath(params.path);
-    if (!discussion) {
+    const provocation = findProvocationByPath(params.path);
+    if (!provocation) {
         return {};
     }
 
     return {
-        title: discussion.metadata.title,
-        description: discussion.metadata.description,
+        title: provocation.metadata.title,
+        description: provocation.metadata.description,
     };
 }
 
@@ -33,20 +33,20 @@ export async function generateMetadata(
 async function getData(
     path: string,
 ) {
-    const discussion = findDiscussionByPath(path);
-    if (!discussion) {
+    const provocation = findProvocationByPath(path);
+    if (!provocation) {
         return {};
     }
 
     return {
         props: {
-            ...discussion,
+            ...provocation,
         },
     };
 }
 
 
-export default async function Discussions({
+export default async function Provocations({
     params,
 }: Props) {
     const data = await getData(params.path);
