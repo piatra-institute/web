@@ -2,16 +2,16 @@ const fs = require('fs');
 
 
 
-const fetchDiscussions = async () => {
-    const dataFile = './app/discussions/data.json';
+const fetchProvocations = async () => {
+    const dataFile = './app/provocations/data.json';
 
-    const link = process.env.DISCUSSIONS_URL;
+    const link = process.env.PROVOCATIONS_URL;
     if (!link) {
         const emptyData = {
-            discussions: [],
+            provocations: [],
         };
         await fs.promises.writeFile(dataFile, JSON.stringify(emptyData));
-        console.log('Could not fetch discussions');
+        console.log('Could not fetch provocations');
         return;
     }
 
@@ -19,13 +19,13 @@ const fetchDiscussions = async () => {
     const json = await response.json();
 
     await fs.promises.writeFile(dataFile, JSON.stringify(json));
-    console.log('Fetched discussions');
+    console.log('Fetched provocations');
 }
 
 
 
 const main = async () => {
-    await fetchDiscussions();
+    await fetchProvocations();
 }
 
 main();
