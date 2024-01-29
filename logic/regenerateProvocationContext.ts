@@ -4,6 +4,7 @@ import {
     Concern,
 
     REGENERATE_REQUEST_RECYCLE,
+    REGENERATE_REQUEST_PER_CONCERN_LIMIT,
 } from '@/data';
 
 import openai from '@/services/openai';
@@ -11,6 +12,7 @@ import openai from '@/services/openai';
 import regenerateRequestLimiter from '@/services/regenerateRequestLimiter';
 
 import {
+    getAllCompletions,
     getRandomCompletion,
     storeCompletion,
 } from './completions';
@@ -21,9 +23,15 @@ async function regenerateProvocationContext(
     concern: Concern,
 ) {
     try {
+        const completions = await getAllCompletions(concern);
+
         const canRequest = regenerateRequestLimiter.increase();
-        if (!canRequest || REGENERATE_REQUEST_RECYCLE) {
-            return await getRandomCompletion(concern);
+        if (
+            !canRequest
+            || REGENERATE_REQUEST_RECYCLE
+            || completions.length >= REGENERATE_REQUEST_PER_CONCERN_LIMIT
+        ) {
+            return await getRandomCompletion(concern, completions);
         }
 
         const completion = await openai.chat.completions.create({

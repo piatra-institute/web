@@ -6,6 +6,7 @@ import {
 
 import {
     Concern,
+    Completion,
 } from '@/data';
 
 import database from '@/database';
@@ -28,15 +29,15 @@ export async function getAllCompletions(
 
 export async function getRandomCompletion(
     concern: Concern,
+    completions: Completion[],
 ) {
-    const completions = await getAllCompletions(concern);
     if (completions.length === 0) {
         return;
     }
 
     // Simulate a random delay.
     await new Promise((resolve) => {
-        const randomTimeout = Math.floor(Math.random() * 1_000 * 6);
+        const randomTimeout = Math.floor(Math.random() * 1_000 * 4);
 
         setTimeout(() => {
             resolve(true);
