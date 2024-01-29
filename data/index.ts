@@ -21,3 +21,8 @@ export interface Discussion {
 export interface DiscussionsData {
     discussions: Discussion[];
 }
+
+
+
+export const REGENERATE_REQUEST_RECYCLE = process.env.REGENERATE_REQUEST_LIMIT === 'true';
+export const REGENERATE_REQUEST_LIMIT = parseInt(process.env.REGENERATE_REQUEST_LIMIT || '') ?? 10;

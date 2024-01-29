@@ -66,7 +66,7 @@ export default function Concern({
         }
 
         try {
-            const request = await fetch('/api/regenerate', {
+            const request = await fetch('/api/regenerate_discussion_context', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
