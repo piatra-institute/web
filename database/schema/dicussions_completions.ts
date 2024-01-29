@@ -1,7 +1,7 @@
 import {
     sqliteTable,
     text,
-    uniqueIndex,
+    index,
 } from 'drizzle-orm/sqlite-core';
 
 
@@ -15,6 +15,6 @@ export const discussions_completions = sqliteTable(
         completion: text('completion').notNull(),
     },
     (discussions_completions) => ({
-        concernIDx: uniqueIndex('concernIDx').on(discussions_completions.concernID),
+        concernIDx: index('concernIDx').on(discussions_completions.concernID),
     }),
 );

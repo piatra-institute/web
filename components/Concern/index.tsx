@@ -2,6 +2,7 @@
 
 import {
     useState,
+    useEffect,
 } from 'react';
 
 import {
@@ -42,11 +43,22 @@ export default function Concern({
         setContextValue,
     ] = useState(context || '');
 
+    const [
+        completions,
+        setCompletions,
+    ] = useState<any[]>([]);
+
+    const [
+        completionsIndex,
+        setCompletionsIndex,
+    ] = useState(-1);
+
 
     const viewInitialContext = () => {
         setContextValue(context || '');
         setInitialContext(true);
         setLoadingContext(false);
+        setCompletionsIndex(-1);
     }
 
     const regenerateContext = async () => {
@@ -88,6 +100,41 @@ export default function Concern({
             showError();
         }
     }
+
+
+    useEffect(() => {
+        if (!expand) {
+            return;
+        }
+
+        const getCompletions = async () => {
+            try {
+                const request = await fetch('/api/get_regenerated_discussion_context', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        concern: data,
+                    }),
+                });
+                const response = await request.json();
+                if (!response || !response.status) {
+                    return;
+                }
+
+                const completions = response.data;
+                setCompletions(completions);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        getCompletions();
+    }, [
+        expand,
+        data,
+    ]);
 
 
     return (
@@ -194,6 +241,46 @@ export default function Concern({
                         >
                             regenerate
                         </button>
+
+                        {completions.length > 0 && (
+                            <div
+                                className="flex gap-4 border-b-2 border-transparent font-mono max-h-[22px]"
+                            >
+                                <div
+                                    className="cursor-pointer select-none -mt-1"
+                                    onClick={() => {
+                                        if (completionsIndex <= 0) {
+                                            return;
+                                        }
+
+                                        setCompletionsIndex(completionsIndex - 1);
+                                        setContextValue(
+                                            completions[completionsIndex - 1].completion,
+                                        );
+                                        setInitialContext(false);
+                                    }}
+                                >
+                                    {completionsIndex > 0 ? '◀' : '◁'}
+                                </div>
+
+                                <div
+                                    className="cursor-pointer select-none -mt-1"
+                                    onClick={() => {
+                                        if (completionsIndex === completions.length - 1) {
+                                            return;
+                                        }
+
+                                        setCompletionsIndex(completionsIndex + 1);
+                                        setContextValue(
+                                            completions[completionsIndex + 1].completion,
+                                        );
+                                        setInitialContext(false);
+                                    }}
+                                >
+                                    {completionsIndex === completions.length - 1 ? '▷' : '▶'}
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     <div
