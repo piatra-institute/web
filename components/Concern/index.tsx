@@ -246,8 +246,8 @@ export default function Concern({
                             <div
                                 className="flex gap-4 border-b-2 border-transparent font-mono max-h-[22px]"
                             >
-                                <div
-                                    className="cursor-pointer select-none -mt-1"
+                                <button
+                                    className={`${completionsIndex > 0 ? 'cursor-pointer' : 'cursor-default'} select-none -mt-1`}
                                     onClick={() => {
                                         if (completionsIndex <= 0) {
                                             return;
@@ -261,10 +261,10 @@ export default function Concern({
                                     }}
                                 >
                                     {completionsIndex > 0 ? '◀' : '◁'}
-                                </div>
+                                </button>
 
-                                <div
-                                    className="cursor-pointer select-none -mt-1"
+                                <button
+                                    className={`${completionsIndex < completions.length - 1 ? 'cursor-pointer' : 'cursor-default'} select-none -mt-1`}
                                     onClick={() => {
                                         if (completionsIndex === completions.length - 1) {
                                             return;
@@ -277,8 +277,8 @@ export default function Concern({
                                         setInitialContext(false);
                                     }}
                                 >
-                                    {completionsIndex === completions.length - 1 ? '▷' : '▶'}
-                                </div>
+                                    {completionsIndex < completions.length - 1 ? '▶' : '▷'}
+                                </button>
                             </div>
                         )}
                     </div>
