@@ -64,7 +64,9 @@ export default function Platforms() {
                                 </Link>
                             </h2>
 
-                            <div>
+                            <div
+                                className="p-1"
+                            >
                                 {description}
                             </div>
                         </div>

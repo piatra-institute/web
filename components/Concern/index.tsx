@@ -11,6 +11,8 @@ import {
     Completion,
 } from '@/data';
 
+import './styles.css';
+
 
 
 export default function Concern({
@@ -184,7 +186,7 @@ export default function Concern({
             && expand
             && (
                 <div
-                    className="mt-4 mb-2 px-3"
+                    className="mt-4 mb-2 px-3 concern-reference"
                 >
                     <div
                         className="text-xs uppercase mb-2 border-b-2 border-transparent"

@@ -79,7 +79,7 @@ export default async function Provocations({
             <Header />
 
             <h1
-                className="text-xl font-bold mt-4 mb-4"
+                className="text-xl text-center font-bold my-4"
             >
                 {title}
             </h1>
@@ -91,7 +91,7 @@ export default async function Provocations({
             </h2>
 
             <div
-                className="min-w-[300px] m-4 md:max-w-[700px]"
+                className="sm:w-full md:w-[700px] -mx-8 md:mx-auto"
             >
                 {concerns.map(concern => (
                     <Concern
