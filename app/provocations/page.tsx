@@ -44,26 +44,23 @@ export default async function Provocation() {
                     } = provocation;
 
                     return (
-                        <div
+                        <Link
                             key={id}
-                            className="mb-8"
+                            href={`/provocations/${path}`}
+                            className="mb-8 block focus:outline-none focus:ring-1 focus:ring-white"
                         >
-                            <Link
-                                href={`/provocations/${path}`}
+                            <div
+                                className="text-sm uppercase underline underline-offset-4 p-2 pb-0"
                             >
-                                <div
-                                    className="text-sm uppercase underline underline-offset-4"
-                                >
-                                    {renderDate(date)} · {person}
-                                </div>
+                                {renderDate(date)} · {person}
+                            </div>
 
-                                <div
-                                    className="text-sm"
-                                >
-                                    {title}
-                                </div>
-                            </Link>
-                        </div>
+                            <div
+                                className="text-sm p-2 pt-1"
+                            >
+                                {title}
+                            </div>
+                        </Link>
                     );
                 })}
             </div>
