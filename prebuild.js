@@ -18,7 +18,10 @@ const fetchProvocations = async () => {
     const response = await fetch(link);
     const json = await response.json();
 
-    await fs.promises.writeFile(dataFile, JSON.stringify(json));
+    await fs.promises.writeFile(
+        dataFile,
+        JSON.stringify(json, null, 4),
+    );
     console.log('Fetched provocations');
 }
 
