@@ -192,24 +192,6 @@ export default function Concern({
                         className="list-disc pl-4"
                     >
                         {references.map(reference => {
-                            if (reference.startsWith('https')) {
-                                return (
-                                    <li
-                                        key={Math.random() + ''}
-                                        className="mt-2"
-                                    >
-                                        <a
-                                            href={reference}
-                                            className="underline break-all"
-                                            target="_blank"
-                                            rel="noreferrer"
-                                        >
-                                            {reference.replace('https://', '')}
-                                        </a>
-                                    </li>
-                                );
-                            }
-
                             return (
                                 <li
                                     key={Math.random() + ''}
