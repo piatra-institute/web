@@ -6,6 +6,8 @@ a {
     text-decoration-line: underline;
     text-underline-offset: 2px;
     word-break: break-all;
+    padding-left: 2px;
+    padding-right: 2px;
 }
 
 a:focus {
