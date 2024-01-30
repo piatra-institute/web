@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import Header from '@/components/Header';
+
 
 
 export const metadata: Metadata = {
@@ -27,6 +29,8 @@ export default function Platforms() {
         <div
             className="flex flex-col items-center justify-center w-full h-full select-none"
         >
+            <Header />
+
             <h1
                 className="text-2xl font-bold mb-10"
             >

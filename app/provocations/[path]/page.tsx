@@ -6,6 +6,7 @@ import {
 } from '../logic';
 
 import Concern from '@/components/Concern';
+import Header from '@/components/Header';
 
 
 
@@ -55,7 +56,11 @@ export default async function Provocations({
             <div
                 className="flex flex-col items-center justify-center w-full h-full"
             >
-                not found
+                <Header />
+
+                <div>
+                    not found
+                </div>
             </div>
         );
     }
@@ -71,8 +76,10 @@ export default async function Provocations({
         <div
             className="flex flex-col items-center w-full h-full p-8"
         >
+            <Header />
+
             <h1
-                className="text-xl font-bold mb-4"
+                className="text-xl font-bold mt-4 mb-4"
             >
                 {title}
             </h1>
