@@ -8,6 +8,7 @@ import {
 
 import {
     Concern as IConcern,
+    Completion,
 } from '@/data';
 
 
@@ -47,19 +48,26 @@ export default function Concern({
     const [
         completions,
         setCompletions,
-    ] = useState<any[]>([]);
+    ] = useState<Completion[]>([
+        {
+            id: 'initial',
+            concernID: '',
+            createdAt: '',
+            completion: context,
+        },
+    ]);
 
     const [
         completionsIndex,
         setCompletionsIndex,
-    ] = useState(-1);
+    ] = useState(0);
 
 
     const viewInitialContext = () => {
         setContextValue(context || '');
         setInitialContext(true);
         setLoadingContext(false);
-        setCompletionsIndex(-1);
+        setCompletionsIndex(0);
     }
 
     const getCompletions = useCallback(async () => {
@@ -78,8 +86,11 @@ export default function Concern({
                 return;
             }
 
-            const completions = response.data;
-            setCompletions(completions);
+            const newCompletions = response.data;
+            setCompletions((prevValues) => [
+                ...prevValues,
+                ...newCompletions,
+            ]);
         } catch (error) {
             console.error(error);
         }
@@ -247,22 +258,29 @@ export default function Concern({
                             regenerate
                         </button>
 
-                        {completions.length > 0 && (
+                        {completions.length > 1 && (
                             <div
                                 className="flex gap-4 border-b-2 border-transparent font-mono max-h-[22px]"
                             >
                                 <button
-                                    className={`${completionsIndex > 0 ? 'cursor-pointer' : 'cursor-default'} select-none -mt-1`}
+                                    className={`${completionsIndex === 0 ? 'cursor-default' : 'cursor-pointer'} select-none -mt-1`}
                                     onClick={() => {
-                                        if (completionsIndex <= 0) {
+                                        if (completionsIndex === 0) {
                                             return;
                                         }
 
-                                        setCompletionsIndex(completionsIndex - 1);
+                                        const newIndex = completionsIndex - 1;
+
+                                        setCompletionsIndex(newIndex);
                                         setContextValue(
-                                            completions[completionsIndex - 1].completion,
+                                            completions[newIndex].completion,
                                         );
-                                        setInitialContext(false);
+
+                                        if (newIndex === 0) {
+                                            setInitialContext(true);
+                                        } else {
+                                            setInitialContext(false);
+                                        }
                                     }}
                                 >
                                     {completionsIndex > 0 ? '◀' : '◁'}
@@ -275,11 +293,18 @@ export default function Concern({
                                             return;
                                         }
 
-                                        setCompletionsIndex(completionsIndex + 1);
+                                        const newIndex = completionsIndex + 1;
+
+                                        setCompletionsIndex(newIndex);
                                         setContextValue(
-                                            completions[completionsIndex + 1].completion,
+                                            completions[newIndex].completion,
                                         );
-                                        setInitialContext(false);
+
+                                        if (newIndex === 0) {
+                                            setInitialContext(true);
+                                        } else {
+                                            setInitialContext(false);
+                                        }
                                     }}
                                 >
                                     {completionsIndex < completions.length - 1 ? '▶' : '▷'}
