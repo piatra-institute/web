@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    useRef,
     useState,
     useEffect,
     useCallback,
@@ -20,6 +21,9 @@ export default function Concern({
 }: {
     data: IConcern,
 }) {
+    const element = useRef<HTMLDivElement | null>(null);
+
+
     const {
         text,
         references,
@@ -27,6 +31,7 @@ export default function Concern({
     } = data;
 
 
+    // #region state
     const [
         expand,
         setExpand,
@@ -63,6 +68,7 @@ export default function Concern({
         completionsIndex,
         setCompletionsIndex,
     ] = useState(0);
+    // #endregion state
 
 
     const viewInitialContext = () => {
@@ -142,6 +148,16 @@ export default function Concern({
         }
     }
 
+    const handleExpand = () => {
+        setExpand(!expand);
+
+        setTimeout(() => {
+            element.current?.scrollIntoView({
+                behavior: 'smooth',
+            });
+        }, 100);
+    }
+
 
     useEffect(() => {
         if (!expand) {
@@ -158,20 +174,21 @@ export default function Concern({
     return (
         <div
             className={`flex flex-col ${expand ? 'mb-8' : 'mb-6'} p-2`}
+            ref={element}
         >
             <div
                 className="select-none flex gap-1 items-center mb-2"
             >
                 <button
                     className="text-2xl min-w-[35px] cursor-pointer focus:outline-none focus:ring-1 focus:ring-white"
-                    onClick={() => setExpand(!expand)}
+                    onClick={() => handleExpand()}
                 >
                     {expand ? '-' : '+'}
                 </button>
 
                 <div
                     className="cursor-pointer -ml-1"
-                    onClick={() => setExpand(!expand)}
+                    onClick={() => handleExpand()}
                 >
                     <div
                         className="ml-2"
@@ -250,10 +267,13 @@ export default function Concern({
 
                         {completions.length > 1 && (
                             <div
-                                className="flex gap-4 border-b-2 border-transparent font-mono max-h-[22px]"
+                                className="flex gap-1 border-b-2 border-transparent font-mono max-h-[22px]"
                             >
                                 <button
-                                    className={`${completionsIndex === 0 ? 'cursor-default' : 'cursor-pointer'} select-none -mt-1`}
+                                    className={`
+                                        ${completionsIndex === 0 ? 'cursor-default' : 'cursor-pointer'} select-none -mt-1 px-2
+                                        focus:outline-none focus:ring-1 focus:ring-white
+                                    `}
                                     onClick={() => {
                                         if (completionsIndex === 0) {
                                             return;
@@ -277,7 +297,10 @@ export default function Concern({
                                 </button>
 
                                 <button
-                                    className={`${completionsIndex < completions.length - 1 ? 'cursor-pointer' : 'cursor-default'} select-none -mt-1`}
+                                    className={`
+                                        ${completionsIndex < completions.length - 1 ? 'cursor-pointer' : 'cursor-default'} select-none -mt-1 px-2
+                                        focus:outline-none focus:ring-1 focus:ring-white
+                                    `}
                                     onClick={() => {
                                         if (completionsIndex === completions.length - 1) {
                                             return;
