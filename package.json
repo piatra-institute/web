@@ -17,6 +17,7 @@
         "openai": "^4.26.0",
         "react": "^18",
         "react-dom": "^18",
+        "react-string-replace": "^1.1.1",
         "uuid": "^9.0.1"
     },
     "devDependencies": {
