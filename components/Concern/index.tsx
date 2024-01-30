@@ -149,13 +149,15 @@ export default function Concern({
     }
 
     const handleExpand = () => {
-        setExpand(!expand);
+        if (!expand) {
+            setTimeout(() => {
+                element.current?.scrollIntoView({
+                    behavior: 'smooth',
+                });
+            }, 50);
+        }
 
-        setTimeout(() => {
-            element.current?.scrollIntoView({
-                behavior: 'smooth',
-            });
-        }, 100);
+        setExpand(!expand);
     }
 
 
