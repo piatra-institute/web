@@ -26,7 +26,7 @@ export default async function Provocation() {
             <Header />
 
             <h1
-                className="text-2xl font-bold mb-10"
+                className="text-xl font-bold mb-10"
             >
                 provocations
             </h1>
@@ -52,7 +52,7 @@ export default async function Provocation() {
                                 href={`/provocations/${path}`}
                             >
                                 <div
-                                    className="mb-2 underline"
+                                    className="text-sm uppercase underline underline-offset-4"
                                 >
                                     {renderDate(date)} · {person}
                                 </div>

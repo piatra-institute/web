@@ -32,7 +32,7 @@ export default function Platforms() {
             <Header />
 
             <h1
-                className="text-2xl font-bold mb-10"
+                className="text-xl font-bold mb-10"
             >
                 platforms
             </h1>
@@ -58,7 +58,7 @@ export default function Platforms() {
                                 <Link
                                     href={link}
                                     target="_blank"
-                                    className="underline"
+                                    className="text-sm uppercase underline underline-offset-4 p-1 focus:outline-none focus:ring-1 focus:ring-white"
                                 >
                                     {name}
                                 </Link>

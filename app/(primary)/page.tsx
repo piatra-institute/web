@@ -47,24 +47,22 @@ export default function Home() {
                 <div
                     className="flex flex-row justify-center space-x-3"
                 >
-                    <Link href="/platforms">
-                        <span
-                            className="text-xs uppercase underline"
-                        >
-                            platforms
-                        </span>
+                    <Link
+                        href="/platforms"
+                        className="text-xs uppercase underline underline-offset-4 p-1 focus:outline-none focus:ring-1 focus:ring-white"
+                    >
+                        platforms
                     </Link>
 
                     <div>
                         ·
                     </div>
 
-                    <Link href="/provocations">
-                        <span
-                            className="text-xs uppercase underline"
-                        >
-                            provocations
-                        </span>
+                    <Link
+                        href="/provocations"
+                        className="text-xs uppercase underline underline-offset-4 p-1 focus:outline-none focus:ring-1 focus:ring-white"
+                    >
+                        provocations
                     </Link>
                 </div>
             </div>

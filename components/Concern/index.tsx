@@ -161,18 +161,22 @@ export default function Concern({
                 className="select-none flex gap-1 items-center mb-2"
             >
                 <button
-                    className="text-2xl min-w-[35px] cursor-pointer"
+                    className="text-2xl min-w-[35px] cursor-pointer focus:outline-none focus:ring-1 focus:ring-white"
                     onClick={() => setExpand(!expand)}
                 >
                     {expand ? '-' : '+'}
                 </button>
 
-                <span
+                <div
                     className="cursor-pointer -ml-1"
                     onClick={() => setExpand(!expand)}
                 >
-                    {text}
-                </span>
+                    <div
+                        className="ml-2"
+                    >
+                        {text}
+                    </div>
+                </div>
             </div>
 
             {references
@@ -223,6 +227,7 @@ export default function Concern({
                             className={`
                                 text-xs uppercase font-bold cursor-pointer select-none px-1 py-0.5
                                 border-b-2 ${initialContext && !loadingContext ? 'border-white' : 'border-gray-600'}
+                                focus:outline-none focus:ring-1 focus:ring-white
                             `}
                             onClick={() => viewInitialContext()}
                         >
@@ -234,6 +239,7 @@ export default function Concern({
                                 text-xs uppercase font-bold select-none px-1 py-0.5
                                 border-b-2 ${initialContext ? 'border-gray-600' : 'border-white'}
                                 ${loadingContext ? 'animate-pulse cursor-wait border-white' : 'cursor-pointer'}
+                                focus:outline-none focus:ring-1 focus:ring-white
                             `}
                             onClick={() => regenerateContext()}
                         >

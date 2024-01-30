@@ -10,18 +10,19 @@ export default function Header() {
         >
             <Link
                 href="/"
+                tabIndex={-1}
             >
                 <Image
                     src="/piatra-institute.png"
                     height={175}
                     width={175}
                     alt="piatra.institute"
-                    className="pointer-events-none justify-self-center mb-2"
+                    className="pointer-events-none justify-self-center m-auto mb-2"
                     priority
                 />
 
                 <h1
-                    className="font-bold"
+                    className="font-bold text-lg text-center uppercase"
                 >
                     PIATRA . INSTITUTE
                 </h1>
