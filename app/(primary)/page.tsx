@@ -12,7 +12,7 @@ export default function Home() {
                     height={450}
                     width={450}
                     alt="piatra.institute"
-                    className="pointer-events-none justify-self-center"
+                    className="pointer-events-none justify-self-center mt-4"
                     priority
                 />
 
