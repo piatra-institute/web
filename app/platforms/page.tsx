@@ -1,6 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import {
+    linkAnchorStyle,
+} from '@/data/styles';
+
 import Header from '@/components/Header';
 
 
@@ -49,7 +53,7 @@ export default function Platforms() {
 
                     return (
                         <div
-                            key={Math.random() + ''}
+                            key={name + link}
                             className="mb-8"
                         >
                             <h2
@@ -58,7 +62,7 @@ export default function Platforms() {
                                 <Link
                                     href={link}
                                     target="_blank"
-                                    className="text-sm uppercase underline underline-offset-4 p-1 focus:outline-none focus:ring-1 focus:ring-white"
+                                    className={linkAnchorStyle}
                                 >
                                     {name}
                                 </Link>

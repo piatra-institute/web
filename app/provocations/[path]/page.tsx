@@ -47,7 +47,7 @@ async function getData(
 }
 
 
-export default async function Provocations({
+export default async function Provocation({
     params,
 }: Props) {
     const data = await getData(params.path);

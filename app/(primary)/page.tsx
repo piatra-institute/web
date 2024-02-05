@@ -1,6 +1,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
+import {
+    linkButtonStyle,
+} from '@/data/styles';
+
 
 
 export default function Home() {
@@ -49,7 +53,7 @@ export default function Home() {
                 >
                     <Link
                         href="/platforms"
-                        className="text-xs uppercase underline underline-offset-4 p-1 focus:outline-none focus:ring-1 focus:ring-white"
+                        className={linkButtonStyle}
                     >
                         platforms
                     </Link>
@@ -59,8 +63,19 @@ export default function Home() {
                     </div>
 
                     <Link
+                        href="/papers"
+                        className={linkButtonStyle}
+                    >
+                        papers
+                    </Link>
+
+                    <div>
+                        ·
+                    </div>
+
+                    <Link
                         href="/provocations"
-                        className="text-xs uppercase underline underline-offset-4 p-1 focus:outline-none focus:ring-1 focus:ring-white"
+                        className={linkButtonStyle}
                     >
                         provocations
                     </Link>
