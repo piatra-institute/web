@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 const papers: ({
     title: string;
-    slug: string;
+    path: string;
 })[] = [
 ];
 
@@ -39,8 +39,8 @@ export default function Papers() {
             >
                 {papers.map((paper) => (
                     <Link
-                        key={paper.slug}
-                        href={`/papers/${paper.slug}`}
+                        key={paper.path}
+                        href={`/papers/${paper.path}`}
                         className={linkAnchorStyle}
                     >
                         {paper.title}
