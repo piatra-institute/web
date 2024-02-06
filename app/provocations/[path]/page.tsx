@@ -2,11 +2,14 @@ import { Metadata, ResolvingMetadata } from 'next';
 
 import {
     findProvocationByPath,
-    renderDate,
 } from '../logic';
 
 import Concern from '@/components/Concern';
 import Header from '@/components/Header';
+
+import {
+    renderDate,
+} from '@/logic/utilities';
 
 
 

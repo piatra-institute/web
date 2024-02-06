@@ -21,14 +21,3 @@ export const findProvocationByPath = (
 ) => {
     return data.provocations.find(provocation => provocation.path === path);
 }
-
-
-export const renderDate = (
-    date: string | undefined,
-) => {
-    if (!date) {
-        return
-    }
-
-    return new Date(date).toLocaleDateString();
-}

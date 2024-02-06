@@ -6,8 +6,11 @@ import Header from '@/components/Header';
 
 import {
     getProvocations,
-    renderDate,
 } from './logic';
+
+import {
+    renderDate,
+} from '@/logic/utilities';
 
 
 
