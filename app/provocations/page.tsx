@@ -3,14 +3,12 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import Header from '@/components/Header';
+import Title from '@/components/Title';
+import SubtitleDateable from '@/components/SubtitleDateable';
 
 import {
     getProvocations,
 } from './logic';
-
-import {
-    renderDate,
-} from '@/logic/utilities';
 
 
 
@@ -28,11 +26,9 @@ export default async function Provocation() {
         >
             <Header />
 
-            <h1
-                className="text-md uppercase font-bold mb-10"
-            >
-                provocations
-            </h1>
+            <Title
+                text="provocations"
+            />
 
             <div
                 className="p-6"
@@ -52,11 +48,10 @@ export default async function Provocation() {
                             href={`/provocations/${path}`}
                             className="mb-8 block focus:outline-none focus:ring-1 focus:ring-white"
                         >
-                            <div
-                                className="text-sm uppercase underline underline-offset-4 p-2 pb-0 mb-1.5"
-                            >
-                                {renderDate(date)} · {person}
-                            </div>
+                            <SubtitleDateable
+                                text={person}
+                                date={date}
+                            />
 
                             <div
                                 className="text-sm p-2 pt-1"

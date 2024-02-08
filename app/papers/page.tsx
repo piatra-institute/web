@@ -2,14 +2,12 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import Header from '@/components/Header';
+import Title from '@/components/Title';
+import SubtitleDateable from '@/components/SubtitleDateable';
 
 import {
     getPapers,
 } from './logic';
-
-import {
-    renderDate,
-} from '@/logic/utilities';
 
 
 
@@ -27,11 +25,9 @@ export default function Papers() {
         >
             <Header />
 
-            <h1
-                className="text-md uppercase font-bold mb-10"
-            >
-                papers
-            </h1>
+            <Title
+                text="papers"
+            />
 
             <div
                 className="p-6"
@@ -51,11 +47,10 @@ export default function Papers() {
                             href={`/papers/${path}`}
                             className="mb-8 block focus:outline-none focus:ring-1 focus:ring-white"
                         >
-                            <div
-                                className="text-sm uppercase underline underline-offset-4 p-2 pb-0 mb-1.5"
-                            >
-                                {renderDate(date)} · {title}
-                            </div>
+                            <SubtitleDateable
+                                text={title}
+                                date={date}
+                            />
 
                             <div
                                 className="text-sm p-2 pt-1"

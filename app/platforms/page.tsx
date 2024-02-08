@@ -1,11 +1,8 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
-
-import {
-    linkAnchorStyle,
-} from '@/data/styles';
 
 import Header from '@/components/Header';
+import Title from '@/components/Title';
+import SubtitleLinkable from '@/components/SubtitleLinkable';
 
 
 
@@ -35,11 +32,9 @@ export default function Platforms() {
         >
             <Header />
 
-            <h1
-                className="text-md uppercase font-bold mb-10"
-            >
-                platforms
-            </h1>
+            <Title
+                text="platforms"
+            />
 
             <div
                 className="p-6"
@@ -56,17 +51,10 @@ export default function Platforms() {
                             key={name + link}
                             className="mb-8"
                         >
-                            <h2
-                                className="mb-2"
-                            >
-                                <Link
-                                    href={link}
-                                    target="_blank"
-                                    className={linkAnchorStyle}
-                                >
-                                    {name}
-                                </Link>
-                            </h2>
+                            <SubtitleLinkable
+                                text={name}
+                                link={link}
+                            />
 
                             <div
                                 className="p-1"
