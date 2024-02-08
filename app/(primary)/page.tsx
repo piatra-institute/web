@@ -16,7 +16,7 @@ export default function Home() {
                     height={450}
                     width={450}
                     alt="piatra.institute"
-                    className="pointer-events-none justify-self-center mt-4"
+                    className="pointer-events-none justify-self-center pt-4"
                     priority
                 />
 
@@ -49,7 +49,7 @@ export default function Home() {
                 </div>
 
                 <div
-                    className="flex flex-row justify-center space-x-3"
+                    className="flex flex-row justify-center space-x-1 md:space-x-3"
                 >
                     <Link
                         href="/platforms"
