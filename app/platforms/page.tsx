@@ -13,12 +13,17 @@ export const metadata: Metadata = {
 
 const platforms = [
     {
-        name: 'sonocracy',
+        name: 'ordershop.io',
+        description: 'platform to request and manage manufacturing orders',
+        link: 'https://github.com/piatra-institute/ordershop',
+    },
+    {
+        name: 'sonocracy.com',
         description: 'platform to vote for volume control in venues, bid for songs',
         link: 'https://github.com/piatra-institute/sonocracy',
     },
     {
-        name: 'xfactura-ro',
+        name: 'xfactura.ro',
         description: 'platform for einvoicing following the Romanian/EU legislation',
         link: 'https://github.com/piatra-institute/xfactura-ro',
     },
@@ -28,7 +33,7 @@ const platforms = [
 export default function Platforms() {
     return (
         <div
-            className="flex flex-col items-center justify-center w-full h-full select-none"
+            className="flex flex-col items-center justify-center w-full min-h-full select-none"
         >
             <Header />
 
