@@ -36,7 +36,7 @@ export default function Platforms() {
             <Header />
 
             <h1
-                className="text-xl font-bold mb-10"
+                className="text-md uppercase font-bold mb-10"
             >
                 platforms
             </h1>

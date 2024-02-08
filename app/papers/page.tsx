@@ -28,7 +28,7 @@ export default function Papers() {
             <Header />
 
             <h1
-                className="text-xl font-bold mb-10"
+                className="text-md uppercase font-bold mb-10"
             >
                 papers
             </h1>
@@ -52,7 +52,7 @@ export default function Papers() {
                             className="mb-8 block focus:outline-none focus:ring-1 focus:ring-white"
                         >
                             <div
-                                className="text-sm uppercase underline underline-offset-4 p-2 pb-0"
+                                className="text-sm uppercase underline underline-offset-4 p-2 pb-0 mb-1.5"
                             >
                                 {renderDate(date)} · {title}
                             </div>
