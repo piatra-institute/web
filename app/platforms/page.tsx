@@ -13,17 +13,17 @@ export const metadata: Metadata = {
 
 const platforms = [
     {
-        name: 'ordershop.io',
+        name: 'ordershop . io',
         description: 'platform to request and manage manufacturing orders',
         link: 'https://github.com/piatra-institute/ordershop',
     },
     {
-        name: 'sonocracy.com',
+        name: 'sonocracy . com',
         description: 'platform to vote for volume control and bid for songs in venues',
         link: 'https://github.com/piatra-institute/sonocracy',
     },
     {
-        name: 'xfactura.ro',
+        name: 'xfactura . ro',
         description: 'platform for einvoicing following the Romanian/EU legislation',
         link: 'https://github.com/piatra-institute/xfactura-ro',
     },
