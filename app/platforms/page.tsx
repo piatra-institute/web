@@ -19,7 +19,7 @@ const platforms = [
     },
     {
         name: 'sonocracy.com',
-        description: 'platform to vote for volume control in venues, bid for songs',
+        description: 'platform to vote for volume control and bid for songs in venues',
         link: 'https://github.com/piatra-institute/sonocracy',
     },
     {
