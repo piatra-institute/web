@@ -24,7 +24,7 @@ const platforms = [
     },
     {
         name: 'xfactura . ro',
-        description: 'platform for einvoicing following the Romanian/EU legislation',
+        description: 'platform for einvoicing and general accounting following the Romanian/EU legislation',
         link: 'https://github.com/piatra-institute/xfactura-ro',
     },
 ];
