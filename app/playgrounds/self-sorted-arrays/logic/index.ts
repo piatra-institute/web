@@ -1,0 +1,43 @@
+import {
+    Cell,
+} from '@/app/playgrounds/self-sorted-arrays/data';
+
+
+
+export const bubbleAlgotype = (
+    swap: Cell['swap'],
+    queryLeft: () => boolean,
+    queryRight: () => boolean,
+    swapLeft: () => void,
+    swapRight: () => void,
+) => {
+    switch (swap) {
+        case 'frozen':
+            break;
+        case 'passive':
+            break;
+        case 'proactive':
+        default:
+            break;
+    }
+}
+
+
+
+export const biasedRandomColor = () => `rgb(${10 + Math.random() * 30}, ${10 + Math.random() * 50}, ${80 + Math.random() * 155})`;
+export const biasedBlueRandomColor = (value: number) => {
+    const invertedValue = 100 - value;
+    const baseRed = 10 + invertedValue * 0.3;
+    const baseGreen = 10 + invertedValue * 0.5;
+    const baseBlue = 80 + invertedValue * 1.55;
+
+    return `rgb(${baseRed}, ${baseGreen}, ${baseBlue})`;
+};
+export const biasedLimeRandomColor = (value: number) => {
+    const invertedValue = 100 - value;
+    const baseRed = 140 + invertedValue * 0.8;
+    const baseGreen = 170 + invertedValue * 0.4;
+    const baseBlue = 140 + invertedValue * 0.3;
+
+    return `rgb(${baseRed}, ${baseGreen}, ${baseBlue})`;
+};

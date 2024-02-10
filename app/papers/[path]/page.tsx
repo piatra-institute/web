@@ -128,7 +128,7 @@ export default async function Paper({
                         {paragraphs.map((paragraph) => (
                             <p
                                 key={Math.random().toString()}
-                                className="text-md"
+                                className="text-sm leading-relaxed md:text-base"
                                 dangerouslySetInnerHTML={{__html: paragraph}}
                             />
                         ))}

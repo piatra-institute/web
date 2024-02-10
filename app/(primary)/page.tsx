@@ -7,9 +7,29 @@ import {
 
 
 
+const links = [
+    {
+        href: '/platforms',
+        label: 'platforms',
+    },
+    {
+        href: '/provocations',
+        label: 'provocations',
+    },
+    {
+        href: '/papers',
+        label: 'papers',
+    },
+    {
+        href: '/playgrounds',
+        label: 'playgrounds',
+    },
+];
+
+
 export default function Home() {
     return (
-        <main className="h-screen flex items-center justify-center p-10 select-none">
+        <main className="md:h-screen flex items-center justify-center p-10 select-none overflow-scroll">
             <div className="max-w-5xl w-full items-center justify-center grid text-center text-lime-50">
                 <Image
                     src="/piatra-institute.png"
@@ -49,36 +69,27 @@ export default function Home() {
                 </div>
 
                 <div
-                    className="flex flex-row justify-center space-x-1 md:space-x-3"
+                    className="flex flex-col md:flex-row justify-center space-x-1 md:space-x-3"
                 >
-                    <Link
-                        href="/platforms"
-                        className={linkButtonStyle}
-                    >
-                        platforms
-                    </Link>
+                    {links.map(({ href, label }, index) => (
+                        <>
+                            <Link
+                                key={`${href}${label}`}
+                                href={href}
+                                className={linkButtonStyle}
+                            >
+                                {label}
+                            </Link>
 
-                    <div>
-                        ·
-                    </div>
-
-                    <Link
-                        href="/papers"
-                        className={linkButtonStyle}
-                    >
-                        papers
-                    </Link>
-
-                    <div>
-                        ·
-                    </div>
-
-                    <Link
-                        href="/provocations"
-                        className={linkButtonStyle}
-                    >
-                        provocations
-                    </Link>
+                            {index < links.length - 1 && (
+                                <div
+                                    key={Math.random().toString()}
+                                >
+                                    ·
+                                </div>
+                            )}
+                        </>
+                    ))}
                 </div>
             </div>
         </main>
