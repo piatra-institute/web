@@ -80,7 +80,7 @@ export default async function Paper({
 
     return (
         <div
-            className="flex flex-col items-center w-full h-full p-8"
+            className="flex flex-col items-center w-full p-8"
         >
             <Header />
 
@@ -97,11 +97,44 @@ export default async function Paper({
             </h2>
 
             <div
-                className="text-md"
+                className="text-md mb-10"
             >
                 {abstract}
             </div>
 
+            {sections.map((section) => {
+                const {
+                    id,
+                    title,
+                    paragraphs,
+                } = section;
+
+                return (
+                    <div
+                        key={Math.random().toString()}
+                        className="my-4 w-full max-w-2xl"
+                    >
+                        <h2
+                            className="text-lg font-bold mb-2"
+                            id={id}
+                        >
+                            <a
+                                href={`#${id}`}
+                            >
+                                {title}
+                            </a>
+                        </h2>
+
+                        {paragraphs.map((paragraph) => (
+                            <p
+                                key={Math.random().toString()}
+                                className="text-md"
+                                dangerouslySetInnerHTML={{__html: paragraph}}
+                            />
+                        ))}
+                    </div>
+                );
+            })}
         </div>
     );
 }
