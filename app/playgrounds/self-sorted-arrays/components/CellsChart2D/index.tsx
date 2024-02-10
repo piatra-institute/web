@@ -122,6 +122,9 @@ const CanvasColumnChart = ({
         const clickedColumn = Math.floor(clickX / columnWidth);
 
         const cell = data[clickedColumn];
+        if (!cell) {
+            return;
+        }
 
         if (cell.id === selectedCell) {
             setSelectedCell(null);
