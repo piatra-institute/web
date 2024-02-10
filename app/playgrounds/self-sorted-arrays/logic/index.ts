@@ -23,6 +23,36 @@ export const bubbleAlgotype = (
 }
 
 
+export class SortingCell extends EventTarget {
+    public value: number;
+    public swap: Cell['swap'];
+    public color: string;
+
+    constructor(
+        value: number,
+        swap: Cell['swap'],
+        color: string,
+    ) {
+        super();
+
+        this.value = value;
+        this.swap = swap;
+        this.color = color;
+    }
+
+    private swapLeft() {
+        this.dispatchEvent(new Event('swapLeft'));
+    }
+
+    private swapRight() {
+        this.dispatchEvent(new Event('swapRight'));
+    }
+
+    public tick() {
+
+    }
+}
+
 
 export const biasedRandomColor = () => (
     `rgb(${10 + Math.random() * 30}, ${10 + Math.random() * 50}, ${80 + Math.random() * 155})`

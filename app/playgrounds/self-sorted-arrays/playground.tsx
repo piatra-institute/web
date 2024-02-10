@@ -11,7 +11,7 @@ import Title from '@/components/Title';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 
-import CellsChart2D from '@/app/playgrounds/self-sorted-arrays/components/CellsChart2D';
+import CellsChart1D from '@/app/playgrounds/self-sorted-arrays/components/CellsChart1D';
 import CellViewer from '@/app/playgrounds/self-sorted-arrays/components/CellViewer';
 
 import {
@@ -195,7 +195,7 @@ export default function SelfSortedArraysPlayground() {
                     max={999}
                 />
 
-                <CellsChart2D
+                <CellsChart1D
                     data={distribution}
                     selectedCell={selectedCell}
                     setSelectedCell={setSelectedCell}
