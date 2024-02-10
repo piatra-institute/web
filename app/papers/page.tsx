@@ -30,7 +30,7 @@ export default function Papers() {
             />
 
             <div
-                className="p-6"
+                className="p-6 w-full max-w-lg"
             >
                 {papers.map((paper) => {
                     const {

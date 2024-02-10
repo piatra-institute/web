@@ -6,7 +6,7 @@ import Image from 'next/image';
 export default function Header() {
     return (
         <header
-            className="mb-8"
+            className="my-8"
         >
             <Link
                 href="/"

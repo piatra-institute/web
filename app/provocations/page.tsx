@@ -31,7 +31,7 @@ export default async function Provocation() {
             />
 
             <div
-                className="p-6"
+                className="p-6 w-full max-w-lg"
             >
                 {provocations.map((provocation) => {
                     const {

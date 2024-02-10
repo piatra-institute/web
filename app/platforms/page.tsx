@@ -1,8 +1,13 @@
 import type { Metadata } from 'next';
 
+import Link from 'next/link';
+
 import Header from '@/components/Header';
 import Title from '@/components/Title';
-import SubtitleLinkable from '@/components/SubtitleLinkable';
+
+import {
+    linkAnchorStyle,
+} from '@/data/styles';
 
 
 
@@ -42,7 +47,7 @@ export default function Platforms() {
             />
 
             <div
-                className="p-6"
+                className="p-6 w-full max-w-lg"
             >
                 {platforms.map((platform) => {
                     const {
@@ -52,21 +57,24 @@ export default function Platforms() {
                     } = platform;
 
                     return (
-                        <div
+                        <Link
                             key={name + link}
-                            className="mb-8"
+                            href={link}
+                            target="_blank"
+                            className="mb-8 p-1 block focus:outline-none focus:ring-1 focus:ring-white"
                         >
-                            <SubtitleLinkable
-                                text={name}
-                                link={link}
-                            />
+                            <div
+                                className={linkAnchorStyle}
+                            >
+                                {name}
+                            </div>
 
                             <div
-                                className="p-1"
+                                className="text-sm p-1 pt-1"
                             >
                                 {description}
                             </div>
-                        </div>
+                        </Link>
                     );
                 })}
             </div>
