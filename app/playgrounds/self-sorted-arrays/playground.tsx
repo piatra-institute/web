@@ -98,7 +98,13 @@ export default function SelfSortedArraysPlayground() {
                 value: cell.value,
                 color: cell.color,
                 algotype: cell.algotype,
-                swap: 'proactive',
+                swap: cell.swap,
+                damageable: cell.damageable,
+                convertible: cell.convertible,
+                divisible: cell.divisible,
+                apoptosable: cell.apoptosable,
+                speed: cell.speed,
+                responsiveness: cell.responsiveness,
             } as Cell))]);
 
             // setSorting(false);
@@ -181,6 +187,13 @@ export default function SelfSortedArraysPlayground() {
                 distribution[i].value,
                 distribution[i].color,
                 distribution[i].algotype,
+                distribution[i].swap,
+                distribution[i].damageable,
+                distribution[i].convertible,
+                distribution[i].divisible,
+                distribution[i].apoptosable,
+                distribution[i].speed,
+                distribution[i].responsiveness,
             ));
         }
         setTissue(tissue);

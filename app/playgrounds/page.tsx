@@ -21,10 +21,10 @@ const platforms = [
         name: 'self-sorted arrays',
         link: '/playgrounds/self-sorted-arrays',
     },
-    {
-        name: 'vote no',
-        link: '/playgrounds/vote-no',
-    },
+    // {
+    //     name: 'vote no',
+    //     link: '/playgrounds/vote-no',
+    // },
 ];
 
 

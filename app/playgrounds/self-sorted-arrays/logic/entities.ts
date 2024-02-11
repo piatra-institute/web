@@ -1,3 +1,9 @@
+import {
+    Cell as ICell,
+} from '../data';
+
+
+
 /**
  * Fisher-Yates (aka Knuth) Shuffle.
  *
@@ -79,20 +85,34 @@ const algotypes = {
 type Algotype = 'bubble' | 'insertion' | 'selection';
 
 
-export class Cell extends EventTarget {
-    public id: string;
-    public value: number;
-    public color: string;
-    public algotype: Algotype;
+export class Cell extends EventTarget implements ICell {
+    public id;
+    public value;
+    public color;
+    public algotype;
+    public swap;
+    public damageable;
+    public convertible;
+    public divisible;
+    public apoptosable;
+    public speed;
+    public responsiveness;
 
     private neighbors: (Cell | undefined)[];
 
 
     constructor(
-        id: string,
-        value: number,
-        color: string,
-        algotype: Algotype,
+        id: ICell['id'],
+        value: ICell['value'],
+        color: ICell['color'],
+        algotype: ICell['algotype'],
+        swap?: ICell['swap'],
+        damageable?: ICell['damageable'],
+        convertible?: ICell['convertible'],
+        divisible?: ICell['divisible'],
+        apoptosable?: ICell['apoptosable'],
+        speed?: ICell['speed'],
+        responsiveness?: ICell['responsiveness'],
     ) {
         super();
 
@@ -100,6 +120,14 @@ export class Cell extends EventTarget {
         this.value = value;
         this.color = color;
         this.algotype = algotype;
+        this.swap = swap || 'proactive';
+        this.damageable = damageable;
+        this.convertible = convertible;
+        this.divisible = divisible;
+        this.apoptosable = apoptosable;
+        this.speed = speed;
+        this.responsiveness = responsiveness;
+
         this.neighbors = [];
     }
 

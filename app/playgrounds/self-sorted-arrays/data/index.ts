@@ -34,7 +34,7 @@ export interface Cell {
     /**
      * How fast the cell will respond to swapping
      */
-    reponsiveness?: number;
+    responsiveness?: number;
 
     // render 2D navigate up/down/left/right
 }
