@@ -87,7 +87,7 @@ const CanvasColumnChart = ({
                 y,
             } = computeDimensions(cell, index);
 
-            if (cell.swap !== 'proactive') {
+            if (cell.swap && cell.swap !== 'proactive') {
                 ctx.fillStyle = 'white';
                 ctx.font = '13px Arial';
                 ctx.textAlign = 'center';

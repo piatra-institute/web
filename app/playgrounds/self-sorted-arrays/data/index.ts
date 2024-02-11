@@ -2,7 +2,7 @@ export interface Cell {
     id: string;
     value: number;
     color: string;
-    algotype: string;
+    algotype: 'bubble' | 'insertion' | 'selection';
 
     /**
      * frozen: no swapping whatsoever
@@ -11,10 +11,22 @@ export interface Cell {
      */
     swap?: 'frozen' | 'passive' | 'proactive';
     /**
-     * If after X swaps the cell is still surrounded by different algotypes
+     * How many times the cell can be swapped before it becomes passive/frozen
+     */
+    damageable?: number;
+    /**
+     * If after X swaps the cell is still surrounded by the same different algotype
      * it will convert to that algotype
      */
-    convertible?: boolean;
+    convertible?: number;
+    /**
+     * After X swaps the cell will split into two cells of the same algotype
+     */
+    divisible?: number;
+    /**
+     * After X swaps the cell will die
+     */
+    apoptosable?: number;
     /**
      * How fast the cell will initiate swapping
      */
@@ -32,9 +44,9 @@ export const algotypes = [
     'bubble',
     'insertion',
     'selection',
-    'quick',
-    'merge',
-    'heap',
+    // 'quick',
+    // 'merge',
+    // 'heap',
 ] as const;
 
 

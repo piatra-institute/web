@@ -26,6 +26,11 @@ import {
     biasedLimeRandomColor,
 } from '@/app/playgrounds/self-sorted-arrays/logic';
 
+import {
+    Tissue,
+    Cell as CellEntity,
+} from './logic/entities';
+
 
 
 export default function SelfSortedArraysPlayground() {
@@ -36,6 +41,9 @@ export default function SelfSortedArraysPlayground() {
     const [sorted, setSorted] = useState(false);
     const [distribution, setDistribution] = useState<Cell[]>([]);
     const [selectedCell, setSelectedCell] = useState<string | null>(null);
+
+    const [tissue, setTissue] = useState<Tissue>(new Tissue());
+    const [swaps, setSwaps] = useState<Record<string, string[]>>({});
     // #endregion state
 
 
@@ -64,7 +72,8 @@ export default function SelfSortedArraysPlayground() {
                     : colorType === 'blue'
                     ? biasedBlueRandomColor(value)
                     : biasedLimeRandomColor(value),
-                algotype: randomAlgotype,
+                // algotype: randomAlgotype,
+                algotype: 'bubble',
                 swap: randomSwap,
             };
         });
@@ -74,26 +83,27 @@ export default function SelfSortedArraysPlayground() {
     ]);
 
     const sort = async () => {
-        setSorting(true);
-        setSorted(false);
+        if (sorted && !sorting) {
+            setSorted(false);
+            setSelectedCell(null);
+            computeDistribtion(count);
+        } else {
+            // setSorting(true);
+            // setSorted(false);
 
-        const sortedDistribution = [...distribution];
-        for (let i = 0; i < sortedDistribution.length; i++) {
-            for (let j = 0; j < sortedDistribution.length - 1; j++) {
-                if (sortedDistribution[j].value > sortedDistribution[j + 1].value) {
-                    const temp = sortedDistribution[j];
-                    sortedDistribution[j] = sortedDistribution[j + 1];
-                    sortedDistribution[j + 1] = temp;
+            tissue.step();
 
-                    setDistribution([...sortedDistribution]);
+            setDistribution([...tissue.cells.map(cell => ({
+                id: cell.id,
+                value: cell.value,
+                color: cell.color,
+                algotype: cell.algotype,
+                swap: 'proactive',
+            } as Cell))]);
 
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                }
-            }
+            // setSorting(false);
+            // setSorted(true);
         }
-
-        setSorting(false);
-        setSorted(true);
     }
     // #endregion handlers
 
@@ -101,6 +111,7 @@ export default function SelfSortedArraysPlayground() {
     // #region effects
     useEffect(() => {
         const randomCount = 7 + Math.floor(Math.random() * 40);
+        // const randomCount = 5;
         setCount(randomCount);
 
         computeDistribtion(randomCount);
@@ -150,6 +161,32 @@ export default function SelfSortedArraysPlayground() {
         selectedCell,
         distribution,
     ]);
+
+    useEffect(() => {
+        const tissue = new Tissue(
+            (cellID, swapID)  => {
+                setSwaps((prev) => ({
+                    ...prev,
+                    [cellID]: [
+                        ...(prev[cellID] || []),
+                        swapID,
+                    ],
+                }));
+            }
+        );
+
+        for (let i = 0; i < distribution.length; i++) {
+            tissue.addCell(new CellEntity(
+                distribution[i].id,
+                distribution[i].value,
+                distribution[i].color,
+                distribution[i].algotype,
+            ));
+        }
+        setTissue(tissue);
+    }, [
+        distribution,
+    ]);
     // #endregion effects
 
 
@@ -166,6 +203,7 @@ export default function SelfSortedArraysPlayground() {
             {selectedCell && (
                 <CellViewer
                     data={distribution.find(cell => cell.id === selectedCell)!}
+                    swaps={swaps[selectedCell] || []}
                     close={() => {
                         setSelectedCell(null);
                     }}
@@ -207,13 +245,7 @@ export default function SelfSortedArraysPlayground() {
                             ? 'Regenerate'
                             : sorting ? "sorting..." : 'Sort'}
                         onClick={() => {
-                            if (sorted && !sorting) {
-                                setSorted(false);
-                                setSelectedCell(null);
-                                computeDistribtion(count);
-                            } else {
-                                sort();
-                            }
+                            sort();
                         }}
                         disabled={sorting}
                     />

@@ -14,11 +14,13 @@ import {
 
 export interface CellViewerProps {
     data: Cell;
+    swaps: string[];
     close: () => void;
 }
 
 const CellViewer: React.FC<CellViewerProps> = ({
     data,
+    swaps,
     close,
 }) => {
     useEffect(() => {
@@ -65,6 +67,31 @@ const CellViewer: React.FC<CellViewerProps> = ({
             >
                 &lsquo;{data.algotype}&rsquo; algotype · &lsquo;{data.swap || 'proactive'}&rsquo; swap
             </h3>
+
+            {swaps.length > 0 && (
+                <div
+                    className="flex flex-col items-center justify-center text-white m-4"
+                >
+                    <h4
+                        className="text-xl font-bold text-center select-none"
+                    >
+                        swaps
+                    </h4>
+
+                    <ul
+                        className="flex flex-col items-center justify-center text-white"
+                    >
+                        {swaps.map((swap, i) => (
+                            <li
+                                key={i}
+                                className="text-lg font-bold text-center m-2 select-none"
+                            >
+                                {swap}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
         </div>
     );
 };
