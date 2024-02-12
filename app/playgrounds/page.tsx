@@ -40,7 +40,7 @@ export default function Playgrounds() {
             />
 
             <div
-                className="p-6 w-full max-w-lg"
+                className="p-6"
             >
                 {platforms.map((platform) => {
                     const {
