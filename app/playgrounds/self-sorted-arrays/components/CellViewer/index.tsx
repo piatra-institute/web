@@ -7,6 +7,10 @@ import {
 } from '@/data/icons';
 
 import {
+    focusStyle,
+} from '@/data/styles';
+
+import {
     Cell,
 } from '@/app/playgrounds/self-sorted-arrays/data';
 
@@ -48,7 +52,7 @@ const CellViewer: React.FC<CellViewerProps> = ({
             }}
         >
             <button
-                className="absolute z-40 top-3 right-2 p-2 text-white cursor-pointer font-bold text-xl text-center"
+                className={`absolute z-40 top-3 right-2 p-2 text-white cursor-pointer font-bold text-xl text-center ${focusStyle}`}
                 onClick={() => {
                     close();
                 }}

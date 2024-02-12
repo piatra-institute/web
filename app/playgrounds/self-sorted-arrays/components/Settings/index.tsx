@@ -1,11 +1,21 @@
 import {
     useState,
+    useCallback,
+    useEffect,
 } from 'react';
 
 import {
     closeIcon,
     settingsIcon,
 } from '@/data/icons';
+
+import {
+    focusStyle,
+} from '@/data/styles';
+
+import {
+    defocus,
+} from '@/logic/utilities';
 
 
 
@@ -22,9 +32,26 @@ export default function Settings({
     ] = useState(false);
 
 
-    const close = () => {
+    const close = useCallback(() => {
         setShowSettings(false);
-    }
+    }, []);
+
+
+    useEffect(() => {
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                close();
+            }
+        };
+
+        window.addEventListener('keydown', handleEscape);
+
+        return () => {
+            window.removeEventListener('keydown', handleEscape);
+        };
+    }, [
+        close,
+    ]);
 
 
     if (!showSettings) {
@@ -35,6 +62,7 @@ export default function Settings({
                 <button
                     onClick={() => {
                         setShowSettings(true);
+                        defocus();
                     }}
                 >
                     {settingsIcon}
@@ -48,7 +76,7 @@ export default function Settings({
             className="fixed z-30 top-0 right-0 md:right-auto left-0 bottom-0 w-full md:w-[550px] flex flex-col items-center justify-center background-blur-md bg-white/20"
         >
             <button
-                className="absolute z-40 top-3 left-2 p-2 text-white cursor-pointer font-bold text-xl text-center"
+                className={`absolute z-40 top-3 left-2 p-2 text-white cursor-pointer font-bold text-xl text-center ${focusStyle}`}
                 onClick={() => {
                     close();
                 }}
