@@ -17,6 +17,10 @@ import {
     defocus,
 } from '@/logic/utilities';
 
+import {
+    Algotype,
+} from '@/app/playgrounds/self-sorted-arrays/data';
+
 
 
 export default function Settings({
@@ -30,6 +34,8 @@ export default function Settings({
     setMaximumValue,
     proactiveLevel,
     setProactiveLevel,
+    availableAlgotypes,
+    setAvailableAlgotypes,
 } : {
     colorType: 'random' | 'blue' | 'lime';
     setColorType: React.Dispatch<React.SetStateAction<'random' | 'blue' | 'lime'>>;
@@ -41,6 +47,8 @@ export default function Settings({
     setMaximumValue: React.Dispatch<React.SetStateAction<number>>;
     proactiveLevel: number;
     setProactiveLevel: React.Dispatch<React.SetStateAction<number>>;
+    availableAlgotypes: Algotype[];
+    setAvailableAlgotypes: React.Dispatch<React.SetStateAction<Algotype[]>>;
 }) {
     const [
         showSettings,
@@ -119,6 +127,10 @@ export default function Settings({
             <div>
                 maximum value: 100
             </div>
+
+            <textarea
+                placeholder="cells respecting the interface"
+            />
 
             <div>
                 algotype: bubble | insertion | selection

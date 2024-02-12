@@ -47,8 +47,6 @@ export interface Cell {
      * How fast the cell will respond to swapping
      */
     responsiveness?: number;
-
-    // render 2D navigate up/down/left/right
 }
 
 
@@ -60,6 +58,8 @@ export const algotypes = [
     // 'merge',
     // 'heap',
 ] as const;
+
+export type Algotype = typeof algotypes[number];
 
 
 export const swap = [

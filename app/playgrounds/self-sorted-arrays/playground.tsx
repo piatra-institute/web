@@ -18,6 +18,7 @@ import Settings from '@/app/playgrounds/self-sorted-arrays/components/Settings';
 import {
     Cell,
     algotypes,
+    Algotype,
     swap,
 } from '@/app/playgrounds/self-sorted-arrays/data';
 
@@ -36,10 +37,13 @@ import {
 
 export default function SelfSortedArraysPlayground() {
     // #region state
-    const [minimumValue, setMinimumValue] = useState(-50);
+    const [minimumValue, setMinimumValue] = useState(0);
     const [maximumValue, setMaximumValue] = useState(100);
     const [count, setCount] = useState(0);
     const [proactiveLevel, setProactiveLevel] = useState(0.8);
+    const [availableAlgotypes, setAvailableAlgotypes] = useState([
+        ...algotypes,
+    ]);
 
     const [colorType, setColorType] = useState<'random' | 'blue' | 'lime'>('lime');
     const [sorting, setSorting] = useState(false);
@@ -70,7 +74,7 @@ export default function SelfSortedArraysPlayground() {
 
         const distribution: Cell[] = Array.from({ length: count }, () => {
             const value = getRandomNumber();
-            const randomAlgotype = algotypes[
+            const randomAlgotype = availableAlgotypes[
                 Math.floor(Math.random() * algotypes.length)
             ];
             const randomSwap = swap[
@@ -95,6 +99,7 @@ export default function SelfSortedArraysPlayground() {
     }, [
         colorType,
         getRandomNumber,
+        availableAlgotypes,
         proactiveLevel,
     ]);
 
@@ -255,6 +260,8 @@ export default function SelfSortedArraysPlayground() {
                 setMaximumValue={setMaximumValue}
                 proactiveLevel={proactiveLevel}
                 setProactiveLevel={setProactiveLevel}
+                availableAlgotypes={availableAlgotypes}
+                setAvailableAlgotypes={setAvailableAlgotypes}
             />
 
             <div className="z-10 relative flex flex-col items-center justify-center min-h-screen py-2">
