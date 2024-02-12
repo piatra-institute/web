@@ -23,10 +23,24 @@ export default function Settings({
     colorType,
     setColorType,
     selectedCell,
+
+    minimumValue,
+    setMinimumValue,
+    maximumValue,
+    setMaximumValue,
+    proactiveLevel,
+    setProactiveLevel,
 } : {
     colorType: 'random' | 'blue' | 'lime';
     setColorType: React.Dispatch<React.SetStateAction<'random' | 'blue' | 'lime'>>;
     selectedCell: string | null;
+
+    minimumValue: number;
+    setMinimumValue: React.Dispatch<React.SetStateAction<number>>;
+    maximumValue: number;
+    setMaximumValue: React.Dispatch<React.SetStateAction<number>>;
+    proactiveLevel: number;
+    setProactiveLevel: React.Dispatch<React.SetStateAction<number>>;
 }) {
     const [
         showSettings,
@@ -87,7 +101,9 @@ export default function Settings({
                 {closeIcon}
             </button>
 
-            <h2>
+            <h2
+                className="text-2xl font-bold"
+            >
                 settings
             </h2>
 
@@ -95,6 +111,53 @@ export default function Settings({
                 <div>
                     color type: {colorType}
                 </div>
+            </div>
+
+            <div>
+                minimum value: 0
+            </div>
+            <div>
+                maximum value: 100
+            </div>
+
+            <div>
+                algotype: bubble | insertion | selection
+            </div>
+
+            <div>
+                swap?: frozen | passive | proactive
+            </div>
+
+            <div>
+                mutationable?: number
+            </div>
+
+            <div>
+                mutationStrategy?: random | increment | decrement | environmental
+            </div>
+
+            <div>
+                damageable?: number
+            </div>
+
+            <div>
+                convertible?: number
+            </div>
+
+            <div>
+                divisible?: number
+            </div>
+
+            <div>
+                apoptosable?: number
+            </div>
+
+            <div>
+                speed?: number
+            </div>
+
+            <div>
+                responsiveness?: number
             </div>
         </div>
     );

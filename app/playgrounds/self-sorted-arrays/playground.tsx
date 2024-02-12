@@ -36,8 +36,12 @@ import {
 
 export default function SelfSortedArraysPlayground() {
     // #region state
-    const [colorType, setColorType] = useState<'random' | 'blue' | 'lime'>('lime');
+    const [minimumValue, setMinimumValue] = useState(-50);
+    const [maximumValue, setMaximumValue] = useState(100);
     const [count, setCount] = useState(0);
+    const [proactiveLevel, setProactiveLevel] = useState(0.8);
+
+    const [colorType, setColorType] = useState<'random' | 'blue' | 'lime'>('lime');
     const [sorting, setSorting] = useState(false);
     const [sorted, setSorted] = useState(false);
     const [distribution, setDistribution] = useState<Cell[]>([]);
@@ -49,6 +53,15 @@ export default function SelfSortedArraysPlayground() {
 
 
     // #region handlers
+    const getRandomNumber = useCallback(() => {
+        return Math.floor(
+            Math.random() * (maximumValue - minimumValue + 1)
+        ) + minimumValue;
+    }, [
+        maximumValue,
+        minimumValue,
+    ]);
+
     const computeDistribtion = useCallback((
         count: number,
     ) => {
@@ -56,11 +69,10 @@ export default function SelfSortedArraysPlayground() {
         if (count === 0) return setDistribution([]);
 
         const distribution: Cell[] = Array.from({ length: count }, () => {
-            const value = Math.floor(Math.random() * 100);
+            const value = getRandomNumber();
             const randomAlgotype = algotypes[
                 Math.floor(Math.random() * algotypes.length)
             ];
-            const proactiveLevel = 0.8;
             const randomSwap = swap[
                 Math.random() < proactiveLevel ? 2 : Math.floor(Math.random() * 2)
             ];
@@ -82,6 +94,8 @@ export default function SelfSortedArraysPlayground() {
         setDistribution(distribution);
     }, [
         colorType,
+        getRandomNumber,
+        proactiveLevel,
     ]);
 
     const step = async () => {
@@ -234,6 +248,13 @@ export default function SelfSortedArraysPlayground() {
                 colorType={colorType}
                 setColorType={setColorType}
                 selectedCell={selectedCell}
+
+                minimumValue={minimumValue}
+                setMinimumValue={setMinimumValue}
+                maximumValue={maximumValue}
+                setMaximumValue={setMaximumValue}
+                proactiveLevel={proactiveLevel}
+                setProactiveLevel={setProactiveLevel}
             />
 
             <div className="z-10 relative flex flex-col items-center justify-center min-h-screen py-2">

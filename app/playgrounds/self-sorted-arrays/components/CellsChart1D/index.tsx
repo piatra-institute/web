@@ -26,7 +26,7 @@ const CanvasColumnChart = ({
     const canvasHeight = 350;
     const columnWidth = canvasWidth / data.length;
     const maxDataValue = Math.max(
-        ...data.map((cell) => cell.value)
+        ...data.map((cell) => Math.abs(cell.value))
     );
 
     useEffect(() => {
@@ -43,7 +43,7 @@ const CanvasColumnChart = ({
             cell: Cell,
             index: number,
         ) => {
-            const columnHeight = (cell.value / maxDataValue) * canvasHeight;
+            const columnHeight = (Math.abs(cell.value) / maxDataValue) * canvasHeight;
             if (cell.id === selectedCell) {
                 selectedColumnHeight = columnHeight;
                 selectedColumnIndex = index;
@@ -71,6 +71,36 @@ const CanvasColumnChart = ({
 
             ctx.fillStyle = cell.color;
             ctx.fillRect(x, y, columnWidth, columnHeight);
+
+            if (cell.value < 0) {
+                const dotRadius = 2;
+
+                const numDotsX = Math.floor(columnWidth / (dotRadius * 2));
+                const numDotsY = Math.floor(columnHeight / (dotRadius * 2));
+
+                const dotSpacingX = columnWidth / (numDotsX + 1);
+                const dotSpacingY = columnHeight / (numDotsY + 1);
+
+                for (let i = 1; i <= numDotsX; i++) {
+                    if (i % 2 === 0) {
+                        continue;
+                    }
+
+                    for (let j = 1; j <= numDotsY; j++) {
+                        if (j % 2 === 0) {
+                            continue;
+                        }
+
+                        const dotX = x + i * dotSpacingX;
+                        const dotY = y + j * dotSpacingY;
+                        ctx.beginPath();
+                        ctx.arc(dotX, dotY, dotRadius, 0, Math.PI * 2);
+                        ctx.fillStyle = 'black';
+                        ctx.fill();
+                        ctx.closePath();
+                    }
+                }
+            }
 
             if (data.length < 45) {
                 ctx.fillStyle = 'white';
