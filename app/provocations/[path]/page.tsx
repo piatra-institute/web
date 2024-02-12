@@ -11,6 +11,8 @@ import {
     renderDate,
 } from '@/logic/utilities';
 
+import './styles.css';
+
 
 
 type Props = {
@@ -99,7 +101,7 @@ export default async function Provocation({
             >
                 {prerequisites && (
                     <div
-                        className="m-auto mb-10 w-full md:w-[400px]"
+                        className="prerequisites m-auto mb-10 w-full md:w-[400px]"
                     >
                         <h3
                             className="text-lg text-center font-bold mb-4"

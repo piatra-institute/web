@@ -52,7 +52,7 @@ export default function Playgrounds() {
                         <Link
                             key={name + link}
                             href={link}
-                            className="mb-8 p-1 block focus:outline-none focus:ring-1 focus:ring-white text-center"
+                            className="mb-8 block focus:outline-none focus:ring-1 focus:ring-white text-center"
                         >
                             <div
                                 className={linkAnchorStyle}
