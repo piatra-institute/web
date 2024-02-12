@@ -73,8 +73,9 @@ export default function SelfSortedArraysPlayground() {
                     ? biasedBlueRandomColor(value)
                     : biasedLimeRandomColor(value),
                 // algotype: randomAlgotype,
-                algotype: 'bubble',
                 swap: randomSwap,
+                algotype: 'bubble',
+                // swap: 'proactive',
             };
         });
         setDistribution(distribution);
@@ -92,6 +93,11 @@ export default function SelfSortedArraysPlayground() {
             // setSorted(false);
 
             tissue.step();
+
+            if (tissue.atEquilibrium) {
+                setSorted(true);
+                return;
+            }
 
             setDistribution([...tissue.cells.map(cell => ({
                 id: cell.id,
