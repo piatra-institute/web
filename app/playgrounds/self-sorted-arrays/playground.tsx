@@ -13,6 +13,7 @@ import Button from '@/components/Button';
 
 import CellsChart1D from '@/app/playgrounds/self-sorted-arrays/components/CellsChart1D';
 import CellViewer from '@/app/playgrounds/self-sorted-arrays/components/CellViewer';
+import Settings from '@/app/playgrounds/self-sorted-arrays/components/Settings';
 
 import {
     Cell,
@@ -83,7 +84,7 @@ export default function SelfSortedArraysPlayground() {
         colorType,
     ]);
 
-    const sort = async () => {
+    const step = async () => {
         if (sorted && !sorting) {
             setSorted(false);
             setSelectedCell(null);
@@ -229,6 +230,11 @@ export default function SelfSortedArraysPlayground() {
                 />
             )}
 
+            <Settings
+                colorType={colorType}
+                setColorType={setColorType}
+            />
+
             <div className="z-10 relative flex flex-col items-center justify-center min-h-screen py-2">
                 <Header />
 
@@ -262,9 +268,9 @@ export default function SelfSortedArraysPlayground() {
                     <Button
                         label={sorted && !sorting
                             ? 'Regenerate'
-                            : sorting ? "sorting..." : 'Sort'}
+                            : sorting ? "stepping..." : 'Step'}
                         onClick={() => {
-                            sort();
+                            step();
                         }}
                         disabled={sorting}
                     />
