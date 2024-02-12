@@ -22,9 +22,11 @@ import {
 export default function Settings({
     colorType,
     setColorType,
+    selectedCell,
 } : {
     colorType: 'random' | 'blue' | 'lime';
     setColorType: React.Dispatch<React.SetStateAction<'random' | 'blue' | 'lime'>>;
+    selectedCell: string | null;
 }) {
     const [
         showSettings,
@@ -39,7 +41,7 @@ export default function Settings({
 
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
+            if (e.key === 'Escape' && selectedCell === null) {
                 close();
             }
         };
@@ -51,6 +53,7 @@ export default function Settings({
         };
     }, [
         close,
+        selectedCell,
     ]);
 
 

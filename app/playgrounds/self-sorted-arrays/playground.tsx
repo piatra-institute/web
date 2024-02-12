@@ -233,6 +233,7 @@ export default function SelfSortedArraysPlayground() {
             <Settings
                 colorType={colorType}
                 setColorType={setColorType}
+                selectedCell={selectedCell}
             />
 
             <div className="z-10 relative flex flex-col items-center justify-center min-h-screen py-2">
