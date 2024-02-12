@@ -61,7 +61,7 @@ export default function Platforms() {
                             key={name + link}
                             href={link}
                             target="_blank"
-                            className="mb-8 p-1 block focus:outline-none focus:ring-1 focus:ring-white"
+                            className="mb-8 block focus:outline-none focus:ring-1 focus:ring-white"
                         >
                             <div
                                 className={linkAnchorStyle}
@@ -70,7 +70,7 @@ export default function Platforms() {
                             </div>
 
                             <div
-                                className="text-sm p-1 pt-1"
+                                className="text-sm p-2 pt-0"
                             >
                                 {description}
                             </div>
