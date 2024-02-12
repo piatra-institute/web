@@ -38,6 +38,7 @@ export interface Provocation {
         title: string;
         description: string;
     };
+    prerequisites?: string[];
     concerns: Concern[];
 }
 

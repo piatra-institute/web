@@ -72,6 +72,7 @@ export default async function Provocation({
         date,
         person,
         title,
+        prerequisites,
         concerns,
     } = data.props;
 
@@ -96,6 +97,28 @@ export default async function Provocation({
             <div
                 className="sm:w-full md:w-[700px] -mx-8 md:mx-auto"
             >
+                {prerequisites && (
+                    <div
+                        className="m-auto mb-10 w-full md:w-[400px]"
+                    >
+                        <h3
+                            className="text-lg text-center font-bold mb-4"
+                        >
+                            prerequisites
+                        </h3>
+
+                        {prerequisites.map(prerequisite => {
+                            return (
+                                <div
+                                    key={prerequisite}
+                                    className="text-sm text-center mb-4 leading-relaxed"
+                                    dangerouslySetInnerHTML={{ __html: prerequisite }}
+                                />
+                            );
+                        })}
+                    </div>
+                )}
+
                 {concerns.map(concern => (
                     <Concern
                         key={concern.id}
