@@ -222,8 +222,14 @@ export class Tissue extends EventTarget {
             return;
         }
 
-        shuffle(this.cells).forEach((cell) => {
+        const currentCells = [
+            ...this.cells,
+            // ...shuffle(this.cells),
+        ];
+        // shuffle(this.cells).forEach((cell) => {
         // this.cells.forEach((cell) => {
+        currentCells.forEach((cell) => {
+            // console.log('step', cell.id, cell.atEquilibrium);
             this.distributeNeighbors();
 
             cell.sort();
