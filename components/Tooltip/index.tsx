@@ -24,7 +24,7 @@ const theme: FlowbiteTooltipTheme = {
     "base": "max-w-[350px] absolute inline-block z-10 py-2 px-3 text-sm font-medium shadow-sm",
     "hidden": "invisible opacity-0",
     "style": {
-        "dark": "bg-gray-800 text-white dark:bg-gray-700",
+        "dark": "bg-gray-800 text-white dark:bg-stone-700",
         "light": "border border-gray-200 bg-white text-gray-900",
         "auto": "border border-gray-200 bg-white text-gray-900 dark:border-none dark:bg-gray-700 dark:text-white"
     },

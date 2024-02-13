@@ -352,7 +352,7 @@ export default function Settings({
                             setAllowResponsiveness(!allowResponsiveness);
                         }}
                         value={allowResponsiveness}
-                        tooltip="how fast the cell will initiate swapping (in milliseconds)"
+                        tooltip="how fast the cell will respond to swapping (in milliseconds)"
                     />
                     {allowResponsiveness && (
                         <>
