@@ -134,10 +134,10 @@ const CanvasColumnChart = ({
             const lineWidth = 2;
             ctx.lineWidth = lineWidth;
             const selectedX = selectedColumnIndex * columnWidth;
-            const selectedY = canvasHeight - lineWidth / 2;
+            const selectedY = canvasHeight - lineWidth / 2 - 4;
             ctx.strokeRect(
-                selectedX, selectedY,
-                columnWidth, -selectedColumnHeight + topPadding,
+                selectedX + 2, selectedY + 4,
+                columnWidth - 4, -selectedColumnHeight + topPadding + 2,
             );
         }
     }, [data, maxDataValue, canvasWidth, canvasHeight, columnWidth, selectedCell]);

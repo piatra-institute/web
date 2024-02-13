@@ -18,12 +18,14 @@ import {
 
 export interface CellViewerProps {
     data: Cell;
+    distribution: Cell[];
     swaps: string[];
     close: () => void;
 }
 
 const CellViewer: React.FC<CellViewerProps> = ({
     data,
+    distribution,
     swaps,
     close,
 }) => {
@@ -85,14 +87,21 @@ const CellViewer: React.FC<CellViewerProps> = ({
                     <ul
                         className="flex flex-col items-center justify-center text-white"
                     >
-                        {swaps.map((swap, i) => (
-                            <li
-                                key={i}
-                                className="text-lg font-bold text-center m-2 select-none"
-                            >
-                                {swap}
-                            </li>
-                        ))}
+                        {swaps.map((swap, i) => {
+                            const cell = distribution.find((cell) => cell.id === swap);
+                            if (!cell) {
+                                return;
+                            }
+
+                            return (
+                                <li
+                                    key={i}
+                                    className="text-lg font-bold text-center m-2 select-none"
+                                >
+                                    swapped with {cell.value}
+                                </li>
+                            );
+                        })}
                     </ul>
                 </div>
             )}

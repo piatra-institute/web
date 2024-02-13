@@ -18,7 +18,6 @@ import Settings from '@/app/playgrounds/self-sorted-arrays/components/Settings';
 import {
     Cell,
     algotypes,
-    Algotype,
     swap,
 } from '@/app/playgrounds/self-sorted-arrays/data';
 
@@ -82,7 +81,7 @@ export default function SelfSortedArraysPlayground() {
             ];
 
             return {
-                id: Math.random().toString(36),
+                id: value + '-' + Math.random().toString(36).slice(2, 7),
                 value,
                 color: colorType === 'random'
                     ? biasedRandomColor()
@@ -243,6 +242,7 @@ export default function SelfSortedArraysPlayground() {
                 <CellViewer
                     data={distribution.find(cell => cell.id === selectedCell)!}
                     swaps={swaps[selectedCell] || []}
+                    distribution={distribution}
                     close={() => {
                         setSelectedCell(null);
                     }}
@@ -250,6 +250,8 @@ export default function SelfSortedArraysPlayground() {
             )}
 
             <Settings
+                distribution={distribution}
+
                 colorType={colorType}
                 setColorType={setColorType}
                 selectedCell={selectedCell}
