@@ -93,13 +93,14 @@ export default function SelfSortedArraysPlayground() {
                 Math.random() < proactiveLevel ? 2 : Math.floor(Math.random() * 2)
             ];
 
-            const mutationable = integerBetweenLimits(10);
-            const damageable = integerBetweenLimits(10);
-            const convertible = integerBetweenLimits(10);
-            const divisible = integerBetweenLimits(10);
-            const apoptosable = integerBetweenLimits(10);
-            const speed = integerBetweenLimits(1000);
-            const responsiveness = integerBetweenLimits(1000);
+            const mutationable = allowMutationable ? integerBetweenLimits(10) : undefined;
+            const mutationStrategy = allowMutationable ? 'random' : undefined;
+            const damageable = allowDamageable ? integerBetweenLimits(10) : undefined;
+            const convertible = allowConvertible ? integerBetweenLimits(10) : undefined;
+            const divisible = allowDivisible ? integerBetweenLimits(10) : undefined;
+            const apoptosable = allowApoptosable ? integerBetweenLimits(10) : undefined;
+            const speed = allowSpeed ? integerBetweenLimits(1000) : undefined;
+            const responsiveness = allowResponsiveness ? integerBetweenLimits(1000) : undefined;
 
             const cell: Cell = {
                 id: value + '-' + Math.random().toString(36).slice(2, 7),
@@ -114,7 +115,7 @@ export default function SelfSortedArraysPlayground() {
                 algotype: 'bubble',
                 // swap: 'proactive',
                 mutationable,
-                mutationStrategy: 'random',
+                mutationStrategy,
                 damageable,
                 convertible,
                 divisible,
@@ -131,6 +132,13 @@ export default function SelfSortedArraysPlayground() {
         getRandomNumber,
         availableAlgotypes,
         proactiveLevel,
+        allowMutationable,
+        allowDamageable,
+        allowConvertible,
+        allowDivisible,
+        allowApoptosable,
+        allowSpeed,
+        allowResponsiveness,
     ]);
 
     const step = async () => {
