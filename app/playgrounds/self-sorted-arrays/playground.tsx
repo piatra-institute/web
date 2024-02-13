@@ -11,6 +11,10 @@ import Title from '@/components/Title';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 
+import {
+    integerBetweenLimits,
+} from '@/logic/utilities';
+
 import CellsChart1D from '@/app/playgrounds/self-sorted-arrays/components/CellsChart1D';
 import CellViewer from '@/app/playgrounds/self-sorted-arrays/components/CellViewer';
 import Settings from '@/app/playgrounds/self-sorted-arrays/components/Settings';
@@ -31,6 +35,7 @@ import {
     Tissue,
     Cell as CellEntity,
 } from './logic/entities';
+
 
 
 
@@ -80,7 +85,15 @@ export default function SelfSortedArraysPlayground() {
                 Math.random() < proactiveLevel ? 2 : Math.floor(Math.random() * 2)
             ];
 
-            return {
+            const mutationable = integerBetweenLimits(10);
+            const damageable = integerBetweenLimits(10);
+            const convertible = integerBetweenLimits(10);
+            const divisible = integerBetweenLimits(10);
+            const apoptosable = integerBetweenLimits(10);
+            const speed = integerBetweenLimits(1000);
+            const responsiveness = integerBetweenLimits(1000);
+
+            const cell: Cell = {
                 id: value + '-' + Math.random().toString(36).slice(2, 7),
                 value,
                 color: colorType === 'random'
@@ -92,7 +105,17 @@ export default function SelfSortedArraysPlayground() {
                 swap: randomSwap,
                 algotype: 'bubble',
                 // swap: 'proactive',
+                mutationable,
+                mutationStrategy: 'random',
+                damageable,
+                convertible,
+                divisible,
+                apoptosable,
+                speed,
+                responsiveness,
             };
+
+            return cell;
         });
         setDistribution(distribution);
     }, [

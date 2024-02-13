@@ -40,11 +40,11 @@ export interface Cell {
      */
     apoptosable?: number;
     /**
-     * How fast the cell will initiate swapping
+     * How fast the cell will initiate swapping (in milliseconds)
      */
     speed?: number;
     /**
-     * How fast the cell will respond to swapping
+     * How fast the cell will respond to swapping (in milliseconds)
      */
     responsiveness?: number;
 }

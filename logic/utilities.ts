@@ -14,3 +14,13 @@ export const defocus = () => {
         (focusedElement as any).blur();
     }
 }
+
+
+export const integerBetweenLimits = (
+    maximum: number,
+    minimum: number = 0,
+) => {
+    return Math.floor(
+        Math.random() * (maximum - minimum + 1)
+    ) + minimum;
+}

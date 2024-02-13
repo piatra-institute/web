@@ -87,7 +87,7 @@ export default function Settings({
     if (!showSettings) {
         return (
             <div
-                className="fixed z-30 top-1/2 left-4 transform -translate-y-1/2"
+                className="fixed z-30 top-1/2 left-4 transform -translate-y-1/2 flex"
             >
                 <button
                     onClick={() => {
@@ -103,8 +103,11 @@ export default function Settings({
 
     return (
         <div
-            className="fixed z-30 top-0 right-0 md:right-auto left-0 bottom-0 w-full md:w-[550px] flex flex-col items-center justify-center background-blur-md bg-white/20 overflow-scroll"
+            className="fixed z-30 top-0 right-0 md:right-auto left-0 bottom-0 w-full md:w-[550px] background-blur-md bg-white/20 p-4 overflow-scroll"
         >
+            <div
+                className="flex flex-col items-center justify-center"
+            >
             <button
                 className={`absolute z-40 top-3 left-2 p-2 text-white cursor-pointer font-bold text-xl text-center ${focusStyle}`}
                 onClick={() => {
@@ -133,15 +136,21 @@ export default function Settings({
                 maximum value: 100
             </div>
 
+
             <textarea
                 placeholder="cells respecting the interface"
                 value={JSON.stringify(distribution, null, 4)}
-                className={`text-white w-[calc(100%-3rem)] h-60 m-4 p-4 background-blur-md bg-stone-500/20 ${focusStyle}`}
+                className={`text-white w-[calc(100%-1rem)] h-60 m-4 p-4 background-blur-md bg-stone-500/20 ${focusStyle}`}
                 spellCheck="false"
                 onChange={(e) => {
 
                 }}
             />
+
+            <div>
+                edit
+            </div>
+
 
             <div>
                 algotype: bubble | insertion | selection
@@ -151,36 +160,100 @@ export default function Settings({
                 swap?: frozen | passive | proactive
             </div>
 
+
             <div>
-                mutationable?: number
+                allow mutationable
             </div>
 
             <div>
-                mutationStrategy?: random | increment | decrement | environmental
+                mutationable minimum
             </div>
 
             <div>
-                damageable?: number
+                mutationable maximum
             </div>
 
             <div>
-                convertible?: number
+                mutationable strategy: random | increment | decrement | environmental
+            </div>
+
+
+            <div>
+                allow damageable
             </div>
 
             <div>
-                divisible?: number
+                damageable minimum
             </div>
 
             <div>
-                apoptosable?: number
+                damageable maximum
+            </div>
+
+
+            <div>
+                allow convertible
             </div>
 
             <div>
-                speed?: number
+                convertible minimum
             </div>
 
             <div>
-                responsiveness?: number
+                convertible maximum
+            </div>
+
+
+            <div>
+                allow divisible
+            </div>
+
+            <div>
+                divisible minimum
+            </div>
+
+            <div>
+                divisible maximum
+            </div>
+
+
+            <div>
+                allow apoptosable
+            </div>
+
+            <div>
+                apoptosable minimum
+            </div>
+
+            <div>
+                apoptosable maximum
+            </div>
+
+
+            <div>
+                allow speed
+            </div>
+
+            <div>
+                speed minimum
+            </div>
+
+            <div>
+                speed maximum
+            </div>
+
+
+            <div>
+                allow responsiveness
+            </div>
+
+            <div>
+                responsiveness minimum
+            </div>
+
+            <div>
+                responsiveness maximum
+            </div>
             </div>
         </div>
     );
