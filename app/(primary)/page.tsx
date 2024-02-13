@@ -1,3 +1,5 @@
+import React from 'react';
+
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -72,9 +74,10 @@ export default function Home() {
                     className="flex flex-col md:flex-row justify-center space-x-1 md:space-x-3"
                 >
                     {links.map(({ href, label }, index) => (
-                        <>
+                        <React.Fragment
+                            key={Math.random().toString()}
+                        >
                             <Link
-                                key={`${href}${label}`}
                                 href={href}
                                 className={linkButtonStyle}
                             >
@@ -88,7 +91,7 @@ export default function Home() {
                                     ·
                                 </div>
                             )}
-                        </>
+                        </React.Fragment>
                     ))}
                 </div>
             </div>

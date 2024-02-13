@@ -112,7 +112,7 @@ export default async function Provocation({
                         {prerequisites.map(prerequisite => {
                             return (
                                 <div
-                                    key={prerequisite}
+                                    key={Math.random().toString()}
                                     className="text-sm text-center mb-4 leading-relaxed"
                                     dangerouslySetInnerHTML={{ __html: prerequisite }}
                                 />
