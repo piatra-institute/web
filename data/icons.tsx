@@ -24,8 +24,8 @@ export const closeIcon = (
 export const settingsIcon = (
     <svg
         fill="#ffffff"
-        height="16px"
-        width="16px"
+        height="18px"
+        width="18px"
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"

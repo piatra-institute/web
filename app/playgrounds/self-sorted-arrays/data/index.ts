@@ -23,28 +23,28 @@ export interface Cell {
      */
     mutationStrategy?: 'random' | 'increment' | 'decrement' | 'environmental';
     /**
-     * How many times the cell can be swapped before it becomes passive/frozen
+     * How many times the cell can swap before it becomes passive/frozen.
      */
     damageable?: number;
     /**
      * If after X swaps the cell is still surrounded by the same different algotype
-     * it will convert to that algotype
+     * it will convert to that algotype.
      */
     convertible?: number;
     /**
-     * After X swaps the cell will split into two cells of the same algotype
+     * After X swaps the cell will split into two cells of the same algotype.
      */
     divisible?: number;
     /**
-     * After X swaps the cell will die
+     * After X swaps the cell will die.
      */
     apoptosable?: number;
     /**
-     * How fast the cell will initiate swapping (in milliseconds)
+     * How fast the cell will initiate swapping (in milliseconds).
      */
     speed?: number;
     /**
-     * How fast the cell will respond to swapping (in milliseconds)
+     * How fast the cell will respond to swapping (in milliseconds).
      */
     responsiveness?: number;
 }

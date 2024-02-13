@@ -57,6 +57,14 @@ export default function SelfSortedArraysPlayground() {
 
     const [tissue, setTissue] = useState<Tissue>(new Tissue());
     const [swaps, setSwaps] = useState<Record<string, string[]>>({});
+
+    const [allowMutationable, setAllowMutationable] = useState(false);
+    const [allowDamageable, setAllowDamageable] = useState(false);
+    const [allowConvertible, setAllowConvertible] = useState(false);
+    const [allowDivisible, setAllowDivisible] = useState(false);
+    const [allowApoptosable, setAllowApoptosable] = useState(false);
+    const [allowSpeed, setAllowSpeed] = useState(false);
+    const [allowResponsiveness, setAllowResponsiveness] = useState(false);
     // #endregion state
 
 
@@ -287,6 +295,21 @@ export default function SelfSortedArraysPlayground() {
                 setProactiveLevel={setProactiveLevel}
                 availableAlgotypes={availableAlgotypes}
                 setAvailableAlgotypes={setAvailableAlgotypes}
+
+                allowMutationable={allowMutationable}
+                setAllowMutationable={setAllowMutationable}
+                allowDamageable={allowDamageable}
+                setAllowDamageable={setAllowDamageable}
+                allowConvertible={allowConvertible}
+                setAllowConvertible={setAllowConvertible}
+                allowDivisible={allowDivisible}
+                setAllowDivisible={setAllowDivisible}
+                allowApoptosable={allowApoptosable}
+                setAllowApoptosable={setAllowApoptosable}
+                allowSpeed={allowSpeed}
+                setAllowSpeed={setAllowSpeed}
+                allowResponsiveness={allowResponsiveness}
+                setAllowResponsiveness={setAllowResponsiveness}
             />
 
             <div className="z-10 relative flex flex-col items-center justify-center min-h-screen py-2">
