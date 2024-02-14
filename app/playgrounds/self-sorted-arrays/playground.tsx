@@ -59,12 +59,35 @@ export default function SelfSortedArraysPlayground() {
     const [swaps, setSwaps] = useState<Record<string, string[]>>({});
 
     const [allowMutationable, setAllowMutationable] = useState(false);
+    const [mutationableMinimum, setMutationableMinimum] = useState(0);
+    const [mutationableMaximum, setMutationableMaximum] = useState(10);
+    const [mutationableStrategy, setMutationableStrategy] = useState<'random' | 'increment' | 'decrement' | 'environmental'>('random');
+
     const [allowDamageable, setAllowDamageable] = useState(false);
+    const [damageableMinimum, setDamageableMinimum] = useState(0);
+    const [damageableMaximum, setDamageableMaximum] = useState(10);
+    const [damageablePassiveThreshold, setDamageablePassiveThreshold] = useState(7);
+    const [damageableFrozenThreshold, setDamageableFrozenThreshold] = useState(3);
+
     const [allowConvertible, setAllowConvertible] = useState(false);
+    const [convertibleMinimum, setConvertibleMinimum] = useState(0);
+    const [convertibleMaximum, setConvertibleMaximum] = useState(10);
+
     const [allowDivisible, setAllowDivisible] = useState(false);
+    const [divisibleMinimum, setDivisibleMinimum] = useState(0);
+    const [divisibleMaximum, setDivisibleMaximum] = useState(10);
+
     const [allowApoptosable, setAllowApoptosable] = useState(false);
+    const [apoptosableMinimum, setApoptosableMinimum] = useState(0);
+    const [apoptosableMaximum, setApoptosableMaximum] = useState(10);
+
     const [allowSpeed, setAllowSpeed] = useState(false);
+    const [speedMinimum, setSpeedMinimum] = useState(0);
+    const [speedMaximum, setSpeedMaximum] = useState(1000);
+
     const [allowResponsiveness, setAllowResponsiveness] = useState(false);
+    const [responsivenessMinimum, setResponsivenessMinimum] = useState(0);
+    const [responsivenessMaximum, setResponsivenessMaximum] = useState(1000);
     // #endregion state
 
 
@@ -306,18 +329,58 @@ export default function SelfSortedArraysPlayground() {
 
                 allowMutationable={allowMutationable}
                 setAllowMutationable={setAllowMutationable}
+                mutationableMinimum={mutationableMinimum}
+                setMutationableMinimum={setMutationableMinimum}
+                mutationableMaximum={mutationableMaximum}
+                setMutationableMaximum={setMutationableMaximum}
+                mutationableStrategy={mutationableStrategy}
+                setMutationableStrategy={setMutationableStrategy}
+
                 allowDamageable={allowDamageable}
                 setAllowDamageable={setAllowDamageable}
+                damageableMinimum={damageableMinimum}
+                setDamageableMinimum={setDamageableMinimum}
+                damageableMaximum={damageableMaximum}
+                setDamageableMaximum={setDamageableMaximum}
+                damageablePassiveThreshold={damageablePassiveThreshold}
+                setDamageablePassiveThreshold={setDamageablePassiveThreshold}
+                damageableFrozenThreshold={damageableFrozenThreshold}
+                setDamageableFrozenThreshold={setDamageableFrozenThreshold}
+
                 allowConvertible={allowConvertible}
                 setAllowConvertible={setAllowConvertible}
+                convertibleMinimum={convertibleMinimum}
+                setConvertibleMinimum={setConvertibleMinimum}
+                convertibleMaximum={convertibleMaximum}
+                setConvertibleMaximum={setConvertibleMaximum}
+
                 allowDivisible={allowDivisible}
                 setAllowDivisible={setAllowDivisible}
+                divisibleMinimum={divisibleMinimum}
+                setDivisibleMinimum={setDivisibleMinimum}
+                divisibleMaximum={divisibleMaximum}
+                setDivisibleMaximum={setDivisibleMaximum}
+
                 allowApoptosable={allowApoptosable}
                 setAllowApoptosable={setAllowApoptosable}
+                apoptosableMinimum={apoptosableMinimum}
+                setApoptosableMinimum={setApoptosableMinimum}
+                apoptosableMaximum={apoptosableMaximum}
+                setApoptosableMaximum={setApoptosableMaximum}
+
                 allowSpeed={allowSpeed}
                 setAllowSpeed={setAllowSpeed}
+                speedMinimum={speedMinimum}
+                setSpeedMinimum={setSpeedMinimum}
+                speedMaximum={speedMaximum}
+                setSpeedMaximum={setSpeedMaximum}
+
                 allowResponsiveness={allowResponsiveness}
                 setAllowResponsiveness={setAllowResponsiveness}
+                responsivenessMinimum={responsivenessMinimum}
+                setResponsivenessMinimum={setResponsivenessMinimum}
+                responsivenessMaximum={responsivenessMaximum}
+                setResponsivenessMaximum={setResponsivenessMaximum}
             />
 
             <div className="z-10 relative flex flex-col items-center justify-center min-h-screen py-2">

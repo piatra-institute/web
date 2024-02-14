@@ -45,18 +45,58 @@ export default function Settings({
 
     allowMutationable,
     setAllowMutationable,
+    mutationableMinimum,
+    setMutationableMinimum,
+    mutationableMaximum,
+    setMutationableMaximum,
+    mutationableStrategy,
+    setMutationableStrategy,
+
     allowDamageable,
     setAllowDamageable,
+    damageableMinimum,
+    setDamageableMinimum,
+    damageableMaximum,
+    setDamageableMaximum,
+    damageablePassiveThreshold,
+    setDamageablePassiveThreshold,
+    damageableFrozenThreshold,
+    setDamageableFrozenThreshold,
+
     allowConvertible,
     setAllowConvertible,
+    convertibleMinimum,
+    setConvertibleMinimum,
+    convertibleMaximum,
+    setConvertibleMaximum,
+
     allowDivisible,
     setAllowDivisible,
+    divisibleMinimum,
+    setDivisibleMinimum,
+    divisibleMaximum,
+    setDivisibleMaximum,
+
     allowApoptosable,
     setAllowApoptosable,
+    apoptosableMinimum,
+    setApoptosableMinimum,
+    apoptosableMaximum,
+    setApoptosableMaximum,
+
     allowSpeed,
     setAllowSpeed,
+    speedMinimum,
+    setSpeedMinimum,
+    speedMaximum,
+    setSpeedMaximum,
+
     allowResponsiveness,
     setAllowResponsiveness,
+    responsivenessMinimum,
+    setResponsivenessMinimum,
+    responsivenessMaximum,
+    setResponsivenessMaximum,
 } : {
     distribution: Cell[];
 
@@ -75,18 +115,58 @@ export default function Settings({
 
     allowMutationable: boolean
     setAllowMutationable: React.Dispatch<React.SetStateAction<boolean>>;
+    mutationableMinimum: number;
+    setMutationableMinimum: React.Dispatch<React.SetStateAction<number>>;
+    mutationableMaximum: number;
+    setMutationableMaximum: React.Dispatch<React.SetStateAction<number>>;
+    mutationableStrategy: 'random' | 'increment' | 'decrement' | 'environmental';
+    setMutationableStrategy: React.Dispatch<React.SetStateAction<'random' | 'increment' | 'decrement' | 'environmental'>>;
+
     allowDamageable: boolean;
     setAllowDamageable: React.Dispatch<React.SetStateAction<boolean>>;
+    damageableMinimum: number;
+    setDamageableMinimum: React.Dispatch<React.SetStateAction<number>>;
+    damageableMaximum: number;
+    setDamageableMaximum: React.Dispatch<React.SetStateAction<number>>;
+    damageablePassiveThreshold: number;
+    setDamageablePassiveThreshold: React.Dispatch<React.SetStateAction<number>>;
+    damageableFrozenThreshold: number;
+    setDamageableFrozenThreshold: React.Dispatch<React.SetStateAction<number>>;
+
     allowConvertible: boolean;
     setAllowConvertible: React.Dispatch<React.SetStateAction<boolean>>;
+    convertibleMinimum: number;
+    setConvertibleMinimum: React.Dispatch<React.SetStateAction<number>>;
+    convertibleMaximum: number;
+    setConvertibleMaximum: React.Dispatch<React.SetStateAction<number>>;
+
     allowDivisible: boolean;
     setAllowDivisible: React.Dispatch<React.SetStateAction<boolean>>;
+    divisibleMinimum: number;
+    setDivisibleMinimum: React.Dispatch<React.SetStateAction<number>>;
+    divisibleMaximum: number;
+    setDivisibleMaximum: React.Dispatch<React.SetStateAction<number>>;
+
     allowApoptosable: boolean;
     setAllowApoptosable: React.Dispatch<React.SetStateAction<boolean>>;
+    apoptosableMinimum: number;
+    setApoptosableMinimum: React.Dispatch<React.SetStateAction<number>>;
+    apoptosableMaximum: number;
+    setApoptosableMaximum: React.Dispatch<React.SetStateAction<number>>;
+
     allowSpeed: boolean;
     setAllowSpeed: React.Dispatch<React.SetStateAction<boolean>>;
+    speedMinimum: number;
+    setSpeedMinimum: React.Dispatch<React.SetStateAction<number>>;
+    speedMaximum: number;
+    setSpeedMaximum: React.Dispatch<React.SetStateAction<number>>;
+
     allowResponsiveness: boolean;
     setAllowResponsiveness: React.Dispatch<React.SetStateAction<boolean>>;
+    responsivenessMinimum: number;
+    setResponsivenessMinimum: React.Dispatch<React.SetStateAction<number>>;
+    responsivenessMaximum: number;
+    setResponsivenessMaximum: React.Dispatch<React.SetStateAction<number>>;
 }) {
     const [
         showSettings,
@@ -226,24 +306,28 @@ export default function Settings({
                             className="mb-8"
                         >
                             <Input
-                                value={0}
-                                onChange={(e) => {}}
+                                value={mutationableMinimum}
+                                onChange={(e) => {
+                                    setMutationableMinimum(parseInt(e));
+                                }}
                                 label="mutationable minimum"
                                 compact={true}
                                 type="number"
                             />
 
                             <Input
-                                value={0}
-                                onChange={(e) => {}}
+                                value={mutationableMaximum}
+                                onChange={(e) => {
+                                    setMutationableMaximum(parseInt(e));
+                                }}
                                 label="mutationable maximum"
                                 compact={true}
                                 type="number"
                             />
 
-                            <div>
+                            {/* <div>
                                 mutationable strategy: random | increment | decrement | environmental
-                            </div>
+                            </div> */}
                         </div>
                     )}
 
@@ -260,32 +344,40 @@ export default function Settings({
                             className="mb-8"
                         >
                             <Input
-                                value={0}
-                                onChange={(e) => {}}
+                                value={damageableMinimum}
+                                onChange={(e) => {
+                                    setDamageableMinimum(parseInt(e));
+                                }}
                                 label="damageable minimum"
                                 compact={true}
                                 type="number"
                             />
 
                             <Input
-                                value={0}
-                                onChange={(e) => {}}
+                                value={damageableMaximum}
+                                onChange={(e) => {
+                                    setDamageableMaximum(parseInt(e));
+                                }}
                                 label="damageable maximum"
                                 compact={true}
                                 type="number"
                             />
 
                             <Input
-                                value={0}
-                                onChange={(e) => {}}
+                                value={damageablePassiveThreshold}
+                                onChange={(e) => {
+                                    setDamageablePassiveThreshold(parseInt(e));
+                                }}
                                 label="damageable passive threshold"
                                 compact={true}
                                 type="number"
                             />
 
                             <Input
-                                value={0}
-                                onChange={(e) => {}}
+                                value={damageableFrozenThreshold}
+                                onChange={(e) => {
+                                    setDamageableFrozenThreshold(parseInt(e));
+                                }}
                                 label="damageable frozen threshold"
                                 compact={true}
                                 type="number"
@@ -307,16 +399,20 @@ export default function Settings({
                             className="mb-8"
                         >
                             <Input
-                                value={0}
-                                onChange={(e) => {}}
+                                value={convertibleMinimum}
+                                onChange={(e) => {
+                                    setConvertibleMinimum(parseInt(e));
+                                }}
                                 label="convertible minimum"
                                 compact={true}
                                 type="number"
                             />
 
                             <Input
-                                value={0}
-                                onChange={(e) => {}}
+                                value={convertibleMaximum}
+                                onChange={(e) => {
+                                    setConvertibleMaximum(parseInt(e));
+                                }}
                                 label="convertible maximum"
                                 compact={true}
                                 type="number"
@@ -338,16 +434,20 @@ export default function Settings({
                             className="mb-8"
                         >
                             <Input
-                                value={0}
-                                onChange={(e) => {}}
+                                value={divisibleMinimum}
+                                onChange={(e) => {
+                                    setDivisibleMinimum(parseInt(e));
+                                }}
                                 label="divisible minimum"
                                 compact={true}
                                 type="number"
                             />
 
                             <Input
-                                value={0}
-                                onChange={(e) => {}}
+                                value={divisibleMaximum}
+                                onChange={(e) => {
+                                    setDivisibleMaximum(parseInt(e));
+                                }}
                                 label="divisible maximum"
                                 compact={true}
                                 type="number"
@@ -369,16 +469,20 @@ export default function Settings({
                             className="mb-8"
                         >
                             <Input
-                                value={0}
-                                onChange={(e) => {}}
+                                value={apoptosableMinimum}
+                                onChange={(e) => {
+                                    setApoptosableMinimum(parseInt(e));
+                                }}
                                 label="apoptosable minimum"
                                 compact={true}
                                 type="number"
                             />
 
                             <Input
-                                value={0}
-                                onChange={(e) => {}}
+                                value={apoptosableMaximum}
+                                onChange={(e) => {
+                                    setApoptosableMaximum(parseInt(e));
+                                }}
                                 label="apoptosable maximum"
                                 compact={true}
                                 type="number"
@@ -400,16 +504,20 @@ export default function Settings({
                             className="mb-8"
                         >
                             <Input
-                                value={0}
-                                onChange={(e) => {}}
+                                value={speedMinimum}
+                                onChange={(e) => {
+                                    setSpeedMinimum(parseInt(e));
+                                }}
                                 label="speed minimum"
                                 compact={true}
                                 type="number"
                             />
 
                             <Input
-                                value={0}
-                                onChange={(e) => {}}
+                                value={speedMaximum}
+                                onChange={(e) => {
+                                    setSpeedMaximum(parseInt(e));
+                                }}
                                 label="speed maximum"
                                 compact={true}
                                 type="number"
@@ -431,16 +539,20 @@ export default function Settings({
                             className="mb-8"
                         >
                             <Input
-                                value={0}
-                                onChange={(e) => {}}
+                                value={responsivenessMinimum}
+                                onChange={(e) => {
+                                    setResponsivenessMinimum(parseInt(e));
+                                }}
                                 label="responsiveness minimum"
                                 compact={true}
                                 type="number"
                             />
 
                             <Input
-                                value={1000}
-                                onChange={(e) => {}}
+                                value={responsivenessMaximum}
+                                onChange={(e) => {
+                                    setResponsivenessMaximum(parseInt(e));
+                                }}
                                 label="responsiveness maximum"
                                 compact={true}
                                 type="number"
