@@ -19,6 +19,7 @@ import {
 
 import Toggle from '@/components/Toggle';
 import Input from '@/components/Input';
+import Dropdown from '@/components/Dropdown';
 
 import {
     Cell,
@@ -381,11 +382,22 @@ export default function Settings({
                     </div>
 
 
-                    {/*
-                    <div>
-                        color type: {colorType}
+                    <div
+                        className="mb-8"
+                    >
+                        <Dropdown
+                            name="colors"
+                            selected={colorType}
+                            selectables={[
+                                'random',
+                                'blue',
+                                'lime',
+                            ]}
+                            atSelect={(colorType) => {
+                                setColorType(colorType as any);
+                            }}
+                        />
                     </div>
-                    */}
 
 
                     <Toggle

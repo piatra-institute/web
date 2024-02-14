@@ -24,3 +24,12 @@ export const integerBetweenLimits = (
         Math.random() * (maximum - minimum + 1)
     ) + minimum;
 }
+
+
+export const styleTrim = (
+    style: string,
+) => {
+    return style
+        .replace(/\s+|\n/g, ' ')
+        .trim();
+}
