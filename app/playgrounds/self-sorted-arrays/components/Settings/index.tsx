@@ -263,34 +263,97 @@ export default function Settings({
                         className="mb-8"
                     >
                         <Input
-                            value={0}
-                            onChange={(e) => {}}
+                            value={minimumValue}
+                            onChange={(e) => {
+                                setMinimumValue(parseInt(e));
+                            }}
                             label="minimum value"
                             compact={true}
                             type="number"
+                            min={-1000}
                         />
 
                         <Input
-                            value={0}
-                            onChange={(e) => {}}
+                            value={maximumValue}
+                            onChange={(e) => {
+                                setMaximumValue(parseInt(e));
+                            }}
                             label="maximum value"
                             compact={true}
                             type="number"
                         />
                     </div>
 
-                    {/* <div>
+
+                    <div
+                        className="mb-8"
+                    >
+                        <Input
+                            value={0}
+                            onChange={(e) => {
+                            }}
+                            label="proactive %"
+                            compact={true}
+                            type="number"
+                        />
+
+                        <Input
+                            value={0}
+                            onChange={(e) => {
+                            }}
+                            label="passive %"
+                            compact={true}
+                            type="number"
+                        />
+
+                        <Input
+                            value={0}
+                            onChange={(e) => {
+                            }}
+                            label="frozen %"
+                            compact={true}
+                            type="number"
+                        />
+                    </div>
+
+
+                    <div
+                        className="mb-8"
+                    >
+                        <Input
+                            value={0}
+                            onChange={(e) => {
+                            }}
+                            label="bubble sort %"
+                            compact={true}
+                            type="number"
+                        />
+
+                        <Input
+                            value={0}
+                            onChange={(e) => {
+                            }}
+                            label="insertion sort %"
+                            compact={true}
+                            type="number"
+                        />
+
+                        <Input
+                            value={0}
+                            onChange={(e) => {
+                            }}
+                            label="selection sort %"
+                            compact={true}
+                            type="number"
+                        />
+                    </div>
+
+
+                    {/*
+                    <div>
                         color type: {colorType}
                     </div>
-
-
-                    <div>
-                        algotype: bubble | insertion | selection
-                    </div>
-
-                    <div>
-                        swap?: frozen | passive | proactive
-                    </div> */}
+                    */}
 
 
                     <Toggle
