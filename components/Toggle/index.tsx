@@ -14,7 +14,7 @@ const Toggle = ({
     tooltip?: React.ReactNode;
 }) => {
     return (
-        <div className="flex gap-6 justify-between my-2">
+        <div className="flex gap-6 justify-between my-4">
             <div
                 className="flex items-center gap-2"
             >

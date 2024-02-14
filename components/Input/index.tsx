@@ -9,30 +9,30 @@ export interface InputProps {
     onChange: (value: string) => void;
     placeholder?: string;
     label?: string;
+    compact?: boolean;
     type?: 'text' | 'number';
     min?: number;
     max?: number;
 }
 
-const DarkInput: React.FC<InputProps> = ({
-    label,
-    placeholder,
+const Input: React.FC<InputProps> = ({
     value,
     onChange,
+    placeholder,
+    label,
+    compact,
     ...rest
 }) => {
-    const [focused, setFocused] = useState<boolean>(false);
-
     const handleInputChange = (e: any) => {
         onChange(e.target.value);
     };
 
     return (
         <div
-            className="m-10 select-none"
+            className={compact ? 'flex gap-2 justify-between items-center mb-4' : 'm-10 select-none'}
         >
             {label && (
-                <label className="block text-gray-300 text-sm font-medium mb-1">{label}</label>
+                <label className="block mb-1">{label}</label>
             )}
 
             <input
@@ -40,17 +40,16 @@ const DarkInput: React.FC<InputProps> = ({
                     bg-lime-50 text-black placeholder-lime-500
                     focus:outline-none focus:ring-2 focus:ring-lime-800
                     border border-lime-800 rounded-none
-                    px-4 py-2 w-80 text-center
+                    px-4 py-2 text-center
+                    ${compact ? 'w-24' : 'w-80'}
                 `}
                 placeholder={placeholder}
                 value={value}
                 onChange={handleInputChange}
-                onFocus={() => setFocused(true)}
-                onBlur={() => setFocused(false)}
                 {...rest}
             />
         </div>
     );
 };
 
-export default DarkInput;
+export default Input;

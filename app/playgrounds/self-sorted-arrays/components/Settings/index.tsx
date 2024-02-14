@@ -127,6 +127,7 @@ export default function Settings({
                         setShowSettings(true);
                         defocus();
                     }}
+                    className={`${focusStyle} p-2`}
                 >
                     {settingsIcon}
                 </button>
@@ -142,7 +143,7 @@ export default function Settings({
                 className="flex flex-col items-center justify-center"
             >
                 <button
-                    className={`absolute z-40 top-3 left-2 p-2 text-white cursor-pointer font-bold text-xl text-center ${focusStyle}`}
+                    className={`fixed z-40 top-3 left-2 p-2 text-white cursor-pointer font-bold text-xl text-center ${focusStyle}`}
                     onClick={() => {
                         close();
                     }}
@@ -176,20 +177,30 @@ export default function Settings({
 
 
                 <div
-                    className="text-left w-80 p-4"
+                    className="text-left w-96 p-4"
                 >
-                    <div>
-                        minimum value: 0
-                    </div>
-                    <div>
-                        maximum value: 100
+                    <div
+                        className="mb-8"
+                    >
+                        <Input
+                            value={0}
+                            onChange={(e) => {}}
+                            label="minimum value"
+                            compact={true}
+                            type="number"
+                        />
+
+                        <Input
+                            value={0}
+                            onChange={(e) => {}}
+                            label="maximum value"
+                            compact={true}
+                            type="number"
+                        />
                     </div>
 
-
-                    <div>
-                        <div>
-                            color type: {colorType}
-                        </div>
+                    {/* <div>
+                        color type: {colorType}
                     </div>
 
 
@@ -199,7 +210,7 @@ export default function Settings({
 
                     <div>
                         swap?: frozen | passive | proactive
-                    </div>
+                    </div> */}
 
 
                     <Toggle
@@ -211,27 +222,30 @@ export default function Settings({
                         tooltip="after X swaps the cell will mutate into a different value"
                     />
                     {allowMutationable && (
-                        <>
-                            {/* <Input
+                        <div
+                            className="mb-8"
+                        >
+                            <Input
                                 value={0}
                                 onChange={(e) => {}}
+                                label="mutationable minimum"
+                                compact={true}
                                 type="number"
-                            /> */}
+                            />
 
-                            <div>
-                                mutationable minimum
-                            </div>
-
-                            <div>
-                                mutationable maximum
-                            </div>
+                            <Input
+                                value={0}
+                                onChange={(e) => {}}
+                                label="mutationable maximum"
+                                compact={true}
+                                type="number"
+                            />
 
                             <div>
                                 mutationable strategy: random | increment | decrement | environmental
                             </div>
-                        </>
+                        </div>
                     )}
-
 
                     <Toggle
                         text="allow damageable"
@@ -242,23 +256,41 @@ export default function Settings({
                         tooltip="how many times the cell can swap before it becomes passive/frozen"
                     />
                     {allowDamageable && (
-                        <>
-                            <div>
-                                damageable minimum
-                            </div>
+                        <div
+                            className="mb-8"
+                        >
+                            <Input
+                                value={0}
+                                onChange={(e) => {}}
+                                label="damageable minimum"
+                                compact={true}
+                                type="number"
+                            />
 
-                            <div>
-                                damageable maximum
-                            </div>
+                            <Input
+                                value={0}
+                                onChange={(e) => {}}
+                                label="damageable maximum"
+                                compact={true}
+                                type="number"
+                            />
 
-                            <div>
-                                damageable passive threshold
-                            </div>
+                            <Input
+                                value={0}
+                                onChange={(e) => {}}
+                                label="damageable passive threshold"
+                                compact={true}
+                                type="number"
+                            />
 
-                            <div>
-                                damageable frozen threshold
-                            </div>
-                        </>
+                            <Input
+                                value={0}
+                                onChange={(e) => {}}
+                                label="damageable frozen threshold"
+                                compact={true}
+                                type="number"
+                            />
+                        </div>
                     )}
 
 
@@ -271,15 +303,25 @@ export default function Settings({
                         tooltip="if after X swaps the cell is still surrounded by the same different algotype it will convert to that algotype"
                     />
                     {allowConvertible && (
-                        <>
-                            <div>
-                                convertible minimum
-                            </div>
+                        <div
+                            className="mb-8"
+                        >
+                            <Input
+                                value={0}
+                                onChange={(e) => {}}
+                                label="convertible minimum"
+                                compact={true}
+                                type="number"
+                            />
 
-                            <div>
-                                convertible maximum
-                            </div>
-                        </>
+                            <Input
+                                value={0}
+                                onChange={(e) => {}}
+                                label="convertible maximum"
+                                compact={true}
+                                type="number"
+                            />
+                        </div>
                     )}
 
 
@@ -292,15 +334,25 @@ export default function Settings({
                         tooltip="after X swaps the cell will split into two cells of the same algotype"
                     />
                     {allowDivisible && (
-                        <>
-                            <div>
-                                divisible minimum
-                            </div>
+                        <div
+                            className="mb-8"
+                        >
+                            <Input
+                                value={0}
+                                onChange={(e) => {}}
+                                label="divisible minimum"
+                                compact={true}
+                                type="number"
+                            />
 
-                            <div>
-                                divisible maximum
-                            </div>
-                        </>
+                            <Input
+                                value={0}
+                                onChange={(e) => {}}
+                                label="divisible maximum"
+                                compact={true}
+                                type="number"
+                            />
+                        </div>
                     )}
 
 
@@ -313,15 +365,25 @@ export default function Settings({
                         tooltip="after X swaps the cell will die"
                     />
                     {allowApoptosable && (
-                        <>
-                            <div>
-                                apoptosable minimum
-                            </div>
+                        <div
+                            className="mb-8"
+                        >
+                            <Input
+                                value={0}
+                                onChange={(e) => {}}
+                                label="apoptosable minimum"
+                                compact={true}
+                                type="number"
+                            />
 
-                            <div>
-                                apoptosable maximum
-                            </div>
-                        </>
+                            <Input
+                                value={0}
+                                onChange={(e) => {}}
+                                label="apoptosable maximum"
+                                compact={true}
+                                type="number"
+                            />
+                        </div>
                     )}
 
 
@@ -334,15 +396,25 @@ export default function Settings({
                         tooltip="how fast the cell will initiate swapping (in milliseconds)"
                     />
                     {allowSpeed && (
-                        <>
-                            <div>
-                                speed minimum
-                            </div>
+                        <div
+                            className="mb-8"
+                        >
+                            <Input
+                                value={0}
+                                onChange={(e) => {}}
+                                label="speed minimum"
+                                compact={true}
+                                type="number"
+                            />
 
-                            <div>
-                                speed maximum
-                            </div>
-                        </>
+                            <Input
+                                value={0}
+                                onChange={(e) => {}}
+                                label="speed maximum"
+                                compact={true}
+                                type="number"
+                            />
+                        </div>
                     )}
 
 
@@ -355,15 +427,25 @@ export default function Settings({
                         tooltip="how fast the cell will respond to swapping (in milliseconds)"
                     />
                     {allowResponsiveness && (
-                        <>
-                            <div>
-                                responsiveness minimum
-                            </div>
+                        <div
+                            className="mb-8"
+                        >
+                            <Input
+                                value={0}
+                                onChange={(e) => {}}
+                                label="responsiveness minimum"
+                                compact={true}
+                                type="number"
+                            />
 
-                            <div>
-                                responsiveness maximum
-                            </div>
-                        </>
+                            <Input
+                                value={1000}
+                                onChange={(e) => {}}
+                                label="responsiveness maximum"
+                                compact={true}
+                                type="number"
+                            />
+                        </div>
                     )}
                 </div>
             </div>
