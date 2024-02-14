@@ -38,8 +38,21 @@ export default function Settings({
     setMinimumValue,
     maximumValue,
     setMaximumValue,
-    proactiveLevel,
-    setProactiveLevel,
+
+    proactivePercent,
+    setProactivePercent,
+    passivePercent,
+    setPassivePercent,
+    frozenPercent,
+    setFrozenPercent,
+
+    bubbleSortPercent,
+    setBubbleSortPercent,
+    insertionSortPercent,
+    setInsertionSortPercent,
+    selectionSortPercent,
+    setSelectionSortPercent,
+
     availableAlgotypes,
     setAvailableAlgotypes,
 
@@ -108,8 +121,21 @@ export default function Settings({
     setMinimumValue: React.Dispatch<React.SetStateAction<number>>;
     maximumValue: number;
     setMaximumValue: React.Dispatch<React.SetStateAction<number>>;
-    proactiveLevel: number;
-    setProactiveLevel: React.Dispatch<React.SetStateAction<number>>;
+
+    proactivePercent: number;
+    setProactivePercent: React.Dispatch<React.SetStateAction<number>>;
+    passivePercent: number;
+    setPassivePercent: React.Dispatch<React.SetStateAction<number>>;
+    frozenPercent: number;
+    setFrozenPercent: React.Dispatch<React.SetStateAction<number>>;
+
+    bubbleSortPercent: number;
+    setBubbleSortPercent: React.Dispatch<React.SetStateAction<number>>;
+    insertionSortPercent: number;
+    setInsertionSortPercent: React.Dispatch<React.SetStateAction<number>>;
+    selectionSortPercent: number;
+    setSelectionSortPercent: React.Dispatch<React.SetStateAction<number>>;
+
     availableAlgotypes: Algotype[];
     setAvailableAlgotypes: React.Dispatch<React.SetStateAction<Algotype[]>>;
 
@@ -289,8 +315,9 @@ export default function Settings({
                         className="mb-8"
                     >
                         <Input
-                            value={0}
+                            value={proactivePercent * 100}
                             onChange={(e) => {
+                                setProactivePercent(parseFloat(e) / 100);
                             }}
                             label="proactive %"
                             compact={true}
@@ -298,8 +325,9 @@ export default function Settings({
                         />
 
                         <Input
-                            value={0}
+                            value={passivePercent * 100}
                             onChange={(e) => {
+                                setPassivePercent(parseFloat(e) / 100);
                             }}
                             label="passive %"
                             compact={true}
@@ -307,8 +335,9 @@ export default function Settings({
                         />
 
                         <Input
-                            value={0}
+                            value={frozenPercent * 100}
                             onChange={(e) => {
+                                setFrozenPercent(parseFloat(e) / 100);
                             }}
                             label="frozen %"
                             compact={true}
@@ -321,8 +350,9 @@ export default function Settings({
                         className="mb-8"
                     >
                         <Input
-                            value={0}
+                            value={bubbleSortPercent * 100}
                             onChange={(e) => {
+                                setBubbleSortPercent(parseFloat(e) / 100);
                             }}
                             label="bubble sort %"
                             compact={true}
@@ -330,8 +360,9 @@ export default function Settings({
                         />
 
                         <Input
-                            value={0}
+                            value={insertionSortPercent * 100}
                             onChange={(e) => {
+                                setInsertionSortPercent(parseFloat(e) / 100);
                             }}
                             label="insertion sort %"
                             compact={true}
@@ -339,8 +370,9 @@ export default function Settings({
                         />
 
                         <Input
-                            value={0}
+                            value={selectionSortPercent * 100}
                             onChange={(e) => {
+                                setSelectionSortPercent(parseFloat(e) / 100);
                             }}
                             label="selection sort %"
                             compact={true}

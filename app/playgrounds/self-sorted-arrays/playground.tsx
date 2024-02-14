@@ -41,10 +41,19 @@ import {
 
 export default function SelfSortedArraysPlayground() {
     // #region state
+    const [count, setCount] = useState(0);
+
     const [minimumValue, setMinimumValue] = useState(0);
     const [maximumValue, setMaximumValue] = useState(100);
-    const [count, setCount] = useState(0);
-    const [proactiveLevel, setProactiveLevel] = useState(0.8);
+
+    const [proactivePercent, setProactivePercent] = useState(0.8);
+    const [passivePercent, setPassivePercent] = useState(0.1);
+    const [frozenPercent, setFrozenPercent] = useState(0.1);
+
+    const [bubbleSortPercent, setBubbleSortPercent] = useState(0.8);
+    const [insertionSortPercent, setInsertionSortPercent] = useState(0.2);
+    const [selectionSortPercent, setSelectionSortPercent] = useState(0);
+
     const [availableAlgotypes, setAvailableAlgotypes] = useState([
         ...algotypes,
     ]);
@@ -113,7 +122,7 @@ export default function SelfSortedArraysPlayground() {
                 Math.floor(Math.random() * algotypes.length)
             ];
             const randomSwap = swap[
-                Math.random() < proactiveLevel ? 2 : Math.floor(Math.random() * 2)
+                Math.random() < proactivePercent ? 2 : Math.floor(Math.random() * 2)
             ];
 
             const mutationable = allowMutationable ? integerBetweenLimits(10) : undefined;
@@ -154,7 +163,7 @@ export default function SelfSortedArraysPlayground() {
         colorType,
         getRandomNumber,
         availableAlgotypes,
-        proactiveLevel,
+        proactivePercent,
         allowMutationable,
         allowDamageable,
         allowConvertible,
@@ -322,8 +331,21 @@ export default function SelfSortedArraysPlayground() {
                 setMinimumValue={setMinimumValue}
                 maximumValue={maximumValue}
                 setMaximumValue={setMaximumValue}
-                proactiveLevel={proactiveLevel}
-                setProactiveLevel={setProactiveLevel}
+
+                proactivePercent={proactivePercent}
+                setProactivePercent={setProactivePercent}
+                passivePercent={passivePercent}
+                setPassivePercent={setPassivePercent}
+                frozenPercent={frozenPercent}
+                setFrozenPercent={setFrozenPercent}
+
+                bubbleSortPercent={bubbleSortPercent}
+                setBubbleSortPercent={setBubbleSortPercent}
+                insertionSortPercent={insertionSortPercent}
+                setInsertionSortPercent={setInsertionSortPercent}
+                selectionSortPercent={selectionSortPercent}
+                setSelectionSortPercent={setSelectionSortPercent}
+
                 availableAlgotypes={availableAlgotypes}
                 setAvailableAlgotypes={setAvailableAlgotypes}
 
