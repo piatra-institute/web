@@ -59,6 +59,8 @@ export default function SelfSortedArraysPlayground() {
     ]);
 
     const [colorType, setColorType] = useState<'random' | 'blue' | 'lime'>('lime');
+    const [showBackground, setShowBackground] = useState(true);
+
     const [sorting, setSorting] = useState(false);
     const [sorted, setSorted] = useState(false);
     const [distribution, setDistribution] = useState<Cell[]>([]);
@@ -304,7 +306,7 @@ export default function SelfSortedArraysPlayground() {
         <div
             className="relative min-h-screen flex items-center justify-center bg-contain bg-no-repeat bg-center"
             style={{
-                backgroundImage: "url('/playgrounds-ssa-logo.png')",
+                backgroundImage: showBackground ? "url('/playgrounds-ssa-logo.png')" : '',
             }}
         >
             <div className="absolute inset-0 bg-black opacity-85" />
@@ -322,10 +324,12 @@ export default function SelfSortedArraysPlayground() {
 
             <Settings
                 distribution={distribution}
+                selectedCell={selectedCell}
 
                 colorType={colorType}
                 setColorType={setColorType}
-                selectedCell={selectedCell}
+                showBackground={showBackground}
+                setShowBackground={setShowBackground}
 
                 minimumValue={minimumValue}
                 setMinimumValue={setMinimumValue}

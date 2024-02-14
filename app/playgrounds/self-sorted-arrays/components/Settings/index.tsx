@@ -30,10 +30,12 @@ import {
 
 export default function Settings({
     distribution,
+    selectedCell,
 
     colorType,
     setColorType,
-    selectedCell,
+    showBackground,
+    setShowBackground,
 
     minimumValue,
     setMinimumValue,
@@ -113,10 +115,12 @@ export default function Settings({
     setResponsivenessMaximum,
 } : {
     distribution: Cell[];
+    selectedCell: string | null;
 
     colorType: 'random' | 'blue' | 'lime';
     setColorType: React.Dispatch<React.SetStateAction<'random' | 'blue' | 'lime'>>;
-    selectedCell: string | null;
+    showBackground: boolean;
+    setShowBackground: React.Dispatch<React.SetStateAction<boolean>>;
 
     minimumValue: number;
     setMinimumValue: React.Dispatch<React.SetStateAction<number>>;
@@ -397,6 +401,14 @@ export default function Settings({
                                 setColorType(colorType as any);
                             }}
                         />
+
+                        <Toggle
+                            text="background"
+                            toggle={() => {
+                                setShowBackground(!showBackground);
+                            }}
+                            value={showBackground}
+                        />
                     </div>
 
 
@@ -432,9 +444,19 @@ export default function Settings({
                                 type="number"
                             />
 
-                            {/* <div>
-                                mutationable strategy: random | increment | decrement | environmental
-                            </div> */}
+                            <Dropdown
+                                name="mutationable strategy"
+                                selected={mutationableStrategy}
+                                selectables={[
+                                    'random',
+                                    'increment',
+                                    'decrement',
+                                    'environmental',
+                                ]}
+                                atSelect={(mutationableStrategy) => {
+                                    setMutationableStrategy(mutationableStrategy as any);
+                                }}
+                            />
                         </div>
                     )}
 
