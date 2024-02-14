@@ -456,6 +456,22 @@ export default function SelfSortedArraysPlayground() {
                     />
                 )}
 
+                {count > 0 ? (
+                    <Button
+                        label={'Loop'}
+                        onClick={() => {
+                            step();
+                        }}
+                        disabled={sorting}
+                    />
+                ) : (
+                    <div
+                        style={{
+                            height: '80px',
+                        }}
+                    />
+                )}
+
                 <div
                     className="h-[100px]"
                 />
