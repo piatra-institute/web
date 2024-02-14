@@ -1,9 +1,3 @@
-import {
-    useState,
-} from 'react';
-
-
-
 export interface InputProps {
     value: string | number;
     onChange: (value: string) => void;
@@ -15,6 +9,7 @@ export interface InputProps {
     max?: number;
 }
 
+
 const Input: React.FC<InputProps> = ({
     value,
     onChange,
@@ -23,10 +18,6 @@ const Input: React.FC<InputProps> = ({
     compact,
     ...rest
 }) => {
-    const handleInputChange = (e: any) => {
-        onChange(e.target.value);
-    };
-
     return (
         <div
             className={compact ? 'flex gap-2 justify-between items-center mb-4' : 'm-10 select-none'}
@@ -45,11 +36,14 @@ const Input: React.FC<InputProps> = ({
                 `}
                 placeholder={placeholder}
                 value={value}
-                onChange={handleInputChange}
+                onChange={(e) => {
+                    onChange(e.target.value);
+                }}
                 {...rest}
             />
         </div>
     );
 };
+
 
 export default Input;
