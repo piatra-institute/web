@@ -426,10 +426,11 @@ export default function SelfSortedArraysPlayground() {
 
                         setCount(parseInt(value));
                     }}
-                    type="number"
                     placeholder="enter a number around 40"
+                    type="number"
                     min={0}
                     max={999}
+                    centered={true}
                 />
 
                 <CellsChart1D

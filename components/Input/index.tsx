@@ -4,6 +4,7 @@ export interface InputProps {
     placeholder?: string;
     label?: string;
     compact?: boolean;
+    centered?: boolean;
     type?: 'text' | 'number';
     min?: number;
     max?: number;
@@ -16,6 +17,7 @@ const Input: React.FC<InputProps> = ({
     placeholder,
     label,
     compact,
+    centered,
     ...rest
 }) => {
     return (
@@ -31,8 +33,9 @@ const Input: React.FC<InputProps> = ({
                     bg-lime-50 text-black placeholder-lime-500
                     focus:outline-none focus:ring-2 focus:ring-lime-800
                     border border-lime-800 rounded-none
-                    px-4 py-2 text-center
+                    px-4 py-2
                     ${compact ? 'w-24' : 'w-80'}
+                    ${centered ? 'text-center' : 'text-right'}
                 `}
                 placeholder={placeholder}
                 value={value}
