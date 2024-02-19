@@ -209,6 +209,16 @@ export default function Settings({
         setShowSettings(false);
     }, []);
 
+    const setPercent = (
+        e: any,
+        setter: (value: number) => void,
+    ) => {
+        const value = parseFloat(e) / 100;
+        if (value < 0 || value <= 1) {
+            setter(value);
+        }
+    }
+
 
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
@@ -322,7 +332,7 @@ export default function Settings({
                         <Input
                             value={proactivePercent * 100}
                             onChange={(e) => {
-                                setProactivePercent(parseFloat(e) / 100);
+                                setPercent(e, setProactivePercent);
                             }}
                             label="proactive %"
                             compact={true}
@@ -332,7 +342,7 @@ export default function Settings({
                         <Input
                             value={passivePercent * 100}
                             onChange={(e) => {
-                                setPassivePercent(parseFloat(e) / 100);
+                                setPercent(e, setPassivePercent);
                             }}
                             label="passive %"
                             compact={true}
@@ -342,7 +352,7 @@ export default function Settings({
                         <Input
                             value={frozenPercent * 100}
                             onChange={(e) => {
-                                setFrozenPercent(parseFloat(e) / 100);
+                                setPercent(e, setFrozenPercent);
                             }}
                             label="frozen %"
                             compact={true}
@@ -357,7 +367,7 @@ export default function Settings({
                         <Input
                             value={bubbleSortPercent * 100}
                             onChange={(e) => {
-                                setBubbleSortPercent(parseFloat(e) / 100);
+                                setPercent(e, setBubbleSortPercent);
                             }}
                             label="bubble sort %"
                             compact={true}
@@ -367,7 +377,7 @@ export default function Settings({
                         <Input
                             value={insertionSortPercent * 100}
                             onChange={(e) => {
-                                setInsertionSortPercent(parseFloat(e) / 100);
+                                setPercent(e, setInsertionSortPercent);
                             }}
                             label="insertion sort %"
                             compact={true}
@@ -377,7 +387,7 @@ export default function Settings({
                         <Input
                             value={selectionSortPercent * 100}
                             onChange={(e) => {
-                                setSelectionSortPercent(parseFloat(e) / 100);
+                                setPercent(e, setSelectionSortPercent);
                             }}
                             label="selection sort %"
                             compact={true}

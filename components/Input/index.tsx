@@ -42,6 +42,7 @@ const Input: React.FC<InputProps> = ({
                 onChange={(e) => {
                     onChange(e.target.value);
                 }}
+                name={label || 'input'}
                 {...rest}
             />
         </div>
