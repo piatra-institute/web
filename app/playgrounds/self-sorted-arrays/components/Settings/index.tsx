@@ -20,6 +20,7 @@ import {
 import Toggle from '@/components/Toggle';
 import Input from '@/components/Input';
 import Dropdown from '@/components/Dropdown';
+import LinkButton from '@/components/LinkButton';
 
 import {
     Cell,
@@ -197,6 +198,16 @@ export default function Settings({
         setShowSettings,
     ] = useState(false);
 
+    const [
+        textareaData,
+        setTextareaData,
+    ] = useState(JSON.stringify(distribution, null, 4));
+
+    const [
+        editTextarea,
+        setEditTextarea,
+    ] = useState(false);
+
 
     const close = useCallback(() => {
         setShowSettings(false);
@@ -228,6 +239,12 @@ export default function Settings({
     }, [
         close,
         selectedCell,
+    ]);
+
+    useEffect(() => {
+        setTextareaData(JSON.stringify(distribution, null, 4));
+    }, [
+        distribution,
     ]);
 
 
@@ -277,17 +294,25 @@ export default function Settings({
                 </div>
                 <textarea
                     placeholder="cells respecting the interface"
-                    value={JSON.stringify(distribution, null, 4)}
-                    className={`text-white w-[calc(100%-1rem)] h-60 m-4 p-4 background-blur-md bg-stone-500/20 ${focusStyle}`}
+                    value={textareaData}
+                    className={`text-white w-[calc(100%-1rem)] min-h-40 h-60 m-4 p-4 background-blur-md bg-stone-500/20 ${focusStyle}`}
                     spellCheck="false"
                     onChange={(e) => {
+                        if (!editTextarea) {
+                            return;
+                        }
 
+                        setTextareaData(e.target.value);
                     }}
+                    readOnly={!editTextarea}
                 />
 
-                <div>
-                    edit
-                </div>
+                <LinkButton
+                    text={editTextarea ? 'save' : 'edit'}
+                    onClick={() => {
+                        setEditTextarea(!editTextarea);
+                    }}
+                />
 
 
                 <div

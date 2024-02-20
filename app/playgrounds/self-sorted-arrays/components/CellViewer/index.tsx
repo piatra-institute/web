@@ -14,6 +14,10 @@ import {
     Cell,
 } from '@/app/playgrounds/self-sorted-arrays/data';
 
+import {
+    checkInputEvent,
+} from '@/logic/utilities';
+
 
 
 export interface CellViewerProps {
@@ -30,8 +34,13 @@ const CellViewer: React.FC<CellViewerProps> = ({
     close,
 }) => {
     useEffect(() => {
-        const handleEscape = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
+        const handleEscape = (event: KeyboardEvent) => {
+            const isInputEvent = checkInputEvent(event);
+            if (isInputEvent) {
+                return;
+            }
+
+            if (event.key === 'Escape') {
                 close();
             }
         };

@@ -34,6 +34,10 @@ import {
     Cell as CellEntity,
 } from './logic/entities';
 
+import {
+    checkInputEvent,
+} from '@/logic/utilities';
+
 
 
 export default function SelfSortedArraysPlayground() {
@@ -253,6 +257,11 @@ export default function SelfSortedArraysPlayground() {
 
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
+            const isInputEvent = checkInputEvent(event);
+            if (isInputEvent) {
+                return;
+            }
+
             if (event.key === ' ') {
                 setSelectedCell(null);
                 return;
