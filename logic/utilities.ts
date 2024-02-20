@@ -38,13 +38,13 @@ export const styleTrim = (
 export const checkInputEvent = (
     event: any,
 ) => {
-    if (!event.target || !event.target.tagName || !Array.isArray(event.target.tagName)) {
-        return true;
-    }
-
-    if (['INPUT', 'TEXTAREA'].includes((event.target as HTMLElement).tagName)) {
+    if (!event.target || !event.target.tagName) {
         return false;
     }
 
-    return true;
+    if (['INPUT', 'TEXTAREA'].includes((event.target as HTMLElement).tagName)) {
+        return true;
+    }
+
+    return false;
 }

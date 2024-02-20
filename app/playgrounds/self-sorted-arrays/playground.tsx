@@ -236,6 +236,7 @@ export default function SelfSortedArraysPlayground() {
 
 
     // #region effects
+    /** Random count */
     useEffect(() => {
         const randomCount = 7 + Math.floor(Math.random() * 40);
         // const randomCount = 5;
@@ -246,6 +247,7 @@ export default function SelfSortedArraysPlayground() {
         computeDistribtion,
     ]);
 
+    /** Recompute distribution */
     useEffect(() => {
         setSorted(false);
         setSelectedCell(null);
@@ -255,6 +257,7 @@ export default function SelfSortedArraysPlayground() {
         computeDistribtion,
     ]);
 
+    /** Handle selected cell */
     useEffect(() => {
         const onKeyDown = (event: KeyboardEvent) => {
             const isInputEvent = checkInputEvent(event);
@@ -294,6 +297,7 @@ export default function SelfSortedArraysPlayground() {
         distribution,
     ]);
 
+    /** Handle Tissue */
     useEffect(() => {
         const tissue = new Tissue(
             (cellID, swapID)  => {
@@ -352,6 +356,8 @@ export default function SelfSortedArraysPlayground() {
 
             <Settings
                 distribution={distribution}
+                setDistribution={setDistribution}
+
                 selectedCell={selectedCell}
 
                 colorType={colorType}
@@ -434,7 +440,9 @@ export default function SelfSortedArraysPlayground() {
                 setResponsivenessMaximum={setResponsivenessMaximum}
             />
 
-            <div className="z-10 relative flex flex-col items-center justify-center min-h-screen py-2">
+            <div
+                className="z-10 relative flex flex-col items-center justify-center min-h-screen py-2"
+            >
                 <Header />
 
                 <Title

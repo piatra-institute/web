@@ -30,6 +30,8 @@ import {
 
 export default function Settings({
     distribution,
+    setDistribution,
+
     selectedCell,
 
     colorType,
@@ -112,6 +114,8 @@ export default function Settings({
     setResponsivenessMaximum,
 } : {
     distribution: Cell[];
+    setDistribution: React.Dispatch<React.SetStateAction<Cell[]>>;
+
     selectedCell: string | null;
 
     colorType: 'random' | 'blue' | 'lime';
@@ -193,6 +197,7 @@ export default function Settings({
     responsivenessMaximum: number;
     setResponsivenessMaximum: React.Dispatch<React.SetStateAction<number>>;
 }) {
+    // #region state
     const [
         showSettings,
         setShowSettings,
@@ -207,8 +212,10 @@ export default function Settings({
         editTextarea,
         setEditTextarea,
     ] = useState(false);
+    // #endregion state
 
 
+    // #region handlers
     const close = useCallback(() => {
         setShowSettings(false);
     }, []);
@@ -222,8 +229,10 @@ export default function Settings({
             setter(value);
         }
     }
+    // #endregion handlers
 
 
+    // #region effects
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && selectedCell === null) {
@@ -246,8 +255,10 @@ export default function Settings({
     }, [
         distribution,
     ]);
+    // #endregion effects
 
 
+    // #region render
     if (!showSettings) {
         return (
             <div
@@ -311,6 +322,14 @@ export default function Settings({
                     text={editTextarea ? 'save' : 'edit'}
                     onClick={() => {
                         setEditTextarea(!editTextarea);
+                        if (editTextarea) {
+                            try {
+                                const data = JSON.parse(textareaData);
+                                setDistribution(data);
+                            } catch (e) {
+                                console.error(e);
+                            }
+                        }
                     }}
                 />
 
@@ -720,4 +739,5 @@ export default function Settings({
             </div>
         </div>
     );
+    // #endregion render
 }
