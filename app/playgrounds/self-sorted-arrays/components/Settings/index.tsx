@@ -56,9 +56,6 @@ export default function Settings({
     selectionSortPercent,
     setSelectionSortPercent,
 
-    availableAlgotypes,
-    setAvailableAlgotypes,
-
     allowMutationable,
     setAllowMutationable,
     mutationableMinimum,
@@ -140,9 +137,6 @@ export default function Settings({
     setInsertionSortPercent: React.Dispatch<React.SetStateAction<number>>;
     selectionSortPercent: number;
     setSelectionSortPercent: React.Dispatch<React.SetStateAction<number>>;
-
-    availableAlgotypes: Algotype[];
-    setAvailableAlgotypes: React.Dispatch<React.SetStateAction<Algotype[]>>;
 
     allowMutationable: boolean
     setAllowMutationable: React.Dispatch<React.SetStateAction<boolean>>;

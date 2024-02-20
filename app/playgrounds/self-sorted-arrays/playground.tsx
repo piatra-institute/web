@@ -21,8 +21,6 @@ import Settings from '@/app/playgrounds/self-sorted-arrays/components/Settings';
 
 import {
     Cell,
-    algotypes,
-    swap,
 } from '@/app/playgrounds/self-sorted-arrays/data';
 
 import {
@@ -53,10 +51,6 @@ export default function SelfSortedArraysPlayground() {
     const [bubbleSortPercent, setBubbleSortPercent] = useState(0.8);
     const [insertionSortPercent, setInsertionSortPercent] = useState(0.2);
     const [selectionSortPercent, setSelectionSortPercent] = useState(0);
-
-    const [availableAlgotypes, setAvailableAlgotypes] = useState([
-        ...algotypes,
-    ]);
 
     const [colorType, setColorType] = useState<'random' | 'blue' | 'lime'>('lime');
     const [showBackground, setShowBackground] = useState(true);
@@ -118,14 +112,36 @@ export default function SelfSortedArraysPlayground() {
         if (count < 0) return;
         if (count === 0) return setDistribution([]);
 
+        const computeSwap = () => {
+            const random = Math.random();
+            if (random < proactivePercent) {
+                return 'proactive';
+            } else if (random < proactivePercent + passivePercent) {
+                return 'passive';
+            } else if (random < proactivePercent + passivePercent + frozenPercent) {
+                return 'frozen';
+            } else {
+                return 'proactive';
+            }
+        }
+
+        const computeAlgotype = () => {
+            const random = Math.random();
+            if (random < bubbleSortPercent) {
+                return 'bubble';
+            } else if (random < bubbleSortPercent + insertionSortPercent) {
+                return 'insertion';
+            } else if (random < bubbleSortPercent + insertionSortPercent + selectionSortPercent) {
+                return 'selection';
+            } else {
+                return 'bubble';
+            }
+        }
+
         const distribution: Cell[] = Array.from({ length: count }, () => {
             const value = getRandomNumber();
-            const randomAlgotype = availableAlgotypes[
-                Math.floor(Math.random() * algotypes.length)
-            ];
-            const randomSwap = swap[
-                Math.random() < proactivePercent ? 2 : Math.floor(Math.random() * 2)
-            ];
+            const randomAlgotype = computeAlgotype();
+            const randomSwap = computeSwap();
 
             const mutationable = allowMutationable ? integerBetweenLimits(10) : undefined;
             const mutationStrategy = allowMutationable ? 'random' : undefined;
@@ -145,8 +161,8 @@ export default function SelfSortedArraysPlayground() {
                     ? biasedBlueRandomColor(value)
                     : biasedLimeRandomColor(value),
                 // algotype: randomAlgotype,
-                swap: randomSwap,
                 algotype: 'bubble',
+                swap: randomSwap,
                 // swap: 'proactive',
                 mutationable,
                 mutationStrategy,
@@ -164,8 +180,12 @@ export default function SelfSortedArraysPlayground() {
     }, [
         colorType,
         getRandomNumber,
-        availableAlgotypes,
         proactivePercent,
+        passivePercent,
+        frozenPercent,
+        bubbleSortPercent,
+        insertionSortPercent,
+        selectionSortPercent,
         allowMutationable,
         allowDamageable,
         allowConvertible,
@@ -349,9 +369,6 @@ export default function SelfSortedArraysPlayground() {
                 setInsertionSortPercent={setInsertionSortPercent}
                 selectionSortPercent={selectionSortPercent}
                 setSelectionSortPercent={setSelectionSortPercent}
-
-                availableAlgotypes={availableAlgotypes}
-                setAvailableAlgotypes={setAvailableAlgotypes}
 
                 allowMutationable={allowMutationable}
                 setAllowMutationable={setAllowMutationable}
