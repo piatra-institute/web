@@ -24,7 +24,7 @@ import {
 } from '@/app/playgrounds/self-sorted-arrays/data';
 
 import {
-    biasedRandomColor,
+    randomColor,
     biasedBlueRandomColor,
     biasedLimeRandomColor,
 } from '@/app/playgrounds/self-sorted-arrays/logic';
@@ -33,7 +33,6 @@ import {
     Tissue,
     Cell as CellEntity,
 } from './logic/entities';
-
 
 
 
@@ -156,7 +155,7 @@ export default function SelfSortedArraysPlayground() {
                 id: value + '-' + Math.random().toString(36).slice(2, 7),
                 value,
                 color: colorType === 'random'
-                    ? biasedRandomColor()
+                    ? randomColor()
                     : colorType === 'blue'
                     ? biasedBlueRandomColor(value)
                     : biasedLimeRandomColor(value),

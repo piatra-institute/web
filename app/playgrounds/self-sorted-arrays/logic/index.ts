@@ -1,3 +1,7 @@
+export const randomColor = () => (
+    `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`
+)
+
 export const biasedRandomColor = () => (
     `rgb(${10 + Math.random() * 30}, ${10 + Math.random() * 50}, ${80 + Math.random() * 155})`
 )

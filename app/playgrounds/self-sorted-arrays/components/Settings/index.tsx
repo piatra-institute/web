@@ -23,7 +23,6 @@ import Dropdown from '@/components/Dropdown';
 
 import {
     Cell,
-    Algotype,
 } from '@/app/playgrounds/self-sorted-arrays/data';
 
 
