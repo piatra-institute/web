@@ -28,91 +28,25 @@ import {
 
 
 
-export default function Settings({
-    distribution,
-    setDistribution,
+const parsePercent = (
+    value: number,
+) => {
+    return parseFloat(
+        value.toFixed(2),
+    );
+}
 
-    selectedCell,
 
-    colorType,
-    setColorType,
-    showBackground,
-    setShowBackground,
+const renderPercent = (
+    value: number,
+) => {
+    return Math.ceil(
+        value * 100,
+    );
+}
 
-    minimumValue,
-    setMinimumValue,
-    maximumValue,
-    setMaximumValue,
 
-    proactivePercent,
-    setProactivePercent,
-    passivePercent,
-    setPassivePercent,
-    frozenPercent,
-    setFrozenPercent,
-
-    bubbleSortPercent,
-    setBubbleSortPercent,
-    insertionSortPercent,
-    setInsertionSortPercent,
-    selectionSortPercent,
-    setSelectionSortPercent,
-
-    allowMutationable,
-    setAllowMutationable,
-    mutationableMinimum,
-    setMutationableMinimum,
-    mutationableMaximum,
-    setMutationableMaximum,
-    mutationableStrategy,
-    setMutationableStrategy,
-
-    allowDamageable,
-    setAllowDamageable,
-    damageableMinimum,
-    setDamageableMinimum,
-    damageableMaximum,
-    setDamageableMaximum,
-    damageablePassiveThreshold,
-    setDamageablePassiveThreshold,
-    damageableFrozenThreshold,
-    setDamageableFrozenThreshold,
-
-    allowConvertible,
-    setAllowConvertible,
-    convertibleMinimum,
-    setConvertibleMinimum,
-    convertibleMaximum,
-    setConvertibleMaximum,
-
-    allowDivisible,
-    setAllowDivisible,
-    divisibleMinimum,
-    setDivisibleMinimum,
-    divisibleMaximum,
-    setDivisibleMaximum,
-
-    allowApoptosable,
-    setAllowApoptosable,
-    apoptosableMinimum,
-    setApoptosableMinimum,
-    apoptosableMaximum,
-    setApoptosableMaximum,
-
-    allowSpeed,
-    setAllowSpeed,
-    speedMinimum,
-    setSpeedMinimum,
-    speedMaximum,
-    setSpeedMaximum,
-
-    allowResponsiveness,
-    setAllowResponsiveness,
-    responsivenessMinimum,
-    setResponsivenessMinimum,
-    responsivenessMaximum,
-    setResponsivenessMaximum,
-} : {
+export interface SettingsProperties {
     distribution: Cell[];
     setDistribution: React.Dispatch<React.SetStateAction<Cell[]>>;
 
@@ -196,7 +130,99 @@ export default function Settings({
     setResponsivenessMinimum: React.Dispatch<React.SetStateAction<number>>;
     responsivenessMaximum: number;
     setResponsivenessMaximum: React.Dispatch<React.SetStateAction<number>>;
-}) {
+};
+
+
+export default function Settings(properties: SettingsProperties) {
+    // #region properties
+    const {
+        distribution,
+        setDistribution,
+
+        selectedCell,
+
+        colorType,
+        setColorType,
+        showBackground,
+        setShowBackground,
+
+        minimumValue,
+        setMinimumValue,
+        maximumValue,
+        setMaximumValue,
+
+        proactivePercent,
+        setProactivePercent,
+        passivePercent,
+        setPassivePercent,
+        frozenPercent,
+        setFrozenPercent,
+
+        bubbleSortPercent,
+        setBubbleSortPercent,
+        insertionSortPercent,
+        setInsertionSortPercent,
+        selectionSortPercent,
+        setSelectionSortPercent,
+
+        allowMutationable,
+        setAllowMutationable,
+        mutationableMinimum,
+        setMutationableMinimum,
+        mutationableMaximum,
+        setMutationableMaximum,
+        mutationableStrategy,
+        setMutationableStrategy,
+
+        allowDamageable,
+        setAllowDamageable,
+        damageableMinimum,
+        setDamageableMinimum,
+        damageableMaximum,
+        setDamageableMaximum,
+        damageablePassiveThreshold,
+        setDamageablePassiveThreshold,
+        damageableFrozenThreshold,
+        setDamageableFrozenThreshold,
+
+        allowConvertible,
+        setAllowConvertible,
+        convertibleMinimum,
+        setConvertibleMinimum,
+        convertibleMaximum,
+        setConvertibleMaximum,
+
+        allowDivisible,
+        setAllowDivisible,
+        divisibleMinimum,
+        setDivisibleMinimum,
+        divisibleMaximum,
+        setDivisibleMaximum,
+
+        allowApoptosable,
+        setAllowApoptosable,
+        apoptosableMinimum,
+        setApoptosableMinimum,
+        apoptosableMaximum,
+        setApoptosableMaximum,
+
+        allowSpeed,
+        setAllowSpeed,
+        speedMinimum,
+        setSpeedMinimum,
+        speedMaximum,
+        setSpeedMaximum,
+
+        allowResponsiveness,
+        setAllowResponsiveness,
+        responsivenessMinimum,
+        setResponsivenessMinimum,
+        responsivenessMaximum,
+        setResponsivenessMaximum,
+    } = properties;
+    // #endregion properties
+
+
     // #region state
     const [
         showSettings,
@@ -220,31 +246,14 @@ export default function Settings({
         setShowSettings(false);
     }, []);
 
-
-    const parsePercent = (
-        value: number,
-    ) => {
-        return parseFloat(
-            value.toFixed(2),
-        );
-    }
-
-    const renderPercent = (
-        value: number,
-    ) => {
-        return Math.ceil(
-            value * 100,
-        );
-    }
-
     const setPercent = (
-        e: any,
+        data: string,
         setter: (value: number) => void,
     ) => {
         const value = parsePercent(
-            parseFloat(e) / 100,
+            parseFloat(data) / 100,
         );
-        if (value < 0 || value <= 1) {
+        if (value >= 0 && value <= 1) {
             setter(value);
             return value;
         }
@@ -363,7 +372,11 @@ export default function Settings({
                         <Input
                             value={minimumValue}
                             onChange={(e) => {
-                                setMinimumValue(parseInt(e));
+                                const value = parseInt(e);
+                                if (isNaN(value)) {
+                                    return;
+                                }
+                                setMinimumValue(value);
                             }}
                             label="minimum value"
                             compact={true}
@@ -374,7 +387,11 @@ export default function Settings({
                         <Input
                             value={maximumValue}
                             onChange={(e) => {
-                                setMaximumValue(parseInt(e));
+                                const value = parseInt(e);
+                                if (isNaN(value)) {
+                                    return;
+                                }
+                                setMaximumValue(value);
                             }}
                             label="maximum value"
                             compact={true}
