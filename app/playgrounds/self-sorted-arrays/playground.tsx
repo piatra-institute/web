@@ -320,24 +320,49 @@ export default function SelfSortedArraysPlayground() {
             }
         );
 
+        const options = {
+            damageablePassiveThreshold,
+            damageableFrozenThreshold,
+        };
+
         for (let i = 0; i < distribution.length; i++) {
+            const {
+                id,
+                value,
+                color,
+                algotype,
+                swap,
+                mutationable,
+                damageable,
+                convertible,
+                divisible,
+                apoptosable,
+                speed,
+                responsiveness,
+            } = distribution[i];
+
             tissue.addCell(new CellEntity(
-                distribution[i].id,
-                distribution[i].value,
-                distribution[i].color,
-                distribution[i].algotype,
-                distribution[i].swap,
-                distribution[i].damageable,
-                distribution[i].convertible,
-                distribution[i].divisible,
-                distribution[i].apoptosable,
-                distribution[i].speed,
-                distribution[i].responsiveness,
+                id,
+                value,
+                color,
+                algotype,
+                swap,
+                mutationable,
+                damageable,
+                convertible,
+                divisible,
+                apoptosable,
+                speed,
+                responsiveness,
+                options,
             ));
         }
         setTissue(tissue);
     }, [
         distribution,
+
+        damageablePassiveThreshold,
+        damageableFrozenThreshold,
     ]);
     // #endregion effects
 

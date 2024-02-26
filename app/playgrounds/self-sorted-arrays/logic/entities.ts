@@ -84,6 +84,11 @@ const algotypes = {
 
 type Algotype = 'bubble' | 'insertion' | 'selection';
 
+export interface CellOptions {
+    damageablePassiveThreshold: number;
+    damageableFrozenThreshold: number;
+}
+
 
 export class Cell extends EventTarget implements ICell {
     public id;
@@ -91,6 +96,7 @@ export class Cell extends EventTarget implements ICell {
     public color;
     public algotype;
     public swap;
+    public mutationable;
     public damageable;
     public convertible;
     public divisible;
@@ -99,7 +105,10 @@ export class Cell extends EventTarget implements ICell {
     public responsiveness;
     public atEquilibrium: boolean = false;
 
-    private neighbors: (Cell | undefined)[];
+    public swaps: number = 0;
+
+    private options?: CellOptions;
+    private neighbors: (Cell | undefined)[] = [];
     private neighborsEquilibrium = new Set<string>();
 
 
@@ -109,12 +118,14 @@ export class Cell extends EventTarget implements ICell {
         color: ICell['color'],
         algotype: ICell['algotype'],
         swap?: ICell['swap'],
+        mutationable?: ICell['mutationable'],
         damageable?: ICell['damageable'],
         convertible?: ICell['convertible'],
         divisible?: ICell['divisible'],
         apoptosable?: ICell['apoptosable'],
         speed?: ICell['speed'],
         responsiveness?: ICell['responsiveness'],
+        options?: CellOptions,
     ) {
         super();
 
@@ -123,6 +134,7 @@ export class Cell extends EventTarget implements ICell {
         this.color = color;
         this.algotype = algotype;
         this.swap = swap || 'proactive';
+        this.mutationable = mutationable;
         this.damageable = damageable;
         this.convertible = convertible;
         this.divisible = divisible;
@@ -130,7 +142,18 @@ export class Cell extends EventTarget implements ICell {
         this.speed = speed;
         this.responsiveness = responsiveness;
 
-        this.neighbors = [];
+        this.options = options;
+    }
+
+
+    private onSwaps() {
+        if (typeof this.damageable === 'number') {
+            if (this.options?.damageablePassiveThreshold && this.swaps >= this.options.damageablePassiveThreshold) {
+                this.swap = 'passive';
+            } else if (this.options?.damageableFrozenThreshold && this.swaps >= this.options.damageableFrozenThreshold) {
+                this.swap = 'frozen';
+            }
+        }
     }
 
 
@@ -171,11 +194,19 @@ export class Cell extends EventTarget implements ICell {
             this.neighborsEquilibrium.add(swappedCell.id);
 
             this.dispatchEvent(
-                new CustomEvent('swap', {'detail': {
-                    'cellID': this.id,
-                    'swapID': swapID,
-                }}),
+                new CustomEvent(
+                    'swap',
+                    {
+                        detail: {
+                            cellID: this.id,
+                            swapID,
+                        },
+                    },
+                ),
             );
+
+            this.swaps += 1;
+            this.onSwaps();
         }
     }
 
