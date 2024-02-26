@@ -57,13 +57,13 @@ const CellViewer: React.FC<CellViewerProps> = ({
 
     return (
         <div
-            className="fixed z-30 top-0 left-0 md:left-auto right-0 bottom-0 w-full md:w-[550px] flex flex-col items-center justify-center"
+            className="fixed z-30 top-0 left-0 md:left-auto right-0 bottom-0 w-full md:w-[550px] flex flex-col items-center justify-center  overflow-scroll"
             style={{
                 backgroundColor: data.color.replace('rgb', 'rgba').replace(')', ', 0.5)'),
             }}
         >
             <button
-                className={`absolute z-40 top-3 right-2 p-2 text-white cursor-pointer font-bold text-xl text-center ${focusStyle}`}
+                className={`fixed z-40 top-3 right-2 p-2 text-white cursor-pointer font-bold text-xl text-center ${focusStyle}`}
                 onClick={() => {
                     close();
                 }}

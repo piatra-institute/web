@@ -220,13 +220,33 @@ export default function Settings({
         setShowSettings(false);
     }, []);
 
+
+    const parsePercent = (
+        value: number,
+    ) => {
+        return parseFloat(
+            value.toFixed(2),
+        );
+    }
+
+    const renderPercent = (
+        value: number,
+    ) => {
+        return Math.ceil(
+            value * 100,
+        );
+    }
+
     const setPercent = (
         e: any,
         setter: (value: number) => void,
     ) => {
-        const value = parseFloat(e) / 100;
+        const value = parsePercent(
+            parseFloat(e) / 100,
+        );
         if (value < 0 || value <= 1) {
             setter(value);
+            return value;
         }
     }
     // #endregion handlers
@@ -367,9 +387,16 @@ export default function Settings({
                         className="mb-8"
                     >
                         <Input
-                            value={proactivePercent * 100}
+                            value={renderPercent(proactivePercent)}
                             onChange={(e) => {
-                                setPercent(e, setProactivePercent);
+                                const proactivePercent = setPercent(e, setProactivePercent);
+                                if (typeof proactivePercent === 'number') {
+                                    const distributed = parsePercent(
+                                        (1 - proactivePercent) / 2,
+                                    );
+                                    setPassivePercent(distributed);
+                                    setFrozenPercent(distributed);
+                                }
                             }}
                             label="proactive %"
                             compact={true}
@@ -377,9 +404,19 @@ export default function Settings({
                         />
 
                         <Input
-                            value={passivePercent * 100}
+                            value={renderPercent(passivePercent)}
                             onChange={(e) => {
-                                setPercent(e, setPassivePercent);
+                                const passivePercent = setPercent(e, setPassivePercent);
+                                if (typeof passivePercent === 'number') {
+                                    const frozenPercent = parsePercent(
+                                        1 - proactivePercent - passivePercent,
+                                    );
+                                    if (frozenPercent >= 0) {
+                                        setFrozenPercent(frozenPercent);
+                                    } else {
+                                        setFrozenPercent(0);
+                                    }
+                                }
                             }}
                             label="passive %"
                             compact={true}
@@ -387,7 +424,7 @@ export default function Settings({
                         />
 
                         <Input
-                            value={frozenPercent * 100}
+                            value={renderPercent(frozenPercent)}
                             onChange={(e) => {
                                 setPercent(e, setFrozenPercent);
                             }}
@@ -402,9 +439,16 @@ export default function Settings({
                         className="mb-8"
                     >
                         <Input
-                            value={bubbleSortPercent * 100}
+                            value={renderPercent(bubbleSortPercent)}
                             onChange={(e) => {
-                                setPercent(e, setBubbleSortPercent);
+                                const bubbleSortPercent = setPercent(e, setBubbleSortPercent);
+                                if (typeof bubbleSortPercent === 'number') {
+                                    const distributed = parsePercent(
+                                        (1 - bubbleSortPercent) / 2,
+                                    );
+                                    setInsertionSortPercent(distributed);
+                                    setSelectionSortPercent(distributed);
+                                }
                             }}
                             label="bubble sort %"
                             compact={true}
@@ -412,9 +456,19 @@ export default function Settings({
                         />
 
                         <Input
-                            value={insertionSortPercent * 100}
+                            value={renderPercent(insertionSortPercent)}
                             onChange={(e) => {
-                                setPercent(e, setInsertionSortPercent);
+                                const insertionSortPercent = setPercent(e, setInsertionSortPercent);
+                                if (typeof insertionSortPercent === 'number') {
+                                    const selectionSortPercent = parsePercent(
+                                        1 - bubbleSortPercent - insertionSortPercent,
+                                    );
+                                    if (selectionSortPercent >= 0) {
+                                        setSelectionSortPercent(selectionSortPercent);
+                                    } else {
+                                        setSelectionSortPercent(0);
+                                    }
+                                }
                             }}
                             label="insertion sort %"
                             compact={true}
@@ -422,7 +476,7 @@ export default function Settings({
                         />
 
                         <Input
-                            value={selectionSortPercent * 100}
+                            value={renderPercent(selectionSortPercent)}
                             onChange={(e) => {
                                 setPercent(e, setSelectionSortPercent);
                             }}

@@ -47,9 +47,9 @@ export default function SelfSortedArraysPlayground() {
     const [minimumValue, setMinimumValue] = useState(0);
     const [maximumValue, setMaximumValue] = useState(100);
 
-    const [proactivePercent, setProactivePercent] = useState(0.8);
-    const [passivePercent, setPassivePercent] = useState(0.1);
-    const [frozenPercent, setFrozenPercent] = useState(0.1);
+    const [proactivePercent, setProactivePercent] = useState(0.9);
+    const [passivePercent, setPassivePercent] = useState(0.05);
+    const [frozenPercent, setFrozenPercent] = useState(0.05);
 
     const [bubbleSortPercent, setBubbleSortPercent] = useState(0.8);
     const [insertionSortPercent, setInsertionSortPercent] = useState(0.2);
@@ -230,6 +230,15 @@ export default function SelfSortedArraysPlayground() {
 
             // setSorting(false);
             // setSorted(true);
+        }
+    }
+
+    const loop = async () => {
+        setSorting(true);
+
+        while (!tissue.atEquilibrium) {
+            await step();
+            await new Promise(resolve => setTimeout(resolve, 500));
         }
     }
     // #endregion handlers
@@ -494,7 +503,7 @@ export default function SelfSortedArraysPlayground() {
                     <Button
                         label={'Loop'}
                         onClick={() => {
-                            step();
+                            loop();
                         }}
                         disabled={sorting}
                     />
