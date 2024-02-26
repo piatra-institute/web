@@ -18,6 +18,11 @@ export const metadata: Metadata = {
 
 const platforms = [
     {
+        name: 'gptmetry . com',
+        description: 'transform technical drawings into CAD/CAM/G-code',
+        link: 'https://gptmetry.com',
+    },
+    {
         name: 'ordershop . io',
         description: 'request and manage manufacturing orders',
         link: 'https://github.com/piatra-institute/ordershop',
