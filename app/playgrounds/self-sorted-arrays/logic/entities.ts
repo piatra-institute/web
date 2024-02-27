@@ -1,5 +1,6 @@
 import {
     Cell as ICell,
+    CellMutationStrategy,
 } from '../data';
 
 
@@ -82,11 +83,30 @@ const algotypes = {
     },
 };
 
-type Algotype = 'bubble' | 'insertion' | 'selection';
-
 export interface CellOptions {
-    damageablePassiveThreshold: number;
-    damageableFrozenThreshold: number;
+    mutationableMinimum?: number;
+    mutationableMaximum?: number;
+    mutationableStrategy?: CellMutationStrategy;
+
+    damageableMinimum?: number;
+    damageableMaximum?: number;
+    damageablePassiveThreshold?: number;
+    damageableFrozenThreshold?: number;
+
+    convertibleMinimum?: number;
+    convertibleMaximum?: number;
+
+    divisibleMinimum?: number;
+    divisibleMaximum?: number;
+
+    apoptosableMinimum?: number;
+    apoptosableMaximum?: number;
+
+    speedMinimum?: number;
+    speedMaximum?: number;
+
+    responsivenessMinimum?: number;
+    responsivenessMaximum?: number;
 }
 
 

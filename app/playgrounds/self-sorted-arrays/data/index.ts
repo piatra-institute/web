@@ -1,15 +1,20 @@
+export type CellAlgotype = 'bubble' | 'insertion' | 'selection';
+export type CellSwap = 'frozen' | 'passive' | 'proactive';
+export type CellMutationStrategy = 'random' | 'increment' | 'decrement' | 'environmental';
+
+
 export interface Cell {
     id: string;
     value: number;
     color: string;
-    algotype: 'bubble' | 'insertion' | 'selection';
+    algotype: CellAlgotype;
 
     /**
      * frozen: no swapping whatsoever
      * passive: will swap with other cells at request, but will not initiate swapping
      * proactive: will swap and will initiate swapping
      */
-    swap?: 'frozen' | 'passive' | 'proactive';
+    swap?: CellSwap;
     /**
      * After X swaps the cell will mutate into a different value.
      */
@@ -21,7 +26,7 @@ export interface Cell {
      * - decrement: will mutate to a decreased value
      * - environmental: will mutate to the value of the surrounding cells
      */
-    mutationStrategy?: 'random' | 'increment' | 'decrement' | 'environmental';
+    mutationStrategy?: CellMutationStrategy;
     /**
      * How many times the cell can swap before it becomes passive/frozen.
      */

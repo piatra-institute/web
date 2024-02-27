@@ -21,6 +21,7 @@ import Settings from '@/app/playgrounds/self-sorted-arrays/components/Settings';
 
 import {
     Cell,
+    CellMutationStrategy,
 } from '@/app/playgrounds/self-sorted-arrays/data';
 
 import {
@@ -69,7 +70,7 @@ export default function SelfSortedArraysPlayground() {
     const [allowMutationable, setAllowMutationable] = useState(false);
     const [mutationableMinimum, setMutationableMinimum] = useState(0);
     const [mutationableMaximum, setMutationableMaximum] = useState(10);
-    const [mutationableStrategy, setMutationableStrategy] = useState<'random' | 'increment' | 'decrement' | 'environmental'>('random');
+    const [mutationableStrategy, setMutationableStrategy] = useState<CellMutationStrategy>('random');
 
     const [allowDamageable, setAllowDamageable] = useState(false);
     const [damageableMinimum, setDamageableMinimum] = useState(0);
@@ -321,8 +322,29 @@ export default function SelfSortedArraysPlayground() {
         );
 
         const options = {
+            mutationableMinimum,
+            mutationableMaximum,
+            mutationableStrategy,
+
+            damageableMinimum,
+            damageableMaximum,
             damageablePassiveThreshold,
             damageableFrozenThreshold,
+
+            convertibleMinimum,
+            convertibleMaximum,
+
+            divisibleMinimum,
+            divisibleMaximum,
+
+            apoptosableMinimum,
+            apoptosableMaximum,
+
+            speedMinimum,
+            speedMaximum,
+
+            responsivenessMinimum,
+            responsivenessMaximum,
         };
 
         for (let i = 0; i < distribution.length; i++) {
@@ -361,8 +383,29 @@ export default function SelfSortedArraysPlayground() {
     }, [
         distribution,
 
+        mutationableMinimum,
+        mutationableMaximum,
+        mutationableStrategy,
+
+        damageableMinimum,
+        damageableMaximum,
         damageablePassiveThreshold,
         damageableFrozenThreshold,
+
+        convertibleMinimum,
+        convertibleMaximum,
+
+        divisibleMinimum,
+        divisibleMaximum,
+
+        apoptosableMinimum,
+        apoptosableMaximum,
+
+        speedMinimum,
+        speedMaximum,
+
+        responsivenessMinimum,
+        responsivenessMaximum,
     ]);
     // #endregion effects
 
