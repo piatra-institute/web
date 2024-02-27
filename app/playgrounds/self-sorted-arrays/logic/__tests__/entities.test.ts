@@ -1,44 +1,79 @@
 import { expect, test } from 'vitest';
 
 import {
+    CellData,
+    CellOptions,
+} from '../../data';
+
+import {
     Tissue,
     Cell,
 } from '../entities';
 
 
 
-type CellsType = [
-    Cell['id'], Cell['value'], Cell['color'], Cell['algotype']
-][];
+const defaultCellOptions: CellOptions = {
+    minimumValue: 0,
+    maximumValue: 100,
+
+    mutationableMinimum: 0,
+    mutationableMaximum: 10,
+    mutationableStrategy: 'random',
+
+    damageableMinimum: 0,
+    damageableMaximum: 10,
+    damageablePassiveThreshold: 7,
+    damageableFrozenThreshold: 3,
+
+    convertibleMinimum: 0,
+    convertibleMaximum: 10,
+
+    divisibleMinimum: 0,
+    divisibleMaximum: 10,
+
+    apoptosableMinimum: 0,
+    apoptosableMaximum: 10,
+
+    speedMinimum: 0,
+    speedMaximum: 1000,
+
+    responsivenessMinimum: 0,
+    responsivenessMaximum: 1000,
+};
 
 
 test('Tissue sorts bubble', () => {
     const tissue = new Tissue();
 
-    const cells = [
-        [
-            'cell5',
-            5,
-            'red',
-            'bubble',
-        ],
-        [
-            'cell4',
-            4,
-            'blue',
-            'bubble',
-        ],
-        [
-            'cell3',
-            3,
-            'green',
-            'bubble',
-        ],
-    ] as CellsType;
+    const cells: CellData[] = [
+        {
+            id: 'cell5',
+            value: 5,
+            color: 'red',
+            algotype: 'bubble',
+        },
+        {
+            id: 'cell4',
+            value: 4,
+            color: 'blue',
+            algotype: 'bubble',
+        },
+        {
+            id: 'cell3',
+            value: 3,
+            color: 'green',
+            algotype: 'bubble',
+        },
+    ];
 
     for (const cell of cells) {
         tissue.addCell(new Cell(
-            ...cell,
+            {
+                ...cell,
+            },
+            {
+                ...defaultCellOptions,
+            },
         ));
     }
 
@@ -53,63 +88,60 @@ test('Tissue sorts bubble', () => {
 test('Tissue sorts bubble mutationable', () => {
     const tissue = new Tissue();
 
-    const cells = [
-        [
-            'cell6',
-            6,
-            'red',
-            'bubble',
-        ],
-        [
-            'cell4',
-            4,
-            'blue',
-            'bubble',
-        ],
-        [
-            'cell3',
-            3,
-            'green',
-            'bubble',
-        ],
-        [
-            'cell1',
-            1,
-            'green',
-            'bubble',
-        ],
-        [
-            'cell1b',
-            1,
-            'green',
-            'bubble',
-        ],
-        [
-            'cell1c',
-            1,
-            'green',
-            'bubble',
-        ],
-        [
-            'cell5',
-            5,
-            'green',
-            'bubble',
-        ],
-    ] as CellsType;
+    const cells: CellData[] = [
+        {
+            id: 'cell5',
+            value: 5,
+            color: 'red',
+            algotype: 'bubble',
+        },
+        {
+            id: 'cell4',
+            value: 4,
+            color: 'blue',
+            algotype: 'bubble',
+        },
+        {
+            id: 'cell3',
+            value: 3,
+            color: 'green',
+            algotype: 'bubble',
+        },
+        {
+            id: 'cell1',
+            value: 1,
+            color: 'green',
+            algotype: 'bubble',
+        },
+        {
+            id: 'cell1b',
+            value: 1,
+            color: 'green',
+            algotype: 'bubble',
+        },
+        {
+            id: 'cell1c',
+            value: 1,
+            color: 'green',
+            algotype: 'bubble',
+        },
+        {
+            id: 'cell5',
+            value: 5,
+            color: 'green',
+            algotype: 'bubble',
+        },
+    ];
 
     for (const cell of cells) {
         tissue.addCell(new Cell(
-            ...cell,
-            'proactive',
-            undefined,
-            3,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
             {
+                ...cell,
+                swap: 'proactive',
+                damageable: 3,
+            },
+            {
+                ...defaultCellOptions,
                 damageablePassiveThreshold: 2,
                 damageableFrozenThreshold: 3,
             },

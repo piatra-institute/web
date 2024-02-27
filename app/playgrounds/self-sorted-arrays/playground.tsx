@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    useRef,
     useState,
     useCallback,
     useEffect,
@@ -20,7 +21,7 @@ import CellViewer from '@/app/playgrounds/self-sorted-arrays/components/CellView
 import Settings from '@/app/playgrounds/self-sorted-arrays/components/Settings';
 
 import {
-    Cell,
+    CellData,
     CellMutationStrategy,
 } from '@/app/playgrounds/self-sorted-arrays/data';
 
@@ -42,6 +43,21 @@ import {
 
 
 export default function SelfSortedArraysPlayground() {
+    // #region references
+    const tissue = useRef(new Tissue(
+        (cellID, swapID)  => {
+            setSwaps((prev) => ({
+                ...prev,
+                [cellID]: [
+                    ...(prev[cellID] || []),
+                    swapID,
+                ],
+            }));
+        }
+    ));
+    // #endregion references
+
+
     // #region state
     const [count, setCount] = useState(0);
 
@@ -61,10 +77,9 @@ export default function SelfSortedArraysPlayground() {
 
     const [sorting, setSorting] = useState(false);
     const [sorted, setSorted] = useState(false);
-    const [distribution, setDistribution] = useState<Cell[]>([]);
+    const [distribution, setDistribution] = useState<CellData[]>([]);
     const [selectedCell, setSelectedCell] = useState<string | null>(null);
 
-    const [tissue, setTissue] = useState<Tissue>(new Tissue());
     const [swaps, setSwaps] = useState<Record<string, string[]>>({});
 
     const [allowMutationable, setAllowMutationable] = useState(false);
@@ -113,6 +128,8 @@ export default function SelfSortedArraysPlayground() {
     const computeDistribtion = useCallback((
         count: number,
     ) => {
+        tissue.current.clear();
+
         if (count < 0) return;
         if (count === 0) return setDistribution([]);
 
@@ -142,21 +159,21 @@ export default function SelfSortedArraysPlayground() {
             }
         }
 
-        const distribution: Cell[] = Array.from({ length: count }, () => {
+        const distribution: CellData[] = Array.from({ length: count }, () => {
             const value = getRandomNumber();
             const randomAlgotype = computeAlgotype();
             const randomSwap = computeSwap();
 
-            const mutationable = allowMutationable ? integerBetweenLimits(10) : undefined;
+            const mutationable = allowMutationable ? integerBetweenLimits(mutationableMaximum, mutationableMinimum) : undefined;
             const mutationStrategy = allowMutationable ? 'random' : undefined;
-            const damageable = allowDamageable ? integerBetweenLimits(10) : undefined;
-            const convertible = allowConvertible ? integerBetweenLimits(10) : undefined;
-            const divisible = allowDivisible ? integerBetweenLimits(10) : undefined;
-            const apoptosable = allowApoptosable ? integerBetweenLimits(10) : undefined;
-            const speed = allowSpeed ? integerBetweenLimits(1000) : undefined;
-            const responsiveness = allowResponsiveness ? integerBetweenLimits(1000) : undefined;
+            const damageable = allowDamageable ? integerBetweenLimits(damageableMaximum, damageableMinimum) : undefined;
+            const convertible = allowConvertible ? integerBetweenLimits(convertibleMaximum, convertibleMinimum) : undefined;
+            const divisible = allowDivisible ? integerBetweenLimits(divisibleMaximum, divisibleMinimum) : undefined;
+            const apoptosable = allowApoptosable ? integerBetweenLimits(apoptosableMaximum, apoptosableMinimum) : undefined;
+            const speed = allowSpeed ? integerBetweenLimits(speedMaximum, speedMinimum) : undefined;
+            const responsiveness = allowResponsiveness ? integerBetweenLimits(responsivenessMaximum, responsivenessMinimum) : undefined;
 
-            const cell: Cell = {
+            const cell: CellData = {
                 id: value + '-' + Math.random().toString(36).slice(2, 7),
                 value,
                 color: colorType === 'random'
@@ -197,6 +214,27 @@ export default function SelfSortedArraysPlayground() {
         allowApoptosable,
         allowSpeed,
         allowResponsiveness,
+
+        mutationableMinimum,
+        mutationableMaximum,
+
+        damageableMinimum,
+        damageableMaximum,
+
+        convertibleMinimum,
+        convertibleMaximum,
+
+        divisibleMinimum,
+        divisibleMaximum,
+
+        apoptosableMinimum,
+        apoptosableMaximum,
+
+        speedMinimum,
+        speedMaximum,
+
+        responsivenessMinimum,
+        responsivenessMaximum,
     ]);
 
     const step = async () => {
@@ -208,14 +246,14 @@ export default function SelfSortedArraysPlayground() {
             // setSorting(true);
             // setSorted(false);
 
-            tissue.step();
+            tissue.current.step();
 
-            if (tissue.atEquilibrium) {
+            if (tissue.current.atEquilibrium) {
                 setSorted(true);
                 return;
             }
 
-            setDistribution([...tissue.cells.map(cell => ({
+            setDistribution([...tissue.current.cells.map(cell => ({
                 id: cell.id,
                 value: cell.value,
                 color: cell.color,
@@ -227,7 +265,7 @@ export default function SelfSortedArraysPlayground() {
                 apoptosable: cell.apoptosable,
                 speed: cell.speed,
                 responsiveness: cell.responsiveness,
-            } as Cell))]);
+            } as CellData))]);
 
             // setSorting(false);
             // setSorted(true);
@@ -237,7 +275,7 @@ export default function SelfSortedArraysPlayground() {
     const loop = async () => {
         setSorting(true);
 
-        while (!tissue.atEquilibrium) {
+        while (!tissue.current.atEquilibrium) {
             await step();
             await new Promise(resolve => setTimeout(resolve, 500));
         }
@@ -309,19 +347,10 @@ export default function SelfSortedArraysPlayground() {
 
     /** Handle Tissue */
     useEffect(() => {
-        const tissue = new Tissue(
-            (cellID, swapID)  => {
-                setSwaps((prev) => ({
-                    ...prev,
-                    [cellID]: [
-                        ...(prev[cellID] || []),
-                        swapID,
-                    ],
-                }));
-            }
-        );
-
         const options = {
+            minimumValue,
+            maximumValue,
+
             mutationableMinimum,
             mutationableMaximum,
             mutationableStrategy,
@@ -348,40 +377,19 @@ export default function SelfSortedArraysPlayground() {
         };
 
         for (let i = 0; i < distribution.length; i++) {
-            const {
-                id,
-                value,
-                color,
-                algotype,
-                swap,
-                mutationable,
-                damageable,
-                convertible,
-                divisible,
-                apoptosable,
-                speed,
-                responsiveness,
-            } = distribution[i];
-
-            tissue.addCell(new CellEntity(
-                id,
-                value,
-                color,
-                algotype,
-                swap,
-                mutationable,
-                damageable,
-                convertible,
-                divisible,
-                apoptosable,
-                speed,
-                responsiveness,
+            tissue.current.addCell(new CellEntity(
+                {
+                    ...distribution[i],
+                },
                 options,
             ));
         }
-        setTissue(tissue);
+        // console.log(tissue.current);
     }, [
         distribution,
+
+        minimumValue,
+        maximumValue,
 
         mutationableMinimum,
         mutationableMaximum,

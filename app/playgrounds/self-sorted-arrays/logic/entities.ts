@@ -1,6 +1,6 @@
 import {
-    Cell as ICell,
-    CellMutationStrategy,
+    CellData,
+    CellOptions,
 } from '../data';
 
 
@@ -83,34 +83,8 @@ const algotypes = {
     },
 };
 
-export interface CellOptions {
-    mutationableMinimum?: number;
-    mutationableMaximum?: number;
-    mutationableStrategy?: CellMutationStrategy;
 
-    damageableMinimum?: number;
-    damageableMaximum?: number;
-    damageablePassiveThreshold?: number;
-    damageableFrozenThreshold?: number;
-
-    convertibleMinimum?: number;
-    convertibleMaximum?: number;
-
-    divisibleMinimum?: number;
-    divisibleMaximum?: number;
-
-    apoptosableMinimum?: number;
-    apoptosableMaximum?: number;
-
-    speedMinimum?: number;
-    speedMaximum?: number;
-
-    responsivenessMinimum?: number;
-    responsivenessMaximum?: number;
-}
-
-
-export class Cell extends EventTarget implements ICell {
+export class Cell extends EventTarget implements CellData {
     public id;
     public value;
     public color;
@@ -133,41 +107,46 @@ export class Cell extends EventTarget implements ICell {
 
 
     constructor(
-        id: ICell['id'],
-        value: ICell['value'],
-        color: ICell['color'],
-        algotype: ICell['algotype'],
-        swap?: ICell['swap'],
-        mutationable?: ICell['mutationable'],
-        damageable?: ICell['damageable'],
-        convertible?: ICell['convertible'],
-        divisible?: ICell['divisible'],
-        apoptosable?: ICell['apoptosable'],
-        speed?: ICell['speed'],
-        responsiveness?: ICell['responsiveness'],
+        cellData: CellData,
         options?: CellOptions,
     ) {
         super();
 
-        this.id = id;
-        this.value = value;
-        this.color = color;
-        this.algotype = algotype;
-        this.swap = swap || 'proactive';
-        this.mutationable = mutationable;
-        this.damageable = damageable;
-        this.convertible = convertible;
-        this.divisible = divisible;
-        this.apoptosable = apoptosable;
-        this.speed = speed;
-        this.responsiveness = responsiveness;
+        this.id = cellData.id;
+        this.value = cellData.value;
+        this.color = cellData.color;
+        this.algotype = cellData.algotype;
+        this.swap = cellData.swap || 'proactive';
+        this.mutationable = cellData.mutationable;
+        this.damageable = cellData.damageable;
+        this.convertible = cellData.convertible;
+        this.divisible = cellData.divisible;
+        this.apoptosable = cellData.apoptosable;
+        this.speed = cellData.speed;
+        this.responsiveness = cellData.responsiveness;
 
         this.options = options;
     }
 
 
+    private checkAction(
+        type: number | undefined,
+    ): type is number {
+        return typeof type === 'number';
+    }
+
     private onSwaps() {
-        if (typeof this.damageable === 'number') {
+        if (this.checkAction(this.mutationable)) {
+            if (this.swaps >= this.mutationable) {
+                if (this.options?.mutationableStrategy === 'random') {
+                    this.value = Math.floor(
+                        Math.random() * (this.options?.maximumValue! - this.options?.minimumValue!) + this.options?.minimumValue!
+                    );
+                }
+            }
+        }
+
+        if (this.checkAction(this.damageable)) {
             if (this.options?.damageablePassiveThreshold && this.swaps >= this.options.damageablePassiveThreshold) {
                 this.swap = 'passive';
             } else if (this.options?.damageableFrozenThreshold && this.swaps >= this.options.damageableFrozenThreshold) {
@@ -242,7 +221,6 @@ export class Cell extends EventTarget implements ICell {
 
 export class Tissue extends EventTarget {
     public id;
-
     public cells: Cell[];
     public atEquilibrium: boolean = false;
 
@@ -260,6 +238,26 @@ export class Tissue extends EventTarget {
     }
 
     public addCell(cell: Cell) {
+        if (this.cells.some((c) => {
+            if (c.id === cell.id) {
+                c.value = cell.value;
+                c.color = cell.color;
+                c.algotype = cell.algotype;
+                c.swap = cell.swap || 'proactive';
+                c.mutationable = cell.mutationable;
+                c.damageable = cell.damageable;
+                c.convertible = cell.convertible;
+                c.divisible = cell.divisible;
+                c.apoptosable = cell.apoptosable;
+                c.speed = cell.speed;
+                c.responsiveness = cell.responsiveness;
+            }
+
+            return c.id === cell.id;
+        })) {
+            return;
+        }
+
         cell.addEventListener('swap', this.swap.bind(this));
         this.cells.push(cell);
     }
@@ -295,6 +293,12 @@ export class Tissue extends EventTarget {
             );
             return;
         }
+    }
+
+    public clear() {
+        this.cells.map((cell) => this.removeCell(cell));
+        this.cells = [];
+        this.atEquilibrium = false;
     }
 
 

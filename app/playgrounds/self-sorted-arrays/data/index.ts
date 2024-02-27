@@ -3,7 +3,7 @@ export type CellSwap = 'frozen' | 'passive' | 'proactive';
 export type CellMutationStrategy = 'random' | 'increment' | 'decrement' | 'environmental';
 
 
-export interface Cell {
+export interface CellData {
     id: string;
     value: number;
     color: string;
@@ -64,11 +64,40 @@ export const algotypes = [
     // 'heap',
 ] as const;
 
-export type Algotype = typeof algotypes[number];
-
 
 export const swap = [
     'frozen',
     'passive',
     'proactive',
 ] as const;
+
+
+
+export interface CellOptions {
+    minimumValue: number;
+    maximumValue: number;
+
+    mutationableMinimum: number;
+    mutationableMaximum: number;
+    mutationableStrategy: CellMutationStrategy;
+
+    damageableMinimum: number;
+    damageableMaximum: number;
+    damageablePassiveThreshold: number;
+    damageableFrozenThreshold: number;
+
+    convertibleMinimum: number;
+    convertibleMaximum: number;
+
+    divisibleMinimum: number;
+    divisibleMaximum: number;
+
+    apoptosableMinimum: number;
+    apoptosableMaximum: number;
+
+    speedMinimum: number;
+    speedMaximum: number;
+
+    responsivenessMinimum: number;
+    responsivenessMaximum: number;
+}
