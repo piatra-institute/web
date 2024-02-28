@@ -247,8 +247,10 @@ export default function SelfSortedArraysPlayground() {
             // setSorted(false);
 
             tissue.current.step();
+            await new Promise(resolve => setTimeout(resolve, 50));
 
             if (tissue.current.atEquilibrium) {
+                setSorting(false);
                 setSorted(true);
                 return;
             }
@@ -277,7 +279,7 @@ export default function SelfSortedArraysPlayground() {
 
         while (!tissue.current.atEquilibrium) {
             await step();
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => setTimeout(resolve, 350));
         }
     }
 
