@@ -280,6 +280,10 @@ export default function SelfSortedArraysPlayground() {
             await new Promise(resolve => setTimeout(resolve, 500));
         }
     }
+
+    const clearTissue = () => {
+        tissue.current.clear();
+    }
     // #endregion handlers
 
 
@@ -384,7 +388,6 @@ export default function SelfSortedArraysPlayground() {
                 options,
             ));
         }
-        // console.log(tissue.current);
     }, [
         distribution,
 
@@ -442,6 +445,8 @@ export default function SelfSortedArraysPlayground() {
             <Settings
                 distribution={distribution}
                 setDistribution={setDistribution}
+
+                setCount={setCount}
 
                 selectedCell={selectedCell}
 
@@ -523,6 +528,8 @@ export default function SelfSortedArraysPlayground() {
                 setResponsivenessMinimum={setResponsivenessMinimum}
                 responsivenessMaximum={responsivenessMaximum}
                 setResponsivenessMaximum={setResponsivenessMaximum}
+
+                clearTissue={clearTissue}
             />
 
             <div

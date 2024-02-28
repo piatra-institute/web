@@ -23,7 +23,7 @@ import Dropdown from '@/components/Dropdown';
 import LinkButton from '@/components/LinkButton';
 
 import {
-    Cell,
+    CellData,
 } from '@/app/playgrounds/self-sorted-arrays/data';
 
 
@@ -47,8 +47,10 @@ const renderPercent = (
 
 
 export interface SettingsProperties {
-    distribution: Cell[];
-    setDistribution: React.Dispatch<React.SetStateAction<Cell[]>>;
+    distribution: CellData[];
+    setDistribution: React.Dispatch<React.SetStateAction<CellData[]>>;
+
+    setCount: React.Dispatch<React.SetStateAction<number>>;
 
     selectedCell: string | null;
 
@@ -130,14 +132,20 @@ export interface SettingsProperties {
     setResponsivenessMinimum: React.Dispatch<React.SetStateAction<number>>;
     responsivenessMaximum: number;
     setResponsivenessMaximum: React.Dispatch<React.SetStateAction<number>>;
+
+    clearTissue: () => void;
 };
 
 
-export default function Settings(properties: SettingsProperties) {
+export default function Settings(
+    properties: SettingsProperties,
+) {
     // #region properties
     const {
         distribution,
         setDistribution,
+
+        setCount,
 
         selectedCell,
 
@@ -219,6 +227,8 @@ export default function Settings(properties: SettingsProperties) {
         setResponsivenessMinimum,
         responsivenessMaximum,
         setResponsivenessMaximum,
+
+        clearTissue,
     } = properties;
     // #endregion properties
 
@@ -256,6 +266,24 @@ export default function Settings(properties: SettingsProperties) {
         if (value >= 0 && value <= 1) {
             setter(value);
             return value;
+        }
+    }
+
+    const saveEditTextarea = () => {
+        setEditTextarea(!editTextarea);
+
+        if (editTextarea) {
+            try {
+                const data = JSON.parse(textareaData);
+                setCount(data.length);
+
+                setTimeout(() => {
+                    clearTissue();
+                    setDistribution(data);
+                }, 50);
+            } catch (e) {
+                console.error(e);
+            }
         }
     }
     // #endregion handlers
@@ -349,17 +377,7 @@ export default function Settings(properties: SettingsProperties) {
 
                 <LinkButton
                     text={editTextarea ? 'save' : 'edit'}
-                    onClick={() => {
-                        setEditTextarea(!editTextarea);
-                        if (editTextarea) {
-                            try {
-                                const data = JSON.parse(textareaData);
-                                setDistribution(data);
-                            } catch (e) {
-                                console.error(e);
-                            }
-                        }
-                    }}
+                    onClick={() => saveEditTextarea()}
                 />
 
 
