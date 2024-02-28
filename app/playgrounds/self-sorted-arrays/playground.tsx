@@ -237,23 +237,18 @@ export default function SelfSortedArraysPlayground() {
         responsivenessMaximum,
     ]);
 
+    const regenerate = () => {
+        setSorted(false);
+        setSelectedCell(null);
+        computeDistribtion(count);
+    }
+
     const step = async () => {
         if (sorted && !sorting) {
-            setSorted(false);
-            setSelectedCell(null);
-            computeDistribtion(count);
+            regenerate();
         } else {
-            // setSorting(true);
-            // setSorted(false);
-
             tissue.current.step();
             await new Promise(resolve => setTimeout(resolve, 50));
-
-            if (tissue.current.atEquilibrium) {
-                setSorting(false);
-                setSorted(true);
-                return;
-            }
 
             setDistribution([...tissue.current.cells.map(cell => ({
                 id: cell.id,
@@ -269,12 +264,20 @@ export default function SelfSortedArraysPlayground() {
                 responsiveness: cell.responsiveness,
             } as CellData))]);
 
-            // setSorting(false);
-            // setSorted(true);
+            if (tissue.current.atEquilibrium) {
+                setSorting(false);
+                setSorted(true);
+            }
         }
     }
 
     const loop = async () => {
+        if (sorted && !sorting && tissue.current.atEquilibrium) {
+            clearTissue();
+            regenerate();
+            return;
+        }
+
         setSorting(true);
 
         while (!tissue.current.atEquilibrium) {

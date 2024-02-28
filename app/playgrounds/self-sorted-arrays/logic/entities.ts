@@ -306,6 +306,50 @@ export class Tissue extends EventTarget {
         this.cells.forEach((cell, index) => {
             cell.cleanNeighbors();
 
+            if (index === 0) {
+                if (
+                    cell.value <= this.cells[index + 1].value
+                    || this.cells[index + 1].swap === 'frozen'
+                ) {
+                    return;
+                }
+            } else if (index === this.cells.length - 1) {
+                if (
+                    cell.value >= this.cells[index - 1].value
+                    || this.cells[index - 1].swap === 'frozen'
+                ) {
+                    return;
+                }
+            } else {
+                if (
+                    cell.value <= this.cells[index + 1].value
+                    && cell.value >= this.cells[index - 1].value
+                ) {
+                    return;
+                }
+
+                if (
+                    cell.value <= this.cells[index + 1].value
+                    && this.cells[index - 1].swap === 'frozen'
+                ) {
+                    return;
+                }
+
+                if (
+                    cell.value >= this.cells[index - 1].value
+                    && this.cells[index + 1].swap === 'frozen'
+                ) {
+                    return;
+                }
+
+                if (
+                    this.cells[index - 1].swap === 'frozen'
+                    && this.cells[index + 1].swap === 'frozen'
+                ) {
+                    return;
+                }
+            }
+
             if (cell.algotype === 'bubble') {
                 if (index === 0) {
                     cell.addNeighbor(undefined); // LEFT
