@@ -130,6 +130,7 @@ export default function SelfSortedArraysPlayground() {
     ) => {
         tissue.current.clear();
 
+        if (!count) return;
         if (count < 0) return;
         if (count === 0) return setDistribution([]);
 
@@ -550,11 +551,16 @@ export default function SelfSortedArraysPlayground() {
                     value={count}
                     onChange={(value) => {
                         const count = parseInt(value);
-                        if (count < 0 || count > 999) {
+                        if (isNaN(count)) {
+                            setCount('' as any);
                             return;
                         }
 
-                        setCount(parseInt(value));
+                        if (count <= 0 || count > 999) {
+                            return;
+                        }
+
+                        setCount(count);
                     }}
                     placeholder="enter a number around 40"
                     type="number"
