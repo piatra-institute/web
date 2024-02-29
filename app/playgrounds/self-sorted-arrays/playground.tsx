@@ -273,12 +273,6 @@ export default function SelfSortedArraysPlayground() {
     }
 
     const loop = async () => {
-        if (sorted && !sorting && tissue.current.atEquilibrium) {
-            clearTissue();
-            regenerate();
-            return;
-        }
-
         setSorting(true);
 
         while (!tissue.current.atEquilibrium) {
@@ -385,6 +379,11 @@ export default function SelfSortedArraysPlayground() {
             responsivenessMinimum,
             responsivenessMaximum,
         };
+
+        if (tissue.current.cells[0]?.id !== distribution[0]?.id) {
+            // Ensure clearing on effect re-run.
+            tissue.current.clear();
+        }
 
         for (let i = 0; i < distribution.length; i++) {
             tissue.current.addCell(new CellEntity(
@@ -599,7 +598,7 @@ export default function SelfSortedArraysPlayground() {
                         onClick={() => {
                             loop();
                         }}
-                        disabled={sorting}
+                        disabled={sorting || (sorted && !sorting)}
                     />
                 ) : (
                     <div
