@@ -5,7 +5,7 @@ export default function Title({
 }) {
     return (
         <h1
-            className="text-md uppercase font-bold mb-10"
+            className="text-md text-center uppercase font-bold mb-10"
         >
             {text}
         </h1>

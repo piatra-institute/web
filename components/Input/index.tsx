@@ -34,7 +34,7 @@ const Input: React.FC<InputProps> = ({
                     focus:outline-none focus:ring-2 focus:ring-lime-800
                     border border-lime-800 rounded-none
                     px-4 py-2
-                    ${compact ? 'w-24' : 'w-80'}
+                    ${compact ? 'w-24' : 'w-60 md:w-72'}
                     ${centered ? 'text-center' : 'text-right'}
                 `}
                 placeholder={placeholder}

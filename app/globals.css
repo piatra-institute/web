@@ -42,3 +42,7 @@ blockquote {
     line-height: 1.5;
     margin-bottom: 1rem;
 }
+
+input::placeholder {
+    font-size: 0.9rem;
+}
