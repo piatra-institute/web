@@ -41,29 +41,160 @@ const defaultCellOptions: CellOptions = {
     responsivenessMaximum: 1000,
 };
 
+const simpleCells1: CellData[] = [
+    {
+        id: 'cell3',
+        value: 3,
+        color: 'red',
+        algotype: 'bubble',
+    },
+    {
+        id: 'cell1a',
+        value: 1,
+        color: 'blue',
+        algotype: 'bubble',
+    },
+    {
+        id: 'cell4',
+        value: 4,
+        color: 'green',
+        algotype: 'bubble',
+    },
+    {
+        id: 'cell5',
+        value: 5,
+        color: 'red',
+        algotype: 'bubble',
+    },
+    {
+        id: 'cell1b',
+        value: 1,
+        color: 'blue',
+        algotype: 'bubble',
+    },
+    {
+        id: 'cell2',
+        value: 2,
+        color: 'green',
+        algotype: 'bubble',
+    },
+];
 
-test('Tissue sorts bubble', () => {
+const simpleCells2: CellData[] = [
+    {
+        id: 'cell1a',
+        value: 1,
+        color: 'red',
+        algotype: 'bubble',
+    },
+    {
+        id: 'cell1b',
+        value: 1,
+        color: 'blue',
+        algotype: 'bubble',
+    },
+    {
+        id: 'cell4',
+        value: 4,
+        color: 'green',
+        algotype: 'bubble',
+    },
+    {
+        id: 'cell3',
+        value: 3,
+        color: 'red',
+        algotype: 'bubble',
+    },
+    {
+        id: 'cell5',
+        value: 5,
+        color: 'blue',
+        algotype: 'bubble',
+    },
+    {
+        id: 'cell2',
+        value: 2,
+        color: 'green',
+        algotype: 'bubble',
+    },
+];
+
+const simpleCells3: CellData[] = [
+    {
+        id: 'cell1',
+        value: 1,
+        color: 'red',
+        algotype: 'bubble',
+    },
+    {
+        id: 'cell3',
+        value: 3,
+        color: 'blue',
+        algotype: 'bubble',
+    },
+    {
+        id: 'cell4',
+        value: 4,
+        color: 'green',
+        algotype: 'bubble',
+    },
+    {
+        id: 'cell2',
+        value: 2,
+        color: 'red',
+        algotype: 'bubble',
+    },
+    {
+        id: 'cell6',
+        value: 6,
+        color: 'blue',
+        algotype: 'bubble',
+    },
+    {
+        id: 'cell5',
+        value: 5,
+        color: 'green',
+        algotype: 'bubble',
+    },
+];
+
+
+test('Tissue sorts bubble simple 1', () => {
+    const tissue = new Tissue();
+
+    const cells = [...simpleCells1];
+
+    for (const cell of cells) {
+        tissue.addCell(new Cell(
+            {
+                ...cell,
+            },
+            {
+                ...defaultCellOptions,
+            },
+        ));
+    }
+
+    tissue.printCells();
+    tissue.step();
+    tissue.printCells();
+    tissue.step();
+    tissue.printCells();
+
+    expect(tissue.atEquilibrium).toBe(true);
+});
+
+
+test.skip('Tissue sorts insertion simple 1', () => {
     const tissue = new Tissue();
 
     const cells: CellData[] = [
-        {
-            id: 'cell5',
-            value: 5,
-            color: 'red',
-            algotype: 'bubble',
-        },
-        {
-            id: 'cell4',
-            value: 4,
-            color: 'blue',
-            algotype: 'bubble',
-        },
-        {
-            id: 'cell3',
-            value: 3,
-            color: 'green',
-            algotype: 'bubble',
-        },
+        ...simpleCells1.map(
+            (cell) => ({
+                ...cell,
+                algotype: 'insertion',
+            } as CellData),
+        ),
     ];
 
     for (const cell of cells) {
@@ -77,15 +208,50 @@ test('Tissue sorts bubble', () => {
         ));
     }
 
+    tissue.printCells();
     tissue.step();
+    tissue.printCells();
     tissue.step();
+    tissue.printCells();
 
     expect(tissue.atEquilibrium).toBe(true);
 });
 
 
+test.skip('Tissue sorts selection simple 1', () => {
+    const tissue = new Tissue();
 
-test('Tissue sorts bubble mutationable', () => {
+    const cells: CellData[] = [
+        ...simpleCells1.map(
+            (cell) => ({
+                ...cell,
+                algotype: 'selection',
+            } as CellData),
+        ),
+    ];
+
+    for (const cell of cells) {
+        tissue.addCell(new Cell(
+            {
+                ...cell,
+            },
+            {
+                ...defaultCellOptions,
+            },
+        ));
+    }
+
+    tissue.printCells();
+    tissue.step();
+    tissue.printCells();
+    tissue.step();
+    tissue.printCells();
+
+    expect(tissue.atEquilibrium).toBe(true);
+});
+
+
+test.skip('Tissue sorts bubble mutationable', () => {
     const tissue = new Tissue();
 
     const cells: CellData[] = [

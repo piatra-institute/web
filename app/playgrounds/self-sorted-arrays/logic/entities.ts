@@ -301,6 +301,14 @@ export class Tissue extends EventTarget {
         this.atEquilibrium = false;
     }
 
+    public printCells() {
+        console.log('---');
+        for (const cell of this.cells) {
+            console.log(cell.id, cell.value, cell.atEquilibrium);
+        }
+        console.log('---\n');
+    }
+
 
     private distributeNeighbors() {
         this.cells.forEach((cell, index) => {

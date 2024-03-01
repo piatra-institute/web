@@ -4,6 +4,8 @@ import {
     useEffect,
 } from 'react';
 
+import * as acorn from 'acorn';
+
 import {
     closeIcon,
     settingsIcon,
@@ -281,8 +283,55 @@ export default function Settings(
                     clearTissue();
                     setDistribution(data);
                 }, 50);
-            } catch (e) {
-                console.error(e);
+            } catch (_error) {
+                try {
+                    const ast = acorn.parse(textareaData, {ecmaVersion: 2020});
+                    if (ast.body.length !== 1 || ast.body[0].type !== 'ExpressionStatement') {
+                        throw new Error('Invalid JavaScript object format');
+                    }
+                    const objectExpression = ast.body[0].expression;
+                    if (objectExpression.type !== 'ArrayExpression') {
+                        throw new Error('Invalid JavaScript object format');
+                    }
+
+                    const data: any[] = [];
+
+                    for (const element of objectExpression.elements) {
+                        if (!element) {
+                            continue;
+                        }
+
+                        if (element.type !== 'ObjectExpression') {
+                            continue;
+                        }
+
+                        const jsonObject: any = {};
+                        for (const prop of element.properties) {
+                            if (prop.type !== 'Property') {
+                                continue;
+                            }
+
+                            if (prop.key.type !== 'Identifier' || prop.value.type !== 'Literal') {
+                                continue;
+                            }
+
+                            jsonObject[prop.key.name] = prop.value.value;
+                        }
+                        if (Object.keys(jsonObject).length > 0) {
+                            data.push(jsonObject);
+                        }
+                    }
+
+                    setCount(data.length);
+
+                    setTimeout(() => {
+                        clearTissue();
+                        setDistribution(data);
+                    }, 50);
+                } catch (error) {
+                    console.error(_error);
+                    console.error(error);
+                }
             }
         }
     }
