@@ -25,6 +25,10 @@ const platforms = [
     //     name: 'vote no',
     //     link: '/playgrounds/vote-no',
     // },
+    // {
+    //     name: 'lifesong',
+    //     link: '/playgrounds/lifesong',
+    // },
 ];
 
 
