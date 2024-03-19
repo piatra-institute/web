@@ -60,7 +60,7 @@ export default function Press() {
                             className="max-w-[600px] mb-8 block focus:outline-none focus:ring-1 focus:ring-white text-center p-4"
                         >
                             <div
-                                className={'mb-2'}
+                                className={'text-sm uppercase mb-2'}
                             >
                                 {authors.join(', ')}
                             </div>
@@ -72,7 +72,7 @@ export default function Press() {
                             </div>
 
                             <div
-                                className={'text-sm text-left mb-2 italic'}
+                                className={'text-xs text-left italic mb-2'}
                             >
                                 {title}
                             </div>
