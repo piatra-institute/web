@@ -5,6 +5,8 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Title from '@/components/Title';
 
+import PressTitle from './components/PressTitle';
+
 
 
 export const metadata: Metadata = {
@@ -12,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 
-const platforms = [
+const pressItems = [
     {
         link: '/press/ro/living-things-are-not-20th-century-machines',
         authors: [
@@ -42,16 +44,11 @@ export default function Press() {
             <div
                 className="p-6"
             >
-                {platforms.map((platform) => {
+                {pressItems.map((pressItem) => {
                     const {
                         link,
-                        authors,
-                        metadata,
                         title,
-                        year,
-                        language,
-                        translation,
-                    } = platform;
+                    } = pressItem;
 
                     return (
                         <Link
@@ -59,33 +56,9 @@ export default function Press() {
                             href={link}
                             className="max-w-[600px] mb-8 block focus:outline-none focus:ring-1 focus:ring-white text-center p-4"
                         >
-                            <div
-                                className={'text-sm uppercase mb-2'}
-                            >
-                                {authors.join(', ')}
-                            </div>
-
-                            <div
-                                className={'text-xs mb-2'}
-                            >
-                                {metadata}
-                            </div>
-
-                            <div
-                                className={'text-xs text-left italic mb-2'}
-                            >
-                                {title}
-                            </div>
-
-                            <div
-                                className={'text-base text-left mb-2'}
-                            >
-                                <span
-                                    className={'text-xs uppercase'}
-                                >
-                                    {language} / {year} /
-                                </span> {translation}
-                            </div>
+                            <PressTitle
+                                {...pressItem}
+                            />
                         </Link>
                     );
                 })}

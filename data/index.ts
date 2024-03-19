@@ -64,6 +64,33 @@ export type Completion = {
 
 
 
+export interface PressItem {
+    id: string;
+    path: string;
+    metadata: {
+        title: string;
+        description: string;
+    };
+    details: {
+        link: string;
+        authors: string[];
+        metadata: string;
+        title: string;
+        year: string;
+        language: string;
+        translation: string;
+    };
+    text: {
+        sections: any[];
+    };
+}
+
+export interface PressData {
+    press: PressItem[];
+}
+
+
+
 export const REGENERATE_REQUEST_RECYCLE = process.env.REGENERATE_REQUEST_LIMIT === 'true';
 export const REGENERATE_REQUEST_LIMIT = parseInt(process.env.REGENERATE_REQUEST_LIMIT || '') ?? 10;
 export const REGENERATE_REQUEST_PER_CONCERN_LIMIT = parseInt(process.env.REGENERATE_REQUEST_PER_CONCERN_LIMIT || '') ?? 30;
