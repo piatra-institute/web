@@ -26,6 +26,10 @@ const links = [
         href: '/playgrounds',
         label: 'playgrounds',
     },
+    {
+        href: '/press',
+        label: 'press',
+    },
 ];
 
 
@@ -43,7 +47,7 @@ export default function Home() {
                 />
 
                 <h1
-                    className="m-2 mx-2 p-2 bg-lime-50 text-black uppercase text-base font-bold sm:text-2xl sm:mx-8"
+                    className="w-full sm:w-auto sm:min-w-[360px] sm:max-w-[400px] p-2 bg-lime-50 text-black uppercase text-base font-bold sm:text-2xl my-4 mx-auto sm:my-4 sm:mx-auto"
                 >
                     piatra . institute
                 </h1>
