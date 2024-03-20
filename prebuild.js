@@ -27,19 +27,30 @@ const fetchData = async (
 }
 
 
+const dataFiles = [
+    {
+        type: 'provocations',
+        dataFile: './app/provocations/data.json',
+        link: process.env.PROVOCATIONS_URL,
+    },
+    {
+        type: 'papers',
+        dataFile: './app/papers/data.json',
+        link: process.env.PAPERS_URL,
+    },
+    {
+        type: 'press',
+        dataFile: './app/press/data.json',
+        link: process.env.PRESS_URL,
+    },
+];
+
+
 
 const main = async () => {
-    await fetchData(
-        'papers',
-        './app/papers/data.json',
-        process.env.PAPERS_URL,
-    );
-
-    await fetchData(
-        'provocations',
-        './app/provocations/data.json',
-        process.env.PROVOCATIONS_URL,
-    );
+    for (const { type, dataFile, link } of dataFiles) {
+        await fetchData(type, dataFile, link);
+    }
 }
 
 main();
