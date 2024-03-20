@@ -7,6 +7,10 @@ import Title from '@/components/Title';
 
 import PressTitle from './components/PressTitle';
 
+import {
+    getPressItems,
+} from './logic';
+
 
 
 export const metadata: Metadata = {
@@ -14,23 +18,9 @@ export const metadata: Metadata = {
 };
 
 
-const pressItems = [
-    {
-        link: '/press/ro/living-things-are-not-20th-century-machines',
-        authors: [
-            'Joshua Bongard',
-            'Michael Levin',
-        ],
-        metadata: '2021, Frontiers in Ecology and Evolution',
-        title: 'Living Things Are Not (20th Century) Machines: Updating Mechanism Metaphors in Light of the Modern Science of Machine Behavior',
-        year: '2024',
-        language: 'Romanian',
-        translation: 'Lucrurile vii nu sunt mașini (din secolul al XX-lea): Actualizarea metaforelor mecaniciste în lumina științei moderne a comportamentului mașinal',
-    },
-];
-
-
 export default function Press() {
+    const pressItems = getPressItems();
+
     return (
         <div
             className="flex flex-col items-center justify-center w-full min-h-full select-none"
@@ -48,7 +38,7 @@ export default function Press() {
                     const {
                         link,
                         title,
-                    } = pressItem;
+                    } = pressItem.details;
 
                     return (
                         <Link
@@ -57,7 +47,7 @@ export default function Press() {
                             className="max-w-[600px] mb-8 block focus:outline-none focus:ring-1 focus:ring-white text-center p-3"
                         >
                             <PressTitle
-                                {...pressItem}
+                                {...pressItem.details}
                             />
                         </Link>
                     );
