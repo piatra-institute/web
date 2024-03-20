@@ -1,4 +1,5 @@
 import { Metadata, ResolvingMetadata } from 'next';
+import { redirect } from 'next/navigation';
 
 import {
     focusStyle,
@@ -36,6 +37,24 @@ export async function generateMetadata(
 }
 
 
+async function getPDF(
+    path: any,
+) {
+    const fullPath = getPathFromParams(path);
+    if (!fullPath.endsWith('.pdf')) {
+        return;
+    }
+
+    const basePath = fullPath.replace('.pdf', '');
+    const pressItem = findPressItemByPath(basePath);
+    if (!pressItem) {
+        return;
+    }
+
+    return pressItem.pdf;
+}
+
+
 async function getData(
     path: any,
 ) {
@@ -55,6 +74,11 @@ async function getData(
 export default async function PressItem({
     params,
 }: Props) {
+    const pdfFile = await getPDF(params.path);
+    if (pdfFile) {
+        redirect(pdfFile);
+    }
+
     const data = await getData(params.path);
     if (!data || !data.props) {
         return (

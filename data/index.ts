@@ -67,6 +67,7 @@ export type Completion = {
 export interface PressItem {
     id: string;
     path: string;
+    original_pdf: string;
     pdf: string;
     metadata: {
         title: string;

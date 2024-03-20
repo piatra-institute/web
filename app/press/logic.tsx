@@ -9,7 +9,7 @@ export const getPathFromParams = (
         return '';
     }
 
-    return path.join('/');
+    return path.join('/').trim().toLowerCase();
 }
 
 
