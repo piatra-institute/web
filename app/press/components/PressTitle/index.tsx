@@ -1,18 +1,16 @@
-export interface PressTitleProps {
+import {
+    PressItemDetails,
+} from '@/data';
+
+
+
+export type PressTitleProps = PressItemDetails & {
     inText?: boolean;
-    link: string;
-    authors: string[];
-    metadata: string;
-    title: string;
-    year: string;
-    language: string;
-    translation: string;
 }
 
 
 export default function PressTitle({
     inText,
-    link,
     authors,
     metadata,
     title,

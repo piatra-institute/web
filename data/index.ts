@@ -63,6 +63,21 @@ export type Completion = {
 };
 
 
+export interface PressItemDetails {
+    link: string;
+    authors: string[];
+    metadata: string;
+    title: string;
+    year: string;
+    language: string;
+    translation: string;
+}
+
+export interface PressItemSection {
+    type: 'paragraph' | 'heading' | 'quote';
+    content: string;
+    translation: string;
+}
 
 export interface PressItem {
     id: string;
@@ -73,21 +88,9 @@ export interface PressItem {
         title: string;
         description: string;
     };
-    details: {
-        link: string;
-        authors: string[];
-        metadata: string;
-        title: string;
-        year: string;
-        language: string;
-        translation: string;
-    };
+    details: PressItemDetails;
     text: {
-        sections: ({
-            type: 'paragraph';
-            content: string;
-            translation: string;
-        })[];
+        sections: PressItemSection[];
     };
 }
 
