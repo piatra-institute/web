@@ -79,6 +79,10 @@ export default async function PressItem({
     return (
         <div
             className="flex flex-col items-center w-full p-8"
+            // style={{ // -- reader overwrites
+            //     background: 'white !important',
+            //     color: 'black !important',
+            // }}
         >
             <Header />
 
