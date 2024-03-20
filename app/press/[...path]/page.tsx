@@ -68,6 +68,7 @@ export default async function PressItem({
 
     const {
         details,
+        pdf,
         text,
     } = data.props;
 
@@ -87,18 +88,35 @@ export default async function PressItem({
                 <div
                     className="text-center"
                 >
+                    <div
+                        className="mb-4"
+                    >
+                        <a
+                            href={pdf}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs uppercase"
+                        >
+                            . pdf
+                        </a>
+                    </div>
+
                     <PressTitle
                         {...details}
                     />
                 </div>
 
                 {sections.map((section) => {
+                    const {
+                        translation,
+                    } = section;
+
                     return (
                         <div
                             key={Math.random().toString()}
-                            className="my-4 w-full max-w-2xl"
+                            className="my-4 w-full max-w-2xl text-justify"
                         >
-
+                            {translation}
                         </div>
                     );
                 })}

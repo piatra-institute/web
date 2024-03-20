@@ -44,8 +44,12 @@ export default function PressTitle({
                 <span
                     className={'text-xs uppercase'}
                 >
-                    {language} / {year} /
-                </span> {translation}
+                    {year} / {language} /
+                </span> <span
+                    className={'text-lg'}
+                >
+                    {translation}
+                </span>
             </div>
         </>
     );

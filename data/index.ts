@@ -67,6 +67,7 @@ export type Completion = {
 export interface PressItem {
     id: string;
     path: string;
+    pdf: string;
     metadata: {
         title: string;
         description: string;
@@ -81,7 +82,11 @@ export interface PressItem {
         translation: string;
     };
     text: {
-        sections: any[];
+        sections: ({
+            type: 'paragraph';
+            content: string;
+            translation: string;
+        })[];
     };
 }
 
