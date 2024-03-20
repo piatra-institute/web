@@ -142,16 +142,49 @@ export default async function PressItem({
                 {sections.map((section) => {
                     const {
                         translation,
+                        type,
                     } = section;
 
-                    return (
-                        <div
-                            key={Math.random().toString()}
-                            className="my-4 w-full max-w-2xl text-justify"
-                        >
-                            {translation}
-                        </div>
-                    );
+                    const key = Math.random().toString();
+
+                    switch (type) {
+                        case 'paragraph':
+                            return (
+                                <div
+                                    key={key}
+                                    className="my-4 w-full max-w-2xl text-justify"
+                                >
+                                    {translation}
+                                </div>
+                            );
+                        case 'heading1':
+                            return (
+                                <h1
+                                    key={key}
+                                    className="my-4 w-full max-w-2xl text-justify uppercase text-lg"
+                                >
+                                    {translation}
+                                </h1>
+                            );
+                        case 'heading2':
+                            return (
+                                <h2
+                                    key={key}
+                                    className="my-4 w-full max-w-2xl text-justify text-lg"
+                                >
+                                    {translation}
+                                </h2>
+                            );
+                        case 'quote':
+                            return (
+                                <blockquote
+                                    key={key}
+                                    className="my-4 w-full max-w-2xl text-justify"
+                                >
+                                    {translation}
+                                </blockquote>
+                            );
+                    }
                 })}
             </div>
         </div>

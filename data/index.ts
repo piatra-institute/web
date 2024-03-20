@@ -74,7 +74,7 @@ export interface PressItemDetails {
 }
 
 export interface PressItemSection {
-    type: 'paragraph' | 'heading' | 'quote';
+    type: 'paragraph' | 'heading1' | 'heading2' | 'table' | 'image' | 'quote';
     content: string;
     translation: string;
 }
