@@ -25,7 +25,7 @@ const pressItems = [
         title: 'Living Things Are Not (20th Century) Machines: Updating Mechanism Metaphors in Light of the Modern Science of Machine Behavior',
         year: '2024',
         language: 'Romanian',
-        translation: 'Lucrurile vii nu sunt mașini (din secolul al XX-lea): Actualizarea metaforelor mecanistice în lumina științei moderne a comportamentului mașinal',
+        translation: 'Lucrurile vii nu sunt mașini (din secolul al XX-lea): Actualizarea metaforelor mecaniciste în lumina științei moderne a comportamentului mașinal',
     },
 ];
 
