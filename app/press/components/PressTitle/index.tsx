@@ -1,4 +1,5 @@
 export interface PressTitleProps {
+    inText?: boolean;
     link: string;
     authors: string[];
     metadata: string;
@@ -10,6 +11,7 @@ export interface PressTitleProps {
 
 
 export default function PressTitle({
+    inText,
     link,
     authors,
     metadata,
@@ -33,23 +35,21 @@ export default function PressTitle({
             </div>
 
             <div
-                className={'text-xs text-left italic mb-2'}
+                className={'text-xs text-left italic mb-4'}
             >
                 {title}
             </div>
 
             <div
-                className={'text-base text-left'}
+                className={'text-xs text-center uppercase mb-2'}
             >
-                <span
-                    className={'text-xs uppercase'}
-                >
-                    {year} / {language} /
-                </span> <span
-                    className={'text-lg'}
-                >
-                    {translation}
-                </span>
+                {year} / {language}
+            </div>
+
+            <div
+                className={inText ?'text-lg mb-8 text-center' : 'text-base text-left'}
+            >
+                {translation}
             </div>
         </>
     );

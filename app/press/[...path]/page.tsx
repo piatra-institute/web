@@ -135,6 +135,7 @@ export default async function PressItem({
 
                     <PressTitle
                         {...details}
+                        inText={true}
                     />
                 </div>
 
