@@ -1,11 +1,15 @@
 import { Metadata, ResolvingMetadata } from 'next';
 
 import {
+    focusStyle,
+} from '@/data/styles';
+
+import Header from '@/components/Header';
+
+import {
     findPressItemByPath,
     getPathFromParams,
 } from '../logic';
-
-import Header from '@/components/Header';
 
 import PressTitle from '../components/PressTitle';
 
@@ -99,7 +103,7 @@ export default async function PressItem({
                             href={pdf}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs uppercase"
+                            className={`text-xs uppercase p-1 ${focusStyle}`}
                         >
                             . pdf
                         </a>

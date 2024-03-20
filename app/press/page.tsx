@@ -54,7 +54,7 @@ export default function Press() {
                         <Link
                             key={title + link}
                             href={link}
-                            className="max-w-[600px] mb-8 block focus:outline-none focus:ring-1 focus:ring-white text-center p-4"
+                            className="max-w-[600px] mb-8 block focus:outline-none focus:ring-1 focus:ring-white text-center p-3"
                         >
                             <PressTitle
                                 {...pressItem}

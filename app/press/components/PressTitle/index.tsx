@@ -39,7 +39,7 @@ export default function PressTitle({
             </div>
 
             <div
-                className={'text-base text-left mb-2'}
+                className={'text-base text-left'}
             >
                 <span
                     className={'text-xs uppercase'}
