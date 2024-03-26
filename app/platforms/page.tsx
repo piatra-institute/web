@@ -19,8 +19,13 @@ export const metadata: Metadata = {
 const platforms = [
     {
         name: 'gptmetry . com',
-        description: 'transform technical drawings into CAD/CAM/G-code',
+        description: 'CAD compiler across vendors, from technical drawings and sketches into CAD/CAM/G-code',
         link: 'https://gptmetry.com',
+    },
+    {
+        name: 'nodetry . com',
+        description: 'poetry node editor',
+        link: 'https://nodetry.com',
     },
     {
         name: 'ordershop . io',
