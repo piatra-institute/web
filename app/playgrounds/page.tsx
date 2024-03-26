@@ -29,6 +29,10 @@ const platforms = [
     //     name: 'lifesong',
     //     link: '/playgrounds/lifesong',
     // },
+    // {
+    //     name: 'everything... relevant',
+    //     link: '/playgrounds/everything-relevant',
+    // },
 ];
 
 
