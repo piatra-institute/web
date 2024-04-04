@@ -30,17 +30,17 @@ const platforms = [
     {
         name: 'ordershop . io',
         description: 'request and manage manufacturing orders',
-        link: 'https://github.com/piatra-institute/ordershop',
+        link: 'https://ordershop.io',
     },
     {
         name: 'sonocracy . com',
         description: 'vote for volume control and bid for songs in venues',
-        link: 'https://github.com/piatra-institute/sonocracy',
+        link: 'https://sonocracy.com',
     },
     {
         name: 'xfactura . ro',
         description: 'einvoicing and general accounting following the Romanian/EU legislation',
-        link: 'https://github.com/piatra-institute/xfactura-ro',
+        link: 'https://xfactura.ro',
     },
 ];
 
