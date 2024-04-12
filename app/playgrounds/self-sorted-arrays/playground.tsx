@@ -93,6 +93,8 @@ export default function SelfSortedArraysPlayground() {
     const [damageablePassiveThreshold, setDamageablePassiveThreshold] = useState(7);
     const [damageableFrozenThreshold, setDamageableFrozenThreshold] = useState(3);
 
+    const [allowRepairable, setAllowRepairable] = useState(false);
+
     const [allowConvertible, setAllowConvertible] = useState(false);
     const [convertibleMinimum, setConvertibleMinimum] = useState(0);
     const [convertibleMaximum, setConvertibleMaximum] = useState(10);
@@ -498,6 +500,9 @@ export default function SelfSortedArraysPlayground() {
                 setDamageablePassiveThreshold={setDamageablePassiveThreshold}
                 damageableFrozenThreshold={damageableFrozenThreshold}
                 setDamageableFrozenThreshold={setDamageableFrozenThreshold}
+
+                allowRepairable={allowRepairable}
+                setAllowRepairable={setAllowRepairable}
 
                 allowConvertible={allowConvertible}
                 setAllowConvertible={setAllowConvertible}

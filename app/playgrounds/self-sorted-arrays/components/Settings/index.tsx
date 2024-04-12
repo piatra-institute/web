@@ -100,6 +100,9 @@ export interface SettingsProperties {
     damageableFrozenThreshold: number;
     setDamageableFrozenThreshold: React.Dispatch<React.SetStateAction<number>>;
 
+    allowRepairable: boolean;
+    setAllowRepairable: React.Dispatch<React.SetStateAction<boolean>>;
+
     allowConvertible: boolean;
     setAllowConvertible: React.Dispatch<React.SetStateAction<boolean>>;
     convertibleMinimum: number;
@@ -194,6 +197,9 @@ export default function Settings(
         setDamageablePassiveThreshold,
         damageableFrozenThreshold,
         setDamageableFrozenThreshold,
+
+        allowRepairable,
+        setAllowRepairable,
 
         allowConvertible,
         setAllowConvertible,
@@ -699,6 +705,14 @@ export default function Settings(
                         </div>
                     )}
 
+                    <Toggle
+                        text="allow repairable"
+                        toggle={() => {
+                            setAllowRepairable(!allowRepairable);
+                        }}
+                        value={allowRepairable}
+                        tooltip="after how many nudges the cell will recover from passive/frozen state"
+                    />
 
                     <Toggle
                         text="allow convertible"
