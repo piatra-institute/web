@@ -37,11 +37,6 @@ const platforms = [
         description: 'vote for volume control and bid for songs in venues',
         link: 'https://sonocracy.com',
     },
-    // {
-    //     name: 'replign . com',
-    //     description: 'sign documents online with physical replication',
-    //     link: 'https://replign.com',
-    // },
     {
         name: 'xfactura . ro',
         description: 'einvoicing and general accounting following the Romanian/EU legislation',
