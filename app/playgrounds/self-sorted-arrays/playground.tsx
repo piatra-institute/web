@@ -63,6 +63,7 @@ export default function SelfSortedArraysPlayground() {
 
     const [minimumValue, setMinimumValue] = useState(0);
     const [maximumValue, setMaximumValue] = useState(100);
+    const [duplicationDegree, setDuplicationDegree] = useState(0);
 
     const [proactivePercent, setProactivePercent] = useState(0.9);
     const [passivePercent, setPassivePercent] = useState(0.05);
@@ -466,6 +467,8 @@ export default function SelfSortedArraysPlayground() {
                 setMinimumValue={setMinimumValue}
                 maximumValue={maximumValue}
                 setMaximumValue={setMaximumValue}
+                duplicationDegree={duplicationDegree}
+                setDuplicationDegree={setDuplicationDegree}
 
                 proactivePercent={proactivePercent}
                 setProactivePercent={setProactivePercent}

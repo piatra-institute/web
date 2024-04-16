@@ -65,6 +65,8 @@ export interface SettingsProperties {
     setMinimumValue: React.Dispatch<React.SetStateAction<number>>;
     maximumValue: number;
     setMaximumValue: React.Dispatch<React.SetStateAction<number>>;
+    duplicationDegree: number;
+    setDuplicationDegree: React.Dispatch<React.SetStateAction<number>>;
 
     proactivePercent: number;
     setProactivePercent: React.Dispatch<React.SetStateAction<number>>;
@@ -163,6 +165,8 @@ export default function Settings(
         setMinimumValue,
         maximumValue,
         setMaximumValue,
+        duplicationDegree,
+        setDuplicationDegree,
 
         proactivePercent,
         setProactivePercent,
@@ -467,6 +471,20 @@ export default function Settings(
                                 setMaximumValue(value);
                             }}
                             label="maximum value"
+                            compact={true}
+                            type="number"
+                        />
+
+                        <Input
+                            value={duplicationDegree}
+                            onChange={(e) => {
+                                const value = parseInt(e);
+                                if (isNaN(value)) {
+                                    return;
+                                }
+                                setDuplicationDegree(value);
+                            }}
+                            label="duplication degree"
                             compact={true}
                             type="number"
                         />
