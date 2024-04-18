@@ -22,12 +22,16 @@ const platforms = [
         link: '/playgrounds/self-sorted-arrays',
     },
     // {
-    //     name: 'vote no',
-    //     link: '/playgrounds/vote-no',
+    //     name: 'metamaterials',
+    //     link: '/playgrounds/metamaterials',
     // },
     // {
     //     name: 'lifesong',
     //     link: '/playgrounds/lifesong',
+    // },
+    // {
+    //     name: 'vote no',
+    //     link: '/playgrounds/vote-no',
     // },
     // {
     //     name: 'everything... relevant',
