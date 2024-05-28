@@ -47,7 +47,7 @@ export default function Home() {
                 />
 
                 <h1
-                    className="w-full sm:w-auto sm:min-w-[360px] sm:max-w-[400px] p-2 bg-lime-50 text-black uppercase text-base font-bold sm:text-2xl my-4 mx-auto sm:my-4 sm:mx-auto"
+                    className="w-full sm:w-auto sm:min-w-[380px] sm:max-w-[400px] p-2 bg-lime-50 text-black uppercase text-base font-bold sm:text-2xl my-4 mx-auto sm:my-4 sm:mx-auto"
                 >
                     piatra . institute
                 </h1>
@@ -56,6 +56,24 @@ export default function Home() {
                     className="text-xs my-2"
                 >
                     Piatra Institute of Arts & Technologies Recursively Applied
+                    <a
+                        href="mailto:contact@piatra.institute"
+                    >
+                        <svg
+                            width="14px" height="14px"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                            style={{
+                                display: 'inline',
+                                marginLeft: '0.4rem',
+                            }}
+                        >
+                            <path
+                                d="M22 2L2 8.66667L11.5833 12.4167M22 2L15.3333 22L11.5833 12.4167M22 2L11.5833 12.4167"
+                                stroke="#f7fee7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                            />
+                        </svg>
+                    </a>
                 </h2>
 
                 <div
