@@ -5,6 +5,7 @@ import Image from 'next/image';
 
 import {
     linkButtonStyle,
+    focusStyle,
 } from '@/data/styles';
 
 
@@ -58,14 +59,18 @@ export default function Home() {
                     Piatra Institute of Arts & Technologies Recursively Applied
                     <a
                         href="mailto:contact@piatra.institute"
+                        tabIndex={-1}
                     >
                         <svg
                             width="14px" height="14px"
                             viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg"
+                            tabIndex={1}
+                            className={focusStyle}
                             style={{
                                 display: 'inline',
                                 marginLeft: '0.4rem',
+                                padding: '0.1rem',
                             }}
                         >
                             <path
