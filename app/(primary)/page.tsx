@@ -117,7 +117,7 @@ export default function Home() {
                     </p>
 
                     <p className="m-1">
-                        <span className="text-sm uppercase">& deep research</span>
+                        <span className="text-sm uppercase">&&nbsp;&nbsp;&nbsp;deep research</span>
                     </p>
                 </div>
 
