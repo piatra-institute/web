@@ -86,7 +86,7 @@ export default function Home() {
                 </h2>
 
                 <div
-                    className="p-4 relative"
+                    className="relative p-4"
                 >
                     <p className="m-2">
                         <span className="text-sm uppercase">love</span> <span className="text-emerald-500"> <span
@@ -97,9 +97,8 @@ export default function Home() {
                     </p>
 
                     <p
-                        className="text-emerald-500"
+                        className="absolute text-emerald-500"
                         style={{
-                            position: 'absolute',
                             top: '42px',
                             left: '50%',
                             transform: 'translateX(-50%)',
