@@ -82,14 +82,34 @@ export default function Home() {
                 </h2>
 
                 <div
-                    className="p-4"
+                    className="p-4 relative"
                 >
-                    <p className="m-1">
-                        <span className="text-sm uppercase">love</span> <span className="text-emerald-500">for the other</span>
+                    <p className="m-2">
+                        <span className="text-sm uppercase">love</span> <span className="text-emerald-500"> <span
+                            style={{
+                                color: 'black'
+                            }}
+                        >for the</span> other</span>
+                    </p>
+
+                    <p
+                        className="text-emerald-500"
+                        style={{
+                            position: 'absolute',
+                            top: '42px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                        }}
+                    >
+                        for the
                     </p>
 
                     <p className="m-1">
-                        <span className="text-sm uppercase">care</span> <span className="text-emerald-500">for the world</span>
+                        <span className="text-sm uppercase">care</span> <span className="text-emerald-500"> <span
+                            style={{
+                                color: 'black'
+                            }}
+                        >for the</span> world</span>
                     </p>
 
                     <p className="m-1">
