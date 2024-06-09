@@ -33,6 +33,11 @@ const platforms = [
         link: 'https://ordershop.io',
     },
     {
+        name: 'outmill . run',
+        description: 'run on outdoor treadmills',
+        link: 'https://outmill.run',
+    },
+    {
         name: 'sonocracy . com',
         description: 'vote for volume control and bid for songs in venues',
         link: 'https://sonocracy.com',
