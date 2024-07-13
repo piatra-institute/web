@@ -1,4 +1,8 @@
-import React from 'react';
+'use client';
+
+import React, {
+    useState,
+} from 'react';
 
 import Link from 'next/link';
 import Image from 'next/image';
@@ -35,6 +39,12 @@ const links = [
 
 
 export default function Home() {
+    const [
+        expandedNoem,
+        setExpandedNoem,
+    ] = useState(false);
+
+
     return (
         <main className="md:h-screen flex items-center justify-center p-10 select-none overflow-scroll">
             <div className="max-w-5xl w-full items-center justify-center grid text-center text-lime-50">
@@ -90,28 +100,24 @@ export default function Home() {
                 >
                     <p className="m-2">
                         <span className="text-sm uppercase">love</span> <span className="text-emerald-500"> <span
-                            style={{
-                                color: 'black'
-                            }}
+                            className={`${expandedNoem ? 'text-emerald-500' : 'text-black'}`}
                         >for the</span> other</span>
                     </p>
 
                     <p
-                        className="absolute text-emerald-500"
+                        className={`absolute -translate-x-1/2 ${expandedNoem ? 'text-black' : 'text-emerald-500'} cursor-pointer`}
                         style={{
                             top: '42px',
                             left: '50%',
-                            transform: 'translateX(-50%)',
                         }}
+                        onClick={() => setExpandedNoem(!expandedNoem)}
                     >
                         for the
                     </p>
 
                     <p className="m-1">
                         <span className="text-sm uppercase">care</span> <span className="text-emerald-500"> <span
-                            style={{
-                                color: 'black'
-                            }}
+                            className={`${expandedNoem ? 'text-emerald-500' : 'text-black'}`}
                         >for the</span> world</span>
                     </p>
 
