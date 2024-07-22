@@ -46,7 +46,7 @@ export default function Home() {
 
 
     return (
-        <main className="md:h-screen flex items-center justify-center p-10 select-none overflow-scroll">
+        <main className="md:h-screen flex items-center justify-center p-10 select-none overflow-scroll lg:overflow-auto">
             <div className="max-w-5xl w-full items-center justify-center grid text-center text-lime-50">
                 <Image
                     src="/piatra-institute.png"
