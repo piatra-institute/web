@@ -42,6 +42,11 @@ const platforms = [
         description: 'vote for volume control and bid for songs in venues',
         link: 'https://sonocracy.com',
     },
+    // {
+    //     name: 'strângere . ro',
+    //     description: 'plastic waste collection and recycling',
+    //     link: 'https://strangere.ro',
+    // },
     {
         name: 'xfactura . ro',
         description: 'einvoicing and general accounting following the Romanian/EU legislation',
