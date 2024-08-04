@@ -17,7 +17,7 @@ export default function Header() {
                     height={175}
                     width={175}
                     alt="piatra.institute"
-                    className="pointer-events-none justify-self-center m-auto mb-2"
+                    className="pointer-events-none select-none justify-self-center m-auto mb-2"
                     priority
                 />
 
