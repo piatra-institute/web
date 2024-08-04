@@ -17,12 +17,12 @@ export default function Header() {
                     height={175}
                     width={175}
                     alt="piatra.institute"
-                    className="pointer-events-none select-none justify-self-center m-auto mb-2"
+                    className="select-none pointer-events-none justify-self-center m-auto mb-2"
                     priority
                 />
 
                 <h1
-                    className="font-bold text-lg text-center uppercase"
+                    className="select-none font-bold text-lg text-center uppercase"
                 >
                     PIATRA . INSTITUTE
                 </h1>
