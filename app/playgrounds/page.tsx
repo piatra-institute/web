@@ -16,11 +16,15 @@ export const metadata: Metadata = {
 };
 
 
-const platforms = [
+const playgrounds = [
     {
         name: 'self-sorted arrays',
         link: '/playgrounds/self-sorted-arrays',
     },
+    // {
+    //     name: 'refractive computation',
+    //     link: '/playgrounds/refractive-computation',
+    // },
     // {
     //     name: 'metamaterials',
     //     link: '/playgrounds/metamaterials',
@@ -48,17 +52,17 @@ export default function Playgrounds() {
             <Header />
 
             <Title
-                text="platforms"
+                text="playgrounds"
             />
 
             <div
                 className="p-6"
             >
-                {platforms.map((platform) => {
+                {playgrounds.map((playground) => {
                     const {
                         name,
                         link,
-                    } = platform;
+                    } = playground;
 
                     return (
                         <Link
