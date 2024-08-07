@@ -38,15 +38,15 @@ const platforms = [
         link: 'https://outmill.run',
     },
     {
+        name: 'returber . com',
+        description: 'waste collection for the deposit return system',
+        link: 'https://returber.com',
+    },
+    {
         name: 'sonocracy . com',
         description: 'vote for volume control and bid for songs in venues',
         link: 'https://sonocracy.com',
     },
-    // {
-    //     name: 'strângere . ro',
-    //     description: 'plastic waste collection and recycling',
-    //     link: 'https://strangere.ro',
-    // },
     {
         name: 'xfactura . ro',
         description: 'einvoicing and general accounting following the Romanian/EU legislation',
