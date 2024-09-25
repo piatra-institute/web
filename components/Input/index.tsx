@@ -14,6 +14,7 @@ export interface InputProps {
     type?: 'text' | 'number';
     min?: number;
     max?: number;
+    step?: number;
 }
 
 

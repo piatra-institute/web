@@ -21,6 +21,10 @@ const playgrounds = [
         name: 'self-sorted arrays',
         link: '/playgrounds/self-sorted-arrays',
     },
+    {
+        name: 'estigrade',
+        link: '/playgrounds/estigrade',
+    },
     // {
     //     name: 'refractive computation',
     //     link: '/playgrounds/refractive-computation',
