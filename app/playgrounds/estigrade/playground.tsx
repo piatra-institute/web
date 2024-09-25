@@ -30,8 +30,8 @@ export default function EstigradePlayground() {
     ] = useState(80);
 
     const [
-        actualGrade,
-        setActualGrade,
+        examGrade,
+        setExamGrade,
     ] = useState(80);
 
     const [
@@ -42,11 +42,11 @@ export default function EstigradePlayground() {
 
     useEffect(() => {
         const computeFinalGrade = () => {
-            const gradeDifference = Math.abs(actualGrade - estimatedGrade);
+            const gradeDifference = Math.abs(examGrade - estimatedGrade);
 
             return parseInt(
                 (
-                    actualGrade + reward * (100 - gradeDifference) - penalty * gradeDifference
+                    examGrade + reward * (100 - gradeDifference) - penalty * gradeDifference
                 ).toFixed(2)
             );
         }
@@ -57,7 +57,7 @@ export default function EstigradePlayground() {
         reward,
         penalty,
         estimatedGrade,
-        actualGrade,
+        examGrade,
     ]);
 
     return (
@@ -83,9 +83,15 @@ export default function EstigradePlayground() {
                 <Image
                     src="/assets-playgrounds/estigrade/estigrade-formula.png"
                     alt="estigrade formula"
+                    className="select-none"
                     height={22}
                     width={700}
+                    priority={true}
                     draggable={false}
+                    style={{
+                        width: 'auto',
+                        height: 'auto',
+                    }}
                 />
             </div>
 
@@ -95,6 +101,7 @@ export default function EstigradePlayground() {
                     onChange={(e) => {
                         const value = parseFloat(e);
                         if (isNaN(value)) {
+                            setReward(0);
                             return;
                         }
                         setReward(value);
@@ -112,6 +119,7 @@ export default function EstigradePlayground() {
                     onChange={(e) => {
                         const value = parseFloat(e);
                         if (isNaN(value)) {
+                            setPenalty(0);
                             return;
                         }
                         setPenalty(value);
@@ -129,6 +137,7 @@ export default function EstigradePlayground() {
                     onChange={(e) => {
                         const value = parseInt(e);
                         if (isNaN(value)) {
+                            setEstimatedGrade(0);
                             return;
                         }
                         setEstimatedGrade(value);
@@ -141,13 +150,14 @@ export default function EstigradePlayground() {
                 />
 
                 <Input
-                    value={actualGrade}
+                    value={examGrade}
                     onChange={(e) => {
                         const value = parseInt(e);
                         if (isNaN(value)) {
+                            setExamGrade(0);
                             return;
                         }
-                        setActualGrade(value);
+                        setExamGrade(value);
                     }}
                     label="[exam] grade"
                     compact={true}
