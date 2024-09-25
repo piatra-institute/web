@@ -73,7 +73,7 @@ export default function EstigradePlayground() {
             <div
                 className="max-w-80 mb-6 text-center"
             >
-                enhances grades when students accurately estimate their exam scores
+                enhance grades when students accurately estimate their exam scores
             </div>
 
             <div
