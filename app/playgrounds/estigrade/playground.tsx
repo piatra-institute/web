@@ -77,7 +77,7 @@ export default function EstigradePlayground() {
             </div>
 
             <div
-                className="mb-8 text-center"
+                className="max-w-[300px] p-4 min-h-[22px] overflow-auto md:max-w-[700px] mb-8 text-center"
             >
                 {/* \textbf{final} = \textbf{exam} + r \times (100 - |\textbf{exam} - \textbf{estimated}|) - p \times |\textbf{exam} - \textbf{estimated}| */}
                 <Image
@@ -85,12 +85,13 @@ export default function EstigradePlayground() {
                     alt="estigrade formula"
                     className="select-none"
                     height={22}
-                    width={700}
+                    width={600}
                     priority={true}
                     draggable={false}
                     style={{
-                        width: 'auto',
-                        height: 'auto',
+                        width: '600px',
+                        height: '22px',
+                        maxWidth: 'initial',
                     }}
                 />
             </div>
@@ -221,7 +222,9 @@ export default function EstigradePlayground() {
                         [final] grade
                     </div>
 
-                    <div>
+                    <div
+                        className="px-4 xl:px-8"
+                    >
                         {finalGrade}
                     </div>
                 </div>
