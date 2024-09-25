@@ -104,6 +104,17 @@ export default function EstigradePlayground() {
                             setReward(0);
                             return;
                         }
+
+                        if (value < 0) {
+                            setReward(0);
+                            return;
+                        }
+
+                        if (value > 1) {
+                            setReward(1);
+                            return;
+                        }
+
                         setReward(value);
                     }}
                     label="[r]eward"
@@ -112,6 +123,7 @@ export default function EstigradePlayground() {
                     min={0}
                     max={1}
                     step={0.1}
+                    inputMode="decimal"
                 />
 
                 <Input
@@ -122,6 +134,17 @@ export default function EstigradePlayground() {
                             setPenalty(0);
                             return;
                         }
+
+                        if (value < 0) {
+                            setPenalty(0);
+                            return;
+                        }
+
+                        if (value > 1) {
+                            setPenalty(1);
+                            return;
+                        }
+
                         setPenalty(value);
                     }}
                     label="[p]enalty"
@@ -130,16 +153,28 @@ export default function EstigradePlayground() {
                     min={0}
                     max={1}
                     step={0.1}
+                    inputMode="decimal"
                 />
 
                 <Input
-                    value={estimatedGrade}
+                    value={parseInt(estimatedGrade + '', 10) || ""}
                     onChange={(e) => {
                         const value = parseInt(e);
                         if (isNaN(value)) {
                             setEstimatedGrade(0);
                             return;
                         }
+
+                        if (value < 0) {
+                            setEstimatedGrade(0);
+                            return;
+                        }
+
+                        if (value > 100) {
+                            setEstimatedGrade(100);
+                            return;
+                        }
+
                         setEstimatedGrade(value);
                     }}
                     label="[estimated] grade"
@@ -147,16 +182,28 @@ export default function EstigradePlayground() {
                     type="number"
                     min={0}
                     max={100}
+                    inputMode="numeric"
                 />
 
                 <Input
-                    value={examGrade}
+                    value={parseInt(examGrade + '', 10) || ""}
                     onChange={(e) => {
                         const value = parseInt(e);
                         if (isNaN(value)) {
                             setExamGrade(0);
                             return;
                         }
+
+                        if (value < 0) {
+                            setExamGrade(0);
+                            return;
+                        }
+
+                        if (value > 100) {
+                            setExamGrade(100);
+                            return;
+                        }
+
                         setExamGrade(value);
                     }}
                     label="[exam] grade"
@@ -164,6 +211,7 @@ export default function EstigradePlayground() {
                     type="number"
                     min={0}
                     max={100}
+                    inputMode="numeric"
                 />
 
                 <div

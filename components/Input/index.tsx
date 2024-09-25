@@ -15,6 +15,7 @@ export interface InputProps {
     min?: number;
     max?: number;
     step?: number;
+    inputMode?: 'numeric' | 'decimal' | 'email';
 }
 
 
@@ -49,7 +50,11 @@ const Input: React.FC<InputProps> = ({
                 onChange={(e) => {
                     onChange(e.target.value);
                 }}
+                onFocus={(e) => {
+                    e.target.select();
+                }}
                 name={label || 'input'}
+                lang="en"
                 {...rest}
             />
         </div>
