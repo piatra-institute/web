@@ -1,5 +1,9 @@
 import type { Metadata } from 'next';
 
+import {
+    defaultOpenGraph,
+} from '@/data/metadata';
+
 import SelfSortedArraysPlayground from './playground';
 
 
@@ -9,16 +13,9 @@ export const metadata: Metadata = {
     description: 'arrays sorted bottom-up with cell-like numbers',
 
     openGraph: {
-        type: 'website',
-        url: 'https://piatra.institute',
+        ...defaultOpenGraph,
         title: 'self-sorted arrays · playgrounds · piatra.institute',
         description: 'arrays sorted bottom-up with cell-like numbers',
-        siteName: 'piatra.institute',
-        images: [
-            {
-                url: 'https://piatra.institute/og.png',
-            },
-        ],
     },
 };
 

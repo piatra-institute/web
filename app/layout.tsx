@@ -2,6 +2,9 @@ import type { Viewport } from 'next';
 import type { Metadata } from 'next';
 
 import fonts from '@/data/fonts';
+import {
+    defaultOpenGraph,
+} from '@/data/metadata';
 
 import './globals.css';
 
@@ -31,16 +34,7 @@ export const metadata: Metadata = {
         ],
     },
     openGraph: {
-        type: 'website',
-        url: 'https://piatra.institute',
-        title: 'piatra.institute',
-        description: 'love · care · deep research',
-        siteName: 'piatra.institute',
-        images: [
-            {
-                url: 'https://piatra.institute/og.png',
-            },
-        ],
+        ...defaultOpenGraph,
     },
 };
 

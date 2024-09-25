@@ -1,5 +1,9 @@
 import type { Metadata } from 'next';
 
+import {
+    defaultOpenGraph,
+} from '@/data/metadata';
+
 import EstigradePlayground from './playground';
 
 
@@ -9,16 +13,9 @@ export const metadata: Metadata = {
     description: 'enhances grades when students accurately estimate their exam scores',
 
     openGraph: {
-        type: 'website',
-        url: 'https://piatra.institute',
+        ...defaultOpenGraph,
         title: 'estigrade · playgrounds · piatra.institute',
         description: 'enhances grades when students accurately estimate their exam scores',
-        siteName: 'piatra.institute',
-        images: [
-            {
-                url: 'https://piatra.institute/og.png',
-            },
-        ],
     },
 };
 
