@@ -19,22 +19,22 @@ const links = [
         href: '/platforms',
         label: 'platforms',
     },
-    {
-        href: '/provocations',
-        label: 'provocations',
-    },
-    {
-        href: '/papers',
-        label: 'papers',
-    },
+    // {
+    //     href: '/provocations',
+    //     label: 'provocations',
+    // },
+    // {
+    //     href: '/papers',
+    //     label: 'papers',
+    // },
     {
         href: '/playgrounds',
         label: 'playgrounds',
     },
-    {
-        href: '/press',
-        label: 'press',
-    },
+    // {
+    //     href: '/press',
+    //     label: 'press',
+    // },
 ];
 
 

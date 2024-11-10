@@ -554,6 +554,20 @@ export default function SelfSortedArraysPlayground() {
                     text="self-sorted arrays playground"
                 />
 
+                <h2
+                    className={"text-sm -mt-6 text-center leading-relaxed"}
+                >
+                    based on
+                    <br />
+                    <a
+                        href="https://arxiv.org/abs/2401.05375"
+                        target="_blank"
+                    >
+                        2023, Michael Levin et al., <i>Classical Sorting Algorithms as a Model of Morphogenesis</i>
+                    </a>
+                </h2>
+
+
                 <Input
                     value={count}
                     onChange={(value) => {
