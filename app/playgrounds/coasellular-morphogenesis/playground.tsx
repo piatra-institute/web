@@ -9,9 +9,30 @@ import Header from '@/components/Header';
 import Title from '@/components/Title';
 import Input from '@/components/Input';
 
+import PairOfCircles from './PairOfCircles';
+
 
 
 export default function CoasellularMorphogenesisPlayground() {
+    const [pointsCount, setPointsCount] = useState(12);
+    const [points, setPoints] = useState(
+        Array.from(
+            { length: pointsCount },
+            (_, i) => i
+        ),
+    );
+
+
+    useEffect(() => {
+        setPoints(
+            Array.from(
+                { length: pointsCount },
+                (_, i) => i
+            ),
+        );
+    }, [pointsCount]);
+
+
     return (
         <div
             className="z-10 relative flex flex-col items-center justify-center min-h-screen py-2"
@@ -29,8 +50,27 @@ export default function CoasellularMorphogenesisPlayground() {
             </div>
 
             <div>
-                {/* // TODO: add playground */}
+                <Input
+                    label="points count"
+                    value={pointsCount}
+                    onChange={(value) => {
+                        setPointsCount(parseInt(value));
+                    }}
+                />
             </div>
+
+            <div
+                className="flex flex-row items-center justify-center"
+            >
+                <PairOfCircles
+                    points={points}
+                    speed={2}
+                />
+            </div>
+
+            <div
+                className="min-h-[100px]"
+            />
         </div>
     );
 }
