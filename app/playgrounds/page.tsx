@@ -25,6 +25,10 @@ const playgrounds = [
         name: 'estigrade',
         link: '/playgrounds/estigrade',
     },
+    {
+        name: 'coasellular morphogenesis',
+        link: '/playgrounds/coasellular-morphogenesis',
+    },
     // {
     //     name: 'refractive computation',
     //     link: '/playgrounds/refractive-computation',
