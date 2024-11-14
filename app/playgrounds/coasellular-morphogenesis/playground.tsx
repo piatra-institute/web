@@ -25,7 +25,7 @@ export default function CoasellularMorphogenesisPlayground() {
             <div
                 className="max-w-80 mb-6 text-center"
             >
-                bioelectric and cellular agents interactions and negotiations based on Coase&apos;s theorem
+                bioelectric and cellular agents interactions and negotiations based on Coasean transaction costs
             </div>
 
             <div>
