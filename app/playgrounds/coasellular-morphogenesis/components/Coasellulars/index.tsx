@@ -77,14 +77,21 @@ const Coasellulars: React.FC<Coasellulars> = ({
                         gap: '1rem',
                     }}
                 >
-                    {Array.from({ length: matrixColumns }).map((_, colIndex) => (
-                        <div key={colIndex}>
-                            <Circle
-                                points={circles[rowIndex][colIndex].points}
-                                energy={30}
-                            />
-                        </div>
-                    ))}
+                    {Array.from({ length: matrixColumns }).map((_, colIndex) => {
+                        const {
+                            points,
+                            energy,
+                        } = circles[rowIndex][colIndex];
+
+                        return (
+                            <div key={colIndex}>
+                                <Circle
+                                    points={points}
+                                    energy={energy}
+                                />
+                            </div>
+                        );
+                    })}
                 </div>
             ))}
         </div>

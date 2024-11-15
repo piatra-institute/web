@@ -3,6 +3,7 @@ export class Point {
     value: number;
     x: number = 0;
     y: number = 0;
+    changed = false;
 
     constructor(angle: number, value: number, radius: number) {
         this.angle = angle;
@@ -25,10 +26,16 @@ export class Point {
 export class Circle {
     points: Point[];
     radius: number;
+    energy: number;
 
-    constructor(initialValues: number[], radius: number) {
+    constructor(
+        initialValues: number[],
+        radius: number,
+        energy: number,
+    ) {
         this.radius = radius;
         this.points = initialValues.map((value, i) => new Point((i / initialValues.length) * 360, value, radius));
+        this.energy = energy;
     }
 
     rotate(degrees: number) {
@@ -56,7 +63,12 @@ export class RotatingCircles {
             for (let j = 0; j < columns; j++) {
                 const pointsCount = initialValues.length / (rows * columns);
                 const points = initialValues.slice((i * columns + j) * pointsCount, (i * columns + j + 1) * pointsCount);
-                row.push(new Circle(points, radius));
+                const energy = Math.floor(Math.random() * 100);
+                row.push(new Circle(
+                    points,
+                    radius,
+                    energy,
+                ));
             }
             this.circles.push(row);
         }
@@ -72,23 +84,65 @@ export class RotatingCircles {
     }
 
     adjustPointsIfClose() {
+        // for all the circles make pairs
+        //
+        //          a1            a2
+        //      d1  C1  b1    d2  C2   b2
+        //          c1            c2
+        //          a3            a4
+        //      d3  C3  b3    d4  C4   b4
+        //          c3            c4
+        //
+        // a Circle C can have neighbors with the points a, b, c, d
+        // make pairs for instance here
+        // C1-b1 with C2-d2
+        // C1-c1 with C3-a3
+        // C2-c2 with C4-a4
+        // C3-b3 with C4-d4
+        // account for the fact that there might be an unknown number of points
+        // and compute neighbors given an angle of 10 degrees from the origin
+
+
         const angleThreshold = 10; // Define threshold in degrees
 
-        this.circles.forEach((row) => {
-            row.forEach((circle) => {
-                for (let i = 0; i < circle.points.length; i++) {
-                    const point1 = circle.points[i];
-                    const point2 = circle.points[(i + 1) % circle.points.length];
+        this.circles.forEach((row, rowIndex) => {
+            row.forEach((circle, colIndex) => {
+                circle.points.forEach((point, pointIndex) => {
+                    const neighbors = [];
 
-                    const isPoint1NearZero = Math.abs(point1.angle) <= angleThreshold;
-                    const isPoint2Near180 = Math.abs(point2.angle - 180) <= angleThreshold;
-
-                    if (isPoint1NearZero && isPoint2Near180) {
-                        const adjustment = Math.random() > 0.5 ? 1 : -1;
-                        point1.value += adjustment;
-                        point2.value -= adjustment;
+                    // Get neighbors
+                    if (rowIndex > 0) {
+                        neighbors.push(this.circles[rowIndex - 1][colIndex].points[pointIndex]); // Top
                     }
-                }
+                    if (rowIndex < this.circles.length - 1) {
+                        neighbors.push(this.circles[rowIndex + 1][colIndex].points[pointIndex]); // Bottom
+                    }
+                    if (colIndex > 0) {
+                        neighbors.push(this.circles[rowIndex][colIndex - 1].points[pointIndex]); // Left
+                    }
+                    if (colIndex < row.length - 1) {
+                        neighbors.push(this.circles[rowIndex][colIndex + 1].points[pointIndex]); // Right
+                    }
+
+                    neighbors.forEach((neighbor) => {
+                        const angleDiff = Math.abs(point.angle - neighbor.angle);
+                        if (angleDiff <= angleThreshold || Math.abs(angleDiff - 360) <= angleThreshold) {
+                            if (point.changed && neighbor.changed) {
+                                return;
+                            }
+
+                            const adjustment = Math.random() > 0.5 ? 1 : -1;
+                            point.value += adjustment;
+                            neighbor.value -= adjustment;
+
+                            point.changed = true;
+                            neighbor.changed = true;
+                        } else {
+                            point.changed = false;
+                            neighbor.changed = false;
+                        }
+                    });
+                });
             });
         });
     }

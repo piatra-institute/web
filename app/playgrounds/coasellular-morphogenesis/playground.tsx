@@ -5,19 +5,27 @@ import {
     useEffect,
 } from 'react';
 
+import dynamic from 'next/dynamic';
+
 import Header from '@/components/Header';
 import Title from '@/components/Title';
 import Input from '@/components/Input';
 
-import Coasellulars from './components/Coasellulars';
 import Settings from './components/Settings';
 
 
 
+const DynamicCoasellulars = dynamic(
+    () => import('./components/Coasellulars'), {
+        ssr: false,
+    },
+);
+
+
 export default function CoasellularMorphogenesisPlayground() {
-    const [matrixRows, setMatrixRows] = useState(1);
+    const [matrixRows, setMatrixRows] = useState(2);
     const [matrixColumns, setMatrixColumns] = useState(2);
-    const [pointsCount, setPointsCount] = useState(12);
+    const [pointsCount, setPointsCount] = useState(8);
     const [points, setPoints] = useState(
         Array.from(
             { length: pointsCount * matrixRows * matrixColumns },
@@ -91,7 +99,7 @@ export default function CoasellularMorphogenesisPlayground() {
             <div
                 className="flex flex-row items-center justify-center"
             >
-                <Coasellulars
+                <DynamicCoasellulars
                     matrixRows={matrixRows}
                     matrixColumns={matrixColumns}
 
