@@ -9,18 +9,22 @@ import Header from '@/components/Header';
 import Title from '@/components/Title';
 import Input from '@/components/Input';
 
-import PairOfCircles from './PairOfCircles';
+import Coasellulars from './components/Coasellulars';
+import Settings from './components/Settings';
 
 
 
 export default function CoasellularMorphogenesisPlayground() {
+    const [matrixRows, setMatrixRows] = useState(2);
+    const [matrixColumns, setMatrixColumns] = useState(2);
     const [pointsCount, setPointsCount] = useState(12);
     const [points, setPoints] = useState(
         Array.from(
-            { length: pointsCount },
+            { length: pointsCount * matrixRows * matrixColumns },
             (_, i) => i
         ),
     );
+    const [transactionCost, setTransactionCost] = useState(5);
 
 
     useEffect(() => {
@@ -57,10 +61,10 @@ export default function CoasellularMorphogenesisPlayground() {
 
             <div>
                 <Input
-                    label="points count"
-                    value={pointsCount}
+                    label="transaction cost"
+                    value={transactionCost}
                     onChange={(value) => {
-                        setPointsCount(parseInt(value));
+                        setTransactionCost(parseInt(value));
                     }}
                 />
             </div>
@@ -68,7 +72,10 @@ export default function CoasellularMorphogenesisPlayground() {
             <div
                 className="flex flex-row items-center justify-center"
             >
-                <PairOfCircles
+                <Coasellulars
+                    matrixRows={matrixRows}
+                    matrixColumns={matrixColumns}
+
                     points={points}
                     speed={2}
                 />
@@ -76,6 +83,17 @@ export default function CoasellularMorphogenesisPlayground() {
 
             <div
                 className="min-h-[100px]"
+            />
+
+            <Settings
+                matrixRows={matrixRows}
+                setMatrixRows={setMatrixRows}
+
+                matrixColumns={matrixColumns}
+                setMatrixColumns={setMatrixColumns}
+
+                pointsCount={pointsCount}
+                setPointsCount={setPointsCount}
             />
         </div>
     );
