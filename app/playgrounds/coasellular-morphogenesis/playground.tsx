@@ -51,7 +51,7 @@ export default function CoasellularMorphogenesisPlayground() {
                 </p>
 
                 <p>
-                    each circle has energy for transactions and uses the others as its memory; as they spin, each circle accesses the other&apos;s state to recall its initial configuration, negotiating to restore it
+                    each circle has energy for transactions and uses the others as memory; as they spin, each circle observe external states and infer prior states, negotiating to restore or are convinced to adopt the other&apos;s state
                 </p>
             </div>
 
