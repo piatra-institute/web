@@ -15,7 +15,7 @@ import Settings from './components/Settings';
 
 
 export default function CoasellularMorphogenesisPlayground() {
-    const [matrixRows, setMatrixRows] = useState(2);
+    const [matrixRows, setMatrixRows] = useState(1);
     const [matrixColumns, setMatrixColumns] = useState(2);
     const [pointsCount, setPointsCount] = useState(12);
     const [points, setPoints] = useState(
@@ -73,6 +73,8 @@ export default function CoasellularMorphogenesisPlayground() {
                     onChange={(value) => {
                         setTransactionCost(parseInt(value));
                     }}
+                    inputMode="numeric"
+                    type="number"
                 />
 
                 <Input
@@ -81,6 +83,8 @@ export default function CoasellularMorphogenesisPlayground() {
                     onChange={(value) => {
                         setSpeed(parseInt(value));
                     }}
+                    inputMode="numeric"
+                    type="number"
                 />
             </div>
 
