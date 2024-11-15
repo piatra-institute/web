@@ -13,10 +13,23 @@ export const useRotatingCircles = (
     speed: number = 10,
     radius: number = 100,
 ) => {
-    const [rotatingCircles] = useState(new RotatingCircles(
+    const [rotatingCircles, setRotatingCircles] = useState(new RotatingCircles(
         matrixRows, matrixColumns, initialValues, radius, speed,
     ));
     const [circles, setCircles] = useState(rotatingCircles.circles);
+
+
+    useEffect(() => {
+        setRotatingCircles(new RotatingCircles(
+            matrixRows, matrixColumns, initialValues, radius, speed,
+        ));
+    }, [
+        matrixRows,
+        matrixColumns,
+        initialValues,
+        radius,
+        speed,
+    ]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -26,6 +39,7 @@ export const useRotatingCircles = (
 
         return () => clearInterval(interval);
     }, [rotatingCircles]);
+
 
     return circles;
 };

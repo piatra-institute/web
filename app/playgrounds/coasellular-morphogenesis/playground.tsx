@@ -30,11 +30,15 @@ export default function CoasellularMorphogenesisPlayground() {
     useEffect(() => {
         setPoints(
             Array.from(
-                { length: pointsCount },
+                { length: pointsCount * matrixRows * matrixColumns },
                 (_, i) => i
             ),
         );
-    }, [pointsCount]);
+    }, [
+        matrixRows,
+        matrixColumns,
+        pointsCount,
+    ]);
 
 
     return (
