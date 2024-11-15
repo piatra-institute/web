@@ -25,6 +25,7 @@ export default function CoasellularMorphogenesisPlayground() {
         ),
     );
     const [transactionCost, setTransactionCost] = useState(5);
+    const [speed, setSpeed] = useState(3);
 
 
     useEffect(() => {
@@ -63,12 +64,22 @@ export default function CoasellularMorphogenesisPlayground() {
                 </p>
             </div>
 
-            <div>
+            <div
+                className="mb-8"
+            >
                 <Input
                     label="transaction cost"
                     value={transactionCost}
                     onChange={(value) => {
                         setTransactionCost(parseInt(value));
+                    }}
+                />
+
+                <Input
+                    label="speed"
+                    value={speed}
+                    onChange={(value) => {
+                        setSpeed(parseInt(value));
                     }}
                 />
             </div>
@@ -81,7 +92,7 @@ export default function CoasellularMorphogenesisPlayground() {
                     matrixColumns={matrixColumns}
 
                     points={points}
-                    speed={2}
+                    speed={speed}
                 />
             </div>
 
