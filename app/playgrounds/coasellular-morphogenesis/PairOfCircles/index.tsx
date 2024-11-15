@@ -12,7 +12,13 @@ import './style.css';
 
 
 
-const Circle: React.FC<{ points: Point[] }> = ({ points }) => {
+const Circle: React.FC<{
+    points: Point[],
+    energy: number,
+}> = ({
+    points,
+    energy,
+}) => {
     return (
         <div className="circle">
             {points.map((point, index) => (
@@ -26,6 +32,10 @@ const Circle: React.FC<{ points: Point[] }> = ({ points }) => {
                     {point.value}
                 </div>
             ))}
+
+            <div>
+                {energy}
+            </div>
         </div>
     );
 };
@@ -36,8 +46,14 @@ const PairOfCircles: React.FC<{ points: number[]; speed?: number }> = ({ points,
 
     return (
         <div className="pair-of-circles">
-            <Circle points={circle1Points} />
-            <Circle points={circle2Points} />
+            <Circle
+                points={circle1Points}
+                energy={30}
+            />
+            <Circle
+                points={circle2Points}
+                energy={50}
+            />
         </div>
     );
 };

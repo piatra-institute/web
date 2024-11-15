@@ -46,7 +46,13 @@ export default function CoasellularMorphogenesisPlayground() {
             <div
                 className="max-w-80 mb-6 text-center"
             >
-                bioelectric and cellular agents interactions and negotiations based on Coasean transaction costs
+                <p>
+                    bioelectric and cellular agents interactions and negotiations based on Coasean transaction costs
+                </p>
+
+                <p>
+                    each circle has energy for transactions and uses the others as its memory; as they spin, each circle accesses the other&apos;s state to recall its initial configuration, negotiating to restore it
+                </p>
             </div>
 
             <div>
