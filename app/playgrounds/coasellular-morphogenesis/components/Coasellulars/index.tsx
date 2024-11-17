@@ -8,6 +8,9 @@ import {
     useRotatingCircles,
 } from '@/app/playgrounds/coasellular-morphogenesis/components/hooks';
 
+import Button from '@/components/Button';
+import Toggle from '@/components/Toggle';
+
 import './style.css';
 
 
@@ -54,7 +57,12 @@ const Coasellulars: React.FC<Coasellulars> = ({
     points,
     speed = 10,
 }) => {
-    const circles = useRotatingCircles(
+    const {
+        circles,
+        rotate,
+        autoRotate,
+        setAutoRotate,
+    } = useRotatingCircles(
         matrixRows,
         matrixColumns,
         points,
@@ -62,6 +70,25 @@ const Coasellulars: React.FC<Coasellulars> = ({
     );
 
     return (
+        <>
+        <div
+            className="flex justify-center items-center gap-8 mb-8"
+        >
+            <Button
+                label="Step"
+                onClick={() => rotate()}
+                style={{
+                    marginTop: 0,
+                }}
+            />
+
+            <Toggle
+                text="auto step"
+                value={autoRotate}
+                toggle={() => setAutoRotate(!autoRotate)}
+            />
+        </div>
+
         <div
             style={{
                 display: 'grid',
@@ -95,6 +122,7 @@ const Coasellulars: React.FC<Coasellulars> = ({
                 </div>
             ))}
         </div>
+        </>
     );
 };
 

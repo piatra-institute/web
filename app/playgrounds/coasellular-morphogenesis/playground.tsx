@@ -23,9 +23,9 @@ const DynamicCoasellulars = dynamic(
 
 
 export default function CoasellularMorphogenesisPlayground() {
-    const [matrixRows, setMatrixRows] = useState(2);
+    const [matrixRows, setMatrixRows] = useState(1);
     const [matrixColumns, setMatrixColumns] = useState(2);
-    const [pointsCount, setPointsCount] = useState(8);
+    const [pointsCount, setPointsCount] = useState(4);
     const [points, setPoints] = useState(
         Array.from(
             { length: pointsCount * matrixRows * matrixColumns },
@@ -97,7 +97,7 @@ export default function CoasellularMorphogenesisPlayground() {
             </div>
 
             <div
-                className="flex flex-row items-center justify-center"
+                className="grid items-center justify-center"
             >
                 <DynamicCoasellulars
                     matrixRows={matrixRows}

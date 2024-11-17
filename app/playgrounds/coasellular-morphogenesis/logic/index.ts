@@ -83,7 +83,7 @@ export class RotatingCircles {
         });
     }
 
-    adjustPointsIfClose() {
+    transactPoints() {
         // for all the circles make pairs
         //
         //          a1            a2
@@ -103,52 +103,91 @@ export class RotatingCircles {
         // and compute neighbors given an angle of 10 degrees from the origin
 
 
-        const angleThreshold = 10; // Define threshold in degrees
+        interface PointPair {
+            circle1: [number, number];
+            point1: number;
+            circle2: [number, number];
+            point2: number;
+        }
+
+        const pairs: PointPair[] = [];
 
         this.circles.forEach((row, rowIndex) => {
             row.forEach((circle, colIndex) => {
                 circle.points.forEach((point, pointIndex) => {
-                    const neighbors = [];
-
-                    // Get neighbors
-                    if (rowIndex > 0) {
-                        neighbors.push(this.circles[rowIndex - 1][colIndex].points[pointIndex]); // Top
-                    }
-                    if (rowIndex < this.circles.length - 1) {
-                        neighbors.push(this.circles[rowIndex + 1][colIndex].points[pointIndex]); // Bottom
-                    }
-                    if (colIndex > 0) {
-                        neighbors.push(this.circles[rowIndex][colIndex - 1].points[pointIndex]); // Left
-                    }
-                    if (colIndex < row.length - 1) {
-                        neighbors.push(this.circles[rowIndex][colIndex + 1].points[pointIndex]); // Right
+                    if (point.angle > 20 && point.angle < 340) {
+                        return;
                     }
 
-                    neighbors.forEach((neighbor) => {
-                        const angleDiff = Math.abs(point.angle - neighbor.angle);
-                        if (angleDiff <= angleThreshold || Math.abs(angleDiff - 360) <= angleThreshold) {
-                            if (point.changed && neighbor.changed) {
-                                return;
-                            }
+                    const nextCircle = this.circles[rowIndex][colIndex + 1];
+                    if (nextCircle) {
+                        const matchPoint = nextCircle.points
+                            .map((p, i) => ({ p, i }))
+                            .find(({ p }) => {
+                                return p.angle > 150 && p.angle > 190
+                            });
 
-                            const adjustment = Math.random() > 0.5 ? 1 : -1;
-                            point.value += adjustment;
-                            neighbor.value -= adjustment;
-
-                            point.changed = true;
-                            neighbor.changed = true;
-                        } else {
-                            point.changed = false;
-                            neighbor.changed = false;
+                        if (matchPoint) {
+                            pairs.push({
+                                circle1: [rowIndex, colIndex],
+                                point1: pointIndex,
+                                circle2: [rowIndex, colIndex + 1],
+                                point2: matchPoint.i,
+                            });
                         }
-                    });
+                    }
                 });
             });
         });
+        // console.log(pairs);
+
+
+        // const angleThreshold = 10; // Define threshold in degrees
+
+        // this.circles.forEach((row, rowIndex) => {
+        //     row.forEach((circle, colIndex) => {
+        //         circle.points.forEach((point, pointIndex) => {
+        //             const neighbors = [];
+
+        //             // Get neighbors
+        //             if (rowIndex > 0) {
+        //                 neighbors.push(this.circles[rowIndex - 1][colIndex].points[pointIndex]); // Top
+        //             }
+        //             if (rowIndex < this.circles.length - 1) {
+        //                 neighbors.push(this.circles[rowIndex + 1][colIndex].points[pointIndex]); // Bottom
+        //             }
+        //             if (colIndex > 0) {
+        //                 neighbors.push(this.circles[rowIndex][colIndex - 1].points[pointIndex]); // Left
+        //             }
+        //             if (colIndex < row.length - 1) {
+        //                 neighbors.push(this.circles[rowIndex][colIndex + 1].points[pointIndex]); // Right
+        //             }
+
+        //             neighbors.forEach((neighbor) => {
+        //                 const angleDiff = Math.abs(point.angle - neighbor.angle);
+        //                 if (angleDiff <= angleThreshold || Math.abs(angleDiff - 360) <= angleThreshold) {
+        //                     if (point.changed && neighbor.changed) {
+        //                         return;
+        //                     }
+
+        //                     const adjustment = Math.random() > 0.5 ? 1 : -1;
+        //                     point.value += adjustment;
+        //                     neighbor.value -= adjustment;
+
+        //                     point.changed = true;
+        //                     neighbor.changed = true;
+        //                 } else {
+        //                     point.changed = false;
+        //                     neighbor.changed = false;
+        //                 }
+        //             });
+        //         });
+        //     });
+        // });
     }
 
     update() {
         this.rotate();
-        this.adjustPointsIfClose();
+        this.transactPoints();
     }
 }

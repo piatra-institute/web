@@ -2,6 +2,7 @@ export interface ButtonProps {
     label: string;
     onClick: () => void;
     disabled?: boolean;
+    style?: React.CSSProperties;
 }
 
 const DarkButton: React.FC<ButtonProps> = ({
