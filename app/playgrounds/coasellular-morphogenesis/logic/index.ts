@@ -169,6 +169,10 @@ export class RotatingCircles {
             this.circles[pair.circle1[0]][pair.circle1[1]].points[pair.point1].value = point1.value + 1
             this.circles[pair.circle2[0]][pair.circle2[1]].points[pair.point2].value = point2.value - 1
 
+            this.circles[pair.circle1[0]][pair.circle1[1]].energy += 1;
+            this.circles[pair.circle2[0]][pair.circle2[1]].energy -= 1;
+
+
             // const angleDiff = Math.abs(point1.angle - point2.angle);
             // if (angleDiff <= 10 || Math.abs(angleDiff - 360) <= 10) {
             //     if (point1.changed && point2.changed) {

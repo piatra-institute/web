@@ -36,8 +36,10 @@ const Circle: React.FC<{
                 </div>
             ))}
 
-            <div>
-                {energy}
+            <div
+                className="select-none text-sm"
+            >
+                {energy} E
             </div>
         </div>
     );
