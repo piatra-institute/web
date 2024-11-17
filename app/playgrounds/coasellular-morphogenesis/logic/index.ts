@@ -166,13 +166,14 @@ export class RotatingCircles {
             const point1 = this.circles[pair.circle1[0]][pair.circle1[1]].points[pair.point1];
             const point2 = this.circles[pair.circle2[0]][pair.circle2[1]].points[pair.point2];
 
-            const adjustment = Math.random() > 0.5 ? 1 : -1;
+            const adjustment1 = Math.random() > 0.5 ? 1 : -1;
+            const adjustment2 = -adjustment1;
 
-            this.circles[pair.circle1[0]][pair.circle1[1]].points[pair.point1].value = point1.value + adjustment;
-            this.circles[pair.circle2[0]][pair.circle2[1]].points[pair.point2].value = point2.value - adjustment;
+            this.circles[pair.circle1[0]][pair.circle1[1]].points[pair.point1].value = point1.value + adjustment1;
+            this.circles[pair.circle2[0]][pair.circle2[1]].points[pair.point2].value = point2.value + adjustment2;
 
-            this.circles[pair.circle1[0]][pair.circle1[1]].energy += this.transactionCost;
-            this.circles[pair.circle2[0]][pair.circle2[1]].energy -= this.transactionCost;
+            this.circles[pair.circle1[0]][pair.circle1[1]].energy += this.transactionCost * adjustment1;
+            this.circles[pair.circle2[0]][pair.circle2[1]].energy -= this.transactionCost * adjustment2;
         }
     }
 
