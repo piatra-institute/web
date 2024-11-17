@@ -23,9 +23,9 @@ const DynamicCoasellulars = dynamic(
 
 
 export default function CoasellularMorphogenesisPlayground() {
-    const [matrixRows, setMatrixRows] = useState(1);
+    const [matrixRows, setMatrixRows] = useState(2);
     const [matrixColumns, setMatrixColumns] = useState(2);
-    const [pointsCount, setPointsCount] = useState(4);
+    const [pointsCount, setPointsCount] = useState(8);
     const [points, setPoints] = useState(
         Array.from(
             { length: pointsCount * matrixRows * matrixColumns },
@@ -102,7 +102,6 @@ export default function CoasellularMorphogenesisPlayground() {
                 <DynamicCoasellulars
                     matrixRows={matrixRows}
                     matrixColumns={matrixColumns}
-
                     points={points}
                     speed={speed}
                 />

@@ -105,13 +105,21 @@ const Coasellulars: React.FC<Coasellulars> = ({
                     }}
                 >
                     {Array.from({ length: matrixColumns }).map((_, colIndex) => {
+                        const row = circles[rowIndex];
+                        if (!row) {
+                            return null;
+                        }
+                        const circle = row[colIndex];
+                        if (!circle) {
+                            return null;
+                        }
                         const {
                             points,
                             energy,
-                        } = circles[rowIndex][colIndex];
+                        } = circle;
 
                         return (
-                            <div key={colIndex}>
+                            <div key={rowIndex + colIndex}>
                                 <Circle
                                     points={points}
                                     energy={energy}

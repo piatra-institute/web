@@ -27,9 +27,11 @@ export const useRotatingCircles = (
 
 
     useEffect(() => {
-        setRotatingCircles(new RotatingCircles(
+        const rotatingCircles = new RotatingCircles(
             matrixRows, matrixColumns, initialValues, radius, speed,
-        ));
+        );
+        setRotatingCircles(rotatingCircles);
+        setCircles(rotatingCircles.circles);
     }, [
         matrixRows,
         matrixColumns,
