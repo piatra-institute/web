@@ -1,3 +1,11 @@
+export interface PointPair {
+    circle1: [number, number];
+    point1: number;
+    circle2: [number, number];
+    point2: number;
+}
+
+
 export class Point {
     angle: number;
     value: number;
@@ -47,6 +55,7 @@ export class Circle {
 export class RotatingCircles {
     circles: Circle[][];
     speed: number;
+    transactionCost: number;
 
     constructor(
         rows: number,
@@ -54,9 +63,11 @@ export class RotatingCircles {
         initialValues: number[],
         radius: number,
         speed: number = 10,
+        transactionCost: number = 1,
     ) {
         this.circles = [];
         this.speed = speed;
+        this.transactionCost = transactionCost;
 
         for (let i = 0; i < rows; i++) {
             const row: Circle[] = [];
@@ -102,14 +113,6 @@ export class RotatingCircles {
         // C3-b3 with C4-d4
         // account for the fact that there might be an unknown number of points
         // and compute neighbors given an angle of 10 degrees from the origin
-
-
-        interface PointPair {
-            circle1: [number, number];
-            point1: number;
-            circle2: [number, number];
-            point2: number;
-        }
 
         const pairs: PointPair[] = [];
 
@@ -158,85 +161,19 @@ export class RotatingCircles {
                 });
             });
         });
-        // console.log(pairs)
 
-
-        // for each pair negotitate new values
         for (const pair of pairs) {
             const point1 = this.circles[pair.circle1[0]][pair.circle1[1]].points[pair.point1];
             const point2 = this.circles[pair.circle2[0]][pair.circle2[1]].points[pair.point2];
 
-            this.circles[pair.circle1[0]][pair.circle1[1]].points[pair.point1].value = point1.value + 1
-            this.circles[pair.circle2[0]][pair.circle2[1]].points[pair.point2].value = point2.value - 1
+            const adjustment = Math.random() > 0.5 ? 1 : -1;
 
-            this.circles[pair.circle1[0]][pair.circle1[1]].energy += 1;
-            this.circles[pair.circle2[0]][pair.circle2[1]].energy -= 1;
+            this.circles[pair.circle1[0]][pair.circle1[1]].points[pair.point1].value = point1.value + adjustment;
+            this.circles[pair.circle2[0]][pair.circle2[1]].points[pair.point2].value = point2.value - adjustment;
 
-
-            // const angleDiff = Math.abs(point1.angle - point2.angle);
-            // if (angleDiff <= 10 || Math.abs(angleDiff - 360) <= 10) {
-            //     if (point1.changed && point2.changed) {
-            //         return;
-            //     }
-
-            //     // const adjustment = Math.random() > 0.5 ? 1 : -1;
-            //     // point1.value += adjustment;
-            //     // point2.value -= adjustment;
-            //     this.circles[pair.circle1[0]][pair.circle1[1]].points[pair.point1].value = point1.value + 1
-            //     this.circles[pair.circle2[0]][pair.circle2[1]].points[pair.point2].value = point2.value - 1
-
-            //     point1.changed = true;
-            //     point2.changed = true;
-            // } else {
-            //     point1.changed = false;
-            //     point2.changed = false;
-            // }
+            this.circles[pair.circle1[0]][pair.circle1[1]].energy += this.transactionCost;
+            this.circles[pair.circle2[0]][pair.circle2[1]].energy -= this.transactionCost;
         }
-
-
-
-        // const angleThreshold = 10; // Define threshold in degrees
-
-        // this.circles.forEach((row, rowIndex) => {
-        //     row.forEach((circle, colIndex) => {
-        //         circle.points.forEach((point, pointIndex) => {
-        //             const neighbors = [];
-
-        //             // Get neighbors
-        //             if (rowIndex > 0) {
-        //                 neighbors.push(this.circles[rowIndex - 1][colIndex].points[pointIndex]); // Top
-        //             }
-        //             if (rowIndex < this.circles.length - 1) {
-        //                 neighbors.push(this.circles[rowIndex + 1][colIndex].points[pointIndex]); // Bottom
-        //             }
-        //             if (colIndex > 0) {
-        //                 neighbors.push(this.circles[rowIndex][colIndex - 1].points[pointIndex]); // Left
-        //             }
-        //             if (colIndex < row.length - 1) {
-        //                 neighbors.push(this.circles[rowIndex][colIndex + 1].points[pointIndex]); // Right
-        //             }
-
-        //             neighbors.forEach((neighbor) => {
-        //                 const angleDiff = Math.abs(point.angle - neighbor.angle);
-        //                 if (angleDiff <= angleThreshold || Math.abs(angleDiff - 360) <= angleThreshold) {
-        //                     if (point.changed && neighbor.changed) {
-        //                         return;
-        //                     }
-
-        //                     const adjustment = Math.random() > 0.5 ? 1 : -1;
-        //                     point.value += adjustment;
-        //                     neighbor.value -= adjustment;
-
-        //                     point.changed = true;
-        //                     neighbor.changed = true;
-        //                 } else {
-        //                     point.changed = false;
-        //                     neighbor.changed = false;
-        //                 }
-        //             });
-        //         });
-        //     });
-        // });
     }
 
     update() {

@@ -12,10 +12,11 @@ export const useRotatingCircles = (
     initialValues: number[],
     speed: number = 10,
     radius: number = 100,
+    transactionCost: number = 1,
 ) => {
     const [autoRotate, setAutoRotate] = useState(false);
     const [rotatingCircles, setRotatingCircles] = useState(new RotatingCircles(
-        matrixRows, matrixColumns, initialValues, radius, speed,
+        matrixRows, matrixColumns, initialValues, radius, speed, transactionCost,
     ));
     const [circles, setCircles] = useState(rotatingCircles.circles);
 
@@ -28,7 +29,7 @@ export const useRotatingCircles = (
 
     useEffect(() => {
         const rotatingCircles = new RotatingCircles(
-            matrixRows, matrixColumns, initialValues, radius, speed,
+            matrixRows, matrixColumns, initialValues, radius, speed, transactionCost,
         );
         setRotatingCircles(rotatingCircles);
         setCircles(rotatingCircles.circles);
@@ -38,6 +39,7 @@ export const useRotatingCircles = (
         initialValues,
         radius,
         speed,
+        transactionCost,
     ]);
 
     useEffect(() => {

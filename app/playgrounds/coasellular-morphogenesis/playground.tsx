@@ -32,7 +32,7 @@ export default function CoasellularMorphogenesisPlayground() {
             (_, i) => i
         ),
     );
-    const [transactionCost, setTransactionCost] = useState(5);
+    const [transactionCost, setTransactionCost] = useState(2);
     const [speed, setSpeed] = useState(3);
 
 
@@ -104,6 +104,7 @@ export default function CoasellularMorphogenesisPlayground() {
                     matrixColumns={matrixColumns}
                     points={points}
                     speed={speed}
+                    transactionCost={transactionCost}
                 />
             </div>
 

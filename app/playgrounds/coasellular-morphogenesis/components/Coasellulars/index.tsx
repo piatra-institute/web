@@ -51,6 +51,8 @@ export interface Coasellulars {
     matrixColumns: number;
     points: number[];
     speed?: number;
+    radius?: number;
+    transactionCost?: number;
 }
 
 const Coasellulars: React.FC<Coasellulars> = ({
@@ -58,6 +60,8 @@ const Coasellulars: React.FC<Coasellulars> = ({
     matrixColumns,
     points,
     speed = 10,
+    radius = 100,
+    transactionCost = 1,
 }) => {
     const {
         circles,
@@ -69,6 +73,8 @@ const Coasellulars: React.FC<Coasellulars> = ({
         matrixColumns,
         points,
         speed,
+        radius,
+        transactionCost,
     );
 
     return (
