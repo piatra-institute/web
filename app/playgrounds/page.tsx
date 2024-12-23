@@ -29,6 +29,10 @@ const playgrounds = [
         name: 'coasellular morphogenesis',
         link: '/playgrounds/coasellular-morphogenesis',
     },
+    {
+        name: 'fracqunx',
+        link: '/playgrounds/fracqunx',
+    },
     // {
     //     name: 'refractive computation',
     //     link: '/playgrounds/refractive-computation',

@@ -44,5 +44,7 @@ blockquote {
 }
 
 input::placeholder {
+    background-color: rgb(247 254 231 / var(--tw-bg-opacity, 1));
+    color: black !important;
     font-size: 0.9rem;
 }
