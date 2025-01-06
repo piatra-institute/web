@@ -244,17 +244,27 @@ const GaltonBoard: React.FC = () => {
                     const withinBinX =
                         ball.x + ball.radius > bin.x &&
                         ball.x - ball.radius < bin.x + bin.width;
+
                     if (withinBinX && ball.y + ball.radius >= bin.top) {
-                        // Force ball inside bin horizontally?
-                        // If you'd like to lock horizontal inside bin, you can clamp x and set vx=0
-                        // For now, we'll do simpler floor collisions at bin bottom.
+                        // (A) We are in this bin along the X-axis, so enforce side walls:
+                        if (ball.x - ball.radius < bin.x) {
+                            // Clamp position and bounce
+                            ball.x = bin.x + ball.radius;
+                            ball.vx = -ball.vx * elasticity;
+                        } else if (ball.x + ball.radius > bin.x + bin.width) {
+                            ball.x = bin.x + bin.width - ball.radius;
+                            ball.vx = -ball.vx * elasticity;
+                        }
+
+                        // (B) Check bottom collision (floor of bin)
                         const binBottom = bin.top + bin.height;
                         if (ball.y + ball.radius >= binBottom) {
                             ball.y = binBottom - ball.radius;
                             if (Math.abs(ball.vy) > 1) {
+                                // Bounce off bottom
                                 ball.vy = -ball.vy * elasticity;
                             } else {
-                                // freeze
+                                // Freeze if velocity is small
                                 ball.vy = 0;
                                 ball.vx *= (1 - floorFriction);
                                 if (Math.abs(ball.vx) < 0.2) {
@@ -263,6 +273,8 @@ const GaltonBoard: React.FC = () => {
                                 }
                             }
                         }
+
+                        // Mark that the ball is in this bin to skip other bins
                         inBin = true;
                         break;
                     }
