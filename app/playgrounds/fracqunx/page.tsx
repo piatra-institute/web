@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     openGraph: {
         ...defaultOpenGraph,
         title: 'fracqunx · playgrounds · piatra.institute',
-        description: '',
+        description: 'dynamical, fractional quincunx-like board',
     },
 };
 

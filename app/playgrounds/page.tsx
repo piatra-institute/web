@@ -33,6 +33,18 @@ const playgrounds = [
         name: 'fracqunx',
         link: '/playgrounds/fracqunx',
     },
+    {
+        name: 'eyevolution',
+        link: '/playgrounds/eyevolution',
+    },
+    // {
+    //     name: 'pacemaker-accumulator',
+    //     link: '/playgrounds/pacemaker-accumulator',
+    // },
+    // {
+    //     name: 'cpt-variance',
+    //     link: '/playgrounds/cpt-variance',
+    // },
     // {
     //     name: 'refractive computation',
     //     link: '/playgrounds/refractive-computation',
