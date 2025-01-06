@@ -1,4 +1,12 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, {
+    useRef, useEffect, useState, useCallback,
+} from 'react';
+
+import Settings from '../Settings';
+
+import Button from '@/components/Button';
+
+
 
 interface Ball {
     x: number;
@@ -22,17 +30,12 @@ interface Bin {
     height: number;
 }
 
-/**
- * A merged "Galton Board" component that:
- *  - Renders a stylized wooden frame, funnel shapes, peg array, and bins in one canvas.
- *  - Simulates falling balls with collisions & stacking in bins.
- */
-const MergedGaltonBoard: React.FC = () => {
+const GaltonBoard: React.FC = () => {
     // -----------------------------
     // 1. CONFIGURABLE PARAMETERS
     // -----------------------------
-    const [rows, setRows] = useState(7);             // # of peg rows
-    const [columns, setColumns] = useState(13);      // # of peg columns
+    const [rows, setRows] = useState(5);             // # of peg rows
+    const [columns, setColumns] = useState(10);      // # of peg columns
     const [horizontalSpacing, setHorizontalSpacing] = useState(30);
     const [verticalSpacing, setVerticalSpacing] = useState(35);
     const [binCount, setBinCount] = useState(8);
@@ -55,6 +58,7 @@ const MergedGaltonBoard: React.FC = () => {
     const animationIdRef = useRef<number | null>(null);
     const releaseTimerRef = useRef<NodeJS.Timeout | null>(null);
     const ballsReleasedRef = useRef<number>(0);
+
 
     // -----------------------------
     // 3. INIT PEGS & BINS
@@ -94,42 +98,56 @@ const MergedGaltonBoard: React.FC = () => {
     // -----------------------------
     // 4. BALL RELEASE MECHANISM
     // -----------------------------
-    useEffect(() => {
+    /**
+     * Spawns a single ball and increments the release count.
+     */
+    const spawnBall = useCallback(() => {
+        if (ballsReleasedRef.current < maxBalls) {
+            ballsReleasedRef.current++;
+            const ball: Ball = {
+                // x: canvasWidth / 2,
+                x: canvasWidth / 2 + Math.random() * 20 - 10,
+                y: 30,
+                vx: Math.random() * 2 - 1,
+                // vx: 0,
+                vy: 0,
+                radius: 5,
+                frozen: false,
+            };
+            ballsRef.current.push(ball);
+        } else {
+            // Stop if we've released all
+            if (releaseTimerRef.current) {
+                clearInterval(releaseTimerRef.current);
+                releaseTimerRef.current = null;
+            }
+        }
+    }, [maxBalls]);
+
+    /**
+     * Starts the ball-release mechanism, clearing old data/timers first.
+     */
+    const startBallRelease = useCallback(() => {
+        // Clear any existing timer
         if (releaseTimerRef.current) {
             clearInterval(releaseTimerRef.current);
         }
+        // Reset counters and storage
         ballsReleasedRef.current = 0;
-        ballsRef.current = []; // Clear existing balls
+        ballsRef.current = [];
 
-        const spawnBall = () => {
-            if (ballsReleasedRef.current < maxBalls) {
-                ballsReleasedRef.current++;
-                const ball: Ball = {
-                    // near top, random x offset
-                    x: canvasWidth / 2 + Math.random() * 20 - 10,
-                    y: 30,
-                    vx: (Math.random() * 2 - 1),
-                    vy: 0,
-                    radius: 5,
-                    frozen: false
-                };
-                ballsRef.current.push(ball);
-            } else {
-                // Stop if we've released all
-                if (releaseTimerRef.current) {
-                    clearInterval(releaseTimerRef.current);
-                }
-            }
-        };
-
+        // Set a fresh interval
         releaseTimerRef.current = setInterval(spawnBall, releaseInterval);
+    }, [spawnBall, releaseInterval]);
 
+    useEffect(() => {
+        startBallRelease();
         return () => {
             if (releaseTimerRef.current) {
                 clearInterval(releaseTimerRef.current);
             }
         };
-    }, [maxBalls, releaseInterval]);
+    }, [startBallRelease]);
 
 
     // -----------------------------
@@ -376,121 +394,71 @@ const MergedGaltonBoard: React.FC = () => {
         updateBalls,
     ]);
 
+
+    const reset = () => {
+        // Clear all balls, reset counters
+        ballsRef.current = [];
+        ballsReleasedRef.current = 0;
+
+        startBallRelease();
+    }
+
+
+
     // -----------------------------
     // 7. RENDER + UI
     // -----------------------------
     return (
         <div style={{ textAlign: 'center' }}>
-            <canvas
-                ref={canvasRef}
-                width={canvasWidth}
-                height={canvasHeight}
-                style={{ border: '1px solid black' }}
-            />
+            <div
+                className="flex items-center justify-center"
+            >
+                <canvas
+                    ref={canvasRef}
+                    width={canvasWidth}
+                    height={canvasHeight}
+                    style={{ border: '1px solid black' }}
+                />
+            </div>
 
             <div
                 style={{
                     marginTop: '1rem',
+                    marginBottom: '4rem',
                     display: 'flex',
                     flexWrap: 'wrap',
                     gap: '1rem',
                     justifyContent: 'center',
                 }}
             >
-                <button
+                <Button
+                    label="Reset"
                     onClick={() => {
-                        // Clear all balls, reset counters
-                        ballsRef.current = [];
-                        ballsReleasedRef.current = 0;
+                        reset();
                     }}
-                >
-                    Clear All
-                </button>
-
-                <label>
-                    Rows:
-                    <input
-                        type="number"
-                        min={1}
-                        value={rows}
-                        onChange={(e) => setRows(parseInt(e.target.value, 10))}
-                    />
-                </label>
-
-                <label>
-                    Columns:
-                    <input
-                        type="number"
-                        min={1}
-                        value={columns}
-                        onChange={(e) => setColumns(parseInt(e.target.value, 10))}
-                    />
-                </label>
-
-                <label>
-                    H-Spacing:
-                    <input
-                        type="number"
-                        min={5}
-                        value={horizontalSpacing}
-                        onChange={(e) => setHorizontalSpacing(parseInt(e.target.value, 10))}
-                    />
-                </label>
-
-                <label>
-                    V-Spacing:
-                    <input
-                        type="number"
-                        min={5}
-                        value={verticalSpacing}
-                        onChange={(e) => setVerticalSpacing(parseInt(e.target.value, 10))}
-                    />
-                </label>
-
-                <label>
-                    Bin Count:
-                    <input
-                        type="number"
-                        min={1}
-                        value={binCount}
-                        onChange={(e) => setBinCount(parseInt(e.target.value, 10))}
-                    />
-                </label>
-
-                <label>
-                    Elasticity:
-                    <input
-                        type="number"
-                        step={0.1}
-                        min={0}
-                        max={1}
-                        value={elasticity}
-                        onChange={(e) => setElasticity(parseFloat(e.target.value))}
-                    />
-                </label>
-
-                <label>
-                    Max Balls:
-                    <input
-                        type="number"
-                        min={1}
-                        value={maxBalls}
-                        onChange={(e) => setMaxBalls(parseInt(e.target.value, 10))}
-                    />
-                </label>
-
-                <label>
-                    Release Interval (ms):
-                    <input
-                        type="number"
-                        min={10}
-                        value={releaseInterval}
-                        onChange={(e) => setReleaseInterval(parseInt(e.target.value, 10))}
-                    />
-                </label>
+                />
             </div>
+
+            <Settings
+                rows={rows}
+                setRows={setRows}
+                columns={columns}
+                setColumns={setColumns}
+                horizontalSpacing={horizontalSpacing}
+                setHorizontalSpacing={setHorizontalSpacing}
+                verticalSpacing={verticalSpacing}
+                setVerticalSpacing={setVerticalSpacing}
+                binCount={binCount}
+                setBinCount={setBinCount}
+                elasticity={elasticity}
+                setElasticity={setElasticity}
+                maxBalls={maxBalls}
+                setMaxBalls={setMaxBalls}
+                releaseInterval={releaseInterval}
+                setReleaseInterval={setReleaseInterval}
+            />
         </div>
     );
 };
 
-export default MergedGaltonBoard;
+export default GaltonBoard;

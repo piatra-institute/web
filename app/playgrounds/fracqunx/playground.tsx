@@ -3,7 +3,7 @@
 import Header from '@/components/Header';
 import Title from '@/components/Title';
 
-import GaltonBoard from './GaltonBoard';
+import GaltonBoard from './components/GaltonBoard';
 
 
 
