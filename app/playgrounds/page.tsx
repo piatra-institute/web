@@ -29,14 +29,14 @@ const playgrounds = [
         name: 'coasellular morphogenesis',
         link: '/playgrounds/coasellular-morphogenesis',
     },
-    {
-        name: 'fracqunx',
-        link: '/playgrounds/fracqunx',
-    },
-    {
-        name: 'eyevolution',
-        link: '/playgrounds/eyevolution',
-    },
+    // {
+    //     name: 'fracqunx',
+    //     link: '/playgrounds/fracqunx',
+    // },
+    // {
+    //     name: 'eyevolution',
+    //     link: '/playgrounds/eyevolution',
+    // },
     // {
     //     name: 'pacemaker-accumulator',
     //     link: '/playgrounds/pacemaker-accumulator',
