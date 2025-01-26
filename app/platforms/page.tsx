@@ -17,36 +17,36 @@ export const metadata: Metadata = {
 
 
 const platforms = [
-    {
-        name: 'gptmetry . com',
-        description: 'CAD compiler across vendors, from technical drawings and sketches into CAD/CAM/G-code',
-        link: 'https://gptmetry.com',
-    },
-    {
-        name: 'nodetry . com',
-        description: 'poetry node editor',
-        link: 'https://nodetry.com',
-    },
-    {
-        name: 'ordershop . io',
-        description: 'request and manage manufacturing orders',
-        link: 'https://ordershop.io',
-    },
-    {
-        name: 'outmill . run',
-        description: 'run on outdoor treadmills',
-        link: 'https://outmill.run',
-    },
-    {
-        name: 'returber . com',
-        description: 'waste collection for the deposit return system',
-        link: 'https://returber.com',
-    },
-    {
-        name: 'sonocracy . com',
-        description: 'vote for volume control and bid for songs in venues',
-        link: 'https://sonocracy.com',
-    },
+    // {
+    //     name: 'gptmetry . com',
+    //     description: 'CAD compiler across vendors, from technical drawings and sketches into CAD/CAM/G-code',
+    //     link: 'https://gptmetry.com',
+    // },
+    // {
+    //     name: 'nodetry . com',
+    //     description: 'poetry node editor',
+    //     link: 'https://nodetry.com',
+    // },
+    // {
+    //     name: 'ordershop . io',
+    //     description: 'request and manage manufacturing orders',
+    //     link: 'https://ordershop.io',
+    // },
+    // {
+    //     name: 'outmill . run',
+    //     description: 'run on outdoor treadmills',
+    //     link: 'https://outmill.run',
+    // },
+    // {
+    //     name: 'returber . com',
+    //     description: 'waste collection for the deposit return system',
+    //     link: 'https://returber.com',
+    // },
+    // {
+    //     name: 'sonocracy . com',
+    //     description: 'vote for volume control and bid for songs in venues',
+    //     link: 'https://sonocracy.com',
+    // },
     {
         name: 'xfactura . ro',
         description: 'einvoicing and general accounting following the Romanian/EU legislation',
