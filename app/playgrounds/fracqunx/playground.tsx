@@ -3,7 +3,7 @@
 import Header from '@/components/Header';
 import Title from '@/components/Title';
 
-import GaltonBoard from './components/GaltonBoard';
+import Board from './components/Board';
 
 
 
@@ -18,7 +18,7 @@ export default function FracqunxPlayground() {
                 text="fracqunx"
             />
 
-            <GaltonBoard />
+            <Board />
         </div>
     );
 }
