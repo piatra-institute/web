@@ -25,18 +25,8 @@ import LinkButton from '@/components/LinkButton';
 
 
 export interface SettingsProperties {
-    rows: number;
-    setRows: React.Dispatch<React.SetStateAction<number>>;
-    columns: number;
-    setColumns: React.Dispatch<React.SetStateAction<number>>;
-    horizontalSpacing: number;
-    setHorizontalSpacing: React.Dispatch<React.SetStateAction<number>>;
-    verticalSpacing: number;
-    setVerticalSpacing: React.Dispatch<React.SetStateAction<number>>;
-    binCount: number;
-    setBinCount: React.Dispatch<React.SetStateAction<number>>;
-    elasticity: number;
-    setElasticity: React.Dispatch<React.SetStateAction<number>>;
+    bounceFactor: number;
+    setBounceFactor: React.Dispatch<React.SetStateAction<number>>;
     maxBalls: number;
     setMaxBalls: React.Dispatch<React.SetStateAction<number>>;
     releaseInterval: number;
@@ -49,18 +39,8 @@ export default function Settings(
 ) {
     // #region properties
     const {
-        rows,
-        setRows,
-        columns,
-        setColumns,
-        horizontalSpacing,
-        setHorizontalSpacing,
-        verticalSpacing,
-        setVerticalSpacing,
-        binCount,
-        setBinCount,
-        elasticity,
-        setElasticity,
+        bounceFactor,
+        setBounceFactor,
         maxBalls,
         setMaxBalls,
         releaseInterval,
@@ -134,7 +114,7 @@ export default function Settings(
 
     return (
         <div
-            className="fixed z-30 top-0 right-0 md:right-auto left-0 bottom-0 w-full md:w-[550px] background-blur-md bg-white/20 p-4 overflow-scroll"
+            className="fixed z-30 top-0 right-0 md:right-auto left-0 bottom-0 w-full md:w-[550px] background-blur-md bg-white/20 p-4 overflow-auto"
         >
             <div
                 className="flex flex-col items-center justify-center"
@@ -183,56 +163,6 @@ export default function Settings(
                     className="text-left w-96 p-4"
                 >
                     <Input
-                        label="rows"
-                        type="number"
-                        min={1}
-                        value={rows}
-                        onChange={(value) => setRows(parseInt(value, 10))}
-                    />
-
-                    <Input
-                        label="columns"
-                        type="number"
-                        min={1}
-                        value={columns}
-                        onChange={(value) => setColumns(parseInt(value, 10))}
-                    />
-
-                    <Input
-                        label="horizontal spacing"
-                        type="number"
-                        min={5}
-                        value={horizontalSpacing}
-                        onChange={(value) => setHorizontalSpacing(parseInt(value, 10))}
-                    />
-
-                    <Input
-                        label="vertical spacing"
-                        type="number"
-                        min={5}
-                        value={verticalSpacing}
-                        onChange={(value) => setVerticalSpacing(parseInt(value, 10))}
-                    />
-
-                    <Input
-                        label="bin count"
-                        type="number"
-                        min={1}
-                        value={binCount}
-                        onChange={(value) => setBinCount(parseInt(value, 10))}
-                    />
-
-                    <Input
-                        label="elasticity"
-                        type="number"
-                        step={0.1}
-                        min={0}
-                        max={1}
-                        value={elasticity}
-                        onChange={(value) => setElasticity(parseFloat(value))}
-                    />
-
-                    <Input
                         label="max balls"
                         type="number"
                         min={1}
@@ -247,6 +177,16 @@ export default function Settings(
                         step={50}
                         value={releaseInterval}
                         onChange={(value) => setReleaseInterval(parseInt(value, 10))}
+                    />
+
+                    <Input
+                        label="bounce factor"
+                        type="number"
+                        step={0.1}
+                        min={0}
+                        max={1}
+                        value={bounceFactor}
+                        onChange={(value) => setBounceFactor(parseFloat(value))}
                     />
                 </div>
             </div>

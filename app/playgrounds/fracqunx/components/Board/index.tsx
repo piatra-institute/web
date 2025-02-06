@@ -1,8 +1,11 @@
 import {
-    useEffect,
     useRef,
+    useCallback,
     useState,
+    useEffect,
 } from 'react';
+
+import Settings from '../Settings';
 
 
 
@@ -70,6 +73,9 @@ class Ball {
     binIndex: number | null;
     frozen: boolean;
 
+    bounceFactor = BOUNCE_FACTOR;
+
+
     constructor(x: number, y: number, radius: number) {
         this.x = x;
         this.y = y;
@@ -110,7 +116,12 @@ class Ball {
         otherBalls: Ball[], pins: Pin[], bins: Bin[],
         areaOfEffect: boolean, morphodynamics: boolean,
         drawState: DrawState,
+        options: {
+            bounceFactor: number;
+        },
     ): void {
+        this.bounceFactor = options.bounceFactor;
+
         if (this.frozen) return;
 
         this.vy += GRAVITY;
@@ -123,7 +134,7 @@ class Ball {
             const bin = bins[this.binIndex];
 
             if (nextX - this.radius < bin.x || nextX + this.radius > bin.x + bin.width) {
-                this.vx *= -BOUNCE_FACTOR;
+                this.vx *= -this.bounceFactor;
                 this.x = nextX - this.radius < bin.x ?
                     bin.x + this.radius :
                     bin.x + bin.width - this.radius;
@@ -138,7 +149,7 @@ class Ball {
 
         if (nextY + this.radius > collisionY) {
             this.y = collisionY;
-            this.vy *= -BOUNCE_FACTOR;
+            this.vy *= -this.bounceFactor;
 
             if (Math.abs(this.vy) < STOP_THRESHOLD && Math.abs(this.vx) < STOP_THRESHOLD) {
                 this.frozen = true;
@@ -151,7 +162,7 @@ class Ball {
 
         if (this.y + this.radius > HEIGHT) {
             this.y = HEIGHT - this.radius;
-            this.vy *= -BOUNCE_FACTOR;
+            this.vy *= -this.bounceFactor;
 
             if (Math.abs(this.vy) < STOP_THRESHOLD && Math.abs(this.vx) < STOP_THRESHOLD) {
                 this.frozen = true;
@@ -173,22 +184,22 @@ class Ball {
                 if (isVerticalCollision) {
                     const direction = Math.random() < 0.5 ? -1 : 1;
                     this.vx = direction * RANDOM_DEFLECTION_SPEED;
-                    this.vy *= -BOUNCE_FACTOR;
+                    this.vy *= -this.bounceFactor;
                 } else {
                     const angle = Math.atan2(dy, dx);
                     this.x = pin.x + Math.cos(angle) * (this.radius + PIN_RADIUS);
                     this.y = pin.y + Math.sin(angle) * (this.radius + PIN_RADIUS);
 
                     const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-                    this.vx = Math.cos(angle) * speed * BOUNCE_FACTOR;
-                    this.vy = Math.sin(angle) * speed * BOUNCE_FACTOR;
+                    this.vx = Math.cos(angle) * speed * this.bounceFactor;
+                    this.vy = Math.sin(angle) * speed * this.bounceFactor;
                 }
             }
 
             if (morphodynamics && distance < this.radius + PIN_RADIUS) {
                 const bias = calculatePinBias(pin, drawState);
                 this.vx = (Math.random() < bias ? 1 : -1) * RANDOM_DEFLECTION_SPEED;
-                this.vy *= -BOUNCE_FACTOR;
+                this.vy *= -this.bounceFactor;
             }
 
             if (areaOfEffect && pin.aoe) {
@@ -238,10 +249,10 @@ class Ball {
                 const relativeVy = this.vy - otherBall.vy;
                 const impulse = 2 * (relativeVx * nx + relativeVy * ny) / 2;
 
-                this.vx -= impulse * nx * BOUNCE_FACTOR;
-                this.vy -= impulse * ny * BOUNCE_FACTOR;
-                otherBall.vx += impulse * nx * BOUNCE_FACTOR;
-                otherBall.vy += impulse * ny * BOUNCE_FACTOR;
+                this.vx -= impulse * nx * this.bounceFactor;
+                this.vy -= impulse * ny * this.bounceFactor;
+                otherBall.vx += impulse * nx * this.bounceFactor;
+                otherBall.vy += impulse * ny * this.bounceFactor;
 
                 const overlap = (this.radius + otherBall.radius - distance) / 2;
                 this.x += nx * overlap;
@@ -262,6 +273,7 @@ const FRICTION = 0.98;
 const VERTICAL_COLLISION_THRESHOLD = 0.1;
 const RANDOM_DEFLECTION_SPEED = 3;
 const STOP_THRESHOLD = 0.1;
+const MAX_BALLS = 1000;
 const BALL_ADD_INTERVAL = 200;
 const AOE_CHANCE = 0.2;
 
@@ -301,6 +313,11 @@ const FallingBalls: React.FC = () => {
     const [areaOfEffect, setAreaOfEffect] = useState(false);
     const [morphodynamics, setMorphodynamics] = useState(false);
     const [drawState, setDrawState] = useState<DrawState>({ points: [], isDrawing: false });
+
+
+    const [maxBalls, setMaxBalls] = useState(MAX_BALLS);
+    const [releaseInterval, setReleaseInterval] = useState(BALL_ADD_INTERVAL);
+    const [bounceFactor, setBounceFactor] = useState(BOUNCE_FACTOR);
 
 
     const generatePins = (
@@ -352,10 +369,15 @@ const FallingBalls: React.FC = () => {
     const [pins, setPins] = useState(generatePins(areaOfEffect));
     const bins = generateBins();
 
-    const addBall = (): void => {
+    const addBall = useCallback(() => {
+        if (balls.length >= maxBalls) return;
+
         const newBall = new Ball(WIDTH / 2, BALL_RADIUS, BALL_RADIUS);
         setBalls(prevBalls => [...prevBalls, newBall]);
-    };
+    }, [
+        balls,
+        maxBalls,
+    ]);
 
 
     const handleCanvasMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -399,12 +421,14 @@ const FallingBalls: React.FC = () => {
     }
 
 
+    /** Generate pins */
     useEffect(() => {
         setPins(generatePins(areaOfEffect));
     }, [
         areaOfEffect,
     ]);
 
+    /** Clear morpholine */
     useEffect(() => {
         if (!morphodynamics) {
             setDrawState({ points: [], isDrawing: false });
@@ -454,7 +478,13 @@ const FallingBalls: React.FC = () => {
             });
 
             balls.forEach(ball => {
-                ball.update(balls, pins, bins, areaOfEffect, morphodynamics, drawState);
+                ball.update(
+                    balls, pins, bins,
+                    areaOfEffect, morphodynamics, drawState,
+                    {
+                        bounceFactor,
+                    },
+                );
 
                 ctx.beginPath();
                 ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
@@ -491,18 +521,34 @@ const FallingBalls: React.FC = () => {
         areaOfEffect,
         morphodynamics,
         drawState,
+        bounceFactor,
     ]);
 
+    /** Ball release interval */
     useEffect(() => {
         if (!isRunning) return;
 
-        const interval = setInterval(addBall, BALL_ADD_INTERVAL);
+        const interval = setInterval(addBall, releaseInterval);
+
         return () => clearInterval(interval);
-    }, [isRunning]);
+    }, [
+        isRunning,
+        addBall,
+        releaseInterval,
+    ]);
 
 
     return (
         <div className="flex flex-col items-center gap-4 p-4 mb-24">
+            <Settings
+                maxBalls={maxBalls}
+                setMaxBalls={setMaxBalls}
+                releaseInterval={releaseInterval}
+                setReleaseInterval={setReleaseInterval}
+                bounceFactor={bounceFactor}
+                setBounceFactor={setBounceFactor}
+            />
+
             <canvas
                 ref={canvasRef}
                 width={WIDTH}
