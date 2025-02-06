@@ -297,7 +297,7 @@ const MORPHOLINE_COLOR = '#ff0000';
 const FallingBalls: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [balls, setBalls] = useState<Ball[]>([]);
-    const [isRunning, setIsRunning] = useState<boolean>(true);
+    const [isRunning, setIsRunning] = useState<boolean>(false);
     const [areaOfEffect, setAreaOfEffect] = useState(false);
     const [morphodynamics, setMorphodynamics] = useState(false);
     const [drawState, setDrawState] = useState<DrawState>({ points: [], isDrawing: false });
@@ -389,6 +389,14 @@ const FallingBalls: React.FC = () => {
     const handleCanvasMouseUp = () => {
         setDrawState(prev => ({ ...prev, isDrawing: false }));
     };
+
+    const reset = () => {
+        setBalls([]);
+        setIsRunning(false);
+        setAreaOfEffect(false);
+        setMorphodynamics(false);
+        setDrawState({ points: [], isDrawing: false });
+    }
 
 
     useEffect(() => {
@@ -503,14 +511,25 @@ const FallingBalls: React.FC = () => {
                 onMouseDown={handleCanvasMouseDown}
                 onMouseMove={handleCanvasMouseMove}
                 onMouseUp={handleCanvasMouseUp}
+                style={{
+                    cursor: morphodynamics ? 'crosshair' : 'default',
+                }}
             />
 
             <div
                 className="flex gap-4"
             >
                 <button
+                    onClick={() => reset()}
+                    className="px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors "
+                >
+                    Reset
+                </button>
+                <button
                     onClick={() => setIsRunning(!isRunning)}
-                    className="px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors"
+                    className={
+                        `px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors ${isRunning ? '' : 'bg-lime-200'}`
+                    }
                 >
                     {isRunning ? 'Pause' : 'Resume'}
                 </button>
