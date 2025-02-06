@@ -37,6 +37,29 @@ interface BinConfig {
     count: number;
 }
 
+interface DrawState {
+    points: { x: number; y: number }[];
+    isDrawing: boolean;
+}
+
+
+function calculatePinBias(pin: Pin, targetShape: DrawState): number {
+    // Convert y-coordinate to probability of going right (0.0-1.0)
+    const rowPosition = (pin.x - WIDTH * 0.25) / (WIDTH * 0.5);
+    const targetY = HEIGHT - BIN_CONFIG.height;
+
+    // Sample points near pin's vertical path
+    const sampleWidth = WIDTH / PIN_GRID.cols;
+    const desiredX = targetShape.points.find(point => {
+        return Math.abs(point.y - targetY) < 5 &&
+            Math.abs(point.x - (pin.x + rowPosition * sampleWidth)) < sampleWidth;
+    })?.x ?? pin.x;
+
+    // Bias right if target is to the right
+    return desiredX > pin.x ? 0.8 : 0.2;
+}
+
+
 class Ball {
     x: number;
     y: number;
@@ -86,6 +109,7 @@ class Ball {
     update(
         otherBalls: Ball[], pins: Pin[], bins: Bin[],
         areaOfEffect: boolean, morphodynamics: boolean,
+        drawState: DrawState,
     ): void {
         if (this.frozen) return;
 
@@ -161,6 +185,12 @@ class Ball {
                 }
             }
 
+            if (morphodynamics && distance < this.radius + PIN_RADIUS) {
+                const bias = calculatePinBias(pin, drawState);
+                this.vx = (Math.random() < bias ? 1 : -1) * RANDOM_DEFLECTION_SPEED;
+                this.vy *= -BOUNCE_FACTOR;
+            }
+
             if (areaOfEffect && pin.aoe) {
                 const dx = this.x - pin.x;
                 const dy = this.y - pin.y;
@@ -168,8 +198,21 @@ class Ball {
 
                 if (distance < pin.aoeSize) {
                     const angle = Math.atan2(dy, dx);
-                    this.vx += Math.cos(angle) * pin.aoeSpeed;
-                    this.vy += Math.sin(angle) * pin.aoeSpeed;
+                    const distanceFactor = 1 - (distance / pin.aoeSize); // Smoothly reduce effect at edges
+                    const maxSpeedChange = 0.1; // Limit maximum speed change per frame
+
+                    // Apply speed modification with distance falloff and capped change
+                    this.vx += Math.cos(angle) * pin.aoeSpeed * distanceFactor * maxSpeedChange;
+                    this.vy += Math.sin(angle) * pin.aoeSpeed * distanceFactor * maxSpeedChange;
+
+                    // Enforce maximum velocity to prevent excessive acceleration
+                    const maxVelocity = 10;
+                    const currentSpeed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+                    if (currentSpeed > maxVelocity) {
+                        const scale = maxVelocity / currentSpeed;
+                        this.vx *= scale;
+                        this.vy *= scale;
+                    }
                 }
             }
         });
@@ -248,6 +291,7 @@ const AOE_SLOW_COLOR = '#00ff00';
 const BALL_COLOR = '#bef264';
 const BIN_COLOR = '#454545';
 const FROZEN_BALL_COLOR = '#84cc16';
+const MORPHOLINE_COLOR = '#ff0000';
 
 
 const FallingBalls: React.FC = () => {
@@ -256,6 +300,7 @@ const FallingBalls: React.FC = () => {
     const [isRunning, setIsRunning] = useState<boolean>(true);
     const [areaOfEffect, setAreaOfEffect] = useState(false);
     const [morphodynamics, setMorphodynamics] = useState(false);
+    const [drawState, setDrawState] = useState<DrawState>({ points: [], isDrawing: false });
 
 
     const generatePins = (
@@ -313,10 +358,51 @@ const FallingBalls: React.FC = () => {
     };
 
 
+    const handleCanvasMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+        if (!morphodynamics) return;
+        const rect = canvasRef.current?.getBoundingClientRect();
+        if (!rect) return;
+
+        setDrawState({
+            points: [{
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            }],
+            isDrawing: true
+        });
+    };
+
+    const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+        if (!morphodynamics || !drawState.isDrawing) return;
+        const rect = canvasRef.current?.getBoundingClientRect();
+        if (!rect) return;
+
+        setDrawState(prev => ({
+            ...prev,
+            points: [...prev.points, {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            }]
+        }));
+    };
+
+    const handleCanvasMouseUp = () => {
+        setDrawState(prev => ({ ...prev, isDrawing: false }));
+    };
+
+
     useEffect(() => {
         setPins(generatePins(areaOfEffect));
     }, [
         areaOfEffect,
+    ]);
+
+    useEffect(() => {
+        if (!morphodynamics) {
+            setDrawState({ points: [], isDrawing: false });
+        }
+    }, [
+        morphodynamics,
     ]);
 
     /** Render */
@@ -360,7 +446,7 @@ const FallingBalls: React.FC = () => {
             });
 
             balls.forEach(ball => {
-                ball.update(balls, pins, bins, areaOfEffect, morphodynamics);
+                ball.update(balls, pins, bins, areaOfEffect, morphodynamics, drawState);
 
                 ctx.beginPath();
                 ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
@@ -368,6 +454,16 @@ const FallingBalls: React.FC = () => {
                 ctx.fill();
                 ctx.closePath();
             });
+
+            if (morphodynamics && drawState.points.length > 0) {
+                ctx.beginPath();
+                ctx.moveTo(drawState.points[0].x, drawState.points[0].y);
+                drawState.points.forEach(point => {
+                    ctx.lineTo(point.x, point.y);
+                });
+                ctx.strokeStyle = MORPHOLINE_COLOR;
+                ctx.stroke();
+            }
 
             if (isRunning) {
                 animationFrameId = requestAnimationFrame(render);
@@ -386,6 +482,7 @@ const FallingBalls: React.FC = () => {
         bins,
         areaOfEffect,
         morphodynamics,
+        drawState,
     ]);
 
     useEffect(() => {
@@ -403,6 +500,9 @@ const FallingBalls: React.FC = () => {
                 width={WIDTH}
                 height={HEIGHT}
                 className="bg-black mb-8"
+                onMouseDown={handleCanvasMouseDown}
+                onMouseMove={handleCanvasMouseMove}
+                onMouseUp={handleCanvasMouseUp}
             />
 
             <div
@@ -427,13 +527,17 @@ const FallingBalls: React.FC = () => {
             >
                 <button
                     onClick={() => setAreaOfEffect(!areaOfEffect)}
-                    className="px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors"
+                    className={
+                        `px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors ${areaOfEffect ? 'bg-lime-200' : ''}`
+                    }
                 >
                     Area of Effect
                 </button>
                 <button
                     onClick={() => setMorphodynamics(!morphodynamics)}
-                    className="px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors"
+                    className={
+                        `px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors ${morphodynamics ? 'bg-lime-200' : ''}`
+                    }
                 >
                     Morphodynamics
                 </button>
