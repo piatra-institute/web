@@ -567,14 +567,14 @@ const FallingBalls: React.FC = () => {
             >
                 <button
                     onClick={() => reset()}
-                    className="px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors "
+                    className="px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors"
                 >
                     Reset
                 </button>
                 <button
                     onClick={() => setIsRunning(!isRunning)}
                     className={
-                        `px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors ${isRunning ? '' : 'bg-lime-200'}`
+                        `px-4 py-2 min-w-[180px] text-black hover:bg-lime-200 transition-colors ${isRunning ? 'bg-lime-50' : 'bg-lime-200'}`
                     }
                 >
                     {isRunning ? 'Pause' : 'Resume'}
@@ -593,7 +593,7 @@ const FallingBalls: React.FC = () => {
                 <button
                     onClick={() => setAreaOfEffect(!areaOfEffect)}
                     className={
-                        `px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors ${areaOfEffect ? 'bg-lime-200' : ''}`
+                        `px-4 py-2 min-w-[180px] text-black hover:bg-lime-200 transition-colors ${areaOfEffect ? 'bg-lime-200' : 'bg-lime-50'}`
                     }
                 >
                     Area of Effect
@@ -601,7 +601,7 @@ const FallingBalls: React.FC = () => {
                 <button
                     onClick={() => setMorphodynamics(!morphodynamics)}
                     className={
-                        `px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors ${morphodynamics ? 'bg-lime-200' : ''}`
+                        `px-4 py-2 min-w-[180px] text-black hover:bg-lime-200 transition-colors ${morphodynamics ? 'bg-lime-200' : 'bg-lime-50'}`
                     }
                 >
                     Morphodynamics
