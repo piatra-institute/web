@@ -11,6 +11,11 @@ import {
 
 
 
+const emptyData: AnalysisData[] = [
+    { time: 0, trajectoryVariance: 0, localEntropy: 0, morpholineAlignment: 0 },
+    { time: 100, trajectoryVariance: 0, localEntropy: 0, morpholineAlignment: 0 },
+];
+
 const GaltonAnalysis = ({
     data,
 } : {
@@ -22,7 +27,7 @@ const GaltonAnalysis = ({
             <div className="h-[500px]">
                 <ResponsiveContainer width="100%" height="100%">
                     <LineChart
-                        data={data}
+                        data={data.length > 0 ? data : emptyData}
                         margin={{ top: 5, right: 30, left: 20, bottom: 30 }}
                     >
                         <XAxis
