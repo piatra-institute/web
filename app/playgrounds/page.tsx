@@ -20,50 +20,63 @@ const playgrounds = [
     {
         name: 'self-sorted arrays',
         link: '/playgrounds/self-sorted-arrays',
+        description: 'cell-based sorting algorithms',
     },
     {
         name: 'estigrade',
         link: '/playgrounds/estigrade',
+        description: 'grade estimation'
     },
     {
         name: 'coasellular morphogenesis',
         link: '/playgrounds/coasellular-morphogenesis',
+        description: '',
     },
     {
         name: 'fracqunx',
         link: '/playgrounds/fracqunx',
+        description: 'fractional quincunx',
     },
+
     // {
     //     name: 'eyevolution',
     //     link: '/playgrounds/eyevolution',
+    //     description: '',
     // },
     // {
     //     name: 'pacemaker-accumulator',
     //     link: '/playgrounds/pacemaker-accumulator',
+    //     description: '',
     // },
     // {
     //     name: 'cpt-variance',
     //     link: '/playgrounds/cpt-variance',
+    //     description: '',
     // },
     // {
     //     name: 'refractive computation',
     //     link: '/playgrounds/refractive-computation',
+    //     description: '',
     // },
     // {
     //     name: 'metamaterials',
     //     link: '/playgrounds/metamaterials',
+    //     description: '',
     // },
     // {
     //     name: 'lifesong',
     //     link: '/playgrounds/lifesong',
+    //     description: '',
     // },
     // {
     //     name: 'vote no',
     //     link: '/playgrounds/vote-no',
+    //     description: '',
     // },
     // {
     //     name: 'everything... relevant',
     //     link: '/playgrounds/everything-relevant',
+    //     description: '',
     // },
 ];
 
@@ -86,6 +99,7 @@ export default function Playgrounds() {
                     const {
                         name,
                         link,
+                        description,
                     } = playground;
 
                     return (
@@ -99,6 +113,12 @@ export default function Playgrounds() {
                             >
                                 {name}
                             </div>
+
+                            {description && (
+                                <div>
+                                    {description}
+                                </div>
+                            )}
                         </Link>
                     );
                 })}
