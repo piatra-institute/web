@@ -280,6 +280,8 @@ const MORPHOLINE_COLOR = '#ff0000';
 
 
 const FallingBalls: React.FC = () => {
+    const timeRef = useRef(0);
+    const analysisRef = useRef<NodeJS.Timeout | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [balls, setBalls] = useState<Ball[]>([]);
     const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -287,12 +289,12 @@ const FallingBalls: React.FC = () => {
     const [morphodynamics, setMorphodynamics] = useState(false);
     const [drawState, setDrawState] = useState<DrawState>({ points: [], isDrawing: false });
 
-
     const [maxBalls, setMaxBalls] = useState(MAX_BALLS);
     const [releaseInterval, setReleaseInterval] = useState(BALL_ADD_INTERVAL);
     const [bounceFactor, setBounceFactor] = useState(BOUNCE_FACTOR);
 
     const [analysisData, setAnalysisData] = useState<AnalysisData[]>([]);
+
 
 
     const generatePins = (
@@ -344,6 +346,9 @@ const FallingBalls: React.FC = () => {
     const [pins, setPins] = useState(generatePins(areaOfEffect));
     const bins = generateBins();
 
+    const gameStateRef = useRef({ pins, balls, bins });
+
+
     const addBall = useCallback(() => {
         if (balls.length >= maxBalls) return;
 
@@ -393,8 +398,68 @@ const FallingBalls: React.FC = () => {
         setAreaOfEffect(false);
         setMorphodynamics(false);
         setDrawState({ points: [], isDrawing: false });
+        setAnalysisData([]);
     }
 
+
+    const formatValue = (value: any) => {
+        if (typeof value !== 'number' || isNaN(value) || !isFinite(value)) {
+          return 0;
+        }
+        return Number(value.toFixed(3));
+    }
+
+    const calculateTrajectoryVariance = useCallback((activeBalls: Ball[]) => {
+        try {
+            if (!Array.isArray(activeBalls) || activeBalls.length === 0) return 0;
+
+            const validBalls = activeBalls.filter(ball =>
+                ball && typeof ball.vy === 'number' && isFinite(ball.vy));
+
+            if (validBalls.length === 0) return 0;
+
+            const avgVy = validBalls.reduce((sum, ball) => sum + ball.vy, 0) / validBalls.length;
+            return formatValue(validBalls.reduce((acc, ball) =>
+                acc + Math.pow(ball.vy - avgVy, 2), 0) / validBalls.length);
+        } catch (error) {
+            console.error('Variance calculation error:', error);
+            return 0;
+        }
+    }, []);
+
+    const calculateLocalEntropy = (bins: Bin[], balls: Ball[]) => {
+        const ballsPerBin = new Array(bins.length).fill(0);
+        balls.forEach(ball => {
+            if (ball.binIndex !== null) {
+                ballsPerBin[ball.binIndex]++;
+            }
+        });
+
+        const total = ballsPerBin.reduce((a, b) => a + b, 0);
+        if (total === 0) return 0;
+
+        return -ballsPerBin.reduce((acc, count) => {
+            const p = count / total;
+            return acc + (p === 0 ? 0 : p * Math.log2(p));
+        }, 0);
+    }
+
+    const calculateAOEImpact = (pins: Pin[], balls: Ball[]) => {
+        const aoePins = pins.filter(pin => pin.aoe);
+        if (aoePins.length === 0) return 0;
+
+        return aoePins.reduce((acc, pin) => {
+            const affectedBalls = balls.filter(ball =>
+                Math.hypot(ball.x - pin.x, ball.y - pin.y) <= pin.aoeSize);
+            return acc + (affectedBalls.length * Math.abs(pin.aoeSpeed));
+        }, 0) / aoePins.length;
+    }
+
+
+    /** Game state */
+    useEffect(() => {
+        gameStateRef.current = { pins, balls, bins };
+    }, [pins, balls, bins]);
 
     /** Generate pins */
     useEffect(() => {
@@ -512,20 +577,33 @@ const FallingBalls: React.FC = () => {
         releaseInterval,
     ]);
 
-
-
+    /** Analysis */
     useEffect(() => {
-        const collectData = () => {
-            return Array.from({ length: 50 }, (_, i) => ({
-                time: i,
-                trajectoryVariance: parseFloat((Math.random() * 0.3 + 0.7).toFixed(5)),
-                localEntropy: parseFloat((Math.random() * 0.4 + 0.6).toFixed(5)),
-                morpholineAlignment: parseFloat((Math.random() * 0.5 + 0.5).toFixed(5)),
-            } as AnalysisData));
-        };
+        if (!isRunning) return;
 
-        setAnalysisData(collectData());
-    }, []);
+        analysisRef.current = setInterval(() => {
+            const { pins, balls, bins } = gameStateRef.current;
+            const activeBalls = balls.filter(ball => ball.active);
+            timeRef.current += 1;
+
+            setAnalysisData(prev => [...prev, {
+                time: timeRef.current,
+                trajectoryVariance: calculateTrajectoryVariance(activeBalls),
+                localEntropy: calculateLocalEntropy(bins, balls),
+                // morpholineAlignment: calculateAOEImpact(pins, balls),
+                morpholineAlignment: 0,
+            }].slice(-50));
+        }, 1000);
+
+        return () => {
+            if (analysisRef.current) {
+                clearInterval(analysisRef.current);
+            }
+        };
+    }, [
+        isRunning,
+        calculateTrajectoryVariance,
+    ]);
 
 
     return (
