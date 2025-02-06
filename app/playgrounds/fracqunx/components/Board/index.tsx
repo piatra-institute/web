@@ -9,6 +9,9 @@ import {
 interface Pin {
     x: number;
     y: number;
+    aoe: boolean;
+    aoeSize: number;
+    aoeSpeed: number;
 }
 
 interface Bin {
@@ -60,6 +63,7 @@ class Ball {
 
         otherBalls.forEach(otherBall => {
             if (otherBall === this || !otherBall.frozen) return;
+            if (this.binIndex !== null && otherBall.binIndex !== this.binIndex) return;
 
             const dx = this.x - otherBall.x;
             const dy = this.y - otherBall.y;
@@ -79,7 +83,10 @@ class Ball {
         return highestCollision;
     }
 
-    update(otherBalls: Ball[], pins: Pin[], bins: Bin[]): void {
+    update(
+        otherBalls: Ball[], pins: Pin[], bins: Bin[],
+        areaOfEffect: boolean, morphodynamics: boolean,
+    ): void {
         if (this.frozen) return;
 
         this.vy += GRAVITY;
@@ -153,6 +160,18 @@ class Ball {
                     this.vy = Math.sin(angle) * speed * BOUNCE_FACTOR;
                 }
             }
+
+            if (areaOfEffect && pin.aoe) {
+                const dx = this.x - pin.x;
+                const dy = this.y - pin.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < pin.aoeSize) {
+                    const angle = Math.atan2(dy, dx);
+                    this.vx += Math.cos(angle) * pin.aoeSpeed;
+                    this.vy += Math.sin(angle) * pin.aoeSpeed;
+                }
+            }
         });
 
         if (this.y + this.radius > HEIGHT - BIN_CONFIG.height && this.binIndex === null) {
@@ -200,6 +219,8 @@ const FRICTION = 0.98;
 const VERTICAL_COLLISION_THRESHOLD = 0.1;
 const RANDOM_DEFLECTION_SPEED = 3;
 const STOP_THRESHOLD = 0.1;
+const BALL_ADD_INTERVAL = 200;
+const AOE_CHANCE = 0.2;
 
 const WIDTH = 600;
 const HEIGHT = 700;
@@ -220,20 +241,26 @@ const BIN_CONFIG: BinConfig = {
     count: Math.floor(WIDTH / (BALL_RADIUS * 2))
 };
 
-const BACKGROUND_COLOR = '#141414'
-const PIN_COLOR = '#404040'
-const BALL_COLOR = '#bef264'
-const BIN_COLOR = '#454545'
-const FROZEN_BALL_COLOR = '#84cc16'
+const BACKGROUND_COLOR = '#141414';
+const PIN_COLOR = '#404040';
+const AOE_FAST_COLOR = '#ff0000';
+const AOE_SLOW_COLOR = '#00ff00';
+const BALL_COLOR = '#bef264';
+const BIN_COLOR = '#454545';
+const FROZEN_BALL_COLOR = '#84cc16';
 
 
 const FallingBalls: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [balls, setBalls] = useState<Ball[]>([]);
     const [isRunning, setIsRunning] = useState<boolean>(true);
+    const [areaOfEffect, setAreaOfEffect] = useState(false);
+    const [morphodynamics, setMorphodynamics] = useState(false);
 
 
-    const generatePins = (): Pin[] => {
+    const generatePins = (
+        areaOfEffect: boolean,
+    ): Pin[] => {
         const pins: Pin[] = [];
         const startX = (WIDTH - (PIN_GRID.cols - 1) * PIN_GRID.spacing.horizontal) / 2;
 
@@ -242,9 +269,20 @@ const FallingBalls: React.FC = () => {
             const cols = row % 2 === 0 ? PIN_GRID.cols : PIN_GRID.cols - 1;
 
             for (let col = 0; col < cols; col++) {
+                const aoe = areaOfEffect ? Math.random() < AOE_CHANCE : false;
+                let aoeSize = 0;
+                let aoeSpeed = 0;
+                if (aoe) {
+                    aoeSize = Math.random() * 30 + BALL_RADIUS * 2;
+                    aoeSpeed = (Math.random() * 10 + 5) * (Math.random() < 0.5 ? -1 : 1);
+                }
+
                 pins.push({
                     x: startX + col * PIN_GRID.spacing.horizontal + offsetX,
-                    y: PIN_GRID.startY + row * PIN_GRID.spacing.vertical
+                    y: PIN_GRID.startY + row * PIN_GRID.spacing.vertical,
+                    aoe,
+                    aoeSize,
+                    aoeSpeed,
                 });
             }
         }
@@ -266,7 +304,7 @@ const FallingBalls: React.FC = () => {
         return bins;
     };
 
-    const pins = generatePins();
+    const [pins, setPins] = useState(generatePins(areaOfEffect));
     const bins = generateBins();
 
     const addBall = (): void => {
@@ -275,6 +313,13 @@ const FallingBalls: React.FC = () => {
     };
 
 
+    useEffect(() => {
+        setPins(generatePins(areaOfEffect));
+    }, [
+        areaOfEffect,
+    ]);
+
+    /** Render */
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -296,6 +341,14 @@ const FallingBalls: React.FC = () => {
                 ctx.fillStyle = PIN_COLOR;
                 ctx.fill();
                 ctx.closePath();
+
+                if (pin.aoe) {
+                    ctx.beginPath();
+                    ctx.arc(pin.x, pin.y, pin.aoeSize, 0, Math.PI * 2);
+                    ctx.strokeStyle = pin.aoeSpeed > 0 ? AOE_FAST_COLOR : AOE_SLOW_COLOR;
+                    ctx.stroke();
+                    ctx.closePath();
+                }
             });
 
             bins.forEach((bin) => {
@@ -307,7 +360,7 @@ const FallingBalls: React.FC = () => {
             });
 
             balls.forEach(ball => {
-                ball.update(balls, pins, bins);
+                ball.update(balls, pins, bins, areaOfEffect, morphodynamics);
 
                 ctx.beginPath();
                 ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
@@ -331,12 +384,14 @@ const FallingBalls: React.FC = () => {
         isRunning,
         pins,
         bins,
+        areaOfEffect,
+        morphodynamics,
     ]);
 
     useEffect(() => {
         if (!isRunning) return;
 
-        const interval = setInterval(addBall, 2000);
+        const interval = setInterval(addBall, BALL_ADD_INTERVAL);
         return () => clearInterval(interval);
     }, [isRunning]);
 
@@ -350,18 +405,37 @@ const FallingBalls: React.FC = () => {
                 className="bg-black mb-8"
             />
 
-            <div className="flex gap-4">
+            <div
+                className="flex gap-4"
+            >
                 <button
                     onClick={() => setIsRunning(!isRunning)}
-                    className="px-4 py-2 bg-lime-50 text-black hover:bg-lime-200 transition-colors"
+                    className="px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors"
                 >
                     {isRunning ? 'Pause' : 'Resume'}
                 </button>
                 <button
                     onClick={addBall}
-                    className="px-4 py-2 bg-lime-50 text-black hover:bg-lime-200 transition-colors"
+                    className="px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors"
                 >
                     Add Ball
+                </button>
+            </div>
+
+            <div
+                className="flex gap-4"
+            >
+                <button
+                    onClick={() => setAreaOfEffect(!areaOfEffect)}
+                    className="px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors"
+                >
+                    Area of Effect
+                </button>
+                <button
+                    onClick={() => setMorphodynamics(!morphodynamics)}
+                    className="px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors"
+                >
+                    Morphodynamics
                 </button>
             </div>
         </div>
