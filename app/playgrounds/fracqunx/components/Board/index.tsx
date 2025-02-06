@@ -6,44 +6,17 @@ import {
 } from 'react';
 
 import Settings from '../Settings';
+import Analysis from '../Analysis';
 
+import {
+    AnalysisData,
+    Pin,
+    Bin,
+    BinConfig,
+    DrawState,
+    GridConfig,
+} from '../index';
 
-
-interface Pin {
-    x: number;
-    y: number;
-    aoe: boolean;
-    aoeSize: number;
-    aoeSpeed: number;
-}
-
-interface Bin {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-}
-
-interface GridConfig {
-    rows: number;
-    cols: number;
-    startY: number;
-    spacing: {
-        horizontal: number;
-        vertical: number;
-    };
-}
-
-interface BinConfig {
-    height: number;
-    width: number;
-    count: number;
-}
-
-interface DrawState {
-    points: { x: number; y: number }[];
-    isDrawing: boolean;
-}
 
 
 function calculatePinBias(pin: Pin, targetShape: DrawState): number {
@@ -319,6 +292,8 @@ const FallingBalls: React.FC = () => {
     const [releaseInterval, setReleaseInterval] = useState(BALL_ADD_INTERVAL);
     const [bounceFactor, setBounceFactor] = useState(BOUNCE_FACTOR);
 
+    const [analysisData, setAnalysisData] = useState<AnalysisData[]>([]);
+
 
     const generatePins = (
         areaOfEffect: boolean,
@@ -538,6 +513,21 @@ const FallingBalls: React.FC = () => {
     ]);
 
 
+
+    useEffect(() => {
+        const collectData = () => {
+            return Array.from({ length: 50 }, (_, i) => ({
+                time: i,
+                trajectoryVariance: parseFloat((Math.random() * 0.3 + 0.7).toFixed(5)),
+                localEntropy: parseFloat((Math.random() * 0.4 + 0.6).toFixed(5)),
+                morpholineAlignment: parseFloat((Math.random() * 0.5 + 0.5).toFixed(5)),
+            } as AnalysisData));
+        };
+
+        setAnalysisData(collectData());
+    }, []);
+
+
     return (
         <div className="flex flex-col items-center gap-4 p-4 mb-24">
             <Settings
@@ -607,6 +597,10 @@ const FallingBalls: React.FC = () => {
                     Morphodynamics
                 </button>
             </div>
+
+            <Analysis
+                data={analysisData}
+            />
         </div>
     );
 };
