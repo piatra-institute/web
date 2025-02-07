@@ -27,8 +27,8 @@ import LinkButton from '@/components/LinkButton';
 export interface SettingsProperties {
     bounceFactor: number;
     setBounceFactor: React.Dispatch<React.SetStateAction<number>>;
-    maxBalls: number;
-    setMaxBalls: React.Dispatch<React.SetStateAction<number>>;
+    maxBeads: number;
+    setMaxBeads: React.Dispatch<React.SetStateAction<number>>;
     releaseInterval: number;
     setReleaseInterval: React.Dispatch<React.SetStateAction<number>>;
 };
@@ -41,8 +41,8 @@ export default function Settings(
     const {
         bounceFactor,
         setBounceFactor,
-        maxBalls,
-        setMaxBalls,
+        maxBeads,
+        setMaxBeads,
         releaseInterval,
         setReleaseInterval,
     } = properties;
@@ -163,11 +163,11 @@ export default function Settings(
                     className="text-left w-96 p-4"
                 >
                     <Input
-                        label="max balls"
+                        label="max beads"
                         type="number"
                         min={1}
-                        value={maxBalls}
-                        onChange={(value) => setMaxBalls(parseInt(value, 10))}
+                        value={maxBeads}
+                        onChange={(value) => setMaxBeads(parseInt(value, 10))}
                     />
 
                     <Input

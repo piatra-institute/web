@@ -36,7 +36,7 @@ function calculatePinBias(pin: Pin, targetShape: DrawState): number {
 }
 
 
-class Ball {
+class Bead {
     x: number;
     y: number;
     vx: number;
@@ -60,19 +60,19 @@ class Ball {
         this.frozen = false;
     }
 
-    checkCollisionWithFrozenBalls(otherBalls: Ball[]): number {
+    checkCollisionWithFrozenBeads(otherBeads: Bead[]): number {
         let highestCollision = HEIGHT;
 
-        otherBalls.forEach(otherBall => {
-            if (otherBall === this || !otherBall.frozen) return;
-            if (this.binIndex !== null && otherBall.binIndex !== this.binIndex) return;
+        otherBeads.forEach(otherBead => {
+            if (otherBead === this || !otherBead.frozen) return;
+            if (this.binIndex !== null && otherBead.binIndex !== this.binIndex) return;
 
-            const dx = this.x - otherBall.x;
-            const dy = this.y - otherBall.y;
+            const dx = this.x - otherBead.x;
+            const dy = this.y - otherBead.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
 
-            if (distance < this.radius + otherBall.radius) {
-                const collisionY = otherBall.y - this.radius * 2;
+            if (distance < this.radius + otherBead.radius) {
+                const collisionY = otherBead.y - this.radius * 2;
                 highestCollision = Math.min(highestCollision, collisionY);
 
                 const centeringForce = 0.1;
@@ -86,7 +86,7 @@ class Ball {
     }
 
     update(
-        otherBalls: Ball[], pins: Pin[], bins: Bin[],
+        otherBeads: Bead[], pins: Pin[], bins: Bin[],
         areaOfEffect: boolean, morphodynamics: boolean,
         drawState: DrawState,
         options: {
@@ -118,7 +118,7 @@ class Ball {
             this.x = nextX;
         }
 
-        const collisionY = this.checkCollisionWithFrozenBalls(otherBalls);
+        const collisionY = this.checkCollisionWithFrozenBeads(otherBeads);
 
         if (nextY + this.radius > collisionY) {
             this.y = collisionY;
@@ -208,37 +208,37 @@ class Ball {
             }
         }
 
-        otherBalls.forEach(otherBall => {
-            if (otherBall === this || otherBall.frozen) return;
+        otherBeads.forEach(otherBead => {
+            if (otherBead === this || otherBead.frozen) return;
 
-            const dx = this.x - otherBall.x;
-            const dy = this.y - otherBall.y;
+            const dx = this.x - otherBead.x;
+            const dy = this.y - otherBead.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
 
-            if (distance < this.radius + otherBall.radius) {
+            if (distance < this.radius + otherBead.radius) {
                 const nx = dx / distance;
                 const ny = dy / distance;
-                const relativeVx = this.vx - otherBall.vx;
-                const relativeVy = this.vy - otherBall.vy;
+                const relativeVx = this.vx - otherBead.vx;
+                const relativeVy = this.vy - otherBead.vy;
                 const impulse = 2 * (relativeVx * nx + relativeVy * ny) / 2;
 
                 this.vx -= impulse * nx * this.bounceFactor;
                 this.vy -= impulse * ny * this.bounceFactor;
-                otherBall.vx += impulse * nx * this.bounceFactor;
-                otherBall.vy += impulse * ny * this.bounceFactor;
+                otherBead.vx += impulse * nx * this.bounceFactor;
+                otherBead.vy += impulse * ny * this.bounceFactor;
 
-                const overlap = (this.radius + otherBall.radius - distance) / 2;
+                const overlap = (this.radius + otherBead.radius - distance) / 2;
                 this.x += nx * overlap;
                 this.y += ny * overlap;
-                otherBall.x -= nx * overlap;
-                otherBall.y -= ny * overlap;
+                otherBead.x -= nx * overlap;
+                otherBead.y -= ny * overlap;
             }
         });
     }
 }
 
 
-const BALL_RADIUS = 6;
+const BEAD_RADIUS = 6;
 const PIN_RADIUS = 8;
 const GRAVITY = 0.4;
 const BOUNCE_FACTOR = 0.5;
@@ -246,8 +246,8 @@ const FRICTION = 0.98;
 const VERTICAL_COLLISION_THRESHOLD = 0.1;
 const RANDOM_DEFLECTION_SPEED = 3;
 const STOP_THRESHOLD = 0.1;
-const MAX_BALLS = 1000;
-const BALL_ADD_INTERVAL = 200;
+const MAX_BEADS = 1000;
+const BEAD_ADD_INTERVAL = 200;
 const AOE_CHANCE = 0.2;
 
 const WIDTH = 600;
@@ -265,32 +265,32 @@ const PIN_GRID: GridConfig = {
 
 const BIN_CONFIG: BinConfig = {
     height: 150,
-    width: BALL_RADIUS * 2,
-    count: Math.floor(WIDTH / (BALL_RADIUS * 2))
+    width: BEAD_RADIUS * 2,
+    count: Math.floor(WIDTH / (BEAD_RADIUS * 2))
 };
 
 const BACKGROUND_COLOR = '#141414';
 const PIN_COLOR = '#404040';
 const AOE_FAST_COLOR = '#ff0000';
 const AOE_SLOW_COLOR = '#00ff00';
-const BALL_COLOR = '#bef264';
+const BEAD_COLOR = '#bef264';
 const BIN_COLOR = '#454545';
-const FROZEN_BALL_COLOR = '#84cc16';
+const FROZEN_BEAD_COLOR = '#84cc16';
 const MORPHOLINE_COLOR = '#ff0000';
 
 
-const FallingBalls: React.FC = () => {
+const FallingBeads: React.FC = () => {
     const timeRef = useRef(0);
     const analysisRef = useRef<NodeJS.Timeout | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const [balls, setBalls] = useState<Ball[]>([]);
+    const [beads, setBeads] = useState<Bead[]>([]);
     const [isRunning, setIsRunning] = useState<boolean>(false);
     const [areaOfEffect, setAreaOfEffect] = useState(false);
     const [morphodynamics, setMorphodynamics] = useState(false);
     const [drawState, setDrawState] = useState<DrawState>({ points: [], isDrawing: false });
 
-    const [maxBalls, setMaxBalls] = useState(MAX_BALLS);
-    const [releaseInterval, setReleaseInterval] = useState(BALL_ADD_INTERVAL);
+    const [maxBeads, setMaxBeads] = useState(MAX_BEADS);
+    const [releaseInterval, setReleaseInterval] = useState(BEAD_ADD_INTERVAL);
     const [bounceFactor, setBounceFactor] = useState(BOUNCE_FACTOR);
 
     const [analysisData, setAnalysisData] = useState<AnalysisData[]>([]);
@@ -312,7 +312,7 @@ const FallingBalls: React.FC = () => {
                 let aoeSize = 0;
                 let aoeSpeed = 0;
                 if (aoe) {
-                    aoeSize = Math.random() * 30 + BALL_RADIUS * 2;
+                    aoeSize = Math.random() * 30 + BEAD_RADIUS * 2;
                     aoeSpeed = (Math.random() * 10 + 5) * (Math.random() < 0.5 ? -1 : 1);
                 }
 
@@ -346,17 +346,17 @@ const FallingBalls: React.FC = () => {
     const [pins, setPins] = useState(generatePins(areaOfEffect));
     const bins = generateBins();
 
-    const gameStateRef = useRef({ pins, balls, bins });
+    const gameStateRef = useRef({ pins, beads, bins });
 
 
-    const addBall = useCallback(() => {
-        if (balls.length >= maxBalls) return;
+    const addBead = useCallback(() => {
+        if (beads.length >= maxBeads) return;
 
-        const newBall = new Ball(WIDTH / 2, BALL_RADIUS, BALL_RADIUS);
-        setBalls(prevBalls => [...prevBalls, newBall]);
+        const newBead = new Bead(WIDTH / 2, BEAD_RADIUS, BEAD_RADIUS);
+        setBeads(prevBeads => [...prevBeads, newBead]);
     }, [
-        balls,
-        maxBalls,
+        beads,
+        maxBeads,
     ]);
 
 
@@ -393,7 +393,7 @@ const FallingBalls: React.FC = () => {
     };
 
     const reset = () => {
-        setBalls([]);
+        setBeads([]);
         setIsRunning(false);
         setAreaOfEffect(false);
         setMorphodynamics(false);
@@ -409,57 +409,57 @@ const FallingBalls: React.FC = () => {
         return Number(value.toFixed(3));
     }
 
-    const calculateTrajectoryVariance = useCallback((activeBalls: Ball[]) => {
+    const calculateTrajectoryVariance = useCallback((activeBeads: Bead[]) => {
         try {
-            if (!Array.isArray(activeBalls) || activeBalls.length === 0) return 0;
+            if (!Array.isArray(activeBeads) || activeBeads.length === 0) return 0;
 
-            const validBalls = activeBalls.filter(ball =>
+            const validBeads = activeBeads.filter(ball =>
                 ball && typeof ball.vy === 'number' && isFinite(ball.vy));
 
-            if (validBalls.length === 0) return 0;
+            if (validBeads.length === 0) return 0;
 
-            const avgVy = validBalls.reduce((sum, ball) => sum + ball.vy, 0) / validBalls.length;
-            return formatValue(validBalls.reduce((acc, ball) =>
-                acc + Math.pow(ball.vy - avgVy, 2), 0) / validBalls.length);
+            const avgVy = validBeads.reduce((sum, ball) => sum + ball.vy, 0) / validBeads.length;
+            return formatValue(validBeads.reduce((acc, ball) =>
+                acc + Math.pow(ball.vy - avgVy, 2), 0) / validBeads.length);
         } catch (error) {
             console.error('Variance calculation error:', error);
             return 0;
         }
     }, []);
 
-    const calculateLocalEntropy = (bins: Bin[], balls: Ball[]) => {
-        const ballsPerBin = new Array(bins.length).fill(0);
-        balls.forEach(ball => {
+    const calculateLocalEntropy = (bins: Bin[], beads: Bead[]) => {
+        const beadsPerBin = new Array(bins.length).fill(0);
+        beads.forEach(ball => {
             if (ball.binIndex !== null) {
-                ballsPerBin[ball.binIndex]++;
+                beadsPerBin[ball.binIndex]++;
             }
         });
 
-        const total = ballsPerBin.reduce((a, b) => a + b, 0);
+        const total = beadsPerBin.reduce((a, b) => a + b, 0);
         if (total === 0) return 0;
 
-        return -ballsPerBin.reduce((acc, count) => {
+        return -beadsPerBin.reduce((acc, count) => {
             const p = count / total;
             return acc + (p === 0 ? 0 : p * Math.log2(p));
         }, 0);
     }
 
-    const calculateAOEImpact = (pins: Pin[], balls: Ball[]) => {
+    const calculateAOEImpact = (pins: Pin[], beads: Bead[]) => {
         const aoePins = pins.filter(pin => pin.aoe);
         if (aoePins.length === 0) return 0;
 
         return aoePins.reduce((acc, pin) => {
-            const affectedBalls = balls.filter(ball =>
+            const affectedBeads = beads.filter(ball =>
                 Math.hypot(ball.x - pin.x, ball.y - pin.y) <= pin.aoeSize);
-            return acc + (affectedBalls.length * Math.abs(pin.aoeSpeed));
+            return acc + (affectedBeads.length * Math.abs(pin.aoeSpeed));
         }, 0) / aoePins.length;
     }
 
 
     /** Game state */
     useEffect(() => {
-        gameStateRef.current = { pins, balls, bins };
-    }, [pins, balls, bins]);
+        gameStateRef.current = { pins, beads, bins };
+    }, [pins, beads, bins]);
 
     /** Generate pins */
     useEffect(() => {
@@ -517,9 +517,9 @@ const FallingBalls: React.FC = () => {
                 ctx.closePath();
             });
 
-            balls.forEach(ball => {
+            beads.forEach(ball => {
                 ball.update(
-                    balls, pins, bins,
+                    beads, pins, bins,
                     areaOfEffect, morphodynamics, drawState,
                     {
                         bounceFactor,
@@ -528,7 +528,7 @@ const FallingBalls: React.FC = () => {
 
                 ctx.beginPath();
                 ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-                ctx.fillStyle = ball.frozen ? FROZEN_BALL_COLOR : BALL_COLOR;
+                ctx.fillStyle = ball.frozen ? FROZEN_BEAD_COLOR : BEAD_COLOR;
                 ctx.fill();
                 ctx.closePath();
             });
@@ -554,7 +554,7 @@ const FallingBalls: React.FC = () => {
             cancelAnimationFrame(animationFrameId);
         };
     }, [
-        balls,
+        beads,
         isRunning,
         pins,
         bins,
@@ -564,16 +564,16 @@ const FallingBalls: React.FC = () => {
         bounceFactor,
     ]);
 
-    /** Ball release interval */
+    /** Bead release interval */
     useEffect(() => {
         if (!isRunning) return;
 
-        const interval = setInterval(addBall, releaseInterval);
+        const interval = setInterval(addBead, releaseInterval);
 
         return () => clearInterval(interval);
     }, [
         isRunning,
-        addBall,
+        addBead,
         releaseInterval,
     ]);
 
@@ -582,15 +582,15 @@ const FallingBalls: React.FC = () => {
         if (!isRunning) return;
 
         analysisRef.current = setInterval(() => {
-            const { pins, balls, bins } = gameStateRef.current;
-            const activeBalls = balls.filter(ball => ball.active);
+            const { pins, beads, bins } = gameStateRef.current;
+            const activeBeads = beads.filter(ball => ball.active);
             timeRef.current += 1;
 
             setAnalysisData(prev => [...prev, {
                 time: timeRef.current,
-                trajectoryVariance: calculateTrajectoryVariance(activeBalls),
-                localEntropy: calculateLocalEntropy(bins, balls),
-                // morpholineAlignment: calculateAOEImpact(pins, balls),
+                trajectoryVariance: calculateTrajectoryVariance(activeBeads),
+                localEntropy: calculateLocalEntropy(bins, beads),
+                // morpholineAlignment: calculateAOEImpact(pins, beads),
                 morpholineAlignment: 0,
             }].slice(-50));
         }, 1000);
@@ -609,8 +609,8 @@ const FallingBalls: React.FC = () => {
     return (
         <div className="flex flex-col items-center gap-4 p-4 mb-24">
             <Settings
-                maxBalls={maxBalls}
-                setMaxBalls={setMaxBalls}
+                maxBeads={maxBeads}
+                setMaxBeads={setMaxBeads}
                 releaseInterval={releaseInterval}
                 setReleaseInterval={setReleaseInterval}
                 bounceFactor={bounceFactor}
@@ -648,10 +648,10 @@ const FallingBalls: React.FC = () => {
                     {isRunning ? 'Pause' : 'Resume'}
                 </button>
                 <button
-                    onClick={addBall}
+                    onClick={addBead}
                     className="px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors"
                 >
-                    Add Ball
+                    Add Bead
                 </button>
             </div>
 
@@ -684,4 +684,4 @@ const FallingBalls: React.FC = () => {
 };
 
 
-export default FallingBalls;
+export default FallingBeads;
