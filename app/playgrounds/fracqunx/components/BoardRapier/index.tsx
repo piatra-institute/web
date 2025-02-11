@@ -86,7 +86,9 @@ function Board() {
 
     return (
         <div className="h-dvh w-full">
-            <Canvas>
+            <Canvas
+                shadows="soft"
+            >
                 <Physics
                     gravity={[0, -9.81, 0]}
                     paused={!isRunning}

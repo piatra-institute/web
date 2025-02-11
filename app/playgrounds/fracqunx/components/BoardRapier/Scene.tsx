@@ -105,6 +105,7 @@ function Container() {
                         <meshStandardMaterial
                             color={wallColor}
                             emissive={wallColor}
+                            emissiveIntensity={0.8}
                             transparent={false}
                         />
                     </Box>
@@ -181,13 +182,12 @@ function Scene({
     return (
         <>
             <ambientLight intensity={1} />
-            <directionalLight position={[-10, 10, 0]} intensity={1} />
+            <directionalLight
+                position={[-10, 10, 0]}
+                intensity={1.5}
+                castShadow
+            />
 
-            {/* <OrthographicCamera
-                makeDefault
-                position={[0, 0, 10]}
-                zoom={80}
-            /> */}
             <OrthographicCamera
                 makeDefault
                 position={[0, 0, 10]}
@@ -197,34 +197,83 @@ function Scene({
             />
             <OrbitControls />
 
-            <RigidBody type="fixed">
-                <CuboidCollider args={[0.5, height, 1]} position={[-width / 2, 0, 0]} />
-                <CuboidCollider args={[0.5, height, 1]} position={[width / 2, 0, 0]} />
-                <CuboidCollider args={[width, 0.5, 1]} position={[0, -height / 2, 0]} />
-            </RigidBody>
+            <group position={[0, -2, 0]}>
+                {pegs.map(([x, y], i) => (
+                    <RigidBody
+                        key={i}
+                        type="fixed"
+                        position={[x, y, 0]}
+                        // restitution={0.7}
+                        // colliders="ball"
+                        colliders="hull"
+                    >
+                        <mesh
+                            // cylinder rotation
+                            rotation={[Math.PI / 2, 0, 0]}
 
-            {pegs.map(([x, y], i) => (
-                <RigidBody
-                    key={i}
-                    type="fixed"
-                    position={[x, y, 0]}
-                    // restitution={0.7}
-                    colliders="ball"
+                            // hexagon rotation
+                            // rotation={[0, 0, Math.PI / 2]}
+                        >
+                            {/* radius top, radius bottom, height */}
+                            <cylinderGeometry
+                                args={[pegRadius, pegRadius, pegRadius * 2]}
+                            />
+
+                            {/* Hexagon */}
+                            {/* <extrudeGeometry args={
+                                [
+                                    new THREE.Shape()
+                                    .moveTo(pegRadius * Math.cos(0), pegRadius * Math.sin(0))
+                                    .lineTo(pegRadius * Math.cos(Math.PI/3), pegRadius * Math.sin(Math.PI/3))
+                                    .lineTo(pegRadius * Math.cos(2*Math.PI/3), pegRadius * Math.sin(2*Math.PI/3))
+                                    .lineTo(pegRadius * Math.cos(Math.PI), pegRadius * Math.sin(Math.PI))
+                                    .lineTo(pegRadius * Math.cos(4*Math.PI/3), pegRadius * Math.sin(4*Math.PI/3))
+                                    .lineTo(pegRadius * Math.cos(5*Math.PI/3), pegRadius * Math.sin(5*Math.PI/3))
+                                    .lineTo(pegRadius * Math.cos(0), pegRadius * Math.sin(0)),
+                                    {
+                                        depth: pegRadius * 2,
+                                        bevelEnabled: false
+                                    },
+                                ]
+                            } /> */}
+
+                            {/* <sphereGeometry args={[pegRadius]} /> */}
+
+                            <meshStandardMaterial
+                                color={pegColor}
+                            />
+                        </mesh>
+                    </RigidBody>
+                ))}
+
+                <mesh
+                    position={[0, -2.5, -0.2]}
                 >
-                    <mesh>
-                        <sphereGeometry args={[pegRadius]} />
-                        <meshStandardMaterial
-                            color={pegColor}
-                        />
-                    </mesh>
-                </RigidBody>
-            ))}
+                    <tubeGeometry
+                        args={[
+                            new THREE.CatmullRomCurve3(
+                                Array.from({ length: 50 }, (_, i) => {
+                                    const x = (i - 25) / 12.5;  // Range from -5 to 5
+                                    // Gaussian function: f(x) = a * e^(-(x-b)²/(2c²))
+                                    const y = 2.2 * Math.exp(-(x * x) / 1.6);  // a=2, b=0, c=1
+                                    return new THREE.Vector3(x, y, 0);
+                                })
+                            ),
+                            64,     // tubular segments
+                            0.01,    // radius
+                            8,      // radial segments
+                            false   // closed
+                        ]}
+                    />
+                    <meshStandardMaterial color={wallColor} />
+                </mesh>
 
-            <Container />
+                <Container />
 
-            {beads.map((bead, index) => (
-                <BeadMesh key={index + bead.id} position={bead.position} />
-            ))}
+                {beads.map((bead, index) => (
+                    <BeadMesh key={index + bead.id} position={bead.position} />
+                ))}
+            </group>
         </>
     );
 }
