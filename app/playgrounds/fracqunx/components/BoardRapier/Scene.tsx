@@ -15,7 +15,7 @@ const beadColor = '#50C878';
 const pegColor = '#C0C0C0';
 
 
-const pegsYStart = 6;
+const pegsYStart = 5;
 
 const width = 10;
 const height = 30;
@@ -54,8 +54,13 @@ function Container() {
             {/* Left Flipper */}
             <RigidBody type="fixed">
                 <Box
-                    args={[2, 0.2, thickness]} position={[-1.05, 4.8, 0]}
+                    args={[2, 0.2, thickness]} position={[-1.05, 4, 0]}
                     rotation={[0, 0, -Math.PI / 7]}
+                >
+                    <meshStandardMaterial color={wallColor} />
+                </Box>
+                <Box
+                    args={[1.8, 0.2, thickness]} position={[-1.005, 3.556, 0]}
                 >
                     <meshStandardMaterial color={wallColor} />
                 </Box>
@@ -64,8 +69,13 @@ function Container() {
             {/* Right Flipper */}
             <RigidBody type="fixed">
                 <Box
-                    args={[2, 0.2, thickness]} position={[1.05, 4.8, 0]}
+                    args={[2, 0.2, thickness]} position={[1.05, 4, 0]}
                     rotation={[0, 0, Math.PI / 7]}
+                >
+                    <meshStandardMaterial color={wallColor} />
+                </Box>
+                <Box
+                    args={[1.8, 0.2, thickness]} position={[1.005, 3.556, 0]}
                 >
                     <meshStandardMaterial color={wallColor} />
                 </Box>
@@ -156,7 +166,8 @@ function Scene({
     beads: Bead[],
 }) {
     const pegs = [];
-    for (let row = 0; row < 14; row++) {
+    const PEGS_ROWS = 10;
+    for (let row = 0; row < PEGS_ROWS; row++) {
         // const numPegsInRow = 14 - Math.floor(row / 2)
         const numPegsInRow = 11;
         for (let col = 0; col < numPegsInRow; col++) {
