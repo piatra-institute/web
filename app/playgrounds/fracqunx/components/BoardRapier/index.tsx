@@ -1,15 +1,21 @@
 import React, {
     useState,
     useEffect,
-} from 'react'
-import { Canvas } from '@react-three/fiber'
-import { Physics, RigidBody, CuboidCollider } from '@react-three/rapier'
-import { OrthographicCamera, Box, OrbitControls } from '@react-three/drei'
+} from 'react';
+import {
+    Canvas,
+ } from '@react-three/fiber';
+import {
+    Physics, RigidBody, CuboidCollider,
+} from '@react-three/rapier';
+import {
+    OrthographicCamera, Box, OrbitControls,
+} from '@react-three/drei';
 
 
 
 function Container() {
-    const opacity = 0.3;
+    const opacity = 0.2;
     const thickness = 0.16;
 
     return (
@@ -21,11 +27,38 @@ function Container() {
                 </Box>
             </RigidBody>
 
+            {/* Top */}
+            <RigidBody type="fixed">
+                <Box args={[4, 0.2, thickness * 3]} position={[0, 5.9, 0]}>
+                    <meshStandardMaterial color="red" />
+                </Box>
+            </RigidBody>
+
+            {/* Left Flipper */}
+            <RigidBody type="fixed">
+                <Box
+                    args={[2, 0.2, thickness]} position={[-1.05, 4.8, 0]}
+                    rotation={[0, 0, -Math.PI / 7]}
+                >
+                    <meshStandardMaterial color="red" />
+                </Box>
+            </RigidBody>
+
+            {/* Right Flipper */}
+            <RigidBody type="fixed">
+                <Box
+                    args={[2, 0.2, thickness]} position={[1.05, 4.8, 0]}
+                    rotation={[0, 0, Math.PI / 7]}
+                >
+                    <meshStandardMaterial color="red" />
+                </Box>
+            </RigidBody>
+
             {/* Walls */}
             <RigidBody type="fixed">
                 {/* Left */}
-                <Box args={[0.2, 7, thickness]} position={[-1.96, 1.1, 0]}>
-                    <meshStandardMaterial color="red" transparent opacity={opacity} />
+                <Box args={[0.2, 8.2, thickness]} position={[-1.9, 1.7, 0]}>
+                    <meshStandardMaterial color="red" transparent opacity={1} />
                 </Box>
 
                 {Array.from({ length: 18 }).map((_, i) => (
@@ -33,22 +66,25 @@ function Container() {
                         key={i}
                         args={[0.02, 2, thickness]} position={[-1.7 + 0.2 * i, -1.2, 0]}
                     >
-                        <meshStandardMaterial color="red" transparent opacity={opacity} />
+                        <meshStandardMaterial
+                            color="red" transparent opacity={1}
+                            emissive="red"
+                        />
                     </Box>
                 ))}
 
                 {/* Right */}
-                <Box args={[0.2, 7, thickness]} position={[1.96, 1.1, 0]}>
-                    <meshStandardMaterial color="red" transparent opacity={opacity} />
+                <Box args={[0.2, 8.2, thickness]} position={[1.96, 1.7, 0]}>
+                    <meshStandardMaterial color="red" transparent opacity={1} />
                 </Box>
 
                 {/* Back */}
-                <Box args={[4, 7, 0.2]} position={[0, 1.1, -thickness - 0.02]}>
+                <Box args={[4, 8.2, 0.2]} position={[0, 1.7, -thickness - 0.02]}>
                     <meshStandardMaterial color="red" transparent opacity={opacity} />
                 </Box>
 
                 {/* Front */}
-                <Box args={[4, 7, 0.2]} position={[0, 1.1, thickness + 0.02]}>
+                <Box args={[4, 8.2, 0.2]} position={[0, 1.7, thickness + 0.02]}>
                     <meshStandardMaterial color="red" transparent opacity={opacity} />
                 </Box>
             </RigidBody>
@@ -57,9 +93,10 @@ function Container() {
 }
 
 
-function Ball({ position, radius = 0.04 }: any) {
+function Bead({ position, radius = 0.04 }: any) {
     return (
         <RigidBody
+            type="dynamic"
             position={position}
             colliders="ball"
             restitution={0.5}
@@ -67,6 +104,7 @@ function Ball({ position, radius = 0.04 }: any) {
             linearDamping={0.2}
             angularDamping={0.2}
             mass={0.2}
+            onSleep={() => console.log('sleep')}
         >
             <mesh>
                 <sphereGeometry args={[radius]} />
@@ -80,14 +118,14 @@ function Ball({ position, radius = 0.04 }: any) {
 
 function Board() {
     const pegsYStart = 6
-    const beadYStart = 6
+    const beadYStart = 4.5
 
     const width = 10
     const height = 30
     const pegRadius = 0.08
     const pegSpacing = 0.3
 
-    const [balls, setBalls] = useState<any[]>([
+    const [beads, setBeads] = useState<any[]>([
         // ...Array.from({ length: 1000 }).map(() => ({
         //     id: Date.now(),
         //     position: [(Math.random() - 0.5) * 2, 6, 0]
@@ -95,10 +133,49 @@ function Board() {
     ])
 
 
-    const spawnBall = () => {
-        const randomX = (Math.random() - 0.5) * 2
-        setBalls(prev => [...prev, { id: Date.now(), position: [randomX, beadYStart, 0] }])
-    }
+    // const spawnBead = () => {
+    //     // const randomX = (Math.random() - 0.5) * 2
+    //     const randomX = 0
+    //     setBeads(prev => [...prev, { id: Date.now() + Math.random(), position: [randomX, beadYStart, 0] }])
+
+    //     // for (let i = 0; i < 1500; i++) {
+    //     //     setBeads(prev => [...prev, {
+    //     //         id: Date.now() + Math.random() + Math.random() +  Math.random() + Math.random() +  Math.random() + Math.random(),
+    //     //         position: [randomX, beadYStart + i * 0.2, 0] }])
+    //     // }
+    // }
+
+    const spawnBead = () => {
+        const triangleHeight = 0.8; // Height of triangle above flippers
+        const triangleBase = 1.2; // Base width between flippers
+        const density = 0.1; // Space between beads
+        const flipperY = 5; // Y position of flippers
+
+        const newBeads: any[] = [];
+
+        // Generate rows of beads that form a triangle
+        for (let y = 0; y < triangleHeight; y += density) {
+            // Calculate width of current row (wider at bottom, narrower at top)
+            const rowWidth = triangleBase * (1 - y / triangleHeight);
+            const beadsInRow = Math.floor(rowWidth / density);
+
+            // Generate beads for current row
+            for (let i = 0; i < beadsInRow; i++) {
+                const x = -rowWidth/2 + i * density;
+                const bead = {
+                    id: Date.now() + Math.random(),
+                    position: [
+                        x, // X position
+                        flipperY + y, // Y position (starting from flipper height)
+                        0 // Z position
+                    ]
+                };
+                newBeads.push(bead);
+            }
+        }
+
+        setBeads(prev => [...prev, ...newBeads]);
+    };
 
 
     const pegs = []
@@ -116,7 +193,7 @@ function Board() {
 
     // useEffect(() => {
     //     const interval = setInterval(() => {
-    //         spawnBall();
+    //         spawnBead();
     //     }, 100);
 
     //     return () => clearInterval(interval);
@@ -126,11 +203,12 @@ function Board() {
     return (
         <div className="h-dvh w-full">
             <button
-                onClick={spawnBall}
+                onClick={spawnBead}
                 className="absolute z-50 bottom-4 left-4 px-4 py-2 bg-lime-50 text-black"
             >
-                Drop Ball
+                Drop Beads
             </button>
+
             <Canvas>
                 <OrthographicCamera
                     makeDefault
@@ -153,7 +231,7 @@ function Board() {
                             key={i}
                             type="fixed"
                             position={[x, y, 0]}
-                            restitution={0.7}
+                            // restitution={0.7}
                             colliders="ball"
                         >
                             <mesh>
@@ -163,24 +241,10 @@ function Board() {
                         </RigidBody>
                     ))}
 
-                    {/* {Array.from({ length: 14 }).map((_, i) => (
-                        <RigidBody
-                            key={`divider-${i}`}
-                            type="fixed"
-                            position={[-4 + i * 1.2, 2, 0]}
-                            restitution={0.7}
-                        >
-                            <mesh>
-                                <boxGeometry args={[0.01, 0.2, 0.05]} />
-                                <meshStandardMaterial color="gray" />
-                            </mesh>
-                        </RigidBody>
-                    ))} */}
-
                     <Container />
 
-                    {balls.map(ball => (
-                        <Ball key={ball.id} position={ball.position} />
+                    {beads.map((bead, index) => (
+                        <Bead key={index + bead.id} position={bead.position} />
                     ))}
                 </Physics>
             </Canvas>
