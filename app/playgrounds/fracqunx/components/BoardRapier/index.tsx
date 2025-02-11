@@ -13,13 +13,18 @@ import Scene, {
     Bead,
 } from './Scene';
 
+import PegEditor from './PegEditor';
+
 
 
 function Board() {
     const [beads, setBeads] = useState<Bead[]>([]);
+
     const [isRunning, setIsRunning] = useState(false);
     const [areaOfEffect, setAreaOfEffect] = useState(false);
     const [morphodynamics, setMorphodynamics] = useState(false);
+
+    const [selectedPeg, setSelectedPeg] = useState<number | null>(null);
 
 
     // const spawnBead = () => {
@@ -44,7 +49,7 @@ function Board() {
 
             // Generate beads for current row
             for (let i = 0; i < beadsInRow; i++) {
-                const x = -rowWidth/2 + i * density;
+                const x = -rowWidth/2 + i * density + 0.07;
                 const bead: Bead = {
                     id: Date.now() + Math.random(),
                     position: [
@@ -86,6 +91,7 @@ function Board() {
                 >
                     <Scene
                         beads={beads}
+                        setSelectedPeg={setSelectedPeg}
                     />
                 </Physics>
             </Canvas>
@@ -139,6 +145,16 @@ function Board() {
                     </button>
                 </div>
             </div>
+
+            {selectedPeg !== null && (
+                <PegEditor
+                    selectedPegIndex={selectedPeg}
+                    onClose={() => setSelectedPeg(null)}
+                    onUpdatePeg={() => {}}
+                    initialAoeSize={1}
+                    initialAoeSpeed={1}
+                />
+            )}
         </div>
     );
 }

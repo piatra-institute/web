@@ -1,12 +1,16 @@
-import React from 'react';
+import React, {
+    useState,
+} from 'react';
 import {
-    RigidBody, CuboidCollider,
+    RigidBody,
 } from '@react-three/rapier';
 import {
     OrthographicCamera, Box, OrbitControls,
 } from '@react-three/drei';
 
 import * as THREE from 'three';
+
+import Pegs from './Pegs';
 
 
 
@@ -19,8 +23,8 @@ const pegsYStart = 5;
 
 const width = 10;
 const height = 30;
-const pegRadius = 0.08;
 const pegSpacing = 0.3;
+const pegRadius = 0.08;
 
 const opacity = 0.2;
 const thickness = 0.16;
@@ -147,7 +151,7 @@ function BeadMesh({
             linearDamping={0.2}
             angularDamping={0.2}
             mass={0.2}
-            // onSleep={() => console.log('sleep')}
+        // onSleep={() => console.log('sleep')}
         >
             <mesh>
                 <sphereGeometry args={[radius]} />
@@ -163,10 +167,12 @@ function BeadMesh({
 
 function Scene({
     beads,
-} : {
+    setSelectedPeg,
+}: {
     beads: Bead[],
+    setSelectedPeg: (index: number | null) => void,
 }) {
-    const pegs = [];
+    const pegs: [number, number][] = [];
     const PEGS_ROWS = 10;
     for (let row = 0; row < PEGS_ROWS; row++) {
         // const numPegsInRow = 14 - Math.floor(row / 2)
@@ -198,53 +204,17 @@ function Scene({
             <OrbitControls />
 
             <group position={[0, -2, 0]}>
-                {pegs.map(([x, y], i) => (
-                    <RigidBody
-                        key={i}
-                        type="fixed"
-                        position={[x, y, 0]}
-                        // restitution={0.7}
-                        // colliders="ball"
-                        colliders="hull"
-                    >
-                        <mesh
-                            // cylinder rotation
-                            rotation={[Math.PI / 2, 0, 0]}
-
-                            // hexagon rotation
-                            // rotation={[0, 0, Math.PI / 2]}
-                        >
-                            {/* radius top, radius bottom, height */}
-                            <cylinderGeometry
-                                args={[pegRadius, pegRadius, pegRadius * 2]}
-                            />
-
-                            {/* Hexagon */}
-                            {/* <extrudeGeometry args={
-                                [
-                                    new THREE.Shape()
-                                    .moveTo(pegRadius * Math.cos(0), pegRadius * Math.sin(0))
-                                    .lineTo(pegRadius * Math.cos(Math.PI/3), pegRadius * Math.sin(Math.PI/3))
-                                    .lineTo(pegRadius * Math.cos(2*Math.PI/3), pegRadius * Math.sin(2*Math.PI/3))
-                                    .lineTo(pegRadius * Math.cos(Math.PI), pegRadius * Math.sin(Math.PI))
-                                    .lineTo(pegRadius * Math.cos(4*Math.PI/3), pegRadius * Math.sin(4*Math.PI/3))
-                                    .lineTo(pegRadius * Math.cos(5*Math.PI/3), pegRadius * Math.sin(5*Math.PI/3))
-                                    .lineTo(pegRadius * Math.cos(0), pegRadius * Math.sin(0)),
-                                    {
-                                        depth: pegRadius * 2,
-                                        bevelEnabled: false
-                                    },
-                                ]
-                            } /> */}
-
-                            {/* <sphereGeometry args={[pegRadius]} /> */}
-
-                            <meshStandardMaterial
-                                color={pegColor}
-                            />
-                        </mesh>
-                    </RigidBody>
-                ))}
+                <Pegs
+                    pegs={pegs}
+                    pegRadius={pegRadius}
+                    pegColor={pegColor}
+                    shape="cylinder"
+                    onPegClick={(index) => {
+                        setSelectedPeg(index);
+                    }}
+                    // onPegHover={() => { console.log('hover') }}
+                    // onPegHoverEnd={() => { console.log('hover end') }}
+                />
 
                 <mesh
                     position={[0, -2.5, -0.2]}
