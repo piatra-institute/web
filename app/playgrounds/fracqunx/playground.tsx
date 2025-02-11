@@ -16,7 +16,11 @@ export default function FracqunxPlayground() {
             <div
                 className="absolute top-0 left-0 right-0 z-50"
             >
-                <Header />
+                <div
+                    className="flex justify-center"
+                >
+                    <Header />
+                </div>
 
                 <Title
                     text="fracqunx"
