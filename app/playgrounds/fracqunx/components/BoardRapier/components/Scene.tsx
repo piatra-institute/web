@@ -1,9 +1,14 @@
-import React from 'react';
+import React, {
+    useRef,
+    useEffect,
+} from 'react';
 
 import {
     OrthographicCamera,
     OrbitControls,
 } from '@react-three/drei';
+
+import { useFrame } from '@react-three/fiber';
 
 import * as THREE from 'three';
 
@@ -25,12 +30,15 @@ import {
     GaussianCurve,
 } from './Extras';
 
+import { AdaptiveStressSystem } from './StressSharingSystem';
+
 
 
 function Scene({
     pegs,
     beads,
     setSelectedPeg,
+    setPegs,
     areaOfEffect,
     morphodynamics,
     customCurve,
@@ -41,6 +49,7 @@ function Scene({
     pegs: PegData[];
     beads: BeadData[];
     setSelectedPeg: (index: number | null) => void;
+    setPegs: (pegs: PegData[]) => void;
     areaOfEffect: boolean;
     morphodynamics: boolean;
     customCurve: THREE.CatmullRomCurve3 | null;
@@ -48,6 +57,31 @@ function Scene({
     drawingCurve: boolean;
     setDrawingCurve: (drawing: boolean) => void;
 }) {
+    const stressSystem = useRef<AdaptiveStressSystem | null>(null);
+
+
+    useEffect(() => {
+        if (morphodynamics) {
+            stressSystem.current = new AdaptiveStressSystem(pegs, customCurve);
+        } else {
+            stressSystem.current = null;
+        }
+    }, [morphodynamics, customCurve, pegs]);
+
+    useFrame(() => {
+        if (morphodynamics && stressSystem.current) {
+            const updatedPegs = stressSystem.current.updatePegProperties(beads);
+            setPegs(updatedPegs);
+        }
+    });
+
+    useEffect(() => {
+        if (stressSystem.current) {
+            stressSystem.current.setTargetCurve(customCurve);
+        }
+    }, [customCurve]);
+
+
     return (
         <>
             <ambientLight intensity={1} />

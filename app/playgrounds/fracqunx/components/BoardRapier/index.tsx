@@ -1,5 +1,6 @@
 import React, {
     useRef,
+    useCallback,
     useState,
     useEffect,
 } from 'react';
@@ -139,13 +140,42 @@ function Board() {
         setBeads(prev => [...prev, ...newBeads]);
     };
 
+    const resetPegs = useCallback(() => {
+        setPegs(pegs => pegs.map(peg => {
+            return {
+                ...peg,
+                aoe: false,
+                aoeSize: 0,
+                aoeSpeed: 0,
+            };
+        }));
+    }, [
+        setPegs,
+    ]);
 
-    const reset = () => {
+    const reset = useCallback(() => {
         setBeads([]);
         setAreaOfEffect(false);
         setMorphodynamics(false);
         setCustomCurve(null);
-    }
+        resetPegs();
+    }, [
+        setBeads,
+        setAreaOfEffect,
+        setMorphodynamics,
+        setCustomCurve,
+        resetPegs,
+    ]);
+
+    const modeReset = useCallback(() => {
+        setBeads([]);
+        setCustomCurve(null);
+        resetPegs();
+    }, [
+        setBeads,
+        setCustomCurve,
+        resetPegs,
+    ]);
 
 
     useEffect(() => {
@@ -154,6 +184,29 @@ function Board() {
 
         addBeads();
     }, []);
+
+    useEffect(() => {
+        if (areaOfEffect) {
+            setMorphodynamics(false);
+        }
+    }, [
+        areaOfEffect,
+    ]);
+
+    useEffect(() => {
+        if (morphodynamics) {
+            setAreaOfEffect(false);
+            modeReset();
+            addBeads();
+        } else {
+            setTimeout(() => {
+                resetPegs();
+            }, 50);
+        }
+    }, [
+        morphodynamics,
+        modeReset,
+    ]);
 
 
     return (
@@ -169,6 +222,7 @@ function Board() {
                         pegs={pegs}
                         beads={beads}
                         setSelectedPeg={setSelectedPeg}
+                        setPegs={setPegs}
                         areaOfEffect={areaOfEffect}
                         morphodynamics={morphodynamics}
                         customCurve={customCurve}
