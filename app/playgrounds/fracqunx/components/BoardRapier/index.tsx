@@ -1,10 +1,12 @@
 import React, {
+    useRef,
     useState,
     useEffect,
 } from 'react';
+
 import {
     Canvas,
- } from '@react-three/fiber';
+} from '@react-three/fiber';
 import {
     Physics,
 } from '@react-three/rapier';
@@ -70,7 +72,10 @@ const usePegs = ({
     };
 }
 
+
 function Board() {
+    const mounted = useRef(false);
+
     const [beads, setBeads] = useState<BeadData[]>([]);
 
     const [isRunning, setIsRunning] = useState(false);
@@ -138,13 +143,12 @@ function Board() {
     }
 
 
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         spawnBead();
-    //     }, 100);
+    useEffect(() => {
+        if (mounted.current) return;
+        mounted.current = true;
 
-    //     return () => clearInterval(interval);
-    // }, []);
+        addBeads();
+    }, []);
 
 
     return (

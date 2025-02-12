@@ -1,7 +1,8 @@
 import React from 'react';
 
 import {
-    OrthographicCamera, OrbitControls,
+    OrthographicCamera,
+    OrbitControls,
 } from '@react-three/drei';
 
 import {
