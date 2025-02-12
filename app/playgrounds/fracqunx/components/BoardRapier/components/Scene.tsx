@@ -5,18 +5,22 @@ import {
     OrbitControls,
 } from '@react-three/drei';
 
+import * as THREE from 'three';
+
 import {
     PegData,
     BeadData,
 
     pegColor,
+    wallColor,
 
     pegRadius,
 } from '../data';
 
+import Container from './Container';
 import Pegs from './Pegs';
 import Beads from './Beads';
-import Container from './Container';
+import DrawingCanvas from './DrawingCanvas';
 import {
     GaussianCurve,
 } from './Extras';
@@ -28,11 +32,21 @@ function Scene({
     beads,
     setSelectedPeg,
     areaOfEffect,
+    morphodynamics,
+    customCurve,
+    setCustomCurve,
+    drawingCurve,
+    setDrawingCurve,
 }: {
     pegs: PegData[];
     beads: BeadData[];
     setSelectedPeg: (index: number | null) => void;
     areaOfEffect: boolean;
+    morphodynamics: boolean;
+    customCurve: THREE.CatmullRomCurve3 | null;
+    setCustomCurve: (curve: THREE.CatmullRomCurve3 | null) => void;
+    drawingCurve: boolean;
+    setDrawingCurve: (drawing: boolean) => void;
 }) {
     return (
         <>
@@ -50,7 +64,9 @@ function Scene({
                 near={0.1}
                 far={1000}
             />
-            <OrbitControls />
+            <OrbitControls
+                enabled={!drawingCurve}
+            />
 
             <group position={[0, -2, 0]}>
                 <Container />
@@ -68,11 +84,41 @@ function Scene({
                         setSelectedPeg(index);
                     }}
                 />
-                <GaussianCurve />
+                {!morphodynamics && (
+                    <GaussianCurve />
+                )}
                 <Beads
                     beads={beads}
                     pegs={pegs}
                 />
+
+                {morphodynamics && (
+                    <>
+                        <DrawingCanvas
+                            width={3.6} height={2} position={[0, -1.2, 0.1]}
+                            onCurveCreated={(curve) => {
+                                setCustomCurve(curve);
+                            }}
+                            drawingCurve={drawingCurve}
+                            setDrawingCurve={setDrawingCurve}
+                        />
+
+                        {customCurve && (
+                            <mesh position={[0, -1.2, -0.15]}>
+                                <tubeGeometry
+                                    args={[
+                                        customCurve,
+                                        64,    // tubular segments
+                                        0.01,  // radius
+                                        8,     // radial segments
+                                        false  // closed
+                                    ]}
+                                />
+                                <meshStandardMaterial color={wallColor} />
+                            </mesh>
+                        )}
+                    </>
+                )}
             </group>
         </>
     );

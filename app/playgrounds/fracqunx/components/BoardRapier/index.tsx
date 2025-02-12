@@ -11,6 +11,8 @@ import {
     Physics,
 } from '@react-three/rapier';
 
+import * as THREE from 'three';
+
 import Scene  from './components/Scene';
 import PegEditor from './components/PegEditor';
 
@@ -77,6 +79,8 @@ function Board() {
     const mounted = useRef(false);
 
     const [beads, setBeads] = useState<BeadData[]>([]);
+    const [customCurve, setCustomCurve] = useState<THREE.CatmullRomCurve3 | null>(null);
+    const [drawingCurve, setDrawingCurve] = useState(false);
 
     const [isRunning, setIsRunning] = useState(false);
     const [areaOfEffect, setAreaOfEffect] = useState(false);
@@ -140,6 +144,7 @@ function Board() {
         setBeads([]);
         setAreaOfEffect(false);
         setMorphodynamics(false);
+        setCustomCurve(null);
     }
 
 
@@ -165,6 +170,11 @@ function Board() {
                         beads={beads}
                         setSelectedPeg={setSelectedPeg}
                         areaOfEffect={areaOfEffect}
+                        morphodynamics={morphodynamics}
+                        customCurve={customCurve}
+                        setCustomCurve={setCustomCurve}
+                        drawingCurve={drawingCurve}
+                        setDrawingCurve={setDrawingCurve}
                     />
                 </Physics>
             </Canvas>
