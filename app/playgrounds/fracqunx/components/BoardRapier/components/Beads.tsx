@@ -21,10 +21,6 @@ import {
 
 
 
-const isInsideCircle = (x: number, y: number, cx: number, cy: number, r: number) => {
-    return (x - cx) ** 2 + (y - cy) ** 2 <= r ** 2;
-};
-
 function Bead({
     position,
     pegs,
@@ -44,64 +40,67 @@ function Bead({
         pegs.forEach(peg => {
             if (!peg.aoe || !peg.aoeSize || !peg.aoeSpeed) return;
 
-            const inAoE = isInsideCircle(
-                beadPosition.x,
-                beadPosition.y,
-                peg.x,
-                peg.y - 2,
-                peg.aoeSize / 2,
+            // Calculate distance and direction to peg
+            const dx = peg.x - beadPosition.x;
+            const dy = (peg.y - 2) - beadPosition.y;
+            const distanceSquared = dx * dx + dy * dy;
+            const distance = Math.sqrt(distanceSquared);
+
+            // Check if bead is within AoE
+            const aoeRadius = peg.aoeSize / 2;
+            if (distance > aoeRadius) return;
+
+            // Constants for force calculation
+            const INNER_RADIUS = 0.8;  // Distance where force starts to decrease
+            const FORCE_SCALE = 0.005; // Base force multiplier
+            const MAX_FORCE = 0.02;    // Maximum force cap
+
+            // Calculate normalized direction
+            const nx = dx / distance;
+            const ny = dy / distance;
+
+            // Smooth force falloff using inverse square law with inner radius
+            let forceMagnitude;
+            if (distance < INNER_RADIUS) {
+                // Reduce force when very close to prevent overwhelming attraction
+                forceMagnitude = (distance / INNER_RADIUS) * FORCE_SCALE;
+            } else {
+                // Gradual falloff from inner radius to edge of AoE
+                const normalizedDistance = (distance - INNER_RADIUS) / (aoeRadius - INNER_RADIUS);
+                forceMagnitude = (1 - normalizedDistance) * FORCE_SCALE;
+            }
+
+            // Apply peg's aoeSpeed as a multiplier
+            forceMagnitude *= peg.aoeSpeed / 100;
+
+            // Cap the maximum force
+            forceMagnitude = Math.min(forceMagnitude, MAX_FORCE);
+
+            // Get current velocity for damping
+            const currentVelocity = rigidBodyRef.current!.linvel();
+            const velocityMagnitude = Math.sqrt(
+                currentVelocity.x * currentVelocity.x +
+                currentVelocity.y * currentVelocity.y
             );
 
-            if (inAoE) {
-                const FORCE_MULTIPLIER = 0.01
-                const MIN_DISTANCE = 0.01
-                const FORCE_DAMPENING = 0.01
-                const SAFETY_RADIUS = 0.6
+            // Apply velocity-based damping to prevent excessive acceleration
+            const DAMPING_FACTOR = 0.8;
+            const velocityDamping = 1 / (1 + velocityMagnitude * DAMPING_FACTOR);
 
-                const currentVelocity = rigidBodyRef.current!.linvel();
+            // Calculate final force with damping
+            const finalForce = {
+                x: nx * forceMagnitude * velocityDamping * (peg.aoeSpeed > 0 ? 1 : -1),
+                y: ny * forceMagnitude * velocityDamping * (peg.aoeSpeed > 0 ? 1 : -1),
+                z: 0
+            };
 
-                // Calculate distance between bead and peg
-                const dx = peg.x - beadPosition.x;
-                const dy = peg.y - beadPosition.y - 2;
-                const distance = Math.sqrt(dx * dx + dy * dy);
+            // Add tiny random variation to prevent beads from getting stuck
+            const JITTER = 0.0005;
+            finalForce.x += (Math.random() - 0.5) * JITTER;
+            finalForce.y += (Math.random() - 0.5) * JITTER;
 
-                if (distance < SAFETY_RADIUS || distance > peg.aoeSize) return
-
-                // Normalize direction vector
-                const nx = dx / distance
-                const ny = dy / distance
-
-                // Adjusted force calculation with stronger distance consideration
-                const distanceFactor = (distance - SAFETY_RADIUS) / (peg.aoeSize - SAFETY_RADIUS)
-                const forceMagnitude = Math.max(
-                    distanceFactor *
-                    peg.aoeSpeed *
-                    FORCE_MULTIPLIER *
-                    FORCE_DAMPENING,
-                    MIN_DISTANCE
-                )
-
-                // Apply velocity damping
-                const velocityMagnitude = Math.sqrt(
-                    currentVelocity.x * currentVelocity.x +
-                    currentVelocity.y * currentVelocity.y
-                )
-                const velocityDamping = Math.max(1 - velocityMagnitude * 0.1, 0.2)
-
-                // Calculate final force with safety checks
-                const finalForce = {
-                    x: nx * forceMagnitude * velocityDamping,
-                    y: ny * forceMagnitude * velocityDamping,
-                    z: 0
-                }
-
-                // Add small random variation to prevent sticking
-                const jitter = 0.01
-                finalForce.x += (Math.random() - 0.5) * jitter
-                finalForce.y += (Math.random() - 0.5) * jitter
-
-                rigidBodyRef.current!.applyImpulse(finalForce, true)
-            }
+            // Apply the force as an impulse
+            rigidBodyRef.current!.applyImpulse(finalForce, true);
         });
     });
 
