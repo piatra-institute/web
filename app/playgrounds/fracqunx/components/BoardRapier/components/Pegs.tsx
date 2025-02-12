@@ -5,7 +5,7 @@ import { ThreeEvent } from '@react-three/fiber';
 
 import {
     PegData,
-} from './data';
+} from '../data';
 
 
 

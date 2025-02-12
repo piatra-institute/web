@@ -1,9 +1,18 @@
+import * as THREE from 'three';
+
+
+
 export interface PegData {
     x: number;
     y: number;
     aoe: boolean;
     aoeSize: number;
     aoeSpeed: number;
+}
+
+export interface BeadData {
+    id: number;
+    position: THREE.Vector3;
 }
 
 

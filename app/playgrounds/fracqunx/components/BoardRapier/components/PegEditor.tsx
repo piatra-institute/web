@@ -5,7 +5,7 @@ import React, {
 
 
 
-interface PegSettings {
+export interface PegSettings {
     aoe: boolean;
     aoeSize: number;
     aoeSpeed: number;

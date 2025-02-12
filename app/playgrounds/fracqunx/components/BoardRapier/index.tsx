@@ -9,14 +9,12 @@ import {
     Physics,
 } from '@react-three/rapier';
 
-import Scene, {
-    Bead,
-} from './Scene';
-
-import PegEditor from './PegEditor';
+import Scene  from './components/Scene';
+import PegEditor from './components/PegEditor';
 
 import {
     PegData,
+    BeadData,
 
     pegSpacing,
     pegsYStart,
@@ -73,7 +71,7 @@ const usePegs = ({
 }
 
 function Board() {
-    const [beads, setBeads] = useState<Bead[]>([]);
+    const [beads, setBeads] = useState<BeadData[]>([]);
 
     const [isRunning, setIsRunning] = useState(false);
     const [areaOfEffect, setAreaOfEffect] = useState(false);
@@ -106,7 +104,7 @@ function Board() {
         const density = 0.1; // Space between beads
         const flipperY = 3.7; // Y position of flippers
 
-        const newBeads: Bead[] = [];
+        const newBeads: BeadData[] = [];
 
         // Generate rows of beads that form a triangle
         for (let y = 0; y < triangleHeight; y += density) {
@@ -117,7 +115,7 @@ function Board() {
             // Generate beads for current row
             for (let i = 0; i < beadsInRow; i++) {
                 const x = -rowWidth/2 + i * density + 0.07;
-                const bead: Bead = {
+                const bead: BeadData = {
                     id: Date.now() + Math.random(),
                     position: [
                         x, // X position
