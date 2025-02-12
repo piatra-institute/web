@@ -201,7 +201,6 @@ function Board() {
                     </button>
                     <button
                         onClick={addBeads}
-                        // onClick={spawnBead}
                         className="px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors"
                     >
                         Add Beads
@@ -226,6 +225,12 @@ function Board() {
                         }
                     >
                         Morphodynamics
+                    </button>
+                    <button
+                        onClick={spawnBead}
+                        className="px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors"
+                    >
+                        Add Bead
                     </button>
                 </div>
             </div>
