@@ -1,4 +1,5 @@
 import React, {
+    useEffect,
     useState,
 } from 'react';
 import {
@@ -10,13 +11,15 @@ import {
 
 import * as THREE from 'three';
 
-import Pegs from './Pegs';
+import Pegs, {
+    PegData,
+} from './Pegs';
 
 
 
 const wallColor = '#FFD700';
 const beadColor = '#50C878';
-const pegColor = '#C0C0C0';
+const pegColor = '#FFD700';
 
 
 const pegsYStart = 5;
@@ -101,10 +104,10 @@ function Container() {
                     />
                 </Box>
 
-                {Array.from({ length: 18 }).map((_, i) => (
+                {Array.from({ length: 17 }).map((_, i) => (
                     <Box
                         key={i}
-                        args={[0.02, 2, thickness]} position={[-1.7 + 0.2 * i, -1.2, 0]}
+                        args={[0.02, 2, thickness]} position={[-1.6 + 0.2 * i, -1.2, 0]}
                     >
                         <meshStandardMaterial
                             color={wallColor}
@@ -117,14 +120,14 @@ function Container() {
 
                 {/* Back */}
                 <Box args={[4, 8.2, 0.2]} position={[0, 1.7, -thickness - 0.02]}>
-                    <meshStandardMaterial color={wallColor} transparent opacity={opacity}
+                    <meshStandardMaterial color={wallColor} transparent opacity={0}
                         side={THREE.DoubleSide}
                     />
                 </Box>
 
                 {/* Front */}
                 <Box args={[4, 8.2, 0.2]} position={[0, 1.7, thickness + 0.02]}>
-                    <meshStandardMaterial color={wallColor} transparent opacity={opacity}
+                    <meshStandardMaterial color={wallColor} transparent opacity={0}
                         side={THREE.DoubleSide}
                     />
                 </Box>
@@ -165,6 +168,82 @@ function BeadMesh({
 }
 
 
+function Beads({
+    beads,
+} : {
+    beads: Bead[],
+}) {
+    return (
+        <>
+            {beads.map((bead, index) => (
+                <BeadMesh key={index + bead.id} position={bead.position} />
+            ))}
+        </>
+    );
+}
+
+
+function GaussianCurve() {
+    return (
+        <mesh
+            position={[0, -2.5, -0.15]}
+        >
+            <tubeGeometry
+                args={[
+                    new THREE.CatmullRomCurve3(
+                        Array.from({ length: 50 }, (_, i) => {
+                            const x = (i - 25) / 12.5;  // Range from -5 to 5
+                            // Gaussian function: f(x) = a * e^(-(x-b)²/(2c²))
+                            const y = 2.2 * Math.exp(-(x * x) / 1.6);  // a=2, b=0, c=1
+                            return new THREE.Vector3(x, y, 0);
+                        })
+                    ),
+                    64,     // tubular segments
+                    0.01,    // radius
+                    8,      // radial segments
+                    false   // closed
+                ]}
+            />
+            <meshStandardMaterial color={wallColor} />
+        </mesh>
+    );
+}
+
+const usePegs = () => {
+    const [pegs, setPegs] = useState<PegData[]>([]);
+
+    useEffect(() => {
+        const pegs: PegData[] = [];
+        const PEGS_ROWS = 10;
+        for (let row = 0; row < PEGS_ROWS; row++) {
+            const numPegsInRow = 11;
+            for (let col = 0; col < numPegsInRow; col++) {
+                const offset = row % 2 === 0 ? 0 : 0.15;
+                const x = -0.05 + (col - (numPegsInRow - 1) / 2) * pegSpacing + offset;
+                const y = pegsYStart + -row * pegSpacing - 2;
+                pegs.push({
+                    x,
+                    y,
+                    // aoe: false,
+                    // aoeSize: 0,
+                    // aoeSpeed: 0,
+                    aoe: Math.random() < 0.03,
+                    aoeSize: Math.random() * 0.1 + 0.3,
+                    aoeSpeed: (Math.random() * 0.5 + 0.5) * (Math.random() > 0.5 ? 1 : -1),
+                });
+            }
+        }
+
+        setPegs(pegs);
+    }, []);
+
+    return {
+        pegs,
+        setPegs,
+    };
+}
+
+
 function Scene({
     beads,
     setSelectedPeg,
@@ -172,18 +251,9 @@ function Scene({
     beads: Bead[],
     setSelectedPeg: (index: number | null) => void,
 }) {
-    const pegs: [number, number][] = [];
-    const PEGS_ROWS = 10;
-    for (let row = 0; row < PEGS_ROWS; row++) {
-        // const numPegsInRow = 14 - Math.floor(row / 2)
-        const numPegsInRow = 11;
-        for (let col = 0; col < numPegsInRow; col++) {
-            const offset = row % 2 === 0 ? 0 : 0.15;
-            const x = -0.05 + (col - (numPegsInRow - 1) / 2) * pegSpacing + offset;
-            const y = pegsYStart + -row * pegSpacing - 2;
-            pegs.push([x, y]);
-        }
-    }
+    const {
+        pegs,
+    } = usePegs();
 
     return (
         <>
@@ -204,6 +274,7 @@ function Scene({
             <OrbitControls />
 
             <group position={[0, -2, 0]}>
+                <Container />
                 <Pegs
                     pegs={pegs}
                     pegRadius={pegRadius}
@@ -212,37 +283,11 @@ function Scene({
                     onPegClick={(index) => {
                         setSelectedPeg(index);
                     }}
-                    // onPegHover={() => { console.log('hover') }}
-                    // onPegHoverEnd={() => { console.log('hover end') }}
                 />
-
-                <mesh
-                    position={[0, -2.5, -0.2]}
-                >
-                    <tubeGeometry
-                        args={[
-                            new THREE.CatmullRomCurve3(
-                                Array.from({ length: 50 }, (_, i) => {
-                                    const x = (i - 25) / 12.5;  // Range from -5 to 5
-                                    // Gaussian function: f(x) = a * e^(-(x-b)²/(2c²))
-                                    const y = 2.2 * Math.exp(-(x * x) / 1.6);  // a=2, b=0, c=1
-                                    return new THREE.Vector3(x, y, 0);
-                                })
-                            ),
-                            64,     // tubular segments
-                            0.01,    // radius
-                            8,      // radial segments
-                            false   // closed
-                        ]}
-                    />
-                    <meshStandardMaterial color={wallColor} />
-                </mesh>
-
-                <Container />
-
-                {beads.map((bead, index) => (
-                    <BeadMesh key={index + bead.id} position={bead.position} />
-                ))}
+                <GaussianCurve />
+                <Beads
+                    beads={beads}
+                />
             </group>
         </>
     );

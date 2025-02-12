@@ -1,36 +1,52 @@
-import { RigidBody } from '@react-three/rapier'
-import { Shape } from 'three'
-import { useState } from 'react'
-import { ThreeEvent } from '@react-three/fiber'
+import {
+    useRef,
+} from 'react';
+
+import { RigidBody } from '@react-three/rapier';
+import { Shape } from 'three';
+import { useState } from 'react';
+import { ThreeEvent, useFrame } from '@react-three/fiber';
 
 
 
-type PegShape = 'cylinder' | 'sphere' | 'hexagon'
+export interface PegData {
+    x: number;
+    y: number;
+    aoe: boolean;
+    aoeSize: number;
+    aoeSpeed: number;
+}
 
-interface PegProps {
-    position: [number, number, number]
-    pegRadius: number
-    pegColor: string
-    shape: PegShape
-    index: number
-    onClick?: (index: number) => void
-    onHover?: (index: number) => void
-    onHoverEnd?: (index: number) => void
+
+export type PegShape = 'cylinder' | 'sphere' | 'hexagon';
+
+export interface PegProps {
+    position: [number, number, number];
+    pegRadius: number;
+    pegColor: string;
+    shape: PegShape;
+    aoe: boolean;
+    aoeSize: number;
+    aoeSpeed: number;
+    index: number;
+    onClick?: (index: number) => void;
+    onHover?: (index: number) => void;
+    onHoverEnd?: (index: number) => void;
 }
 
 const createHexagonShape = (radius: number): Shape => {
-    const shape = new Shape()
+    const shape = new Shape();
     for (let i = 0; i <= 6; i++) {
-        const angle = (i * Math.PI) / 3
-        const x = radius * Math.cos(angle)
-        const y = radius * Math.sin(angle)
+        const angle = (i * Math.PI) / 3;
+        const x = radius * Math.cos(angle);
+        const y = radius * Math.sin(angle);
         if (i === 0) {
-            shape.moveTo(x, y)
+            shape.moveTo(x, y);
         } else {
-            shape.lineTo(x, y)
+            shape.lineTo(x, y);
         }
     }
-    return shape
+    return shape;
 }
 
 export const Peg: React.FC<PegProps> = ({
@@ -38,30 +54,33 @@ export const Peg: React.FC<PegProps> = ({
     pegRadius,
     pegColor,
     shape,
+    aoe,
+    aoeSize,
+    aoeSpeed,
     index,
     onClick,
     onHover,
-    onHoverEnd
+    onHoverEnd,
 }) => {
-    const [hovered, setHovered] = useState(false)
+    const [hovered, setHovered] = useState(false);
 
     const handleClick = (event: ThreeEvent<MouseEvent>) => {
-        event.stopPropagation()
-        onClick?.(index)
+        event.stopPropagation();
+        onClick?.(index);
     }
 
     const handlePointerOver = (event: ThreeEvent<PointerEvent>) => {
-        event.stopPropagation()
-        setHovered(true)
-        document.body.style.cursor = 'pointer'
-        onHover?.(index)
+        event.stopPropagation();
+        setHovered(true);
+        document.body.style.cursor = 'pointer';
+        onHover?.(index);
     }
 
     const handlePointerOut = (event: ThreeEvent<PointerEvent>) => {
-        event.stopPropagation()
-        setHovered(false)
-        document.body.style.cursor = 'auto'
-        onHoverEnd?.(index)
+        event.stopPropagation();
+        setHovered(false);
+        document.body.style.cursor = 'auto';
+        onHoverEnd?.(index);
     }
 
     const getGeometry = () => {
@@ -71,9 +90,9 @@ export const Peg: React.FC<PegProps> = ({
                     <cylinderGeometry
                         args={[pegRadius, pegRadius, pegRadius * 2]}
                     />
-                )
+                );
             case 'sphere':
-                return <sphereGeometry args={[pegRadius]} />
+                return (<sphereGeometry args={[pegRadius]} />);
             case 'hexagon':
                 return (
                     <extrudeGeometry
@@ -85,58 +104,89 @@ export const Peg: React.FC<PegProps> = ({
                             }
                         ]}
                     />
-                )
+                );
             default:
                 return (
                     <cylinderGeometry
                         args={[pegRadius, pegRadius, pegRadius * 2]}
                     />
-                )
+                );
         }
     }
 
     const getRotation = (): [number, number, number] => {
         switch (shape) {
             case 'cylinder':
-                return [Math.PI / 2, 0, 0]
+                return [Math.PI / 2, 0, 0];
             case 'hexagon':
-                return [0, 0, Math.PI / 2]
+                return [0, 0, Math.PI / 2];
             default:
-                return [0, 0, 0]
+                return [0, 0, 0];
         }
     }
 
+    const getAoeColor = () => {
+        return aoeSpeed >= 0 ? '#9f0b0b' : '#2e4ff4';
+    };
+
     return (
-        <RigidBody
-            key={index}
-            type="fixed"
-            position={position}
-            colliders="hull"
-        >
-            <mesh
-                rotation={getRotation()}
-                onClick={handleClick}
-                onPointerOver={handlePointerOver}
-                onPointerOut={handlePointerOut}
+        <>
+            <RigidBody
+                key={index}
+                type="fixed"
+                position={position}
+                colliders="hull"
             >
-                {getGeometry()}
-                <meshStandardMaterial
-                    color={hovered ? '#7f530b' : pegColor}
-                />
-            </mesh>
-        </RigidBody>
-    )
+                <mesh
+                    rotation={getRotation()}
+                    onClick={handleClick}
+                    onPointerOver={handlePointerOver}
+                    onPointerOut={handlePointerOut}
+                >
+                    {getGeometry()}
+                    <meshStandardMaterial
+                        color={hovered ? '#7f530b' : pegColor}
+                    />
+                </mesh>
+            </RigidBody>
+
+            {aoe && (
+                <group
+                    position={[position[0], position[1], position[2] - 0.11 - index / 10000]}
+                    raycast={() => null}
+                >
+                    {/* White border ring */}
+                    <mesh>
+                        <ringGeometry args={[aoeSize, aoeSize + 0.01, 32]} />
+                        <meshBasicMaterial
+                            color="#FFFFFF"
+                            side={2}
+                        />
+                    </mesh>
+
+                    {/* Main AoE ring */}
+                    <mesh>
+                        <ringGeometry args={[0.1, aoeSize, 32]} />
+                        <meshBasicMaterial
+                            color={getAoeColor()}
+                            side={2}
+                        />
+                    </mesh>
+                </group>
+            )}
+        </>
+    );
 }
 
-// Usage example:
-interface PegFieldProps {
-    pegs: [number, number][]
-    pegRadius: number
-    pegColor: string
-    shape: PegShape
-    onPegClick?: (index: number) => void
-    onPegHover?: (index: number) => void
-    onPegHoverEnd?: (index: number) => void
+
+export interface PegFieldProps {
+    pegs: PegData[];
+    pegRadius: number;
+    pegColor: string;
+    shape: PegShape;
+    onPegClick?: (index: number) => void;
+    onPegHover?: (index: number) => void;
+    onPegHoverEnd?: (index: number) => void;
 }
 
 const PegField: React.FC<PegFieldProps> = ({
@@ -150,12 +200,21 @@ const PegField: React.FC<PegFieldProps> = ({
 }) => {
     return (
         <>
-            {pegs.map(([x, y], i) => (
+            {pegs.map(({
+                x,
+                y,
+                aoe,
+                aoeSize,
+                aoeSpeed
+            }, i) => (
                 <Peg
                     key={i}
                     position={[x, y, 0]}
                     pegRadius={pegRadius}
                     pegColor={pegColor}
+                    aoe={aoe}
+                    aoeSize={aoeSize}
+                    aoeSpeed={aoeSpeed}
                     shape={shape}
                     index={i}
                     onClick={onPegClick}
@@ -164,7 +223,7 @@ const PegField: React.FC<PegFieldProps> = ({
                 />
             ))}
         </>
-    )
+    );
 }
 
 
