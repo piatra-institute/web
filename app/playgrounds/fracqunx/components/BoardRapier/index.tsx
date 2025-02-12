@@ -159,6 +159,8 @@ function Board() {
         setMorphodynamics(false);
         setCustomCurve(null);
         resetPegs();
+        setIsRunning(false);
+        addBeads();
     }, [
         setBeads,
         setAreaOfEffect,
@@ -171,6 +173,7 @@ function Board() {
         setBeads([]);
         setCustomCurve(null);
         resetPegs();
+        setIsRunning(false);
     }, [
         setBeads,
         setCustomCurve,
@@ -188,6 +191,7 @@ function Board() {
     useEffect(() => {
         if (areaOfEffect) {
             setMorphodynamics(false);
+            setIsRunning(false);
         }
     }, [
         areaOfEffect,
