@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, {
+    useState,
+    useEffect,
+} from 'react';
 
 
 
@@ -26,15 +29,22 @@ const PegEditor: React.FC<PegEditorProps> = ({
     const [aoeSize, setAoeSize] = useState(initialAoeSize);
     const [aoeSpeed, setAoeSpeed] = useState(initialAoeSpeed);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    useEffect(() => {
+        const handleSubmit = () => {
+            onUpdatePeg(selectedPegIndex, {
+                aoe: aoeSize !== 0,
+                aoeSize,
+                aoeSpeed,
+            });
+        };
 
-        onUpdatePeg(selectedPegIndex, {
-            aoe: aoeSize !== 0,
-            aoeSize,
-            aoeSpeed,
-        });
-    };
+        handleSubmit();
+    }, [
+        aoeSize,
+        aoeSpeed,
+        onUpdatePeg,
+        selectedPegIndex,
+    ]);
 
     return (
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50">
@@ -51,7 +61,7 @@ const PegEditor: React.FC<PegEditorProps> = ({
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-6">
                     <div>
                         <label className="flex justify-between items-center text-sm font-medium text-gray-300 mb-2">
                             Area of Effect Size
@@ -92,18 +102,12 @@ const PegEditor: React.FC<PegEditorProps> = ({
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 text-sm font-medium text-gray-300 bg-gray-800 hover:bg-gray-700 transition-colors"
+                            className="px-4 py-2 text-sm font-medium text-black bg-lime-50 hover:bg-lime-200 transition-colors"
                         >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            className="px-4 py-2 text-sm font-medium text-black bg-lime-50 hover:bg-lime-300 transition-colors"
-                        >
-                            Apply
+                            OK
                         </button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     );
