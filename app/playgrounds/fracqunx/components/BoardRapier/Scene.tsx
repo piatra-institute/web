@@ -1,38 +1,35 @@
 import React, {
-    useEffect,
-    useState,
+    useRef,
 } from 'react';
 import {
-    RigidBody,
+    RigidBody, RapierRigidBody,
 } from '@react-three/rapier';
 import {
     OrthographicCamera, Box, OrbitControls,
 } from '@react-three/drei';
+import {
+    useFrame,
+} from '@react-three/fiber';
 
 import * as THREE from 'three';
 
-import Pegs, {
+import Pegs from './Pegs';
+
+import {
     PegData,
-} from './Pegs';
 
+    wallColor,
+    beadColor,
+    pegColor,
 
+    pegRadius,
 
-const wallColor = '#FFD700';
-const beadColor = '#50C878';
-const pegColor = '#FFD700';
+    opacity,
+    thickness,
 
+    BEAD_RADIUS,
+} from './data';
 
-const pegsYStart = 5;
-
-const width = 10;
-const height = 30;
-const pegSpacing = 0.3;
-const pegRadius = 0.08;
-
-const opacity = 0.2;
-const thickness = 0.16;
-
-const BEAD_RADIUS = 0.04;
 
 
 export interface Bead {
@@ -136,16 +133,93 @@ function Container() {
     );
 }
 
+const isInsideCircle = (x: number, y: number, cx: number, cy: number, r: number) => {
+    return (x - cx) ** 2 + (y - cy) ** 2 <= r ** 2;
+};
 
 function BeadMesh({
     position,
+    pegs,
     radius = BEAD_RADIUS,
 }: {
     position: THREE.Vector3,
+    pegs: PegData[];
     radius?: number,
 }) {
+    const rigidBodyRef = useRef<RapierRigidBody>(null);
+
+    useFrame(() => {
+        if (!rigidBodyRef.current) return;
+
+        const beadPosition = rigidBodyRef.current.translation();
+
+        pegs.forEach(peg => {
+            if (!peg.aoe || !peg.aoeSize || !peg.aoeSpeed) return;
+
+            const inAoE = isInsideCircle(
+                beadPosition.x,
+                beadPosition.y,
+                peg.x,
+                peg.y - 2,
+                peg.aoeSize / 2,
+            );
+
+            if (inAoE) {
+                const FORCE_MULTIPLIER = 0.01
+                const MIN_DISTANCE = 0.01
+                const FORCE_DAMPENING = 0.01
+                const SAFETY_RADIUS = 0.6
+
+                const currentVelocity = rigidBodyRef.current!.linvel();
+
+                // Calculate distance between bead and peg
+                const dx = peg.x - beadPosition.x;
+                const dy = peg.y - beadPosition.y - 2;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < SAFETY_RADIUS || distance > peg.aoeSize) return
+
+                // Normalize direction vector
+                const nx = dx / distance
+                const ny = dy / distance
+
+                // Adjusted force calculation with stronger distance consideration
+                const distanceFactor = (distance - SAFETY_RADIUS) / (peg.aoeSize - SAFETY_RADIUS)
+                const forceMagnitude = Math.max(
+                    distanceFactor *
+                    peg.aoeSpeed *
+                    FORCE_MULTIPLIER *
+                    FORCE_DAMPENING,
+                    MIN_DISTANCE
+                )
+
+                // Apply velocity damping
+                const velocityMagnitude = Math.sqrt(
+                    currentVelocity.x * currentVelocity.x +
+                    currentVelocity.y * currentVelocity.y
+                )
+                const velocityDamping = Math.max(1 - velocityMagnitude * 0.1, 0.2)
+
+                // Calculate final force with safety checks
+                const finalForce = {
+                    x: nx * forceMagnitude * velocityDamping,
+                    y: ny * forceMagnitude * velocityDamping,
+                    z: 0
+                }
+
+                // Add small random variation to prevent sticking
+                const jitter = 0.01
+                finalForce.x += (Math.random() - 0.5) * jitter
+                finalForce.y += (Math.random() - 0.5) * jitter
+
+                rigidBodyRef.current!.applyImpulse(finalForce, true)
+            }
+        });
+    });
+
     return (
         <RigidBody
+            ref={rigidBodyRef}
             type="dynamic"
             position={position}
             colliders="ball"
@@ -154,7 +228,6 @@ function BeadMesh({
             linearDamping={0.2}
             angularDamping={0.2}
             mass={0.2}
-        // onSleep={() => console.log('sleep')}
         >
             <mesh>
                 <sphereGeometry args={[radius]} />
@@ -170,13 +243,19 @@ function BeadMesh({
 
 function Beads({
     beads,
+    pegs,
 } : {
-    beads: Bead[],
+    beads: Bead[];
+    pegs: PegData[];
 }) {
     return (
         <>
             {beads.map((bead, index) => (
-                <BeadMesh key={index + bead.id} position={bead.position} />
+                <BeadMesh
+                    key={index + bead.id}
+                    position={bead.position}
+                    pegs={pegs}
+                />
             ))}
         </>
     );
@@ -209,52 +288,18 @@ function GaussianCurve() {
     );
 }
 
-const usePegs = () => {
-    const [pegs, setPegs] = useState<PegData[]>([]);
-
-    useEffect(() => {
-        const pegs: PegData[] = [];
-        const PEGS_ROWS = 10;
-        for (let row = 0; row < PEGS_ROWS; row++) {
-            const numPegsInRow = 11;
-            for (let col = 0; col < numPegsInRow; col++) {
-                const offset = row % 2 === 0 ? 0 : 0.15;
-                const x = -0.05 + (col - (numPegsInRow - 1) / 2) * pegSpacing + offset;
-                const y = pegsYStart + -row * pegSpacing - 2;
-                pegs.push({
-                    x,
-                    y,
-                    // aoe: false,
-                    // aoeSize: 0,
-                    // aoeSpeed: 0,
-                    aoe: Math.random() < 0.03,
-                    aoeSize: Math.random() * 0.1 + 0.3,
-                    aoeSpeed: (Math.random() * 0.5 + 0.5) * (Math.random() > 0.5 ? 1 : -1),
-                });
-            }
-        }
-
-        setPegs(pegs);
-    }, []);
-
-    return {
-        pegs,
-        setPegs,
-    };
-}
-
 
 function Scene({
+    pegs,
     beads,
     setSelectedPeg,
+    areaOfEffect,
 }: {
-    beads: Bead[],
-    setSelectedPeg: (index: number | null) => void,
+    pegs: PegData[];
+    beads: Bead[];
+    setSelectedPeg: (index: number | null) => void;
+    areaOfEffect: boolean;
 }) {
-    const {
-        pegs,
-    } = usePegs();
-
     return (
         <>
             <ambientLight intensity={1} />
@@ -280,13 +325,19 @@ function Scene({
                     pegRadius={pegRadius}
                     pegColor={pegColor}
                     shape="cylinder"
+                    clickable={areaOfEffect}
                     onPegClick={(index) => {
+                        if (!areaOfEffect) {
+                            return;
+                        }
+
                         setSelectedPeg(index);
                     }}
                 />
                 <GaussianCurve />
                 <Beads
                     beads={beads}
+                    pegs={pegs}
                 />
             </group>
         </>

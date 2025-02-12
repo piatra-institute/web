@@ -15,7 +15,62 @@ import Scene, {
 
 import PegEditor from './PegEditor';
 
+import {
+    PegData,
 
+    pegSpacing,
+    pegsYStart,
+} from './data';
+
+
+
+const usePegs = ({
+    areaOfEffect,
+} : {
+    areaOfEffect: boolean,
+}) => {
+    const [pegs, setPegs] = useState<PegData[]>([]);
+
+    useEffect(() => {
+        const pegs: PegData[] = [];
+        const PEGS_ROWS = 10;
+        for (let row = 0; row < PEGS_ROWS; row++) {
+            const numPegsInRow = 11;
+            for (let col = 0; col < numPegsInRow; col++) {
+                const xoffset = row % 2 === 0 ? 0 : 0.15;
+                const xadjustment = -0.05;
+                const x = (col - (numPegsInRow - 1) / 2) * pegSpacing + xoffset + xadjustment;
+                const y = pegsYStart + -row * pegSpacing - 2;
+
+                const aoeActive = Math.random() < 0.03;
+                const aoeOptions = areaOfEffect ? {
+                    aoe: aoeActive,
+                    aoeSize: aoeActive ? Math.random() * 0.1 + 0.3 : 0,
+                    aoeSpeed: aoeActive ? (Math.random() * 0.4 + 0.1) * (Math.random() > 0.5 ? 1 : -1) : 0,
+                } : {
+                    aoe: false,
+                    aoeSize: 0,
+                    aoeSpeed: 0,
+                };
+
+                pegs.push({
+                    x,
+                    y,
+                    ...aoeOptions,
+                });
+            }
+        }
+
+        setPegs(pegs);
+    }, [
+        areaOfEffect,
+    ]);
+
+    return {
+        pegs,
+        setPegs,
+    };
+}
 
 function Board() {
     const [beads, setBeads] = useState<Bead[]>([]);
@@ -26,12 +81,24 @@ function Board() {
 
     const [selectedPeg, setSelectedPeg] = useState<number | null>(null);
 
+    const {
+        pegs,
+        setPegs,
+    } = usePegs(
+        {
+            areaOfEffect,
+        },
+    );
 
-    // const spawnBead = () => {
-    //     // const randomX = (Math.random() - 0.5) * 2
-    //     const randomX = 0
-    //     setBeads(prev => [...prev, { id: Date.now() + Math.random(), position: [randomX, beadYStart, 0] }])
-    // }
+
+    const spawnBead = () => {
+        // const randomX = (Math.random() - 0.5) * 2
+        const randomX = 0
+        setBeads(prev => [...prev, {
+            id: Date.now() + Math.random(),
+            position: [randomX, 5, 0] as any,
+        }]);
+    }
 
     const addBeads = () => {
         const triangleHeight = 2; // Height of triangle above flippers
@@ -68,6 +135,8 @@ function Board() {
 
     const reset = () => {
         setBeads([]);
+        setAreaOfEffect(false);
+        setMorphodynamics(false);
     }
 
 
@@ -90,8 +159,10 @@ function Board() {
                     paused={!isRunning}
                 >
                     <Scene
+                        pegs={pegs}
                         beads={beads}
                         setSelectedPeg={setSelectedPeg}
+                        areaOfEffect={areaOfEffect}
                     />
                 </Physics>
             </Canvas>
@@ -118,6 +189,7 @@ function Board() {
                     </button>
                     <button
                         onClick={addBeads}
+                        // onClick={spawnBead}
                         className="px-4 py-2 bg-lime-50 min-w-[180px] text-black hover:bg-lime-200 transition-colors"
                     >
                         Add Beads
@@ -150,9 +222,16 @@ function Board() {
                 <PegEditor
                     selectedPegIndex={selectedPeg}
                     onClose={() => setSelectedPeg(null)}
-                    onUpdatePeg={() => {}}
-                    initialAoeSize={1}
-                    initialAoeSpeed={1}
+                    onUpdatePeg={(index, settings) => {
+                        const newPegs = [...pegs];
+                        newPegs[index] = {
+                            ...newPegs[index],
+                            ...settings,
+                        };
+                        setPegs(newPegs);
+                    }}
+                    initialAoeSize={pegs[selectedPeg].aoeSize}
+                    initialAoeSpeed={pegs[selectedPeg].aoeSpeed}
                 />
             )}
         </div>

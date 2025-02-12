@@ -1,21 +1,12 @@
-import {
-    useRef,
-} from 'react';
-
 import { RigidBody } from '@react-three/rapier';
 import { Shape } from 'three';
 import { useState } from 'react';
-import { ThreeEvent, useFrame } from '@react-three/fiber';
+import { ThreeEvent } from '@react-three/fiber';
 
+import {
+    PegData,
+} from './data';
 
-
-export interface PegData {
-    x: number;
-    y: number;
-    aoe: boolean;
-    aoeSize: number;
-    aoeSpeed: number;
-}
 
 
 export type PegShape = 'cylinder' | 'sphere' | 'hexagon';
@@ -29,6 +20,7 @@ export interface PegProps {
     aoeSize: number;
     aoeSpeed: number;
     index: number;
+    clickable: boolean;
     onClick?: (index: number) => void;
     onHover?: (index: number) => void;
     onHoverEnd?: (index: number) => void;
@@ -58,6 +50,7 @@ export const Peg: React.FC<PegProps> = ({
     aoeSize,
     aoeSpeed,
     index,
+    clickable,
     onClick,
     onHover,
     onHoverEnd,
@@ -65,11 +58,19 @@ export const Peg: React.FC<PegProps> = ({
     const [hovered, setHovered] = useState(false);
 
     const handleClick = (event: ThreeEvent<MouseEvent>) => {
+        if (!clickable) {
+            return;
+        }
+
         event.stopPropagation();
         onClick?.(index);
     }
 
     const handlePointerOver = (event: ThreeEvent<PointerEvent>) => {
+        if (!clickable) {
+            return;
+        }
+
         event.stopPropagation();
         setHovered(true);
         document.body.style.cursor = 'pointer';
@@ -77,6 +78,10 @@ export const Peg: React.FC<PegProps> = ({
     }
 
     const handlePointerOut = (event: ThreeEvent<PointerEvent>) => {
+        if (!clickable) {
+            return;
+        }
+
         event.stopPropagation();
         setHovered(false);
         document.body.style.cursor = 'auto';
@@ -126,7 +131,7 @@ export const Peg: React.FC<PegProps> = ({
     }
 
     const getAoeColor = () => {
-        return aoeSpeed >= 0 ? '#9f0b0b' : '#2e4ff4';
+        return aoeSpeed >= 0 ? '#5f6151' : '#a12405';
     };
 
     return (
@@ -184,6 +189,7 @@ export interface PegFieldProps {
     pegRadius: number;
     pegColor: string;
     shape: PegShape;
+    clickable: boolean;
     onPegClick?: (index: number) => void;
     onPegHover?: (index: number) => void;
     onPegHoverEnd?: (index: number) => void;
@@ -194,6 +200,7 @@ const PegField: React.FC<PegFieldProps> = ({
     pegRadius,
     pegColor,
     shape,
+    clickable,
     onPegClick,
     onPegHover,
     onPegHoverEnd
@@ -217,6 +224,7 @@ const PegField: React.FC<PegFieldProps> = ({
                     aoeSpeed={aoeSpeed}
                     shape={shape}
                     index={i}
+                    clickable={clickable}
                     onClick={onPegClick}
                     onHover={onPegHover}
                     onHoverEnd={onPegHoverEnd}
@@ -225,7 +233,6 @@ const PegField: React.FC<PegFieldProps> = ({
         </>
     );
 }
-
 
 
 export default PegField;

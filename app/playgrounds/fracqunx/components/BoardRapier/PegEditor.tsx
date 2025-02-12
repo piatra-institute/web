@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 
 
 interface PegSettings {
+    aoe: boolean;
     aoeSize: number;
     aoeSpeed: number;
 }
@@ -27,7 +28,12 @@ const PegEditor: React.FC<PegEditorProps> = ({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onUpdatePeg(selectedPegIndex, { aoeSize, aoeSpeed });
+
+        onUpdatePeg(selectedPegIndex, {
+            aoe: aoeSize !== 0,
+            aoeSize,
+            aoeSpeed,
+        });
     };
 
     return (
@@ -56,8 +62,8 @@ const PegEditor: React.FC<PegEditorProps> = ({
                         <input
                             type="range"
                             min="0"
-                            max="10"
-                            step="0.1"
+                            max="2"
+                            step="0.02"
                             value={aoeSize}
                             onChange={(e) => setAoeSize(parseFloat(e.target.value))}
                             className="w-full bg-gray-700 rounded-lg appearance-none h-2 cursor-pointer"
@@ -73,8 +79,8 @@ const PegEditor: React.FC<PegEditorProps> = ({
                         </label>
                         <input
                             type="range"
-                            min="0"
-                            max="10"
+                            min="-20"
+                            max="20"
                             step="0.1"
                             value={aoeSpeed}
                             onChange={(e) => setAoeSpeed(parseFloat(e.target.value))}
