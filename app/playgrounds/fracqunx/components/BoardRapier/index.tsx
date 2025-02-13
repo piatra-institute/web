@@ -14,7 +14,9 @@ import {
 
 import * as THREE from 'three';
 
-import Scene  from './components/Scene';
+import Scene, {
+    SceneRef,
+} from './components/Scene';
 import PegEditor from './components/PegEditor';
 
 import {
@@ -78,6 +80,7 @@ const usePegs = ({
 
 function Board() {
     const mounted = useRef(false);
+    const sceneRef = useRef<SceneRef | null>(null);
 
     const [beads, setBeads] = useState<BeadData[]>([]);
     const [customCurve, setCustomCurve] = useState<THREE.CatmullRomCurve3 | null>(null);
@@ -154,6 +157,10 @@ function Board() {
     ]);
 
     const reset = useCallback(() => {
+        if (sceneRef.current) {
+            sceneRef.current.reset();
+        }
+
         setBeads([]);
         setAreaOfEffect(false);
         setMorphodynamics(false);
@@ -210,6 +217,7 @@ function Board() {
     }, [
         morphodynamics,
         modeReset,
+        resetPegs,
     ]);
 
 
@@ -223,6 +231,7 @@ function Board() {
                     paused={!isRunning}
                 >
                     <Scene
+                        ref={sceneRef}
                         pegs={pegs}
                         beads={beads}
                         setSelectedPeg={setSelectedPeg}

@@ -1,5 +1,8 @@
 import React, {
+    forwardRef,
+    useImperativeHandle,
     useRef,
+    useCallback,
     useEffect,
 } from 'react';
 
@@ -7,9 +10,7 @@ import {
     OrthographicCamera,
     OrbitControls,
 } from '@react-three/drei';
-
 import { useFrame } from '@react-three/fiber';
-
 import * as THREE from 'three';
 
 import {
@@ -34,18 +35,11 @@ import { AdaptiveStressSystem } from './StressSharingSystem';
 
 
 
-function Scene({
-    pegs,
-    beads,
-    setSelectedPeg,
-    setPegs,
-    areaOfEffect,
-    morphodynamics,
-    customCurve,
-    setCustomCurve,
-    drawingCurve,
-    setDrawingCurve,
-}: {
+export interface SceneRef {
+    reset: () => void;
+}
+
+export interface SceneProps {
     pegs: PegData[];
     beads: BeadData[];
     setSelectedPeg: (index: number | null) => void;
@@ -56,7 +50,22 @@ function Scene({
     setCustomCurve: (curve: THREE.CatmullRomCurve3 | null) => void;
     drawingCurve: boolean;
     setDrawingCurve: (drawing: boolean) => void;
-}) {
+}
+
+const Scene = forwardRef<SceneRef, SceneProps>(function SceneFn({
+    pegs,
+    beads,
+    setSelectedPeg,
+    setPegs,
+    areaOfEffect,
+    morphodynamics,
+    customCurve,
+    setCustomCurve,
+    drawingCurve,
+    setDrawingCurve,
+}, ref) {
+    const controlsRef = useRef<React.ElementRef<typeof OrbitControls>>(null);
+
     const stressSystem = useRef<AdaptiveStressSystem | null>(null);
 
 
@@ -82,6 +91,21 @@ function Scene({
     }, [customCurve]);
 
 
+    const reset = useCallback(() => {
+        if (controlsRef.current) {
+            controlsRef.current.reset();
+        }
+    }, []);
+
+    useImperativeHandle(ref, () => {
+        return {
+            reset,
+        }
+    }, [
+        reset,
+    ]);
+
+
     return (
         <>
             <ambientLight intensity={1} />
@@ -99,10 +123,13 @@ function Scene({
                 far={1000}
             />
             <OrbitControls
+                ref={controlsRef}
                 enabled={!drawingCurve}
             />
 
-            <group position={[0, -2, 0]}>
+            <group
+                position={[0, -2, 0]}
+            >
                 <Container />
                 <Pegs
                     pegs={pegs}
@@ -156,7 +183,7 @@ function Scene({
             </group>
         </>
     );
-}
+});
 
 
 export default Scene;
