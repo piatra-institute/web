@@ -17,6 +17,8 @@ import {
     beadColor,
 
     BEAD_RADIUS,
+
+    MODEL_Y_OFFSET,
 } from '../data';
 
 
@@ -42,7 +44,7 @@ function Bead({
 
             // Calculate distance and direction to peg
             const dx = peg.x - beadPosition.x;
-            const dy = (peg.y - 2) - beadPosition.y;
+            const dy = (peg.y + MODEL_Y_OFFSET) - beadPosition.y;
             const distanceSquared = dx * dx + dy * dy;
             const distance = Math.sqrt(distanceSquared);
 

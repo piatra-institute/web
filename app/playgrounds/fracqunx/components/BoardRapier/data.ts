@@ -32,3 +32,6 @@ export const opacity = 0.2;
 export const thickness = 0.16;
 
 export const BEAD_RADIUS = 0.04;
+
+
+export const MODEL_Y_OFFSET = -1.5;

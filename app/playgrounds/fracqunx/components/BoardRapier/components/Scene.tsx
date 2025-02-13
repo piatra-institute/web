@@ -21,6 +21,8 @@ import {
     wallColor,
 
     pegRadius,
+
+    MODEL_Y_OFFSET,
 } from '../data';
 
 import Container from './Container';
@@ -128,7 +130,7 @@ const Scene = forwardRef<SceneRef, SceneProps>(function SceneFn({
             />
 
             <group
-                position={[0, -2, 0]}
+                position={[0, MODEL_Y_OFFSET, 0]}
             >
                 <Container />
                 <Pegs
