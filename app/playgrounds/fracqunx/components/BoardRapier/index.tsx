@@ -79,7 +79,11 @@ const usePegs = ({
 }
 
 
-function Board() {
+function Board({
+    toggleTitle,
+} : {
+    toggleTitle: () => void;
+}) {
     const mounted = useRef(false);
     const sceneRef = useRef<SceneRef | null>(null);
 
@@ -257,6 +261,7 @@ function Board() {
                 reset={reset}
                 addBeads={addBeads}
                 spawnBead={spawnBead}
+                toggleTitle={toggleTitle}
             />
 
             {selectedPeg !== null && (

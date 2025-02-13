@@ -14,6 +14,7 @@ import Board from './components/BoardRapier';
 
 export default function FracqunxPlayground() {
     const [isLoaded, setIsLoaded] = useState(false);
+    const [showTitle, setShowTitle] = useState(true);
 
     useEffect(() => {
         setIsLoaded(false);
@@ -29,27 +30,31 @@ export default function FracqunxPlayground() {
         <div
             className="z-10 relative flex flex-col items-center justify-center min-h-screen py-2"
         >
-            <div
-                className={`
-                    absolute top-0 left-0 right-0 z-50
-                    pointer-events-none
-                    transition-opacity duration-300
-                    hover:opacity-100
-                    ${isLoaded ? 'opacity-30' : 'opacity-100'}
-                `}
-            >
+            {showTitle && (
                 <div
-                    className="flex justify-center"
+                    className={`
+                        absolute top-0 left-0 right-0 z-50
+                        pointer-events-none
+                        transition-opacity duration-300
+                        hover:opacity-100
+                        ${isLoaded ? 'opacity-30' : 'opacity-100'}
+                    `}
                 >
-                    <Header />
+                    <div
+                        className="flex justify-center"
+                    >
+                        <Header />
+                    </div>
+
+                    <Title
+                        text="fracqunx"
+                    />
                 </div>
+            )}
 
-                <Title
-                    text="fracqunx"
-                />
-            </div>
-
-            <Board />
+            <Board
+                toggleTitle={() => setShowTitle(!showTitle)}
+            />
         </div>
     );
 }
