@@ -3,14 +3,12 @@ import React, {
     useImperativeHandle,
     useRef,
     useCallback,
-    useEffect,
 } from 'react';
 
 import {
     OrthographicCamera,
     OrbitControls,
 } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 import {
@@ -33,7 +31,7 @@ import {
     GaussianCurve,
 } from './Extras';
 
-import { AdaptiveStressSystem } from './StressSharingSystem';
+import { useAdaptiveStressSystemWithCurve } from './StressSharingSystem';
 
 
 
@@ -68,30 +66,15 @@ const Scene = forwardRef<SceneRef, SceneProps>(function SceneFn({
 }, ref) {
     const controlsRef = useRef<React.ElementRef<typeof OrbitControls>>(null);
 
-    const stressSystem = useRef<AdaptiveStressSystem | null>(null);
-
-
-    useEffect(() => {
-        if (morphodynamics) {
-            stressSystem.current = new AdaptiveStressSystem(pegs, customCurve);
-        } else {
-            stressSystem.current = null;
-        }
-    }, [morphodynamics, customCurve, pegs]);
-
-    useFrame(() => {
-        if (morphodynamics && stressSystem.current) {
-            const updatedPegs = stressSystem.current.updatePegProperties(beads);
-            setPegs(updatedPegs);
-        }
-    });
-
-    useEffect(() => {
-        if (stressSystem.current) {
-            stressSystem.current.setTargetCurve(customCurve);
-        }
-    }, [customCurve]);
-
+    const xRange = { min: -5, max: 5 };
+    useAdaptiveStressSystemWithCurve(
+        pegs,
+        beads,
+        setPegs,
+        customCurve,
+        morphodynamics,
+        { xMin: xRange.min, xMax: xRange.max },
+    );
 
     const reset = useCallback(() => {
         if (controlsRef.current) {

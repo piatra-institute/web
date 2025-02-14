@@ -1,169 +1,102 @@
-import { PegData, BeadData } from '../data';
-import * as THREE from 'three';
+import { useFrame } from "@react-three/fiber";
+import * as THREE from "three";
+import { BeadData, PegData } from "../data";
 
 
 
-interface GridCell {
-    beadCount: number;
-    targetFill: boolean;
-    desiredCount: number;
-    position: THREE.Vector2;
+export interface AdaptiveCurveParams {
+    xMin: number;
+    xMax: number;
+    influenceRadius?: number;
+    stressFactor?: number; // scales stress into desired speed adjustments
+    baseAoeSize?: number; // baseline AoE size when stress is zero
+    sizeScale?: number; // how much AoE size changes with stress magnitude
+    damping?: number; // rate at which peg parameters update toward the desired value
+    maxAoeSize?: number; // maximum allowed AoE size
 }
 
-export class AdaptiveStressSystem {
-    private pegs: PegData[];
-    private gridCells: GridCell[][] = [];
-    private targetCurve: THREE.CatmullRomCurve3 | null;
-    private readonly gridSize = 30; // Increased grid resolution
-    private readonly cellSize = 0.15; // Smaller cells for better precision
-    private readonly maxStress = 2.0; // Increased maximum stress
-    private readonly minAoeSize = 0.2; // Minimum AOE size
-    private readonly maxAoeSize = 0.6; // Maximum AOE size
-    private readonly baseDeflectionStrength = 1.5; // Increased base deflection strength
+const DEFAULT_INFLUENCE_RADIUS = 1;
+const DEFAULT_STRESS_FACTOR = 0.1;
+const DEFAULT_BASE_AOE_SIZE = 0.3;
+const DEFAULT_SIZE_SCALE = 0.5;
+const DEFAULT_DAMPING = 0.05;
+const DEFAULT_MAX_AOE_SIZE = 1;
 
-    constructor(pegs: PegData[], targetCurve: THREE.CatmullRomCurve3 | null) {
-        this.pegs = pegs;
-        this.targetCurve = targetCurve;
-        this.initializeGrid();
-    }
+export const useAdaptiveStressSystemWithCurve = (
+    pegs: PegData[],
+    beads: BeadData[],
+    setPegs: (pegs: PegData[]) => void,
+    customCurve: THREE.CatmullRomCurve3 | null,
+    adaptiveEnabled: boolean,
+    {
+        xMin,
+        xMax,
+        influenceRadius = DEFAULT_INFLUENCE_RADIUS,
+        stressFactor = DEFAULT_STRESS_FACTOR,
+        baseAoeSize = DEFAULT_BASE_AOE_SIZE,
+        sizeScale = DEFAULT_SIZE_SCALE,
+        damping = DEFAULT_DAMPING,
+        maxAoeSize = DEFAULT_MAX_AOE_SIZE,
+    }: AdaptiveCurveParams,
+) => {
+    useFrame(() => {
+        if (!adaptiveEnabled || !customCurve) return;
 
-    private initializeGrid() {
-        this.gridCells = [];
-        const gridOffset = (this.gridSize * this.cellSize) / 2;
+        const newPegs = pegs.map((peg) => {
+            const pegPos = new THREE.Vector3(peg.x, peg.y, 0);
 
-        // Create grid
-        for (let i = 0; i < this.gridSize; i++) {
-            this.gridCells[i] = [];
-            for (let j = 0; j < this.gridSize; j++) {
-                const x = (i * this.cellSize) - gridOffset;
-                const y = (j * this.cellSize) - gridOffset;
-                this.gridCells[i][j] = {
-                    beadCount: 0,
-                    targetFill: false,
-                    desiredCount: 0,
-                    position: new THREE.Vector2(x, y)
-                };
+            // Identify nearby beads within the influence radius.
+            const nearbyBeads = beads.filter((bead) => {
+                const beadPos = new THREE.Vector3(
+                    (bead as any).position[0],
+                    (bead as any).position[1],
+                    (bead as any).position[2] ?? 0,
+                );
+                return pegPos.distanceTo(beadPos) < influenceRadius;
+            });
+
+            // Compute the average y of nearby beads; if none, fall back to the peg's y.
+            let avgY: number;
+            if (nearbyBeads.length > 0) {
+                avgY = nearbyBeads.reduce((sum, bead) =>
+                    sum + (bead as any).position[1], 0) / nearbyBeads.length;
+            } else {
+                avgY = peg.y;
             }
-        }
 
-        // Calculate target distribution
-        if (this.targetCurve) {
-            const samples = 500; // Increased sampling
-            const points: THREE.Vector3[] = [];
-            for (let i = 0; i < samples; i++) {
-                const t = i / (samples - 1);
-                points.push(this.targetCurve.getPoint(t));
-            }
+            // Normalize peg.x to [0, 1] based on the defined x-range.
+            const t = (peg.x - xMin) / (xMax - xMin);
+            const clampedT = Math.min(Math.max(t, 0), 1);
 
-            // Mark target cells and set desired bead counts
-            for (let i = 0; i < this.gridSize; i++) {
-                for (let j = 0; j < this.gridSize; j++) {
-                    const cellPos = this.gridCells[i][j].position;
-                    const closestPoint = points.reduce((closest, point) => {
-                        const dist = new THREE.Vector2(point.x, point.y).distanceTo(cellPos);
-                        return dist < closest.dist ? { point, dist } : closest;
-                    }, { point: points[0], dist: Infinity });
+            // Get the target point from the custom curve.
+            const targetPoint = customCurve.getPoint(clampedT);
 
-                    if (closestPoint.dist < this.cellSize * 1.5) {
-                        this.gridCells[i][j].targetFill = true;
-                        // Higher desired counts for cells further from center
-                        const distFromCenter = Math.abs(cellPos.x);
-                        this.gridCells[i][j].desiredCount = Math.ceil(5 + distFromCenter * 10);
-                    }
-                }
-            }
-        }
-    }
+            // Compute stress: positive if target is above average, negative if below.
+            const stress = targetPoint.y - avgY;
 
-    private updateBeadDistribution(beads: BeadData[]) {
-        // Reset bead counts
-        for (let i = 0; i < this.gridSize; i++) {
-            for (let j = 0; j < this.gridSize; j++) {
-                this.gridCells[i][j].beadCount = 0;
-            }
-        }
+            // Define desired AoE speed and size.
+            // For speed: if stress > 0 (target is higher), we want a positive speed (attraction upward).
+            // If stress < 0, the desired speed becomes negative.
+            const desiredAoeSpeed = stress * stressFactor;
+            // For size: start from a baseline and add a term proportional to the stress magnitude.
+            const desiredAoeSize = baseAoeSize + Math.abs(stress) * sizeScale;
 
-        // Count beads in each cell
-        const gridOffset = (this.gridSize * this.cellSize) / 2;
-        beads.forEach(bead => {
-            const [x, y] = bead.position;
-            const gridX = Math.floor((x + gridOffset) / this.cellSize);
-            const gridY = Math.floor((y + gridOffset) / this.cellSize);
-
-            if (gridX >= 0 && gridX < this.gridSize &&
-                gridY >= 0 && gridY < this.gridSize) {
-                this.gridCells[gridX][gridY].beadCount++;
-            }
-        });
-    }
-
-    private calculatePegInfluence(pegPosition: THREE.Vector2): {stress: number, direction: number} {
-        const gridOffset = (this.gridSize * this.cellSize) / 2;
-        const pegGridX = Math.floor((pegPosition.x + gridOffset) / this.cellSize);
-        const pegGridY = Math.floor((pegPosition.y + gridOffset) / this.cellSize);
-
-        let totalError = 0;
-        let weightedDirection = 0;
-        let totalWeight = 0;
-
-        // Analyze a larger area around the peg
-        const searchRadius = 4;
-        for (let i = -searchRadius; i <= searchRadius; i++) {
-            for (let j = -searchRadius; j <= searchRadius; j++) {
-                const checkX = pegGridX + i;
-                const checkY = pegGridY + j;
-
-                if (checkX >= 0 && checkX < this.gridSize &&
-                    checkY >= 0 && checkY < this.gridSize) {
-                    const cell = this.gridCells[checkX][checkY];
-                    if (cell.targetFill) {
-                        const weight = 1 / (Math.abs(i) + 1); // Weight closer cells more
-                        const error = cell.desiredCount - cell.beadCount;
-                        totalError += Math.abs(error) * weight;
-
-                        // Direction is based on where we need more beads
-                        if (error > 0) {
-                            const directionInfluence = Math.sign(i) * weight * error;
-                            weightedDirection += directionInfluence;
-                            totalWeight += weight;
-                        }
-                    }
-                }
-            }
-        }
-
-        const normalizedError = Math.min(totalError / (searchRadius * 2), this.maxStress);
-        const direction = totalWeight > 0 ? weightedDirection / totalWeight : 0;
-
-        return {
-            stress: normalizedError,
-            direction: Math.sign(direction)
-        };
-    }
-
-    public updatePegProperties(beads: BeadData[]): PegData[] {
-        this.updateBeadDistribution(beads);
-
-        return this.pegs.map((peg) => {
-            const pegPosition = new THREE.Vector2(peg.x, peg.y);
-            const { stress, direction } = this.calculatePegInfluence(pegPosition);
-
-            // Enhanced AOE properties
-            const aoeSize = this.minAoeSize +
-                (this.maxAoeSize - this.minAoeSize) * (stress / this.maxStress);
-            const aoeSpeed = direction * this.baseDeflectionStrength * stress;
+            // Smoothly update current peg parameters toward the desired values.
+            const newAoeSpeed = peg.aoeSpeed +
+                (desiredAoeSpeed - peg.aoeSpeed) * damping;
+            let newAoeSize = peg.aoeSize +
+                (desiredAoeSize - peg.aoeSize) * damping;
+            newAoeSize = Math.min(newAoeSize, maxAoeSize); // Prevent unbounded growth.
 
             return {
                 ...peg,
-                aoe: true, // Always active for stronger influence
-                aoeSize,
-                aoeSpeed,
+                aoeSpeed: newAoeSpeed,
+                aoeSize: newAoeSize,
+                // Enable AoE if the absolute speed exceeds a minimal threshold.
+                aoe: Math.abs(newAoeSpeed) > 0.001,
             };
         });
-    }
 
-    public setTargetCurve(curve: THREE.CatmullRomCurve3 | null) {
-        this.targetCurve = curve;
-        this.initializeGrid();
-    }
-}
+        setPegs(newPegs);
+    });
+};
