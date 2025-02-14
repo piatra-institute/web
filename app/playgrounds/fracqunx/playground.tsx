@@ -8,7 +8,7 @@ import {
 import Header from '@/components/Header';
 import Title from '@/components/Title';
 
-import Board from './components/BoardRapier';
+import Board from './components/Board';
 
 
 
