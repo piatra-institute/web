@@ -220,9 +220,9 @@ function Board({
         mounted.current = true;
 
         addBeads();
-    }, [
-        addBeads,
-    ]);
+    // Ignore addBeads();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         if (areaOfEffect) {
@@ -243,11 +243,12 @@ function Board({
                 resetPegs();
             }, 50);
         }
+    // Ignore addBeads();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         morphodynamics,
         modeReset,
         resetPegs,
-        addBeads,
     ]);
 
 

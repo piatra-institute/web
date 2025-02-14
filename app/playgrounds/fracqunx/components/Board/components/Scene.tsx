@@ -31,7 +31,7 @@ import {
     GaussianCurve,
 } from './Extras';
 
-import { useAdaptiveStressSystemWithCurve } from './StressSharingSystem';
+import { useAdaptiveStressUpdateLoop } from './StressSharingSystem';
 
 
 
@@ -69,7 +69,7 @@ const Scene = forwardRef<SceneRef, SceneProps>(function SceneFn({
     const controlsRef = useRef<React.ElementRef<typeof OrbitControls>>(null);
 
     const xRange = { min: -5, max: 5 };
-    useAdaptiveStressSystemWithCurve(
+    useAdaptiveStressUpdateLoop(
         pegs,
         beads,
         setPegs,

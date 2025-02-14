@@ -1,4 +1,4 @@
-import { useFrame } from "@react-three/fiber";
+import { useEffect } from "react";
 import * as THREE from "three";
 import { BeadData, PegData } from "../data";
 
@@ -15,6 +15,7 @@ export interface AdaptiveCurveParams {
     maxAoeSize?: number; // maximum allowed AoE size
 }
 
+// Default parameter values
 const DEFAULT_INFLUENCE_RADIUS = 1;
 const DEFAULT_STRESS_FACTOR = 0.1;
 const DEFAULT_BASE_AOE_SIZE = 0.3;
@@ -22,10 +23,10 @@ const DEFAULT_SIZE_SCALE = 0.5;
 const DEFAULT_DAMPING = 0.05;
 const DEFAULT_MAX_AOE_SIZE = 1;
 
-export const useAdaptiveStressSystemWithCurve = (
+export const useAdaptiveStressUpdateLoop = (
     pegs: PegData[],
     beads: BeadData[],
-    setPegs: (pegs: PegData[]) => void,
+    setPegs: any,
     customCurve: THREE.CatmullRomCurve3 | null,
     adaptiveEnabled: boolean,
     {
@@ -39,64 +40,83 @@ export const useAdaptiveStressSystemWithCurve = (
         maxAoeSize = DEFAULT_MAX_AOE_SIZE,
     }: AdaptiveCurveParams,
 ) => {
-    useFrame(() => {
+    useEffect(() => {
         if (!adaptiveEnabled || !customCurve) return;
 
-        const newPegs = pegs.map((peg) => {
-            const pegPos = new THREE.Vector3(peg.x, peg.y, 0);
+        const intervalId = setInterval(() => {
+            setPegs((oldPegs: any) => {
+                return oldPegs.map((peg: any) => {
+                    // Peg position
+                    const pegPos = new THREE.Vector3(peg.x, peg.y, 0);
 
-            // Identify nearby beads within the influence radius.
-            const nearbyBeads = beads.filter((bead) => {
-                const beadPos = new THREE.Vector3(
-                    (bead as any).position[0],
-                    (bead as any).position[1],
-                    (bead as any).position[2] ?? 0,
-                );
-                return pegPos.distanceTo(beadPos) < influenceRadius;
+                    // Nearby beads
+                    const nearbyBeads = beads.filter((bead) => {
+                        const beadPos = new THREE.Vector3(
+                            (bead as any).position[0],
+                            (bead as any).position[1],
+                            (bead as any).position[2] ?? 0,
+                        );
+                        return pegPos.distanceTo(beadPos) < influenceRadius;
+                    });
+
+                    // Average Y of those beads
+                    const avgY = nearbyBeads.length > 0
+                        ? nearbyBeads.reduce(
+                            (sum, b) => sum + (b as any).position[1],
+                            0,
+                        ) / nearbyBeads.length
+                        : peg.y;
+
+                    // Sample the curve at normalized x
+                    const t = (peg.x - xMin) / (xMax - xMin);
+                    const clampedT = Math.min(Math.max(t, 0), 1);
+                    const targetPoint = customCurve.getPoint(clampedT);
+
+                    // Inverted stress: if beads are above target, stress is positive
+                    const stress = avgY - targetPoint.y;
+
+                    // Check if we exceed an activation threshold
+                    const stressMag = Math.abs(stress);
+                    let newAoe = stressMag > 0.2; // or whatever threshold you prefer
+
+                    // If active, compute desired speed & size
+                    const desiredAoeSpeed = newAoe ? stress * stressFactor : 0;
+                    const desiredAoeSize = newAoe
+                        ? baseAoeSize + stressMag * sizeScale
+                        : 0;
+
+                    // Damping
+                    const damp = (from: number, to: number) =>
+                        from + (to - from) * damping;
+
+                    // Update with damping & clamp
+                    const updatedSpeed = damp(peg.aoeSpeed, desiredAoeSpeed);
+                    let updatedSize = damp(peg.aoeSize, desiredAoeSize);
+                    updatedSize = Math.min(updatedSize, maxAoeSize);
+
+                    return {
+                        ...peg,
+                        aoeSpeed: updatedSpeed,
+                        aoeSize: updatedSize,
+                        aoe: newAoe,
+                    };
+                });
             });
+        }, 2000);
 
-            // Compute the average y of nearby beads; if none, fall back to the peg's y.
-            let avgY: number;
-            if (nearbyBeads.length > 0) {
-                avgY = nearbyBeads.reduce((sum, bead) =>
-                    sum + (bead as any).position[1], 0) / nearbyBeads.length;
-            } else {
-                avgY = peg.y;
-            }
-
-            // Normalize peg.x to [0, 1] based on the defined x-range.
-            const t = (peg.x - xMin) / (xMax - xMin);
-            const clampedT = Math.min(Math.max(t, 0), 1);
-
-            // Get the target point from the custom curve.
-            const targetPoint = customCurve.getPoint(clampedT);
-
-            // Compute stress: positive if target is above average, negative if below.
-            const stress = targetPoint.y - avgY;
-
-            // Define desired AoE speed and size.
-            // For speed: if stress > 0 (target is higher), we want a positive speed (attraction upward).
-            // If stress < 0, the desired speed becomes negative.
-            const desiredAoeSpeed = stress * stressFactor;
-            // For size: start from a baseline and add a term proportional to the stress magnitude.
-            const desiredAoeSize = baseAoeSize + Math.abs(stress) * sizeScale;
-
-            // Smoothly update current peg parameters toward the desired values.
-            const newAoeSpeed = peg.aoeSpeed +
-                (desiredAoeSpeed - peg.aoeSpeed) * damping;
-            let newAoeSize = peg.aoeSize +
-                (desiredAoeSize - peg.aoeSize) * damping;
-            newAoeSize = Math.min(newAoeSize, maxAoeSize); // Prevent unbounded growth.
-
-            return {
-                ...peg,
-                aoeSpeed: newAoeSpeed,
-                aoeSize: newAoeSize,
-                // Enable AoE if the absolute speed exceeds a minimal threshold.
-                aoe: Math.abs(newAoeSpeed) > 0.001,
-            };
-        });
-
-        setPegs(newPegs);
-    });
+        return () => clearInterval(intervalId);
+    }, [
+        adaptiveEnabled,
+        customCurve,
+        beads,
+        setPegs,
+        xMin,
+        xMax,
+        influenceRadius,
+        stressFactor,
+        baseAoeSize,
+        sizeScale,
+        damping,
+        maxAoeSize,
+    ]);
 };
