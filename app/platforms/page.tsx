@@ -82,6 +82,7 @@ export default function Platforms() {
                             href={link}
                             target="_blank"
                             className="mb-8 block focus:outline-none focus:ring-1 focus:ring-white"
+                            draggable={false}
                         >
                             <div
                                 className={linkAnchorStyle}

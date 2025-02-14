@@ -136,6 +136,7 @@ export default function Home() {
                             <Link
                                 href={href}
                                 className={linkButtonStyle}
+                                draggable={false}
                             >
                                 {label}
                             </Link>

@@ -107,6 +107,7 @@ export default function Playgrounds() {
                             key={name + link}
                             href={link}
                             className="mb-8 block focus:outline-none focus:ring-1 focus:ring-white text-center"
+                            draggable={false}
                         >
                             <div
                                 className={linkAnchorStyle}
