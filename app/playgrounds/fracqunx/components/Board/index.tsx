@@ -161,7 +161,7 @@ function Board({
 
         setBeads(prev => [...prev, ...newBeads]);
     }, [
-        beads,
+        beads.length,
         maxBeads,
     ]);
 
