@@ -28,6 +28,8 @@ import {
     pegsYStart,
 } from './data';
 
+import Settings from '../Settings';
+
 
 
 const usePegs = ({
@@ -97,6 +99,10 @@ function Board({
 
     const [selectedPeg, setSelectedPeg] = useState<number | null>(null);
 
+    const [maxBeads, setMaxBeads] = useState(1000);
+    const [bounceFactor, setBounceFactor] = useState(0.5);
+
+
     const {
         pegs,
         setPegs,
@@ -108,6 +114,10 @@ function Board({
 
 
     const spawnBead = () => {
+        if (beads.length >= maxBeads) {
+            return;
+        }
+
         // const randomX = (Math.random() - 0.5) * 2
         const randomX = 0
         setBeads(prev => [...prev, {
@@ -116,7 +126,11 @@ function Board({
         }]);
     }
 
-    const addBeads = () => {
+    const addBeads = useCallback(() => {
+        if (beads.length >= maxBeads) {
+            return;
+        }
+
         const triangleHeight = 2; // Height of triangle above flippers
         const triangleBase = 3; // Base width between flippers
         const density = 0.1; // Space between beads
@@ -146,7 +160,10 @@ function Board({
         }
 
         setBeads(prev => [...prev, ...newBeads]);
-    };
+    }, [
+        beads,
+        maxBeads,
+    ]);
 
     const resetPegs = useCallback(() => {
         setPegs(pegs => pegs.map(peg => {
@@ -179,6 +196,7 @@ function Board({
         setMorphodynamics,
         setCustomCurve,
         resetPegs,
+        addBeads,
     ]);
 
     const modeReset = useCallback(() => {
@@ -192,13 +210,19 @@ function Board({
         resetPegs,
     ]);
 
+    const removeBeads = () => {
+        setBeads([]);
+    }
+
 
     useEffect(() => {
         if (mounted.current) return;
         mounted.current = true;
 
         addBeads();
-    }, []);
+    }, [
+        addBeads,
+    ]);
 
     useEffect(() => {
         if (areaOfEffect) {
@@ -223,6 +247,7 @@ function Board({
         morphodynamics,
         modeReset,
         resetPegs,
+        addBeads,
     ]);
 
 
@@ -247,6 +272,7 @@ function Board({
                         setCustomCurve={setCustomCurve}
                         drawingCurve={drawingCurve}
                         setDrawingCurve={setDrawingCurve}
+                        bounceFactor={bounceFactor}
                     />
                 </Physics>
             </Canvas>
@@ -280,6 +306,14 @@ function Board({
                     initialAoeSpeed={pegs[selectedPeg].aoeSpeed}
                 />
             )}
+
+            <Settings
+                maxBeads={maxBeads}
+                setMaxBeads={setMaxBeads}
+                bounceFactor={bounceFactor}
+                setBounceFactor={setBounceFactor}
+                removeBeads={removeBeads}
+            />
         </div>
     );
 }

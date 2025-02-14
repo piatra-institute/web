@@ -29,8 +29,7 @@ export interface SettingsProperties {
     setBounceFactor: React.Dispatch<React.SetStateAction<number>>;
     maxBeads: number;
     setMaxBeads: React.Dispatch<React.SetStateAction<number>>;
-    releaseInterval: number;
-    setReleaseInterval: React.Dispatch<React.SetStateAction<number>>;
+    removeBeads: () => void;
 };
 
 
@@ -43,8 +42,7 @@ export default function Settings(
         setBounceFactor,
         maxBeads,
         setMaxBeads,
-        releaseInterval,
-        setReleaseInterval,
+        removeBeads,
     } = properties;
     // #endregion properties
 
@@ -162,21 +160,17 @@ export default function Settings(
                 <div
                     className="text-left w-96 p-4"
                 >
+                    <LinkButton
+                        text="remove all beads"
+                        onClick={removeBeads}
+                    />
+
                     <Input
                         label="max beads"
                         type="number"
                         min={1}
                         value={maxBeads}
                         onChange={(value) => setMaxBeads(parseInt(value, 10))}
-                    />
-
-                    <Input
-                        label="release interval (ms)"
-                        type="number"
-                        min={10}
-                        step={50}
-                        value={releaseInterval}
-                        onChange={(value) => setReleaseInterval(parseInt(value, 10))}
                     />
 
                     <Input

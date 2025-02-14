@@ -26,10 +26,12 @@ import {
 function Bead({
     position,
     pegs,
+    bounceFactor,
     radius = BEAD_RADIUS,
 }: {
     position: THREE.Vector3,
     pegs: PegData[];
+    bounceFactor: number;
     radius?: number,
 }) {
     const rigidBodyRef = useRef<RapierRigidBody>(null);
@@ -85,7 +87,7 @@ function Bead({
             type="dynamic"
             position={position}
             colliders="ball"
-            restitution={0.5}
+            restitution={bounceFactor}
             friction={0.1}
             linearDamping={0.2}
             angularDamping={0.2}
@@ -106,9 +108,11 @@ function Bead({
 function Beads({
     beads,
     pegs,
+    bounceFactor,
 } : {
     beads: BeadData[];
     pegs: PegData[];
+    bounceFactor: number;
 }) {
     return (
         <>
@@ -117,6 +121,7 @@ function Beads({
                     key={index + bead.id}
                     position={bead.position}
                     pegs={pegs}
+                    bounceFactor={bounceFactor}
                 />
             ))}
         </>

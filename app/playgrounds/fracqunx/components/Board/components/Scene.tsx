@@ -50,6 +50,7 @@ export interface SceneProps {
     setCustomCurve: (curve: THREE.CatmullRomCurve3 | null) => void;
     drawingCurve: boolean;
     setDrawingCurve: (drawing: boolean) => void;
+    bounceFactor: number;
 }
 
 const Scene = forwardRef<SceneRef, SceneProps>(function SceneFn({
@@ -63,6 +64,7 @@ const Scene = forwardRef<SceneRef, SceneProps>(function SceneFn({
     setCustomCurve,
     drawingCurve,
     setDrawingCurve,
+    bounceFactor,
 }, ref) {
     const controlsRef = useRef<React.ElementRef<typeof OrbitControls>>(null);
 
@@ -136,6 +138,7 @@ const Scene = forwardRef<SceneRef, SceneProps>(function SceneFn({
                 <Beads
                     beads={beads}
                     pegs={pegs}
+                    bounceFactor={bounceFactor}
                 />
 
                 {morphodynamics && (
