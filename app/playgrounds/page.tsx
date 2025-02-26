@@ -37,6 +37,11 @@ const playgrounds = [
         link: '/playgrounds/fracqunx',
         description: 'fractional quincunx',
     },
+    {
+        name: 'Halley window',
+        link: '/playgrounds/halley-window',
+        description: 'Halley\'s method fractal patterns',
+    },
 
     // {
     //     name: 'eyevolution',
