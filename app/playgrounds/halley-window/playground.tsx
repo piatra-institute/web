@@ -9,12 +9,12 @@ import Fractal from '@/app/playgrounds/halley-window/components/Fractal';
 
 export default function HalleyWindowPlayground() {
     // Default values calibrated to match the reference image
-    const [constant, setConstant] = useState(7); // This is the "7" mentioned in the request
-    const [centerX, setCenterX] = useState(0);
+    const [constant, setConstant] = useState(5);
+    const [centerX, setCenterX] = useState(-0.3);
     const [centerY, setCenterY] = useState(0);
     const [zoom, setZoom] = useState(2.5);
-    const [maxIterations, setMaxIterations] = useState(40);
-    const [bailout, setBailout] = useState(10);
+    const [maxIterations, setMaxIterations] = useState(20);
+    const [bailout, setBailout] = useState(18);
     const [colorMode, setColorMode] = useState<'hsl' | 'rgb'>('rgb');
     const [polynomialDegree, setPolynomialDegree] = useState(3);
 

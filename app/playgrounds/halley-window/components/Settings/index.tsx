@@ -13,54 +13,54 @@ import Dropdown from '@/components/Dropdown';
 export interface SettingsProps {
     constant: number;
     setConstant: (value: number) => void;
-    
+
     centerX: number;
     setCenterX: (value: number) => void;
     centerY: number;
     setCenterY: (value: number) => void;
-    
+
     zoom: number;
     setZoom: (value: number) => void;
-    
+
     maxIterations: number;
     setMaxIterations: (value: number) => void;
-    
+
     bailout: number;
     setBailout: (value: number) => void;
-    
+
     colorMode: 'hsl' | 'rgb';
     setColorMode: (value: 'hsl' | 'rgb') => void;
-    
+
     polynomialDegree: number;
     setPolynomialDegree: (value: number) => void;
-    
+
     reset: () => void;
 }
 
 export default function Settings({
     constant,
     setConstant,
-    
+
     centerX,
     setCenterX,
     centerY,
     setCenterY,
-    
+
     zoom,
     setZoom,
-    
+
     maxIterations,
     setMaxIterations,
-    
+
     bailout,
     setBailout,
-    
+
     colorMode,
     setColorMode,
-    
+
     polynomialDegree,
     setPolynomialDegree,
-    
+
     reset,
 }: SettingsProps) {
     return (
@@ -69,7 +69,7 @@ export default function Settings({
         >
             <div className="mb-4">
                 <h2 className="text-xl mb-2 border-b border-white/20 pb-1">Settings</h2>
-                
+
                 <div className="space-y-3">
                     <Input
                         value={constant}
@@ -84,7 +84,7 @@ export default function Settings({
                         step={0.1}
                         compact={true}
                     />
-                    
+
                     <Input
                         value={polynomialDegree}
                         onChange={(value) => {
@@ -99,7 +99,7 @@ export default function Settings({
                         step={1}
                         compact={true}
                     />
-                    
+
                     <Input
                         value={centerX}
                         onChange={(value) => {
@@ -113,7 +113,7 @@ export default function Settings({
                         step={0.1}
                         compact={true}
                     />
-                    
+
                     <Input
                         value={centerY}
                         onChange={(value) => {
@@ -127,7 +127,7 @@ export default function Settings({
                         step={0.1}
                         compact={true}
                     />
-                    
+
                     <Input
                         value={zoom}
                         onChange={(value) => {
@@ -142,7 +142,7 @@ export default function Settings({
                         step={0.1}
                         compact={true}
                     />
-                    
+
                     <Input
                         value={maxIterations}
                         onChange={(value) => {
@@ -154,10 +154,10 @@ export default function Settings({
                         label="Max Iterations"
                         type="number"
                         min={1}
-                        step={10}
+                        step={1}
                         compact={true}
                     />
-                    
+
                     <Input
                         value={bailout}
                         onChange={(value) => {
@@ -172,11 +172,11 @@ export default function Settings({
                         step={1}
                         compact={true}
                     />
-                    
+
                     <div className="pb-1">
                         <label className="flex justify-between items-center cursor-pointer">
                             <span>Color Mode:</span>
-                            <select 
+                            <select
                                 className="bg-black border border-white/30 rounded px-2 py-1"
                                 value={colorMode}
                                 onChange={(e) => setColorMode(e.target.value as 'hsl' | 'rgb')}
@@ -186,7 +186,7 @@ export default function Settings({
                             </select>
                         </label>
                     </div>
-                    
+
                     <Button
                         label="Reset"
                         onClick={reset}
