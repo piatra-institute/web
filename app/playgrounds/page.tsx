@@ -42,6 +42,11 @@ const playgrounds = [
         link: '/playgrounds/halley-window',
         description: 'Halley\'s method fractal patterns',
     },
+    {
+        name: 'Raupian morphospace',
+        link: '/playgrounds/raupian-morphospace',
+        description: 'coiling models',
+    },
 
     // {
     //     name: 'eyevolution',
