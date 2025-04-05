@@ -57,7 +57,7 @@ export default function RaupianMorphospacePlayground() {
                 <div className="max-w-xl text-white/80 mt-2 text-sm text-center">
                     visualizing theoretical shell morphology
                     <br />
-                    using David Raup&apos;s three-parameter model (W, D, T)
+                    using David M. Raup&apos;s three-parameter model (W, D, T)
                     <br />
                     <br />
                     navigate plane with arrows
