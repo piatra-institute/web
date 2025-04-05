@@ -52,8 +52,10 @@ export default function HalleyWindowPlayground() {
                 <Header />
                 <Title text="halley's method fractal" />
 
-                <div className="max-w-xl text-white/80 mt-2 text-sm">
-                    Halley&apos;s method is a root-finding algorithm that uses first and second derivatives
+                <div className="max-w-xl text-white/80 mt-2 text-sm text-center">
+                    Halley&apos;s method is a root-finding algorithm
+                    <br />
+                    that uses first and second derivatives
                 </div>
             </div>
 

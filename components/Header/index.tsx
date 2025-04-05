@@ -11,6 +11,7 @@ export default function Header() {
             <Link
                 href="/"
                 tabIndex={-1}
+                draggable={false}
             >
                 <Image
                     src="/piatra-institute.png"
@@ -18,7 +19,8 @@ export default function Header() {
                     width={175}
                     alt="piatra.institute"
                     className="select-none pointer-events-none justify-self-center m-auto mb-2"
-                    priority
+                    draggable={false}
+                    priority={true}
                 />
 
                 <h1

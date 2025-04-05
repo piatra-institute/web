@@ -41,8 +41,10 @@ export default function RaupianMorphospacePlayground() {
                 <Header />
                 <Title text="Raupian Morphospace Explorer" />
 
-                <div className="max-w-xl text-white/80 mt-2 text-sm">
-                    visualizing theoretical shell morphology using David Raup&apos;s three-parameter model (W, D, T)
+                <div className="max-w-xl text-white/80 mt-2 text-sm text-center">
+                    visualizing theoretical shell morphology
+                    <br />
+                    using David Raup&apos;s three-parameter model (W, D, T)
                 </div>
             </div>
 

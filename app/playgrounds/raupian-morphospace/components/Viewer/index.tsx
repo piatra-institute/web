@@ -167,7 +167,8 @@ const Viewer: React.FC<ViewerProps> = ({ W, D, T, autoRotate, setW, setD, setT }
         const currentMount = mountRef.current;
 
         sceneRef.current = new THREE.Scene();
-        sceneRef.current.background = new THREE.Color(0x18181B);
+        // sceneRef.current.background = new THREE.Color(0x18181B);
+        sceneRef.current.background = new THREE.Color(0x000000);
 
         cameraRef.current = new THREE.PerspectiveCamera(45, currentMount.clientWidth / currentMount.clientHeight, 0.1, 1000);
         cameraRef.current.position.set(8, 7, 12);
@@ -279,7 +280,12 @@ const Viewer: React.FC<ViewerProps> = ({ W, D, T, autoRotate, setW, setD, setT }
     }, [autoRotate]);
 
 
-    return <div ref={mountRef} style={{ width: '100%', height: '100%', display: 'block', cursor: 'grab' }} />;
+    return (
+        <div
+            ref={mountRef}
+            style={{ width: '100%', height: '100%', display: 'block', cursor: 'grab' }}
+        />
+    );
 };
 
 export default Viewer;
