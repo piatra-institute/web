@@ -58,6 +58,11 @@ export default function RaupianMorphospacePlayground() {
                     visualizing theoretical shell morphology
                     <br />
                     using David Raup&apos;s three-parameter model (W, D, T)
+                    <br />
+                    <br />
+                    navigate plane with arrows
+                    <br />
+                    switch plane with ⇧+↑/↓
                 </div>
             </div>
 

@@ -31,7 +31,7 @@ export default function Settings({
 }: SettingsProps) {
     return (
         <div
-            className="fixed top-2 right-2 bg-black/80 backdrop-blur-md p-4 w-80 z-20 border border-white/20 text-sm"
+            className="fixed top-2 right-2 bg-black/80 backdrop-blur-xs p-4 w-80 z-20 border border-white/20 text-sm"
         >
             <div className="mb-4">
                 <h2 className="text-xl mb-2 border-b border-white/20 pb-1">Settings</h2>
