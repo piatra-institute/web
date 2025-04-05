@@ -82,7 +82,11 @@ const Viewer: React.FC<ViewerProps> = ({ W, D, T, autoRotate, setW, setD, setT }
     const populateMorphospace = (scene: THREE.Scene): THREE.Group => {
         const group = new THREE.Group();
         const markerGeom = new THREE.SphereGeometry(0.1, 16, 16);
-        const markerMat = new THREE.MeshBasicMaterial({ color: 0x2E8B57 }); // SeaGreen
+        const markerMat = new THREE.MeshStandardMaterial({
+            color: 0x2E8B57, // SeaGreen
+            roughness: 0.7,
+            metalness: 0.5,
+        });
 
         for (let wVal = 1; wVal <= 5; wVal += 0.5) {
             for (let dVal = 0.1; dVal <= 1.0; dVal += 0.2) {
@@ -126,7 +130,8 @@ const Viewer: React.FC<ViewerProps> = ({ W, D, T, autoRotate, setW, setD, setT }
             const shellGeometry = createShellGeometry(W_val, D_val, T_val);
             if (shellGeometry.attributes.position && shellGeometry.attributes.position.count > 0) {
                 const shellMaterial = new THREE.MeshPhongMaterial({
-                    color: 0xAFEEEE, // PaleTurquoise
+                    // color: 0xAFEEEE, // PaleTurquoise
+                    color: 0x20e69d,
                     shininess: 60,
                     side: THREE.DoubleSide
                 });
@@ -184,9 +189,9 @@ const Viewer: React.FC<ViewerProps> = ({ W, D, T, autoRotate, setW, setD, setT }
         controlsRef.current.dampingFactor = 0.1;
         controlsRef.current.target.set(0, 1, 0);
 
-        const ambientLight = new THREE.AmbientLight(0xCCCCCC, 0.6);
+        const ambientLight = new THREE.AmbientLight(0xCCCCCC, 1.1);
         sceneRef.current.add(ambientLight);
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.9);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.9);
         directionalLight.position.set(5, 10, 7.5);
         sceneRef.current.add(directionalLight);
 
