@@ -65,7 +65,7 @@ export default function Settings({
 }: SettingsProps) {
     return (
         <div
-            className="fixed top-2 right-2 bg-black/80 backdrop-blur-md p-4 w-64 z-20 border border-white/20"
+            className="fixed top-2 right-2 bg-black/80 backdrop-blur-md p-4 w-80 z-20 border border-white/20 text-sm"
         >
             <div className="mb-4">
                 <h2 className="text-xl mb-2 border-b border-white/20 pb-1">Settings</h2>
@@ -175,7 +175,7 @@ export default function Settings({
 
                     <div className="pb-1">
                         <label className="flex justify-between items-center cursor-pointer">
-                            <span>Color Mode:</span>
+                            <span>Color Mode</span>
                             <select
                                 className="bg-black border border-white/30 rounded px-2 py-1"
                                 value={colorMode}
@@ -190,6 +190,9 @@ export default function Settings({
                     <Button
                         label="Reset"
                         onClick={reset}
+                        style={{
+                            width: '100%',
+                        }}
                     />
                 </div>
             </div>
