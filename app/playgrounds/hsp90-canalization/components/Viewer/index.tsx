@@ -19,11 +19,11 @@ const ringGeom = new THREE.RingGeometry(0.08, 0.1, 32);
 const latentMat = new THREE.MeshBasicMaterial({ color: '#00e0ff', opacity: 0.25, transparent: true, side: THREE.DoubleSide });
 const haloMat = new THREE.SpriteMaterial({ color: '#55f7a1', opacity: 0.4, transparent: true, depthWrite: false });
 
-const baseLow  = new THREE.Color('#15310b');
-const baseHigh = new THREE.Color('#52ce0f');
+const baseLow  = new THREE.Color('#15310b'); // very dark green, fitness 0
+const baseHigh = new THREE.Color('#52ce0f'); // bright lime, fitness 1
 
 function fitColor(f: number) {
-    return baseLow.clone().lerp(baseHigh, f);   // 0→low, 1→high
+  return baseLow.clone().lerp(baseHigh, f);   // linear 0‒1
 }
 
 function fitness(x: number, y: number, z: number) {

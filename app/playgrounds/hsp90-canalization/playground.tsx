@@ -6,6 +6,7 @@ import Title from '@/components/Title';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import RadarGlyph from './components/RadarGlyph';
+import FitnessLegend from './components/FitnessLegend';
 
 
 
@@ -63,6 +64,10 @@ export default function Hsp90CanalizationPlayground() {
                 />
 
                 <RadarGlyph {...axisVar} />
+
+                <div className="absolute bottom-4 left-4">
+                    <FitnessLegend />
+                </div>
             </div>
 
             {/* overlay text */}

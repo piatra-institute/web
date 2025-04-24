@@ -18,7 +18,7 @@ export default function RadarGlyph({ x, y, z }: RGProps) {
     }).join(' ');
 
     return (
-        <div className="absolute bottom-4 left-4">
+        <div className="absolute bottom-4 left-20">
             <svg
                 width={100} height={100}
                 className="pointer-events-none"
@@ -36,9 +36,9 @@ export default function RadarGlyph({ x, y, z }: RGProps) {
             <Tooltip
                 content={
                     <div
-                        className="w-[250px] text-center"
+                        className="w-[300px] text-center"
                     >
-                        Residual variance after Hsp90 buffering - X (left), Y (right), Z (top)
+                        fitness and residual variance after Hsp90 buffering - X (left), Y (right), Z (top)
                     </div>
                 }
             >
