@@ -20,6 +20,7 @@ interface Props {
 
     ratio: number;
     reset: () => void;
+    onExport: () => void;
 }
 
 /* helper to apply values */
@@ -153,6 +154,14 @@ export default function Settings(p: Props) {
             <br />
 
             <Button className="w-full mt-4" onClick={() => { setPresetNote(''); p.reset(); }} label="Reset" />
+
+            <Button
+                className="w-full mt-2"
+                label="Export"
+                onClick={() => {
+                    p.onExport();
+                }}
+            />
         </SettingsContainer>
     );
 }

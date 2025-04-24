@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Header from '@/components/Header';
 import Title from '@/components/Title';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import RadarGlyph from './components/RadarGlyph';
 import FitnessLegend from './components/FitnessLegend';
+import { CaptureHandle } from './components/CaptureHelper';
 
 
 
@@ -22,6 +23,8 @@ const defaults = {
 };
 
 export default function Hsp90CanalizationPlayground() {
+    const viewerRef = useRef<CaptureHandle>(null);
+
     const [capacity, setCapacity] = useState(defaults.capacity);
     const [gSD, setGSD] = useState(defaults.gSD);
     const [eSD, setESD] = useState(defaults.eSD);
@@ -46,11 +49,24 @@ export default function Hsp90CanalizationPlayground() {
         setShowHalos(defaults.showHalos);
     };
 
+    const exportPNG = () => {
+        requestAnimationFrame(() => {
+            if (!viewerRef.current) return;
+            const dataURL = viewerRef.current.capture();
+
+            const a = document.createElement('a');
+            a.href = dataURL;
+            a.download = `hsp90_snapshot_${Date.now()}.png`;
+            a.click();
+        });
+    };
+
     return (
         <div className="relative min-h-screen">
             {/* 3-D viewer fills page */}
             <div className="absolute inset-0">
                 <Viewer
+                    ref={viewerRef}
                     capacity={capacity}
                     gSD={gSD}
                     eSD={eSD}
@@ -104,6 +120,7 @@ export default function Hsp90CanalizationPlayground() {
                 showHalos={showHalos} setShowHalos={setShowHalos}
                 ratio={ratio}
                 reset={reset}
+                onExport={exportPNG}
             />
         </div>
     );

@@ -1,17 +1,22 @@
 'use client';
 
-import { Suspense, useMemo, useEffect } from 'react';
+import {
+    Suspense, useMemo, useEffect,
+    forwardRef,
+} from 'react';
 import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Sphere } from '@react-three/drei';
 
+import CaptureHelper, { CaptureHandle } from '../CaptureHelper';
 
 
-interface ViewerProps {
+
+export interface ViewerProps {
     capacity: number; gSD: number; eSD: number; k: number; zSlice: number;
     showLatent: boolean; showPlane: boolean; showHalos: boolean;
     setRatio: (ratio: number) => void;
-    setAxisVar: (v:{x:number;y:number;z:number}) => void;
+    setAxisVar: (v: {x: number; y: number; z: number}) => void;
 }
 
 /* helper geometries & materials outside component for perf */
@@ -33,7 +38,7 @@ function fitness(x: number, y: number, z: number) {
 }
 
 
-export default function Viewer(props: ViewerProps) {
+const Viewer = forwardRef<CaptureHandle, ViewerProps>((props, ref) => {
     const { capacity, gSD, eSD, k, zSlice, showLatent, showPlane, showHalos } = props;
 
     const { latent, buffered, ratio, axisVar } = useMemo(() => {
@@ -100,8 +105,14 @@ export default function Viewer(props: ViewerProps) {
         props.setAxisVar(axisVar);
     }, [ratio, axisVar, props]);
 
+
     return (
-        <Canvas camera={{ position: [5, 2, -5], fov: 35 }}>
+        <Canvas
+            camera={{ position: [5, 2, -5], fov: 35 }}
+            gl={{ preserveDrawingBuffer: true }}
+        >
+            <CaptureHelper ref={ref} />
+
             <color attach="background" args={['#0d0d0d']} />
             <ambientLight intensity={0.35} />
             <directionalLight position={[4, 8, 5]} intensity={1} />
@@ -150,4 +161,8 @@ export default function Viewer(props: ViewerProps) {
             <Suspense fallback={null} />
         </Canvas>
     );
-}
+});
+
+Viewer.displayName = 'Viewer';
+
+export default Viewer;
