@@ -11,6 +11,7 @@ interface ViewerProps {
     capacity: number; gSD: number; eSD: number; k: number; zSlice: number;
     showLatent: boolean; showPlane: boolean; showHalos: boolean;
     setRatio: (ratio: number) => void;
+    setAxisVar: (v:{x:number;y:number;z:number}) => void;
 }
 
 /* helper geometries & materials outside component for perf */
@@ -22,12 +23,13 @@ const sphereMat = new THREE.MeshStandardMaterial({ color: '#56be30', emissive: '
 export default function Viewer(props: ViewerProps) {
     const { capacity, gSD, eSD, k, zSlice, showLatent, showPlane, showHalos } = props;
 
-    const { latent, buffered, ratio } = useMemo(() => {
+    const { latent, buffered, ratio, axisVar } = useMemo(() => {
         const lat: number[][] = [];
         const buf: number[][] = [];
 
         let sumLat = 0;
         let sumBuf = 0;
+        let sumXBuf = 0, sumYBuf = 0, sumZBuf = 0;
 
         for (let i = 0; i < 500; i++) {
             const gx = gSD * THREE.MathUtils.randFloatSpread(2);
@@ -53,19 +55,38 @@ export default function Viewer(props: ViewerProps) {
             /* accumulate squared radii for variance */
             sumLat += x * x + y * y + z * z;
             sumBuf += bx * bx + by * by + bz * bz;
+
+            sumXBuf += bx*bx;
+            sumYBuf += by*by;
+            sumZBuf += bz*bz;
         }
 
         const varianceLat = sumLat / 500;
         const varianceBuf = sumBuf / 500;
         const ratio = varianceBuf / varianceLat; // 0 = perfect canalization, 1 = none
 
-        return { latent: lat, buffered: buf, ratio };
+        const varXBuf = sumXBuf / 500;
+        const varYBuf = sumYBuf / 500;
+        const varZBuf = sumZBuf / 500;
+
+        return {
+            latent: lat,
+            buffered: buf,
+            ratio,
+            axisVar: {
+                x: varXBuf, y: varYBuf, z: varZBuf,
+            },
+        };
     }, [capacity, gSD, eSD, k]);
 
     const visLat = useMemo(() => latent.filter(([, , z]) => z <= zSlice), [latent, zSlice]);
     const visBuf = useMemo(() => buffered.filter(([, , z]) => z <= zSlice), [buffered, zSlice]);
 
-    useEffect(() => { props.setRatio(ratio); }, [ratio, props]);
+    useEffect(() => {
+        props.setRatio(ratio);
+        props.setAxisVar(axisVar);
+    }, [ratio, axisVar, props]);
+
 
     return (
         <Canvas camera={{ position: [5, 2, -5], fov: 35 }}>

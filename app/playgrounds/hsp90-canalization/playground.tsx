@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Title from '@/components/Title';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+import RadarGlyph from './components/RadarGlyph';
 
 
 
@@ -31,6 +32,7 @@ export default function Hsp90CanalizationPlayground() {
     const [showHalos, setShowHalos] = useState(defaults.showHalos);
 
     const [ratio,setRatio] = useState(0);
+    const [axisVar, setAxisVar] = useState({x:0,y:0,z:0});
 
     const reset = () => {
         setCapacity(defaults.capacity);
@@ -57,7 +59,10 @@ export default function Hsp90CanalizationPlayground() {
                     showPlane={showPlane}
                     showHalos={showHalos}
                     setRatio={setRatio}
+                    setAxisVar={setAxisVar}
                 />
+
+                <RadarGlyph {...axisVar} />
             </div>
 
             {/* overlay text */}
