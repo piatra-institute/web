@@ -18,7 +18,13 @@ interface ViewerProps {
 const ringGeom = new THREE.RingGeometry(0.08, 0.1, 32);
 const latentMat = new THREE.MeshBasicMaterial({ color: '#00e0ff', opacity: 0.25, transparent: true, side: THREE.DoubleSide });
 const haloMat = new THREE.SpriteMaterial({ color: '#a855f7', opacity: 0.4, transparent: true, depthWrite: false });
-const sphereMat = new THREE.MeshStandardMaterial({ color: '#56be30', emissive: '#597a20', emissiveIntensity: 0.5, transparent: true, opacity: 0.75 });
+
+const baseLow  = new THREE.Color('#15310b');
+const baseHigh = new THREE.Color('#52ce0f');
+
+function fitColor(f: number) {
+    return baseLow.clone().lerp(baseHigh, f);   // 0→low, 1→high
+}
 
 export default function Viewer(props: ViewerProps) {
     const { capacity, gSD, eSD, k, zSlice, showLatent, showPlane, showHalos } = props;
@@ -88,6 +94,19 @@ export default function Viewer(props: ViewerProps) {
     }, [ratio, axisVar, props]);
 
 
+    function fitness(x: number, y: number, z: number) {
+        // higher = better
+        const s = 1.5;                        // width of the peak
+        return Math.exp(-(x*x + y*y + z*z)/(2*s*s));
+    }
+
+    function fitToColor(f: number) {          // f ∈ [0,1]
+        const g = Math.round(255*f);
+        const r = Math.round(255*(1-f));
+        return `rgb(${r},${g},150)`;
+    }
+
+
     return (
         <Canvas camera={{ position: [5, 2, -5], fov: 35 }}>
             <color attach="background" args={['#0d0d0d']} />
@@ -110,7 +129,17 @@ export default function Viewer(props: ViewerProps) {
             <group>
                 {visBuf.map(([x, y, z], i) => (
                     <group position={[x, y, z]} key={i}>
-                        <Sphere args={[0.06, 12, 12]} material={sphereMat} />
+                        <Sphere
+                            args={[0.06, 12, 12]}
+                            material={new THREE.MeshStandardMaterial({
+                                color: fitColor(fitness(x, y, z)),
+                                emissive: fitColor(fitness(x, y, z)).multiplyScalar(0.4),
+                                emissiveIntensity: 0.6,
+                                transparent: true,
+                                opacity: 0.75,
+                            })}
+                        />
+
                         {showHalos && <sprite material={haloMat} scale={[0.28, 0.28, 0.28]} />}
                     </group>
                 ))}
