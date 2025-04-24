@@ -70,8 +70,20 @@ export default function Hsp90CanalizationPlayground() {
                 <Header />
                 <Title text="Hsp90 Canalization Explorer" />
                 <div className="max-w-xl text-white/80 mt-2 text-sm text-center">
-                    interactively visualising how the chaperone&nbsp;Hsp90
-                    <br /> buffers — and releases — latent phenotypic variance
+                    {/* interactively visualising how the chaperone&nbsp;Hsp90
+                    <br /> buffers — and releases — latent phenotypic variance */}
+
+                    explore how the molecular chaperone Hsp90 buffers,
+                    <br /> reveals and reshapes hidden phenotypic variance
+                    <br />
+                    <br />
+                    adjust C, σ<sub>G</sub>, σ<sub>E</sub> and k with live presets
+                    <br />
+                    slice the cloud, toggle latent rings / halos,
+                    <br />
+                    read the variance-radar and fitness colours,
+                    <br />
+                    watch canalization strengthen or collapse in real time
                 </div>
             </div>
 

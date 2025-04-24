@@ -17,7 +17,7 @@ interface ViewerProps {
 /* helper geometries & materials outside component for perf */
 const ringGeom = new THREE.RingGeometry(0.08, 0.1, 32);
 const latentMat = new THREE.MeshBasicMaterial({ color: '#00e0ff', opacity: 0.25, transparent: true, side: THREE.DoubleSide });
-const haloMat = new THREE.SpriteMaterial({ color: '#a855f7', opacity: 0.4, transparent: true, depthWrite: false });
+const haloMat = new THREE.SpriteMaterial({ color: '#55f7a1', opacity: 0.4, transparent: true, depthWrite: false });
 
 const baseLow  = new THREE.Color('#15310b');
 const baseHigh = new THREE.Color('#52ce0f');

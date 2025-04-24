@@ -77,7 +77,7 @@ export default function Settings(p: Props) {
                     size="xs"
                     onClick={() => {
                         apply(p, { C: 0.05, g: 1.5, e: 0.2, k: 4 });
-                        setPresetNote('GA-inhibited / hsp83-/- (buffer almost gone)');
+                        setPresetNote('Geldanamycin-treated (Hsp90 activity ≈ 0) - buffer largely collapsed');
                     }}
                     label="GA-inhibited"
                 />
