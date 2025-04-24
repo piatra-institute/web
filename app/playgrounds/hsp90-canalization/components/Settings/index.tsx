@@ -56,7 +56,7 @@ export default function Settings(p: Props) {
     return (
         <SettingsContainer>
             {/* preset buttons */}
-            <div className="flex gap-2 justify-center">
+            <div className="flex gap-2 justify-center mb-6">
                 <Button
                     size="xs"
                     onClick={() => {
@@ -124,10 +124,14 @@ export default function Settings(p: Props) {
                 </div>
             ))}
 
+            <br />
+
             {/* toggles */}
             <Toggle text="Show latent" value={p.showLatent} toggle={() => p.setShowLatent(!p.showLatent)} />
             <Toggle text="Show section plane" value={p.showPlane} toggle={() => p.setShowPlane(!p.showPlane)} />
             <Toggle text="Show halos" value={p.showHalos} toggle={() => p.setShowHalos(!p.showHalos)} />
+
+            <br />
 
             {/* metrics */}
             <div className="mt-4 space-y-1 text-sm">
@@ -145,6 +149,8 @@ export default function Settings(p: Props) {
             <div className="mt-3 bg-white/10 p-2 text-xs italic whitespace-pre-line rounded">
                 {summary}
             </div>
+
+            <br />
 
             <Button className="w-full mt-4" onClick={() => { setPresetNote(''); p.reset(); }} label="Reset" />
         </SettingsContainer>
