@@ -1,9 +1,9 @@
 'use client';
 
 import { Suspense, useMemo, useEffect } from 'react';
+import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Sphere } from '@react-three/drei';
-import * as THREE from 'three';
 
 
 
@@ -25,6 +25,13 @@ const baseHigh = new THREE.Color('#52ce0f');
 function fitColor(f: number) {
     return baseLow.clone().lerp(baseHigh, f);   // 0→low, 1→high
 }
+
+function fitness(x: number, y: number, z: number) {
+    // higher = better
+    const s = 1.5;                        // width of the peak
+    return Math.exp(-(x*x + y*y + z*z)/(2*s*s));
+}
+
 
 export default function Viewer(props: ViewerProps) {
     const { capacity, gSD, eSD, k, zSlice, showLatent, showPlane, showHalos } = props;
@@ -92,20 +99,6 @@ export default function Viewer(props: ViewerProps) {
         props.setRatio(ratio);
         props.setAxisVar(axisVar);
     }, [ratio, axisVar, props]);
-
-
-    function fitness(x: number, y: number, z: number) {
-        // higher = better
-        const s = 1.5;                        // width of the peak
-        return Math.exp(-(x*x + y*y + z*z)/(2*s*s));
-    }
-
-    function fitToColor(f: number) {          // f ∈ [0,1]
-        const g = Math.round(255*f);
-        const r = Math.round(255*(1-f));
-        return `rgb(${r},${g},150)`;
-    }
-
 
     return (
         <Canvas camera={{ position: [5, 2, -5], fov: 35 }}>
