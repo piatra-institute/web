@@ -44,7 +44,7 @@ export default function Settings(p: Props) {
         let auto =
             'Strong canalization (Rutherford & Lindquist 1998)';
         if (hidden < 70 && hidden > 30)
-            auto = 'Partial masking – cryptic variance emerging (Milton 2006)';
+            auto = 'Partial masking - cryptic variance emerging (Milton 2006)';
         if (hidden <= 30)
             auto = 'Buffer depleted; latent variation visible (Flatt 2005)';
 
@@ -85,15 +85,31 @@ export default function Settings(p: Props) {
 
             {/* sliders */}
             {[
-                { label: 'Capacity (C)', v: p.capacity, set: p.setCapacity, min: 0, max: 1, step: 0.05 },
-                { label: 'σ G', v: p.gSD, set: p.setGSD, min: 0, max: 2, step: 0.05 },
-                { label: 'σ E', v: p.eSD, set: p.setESD, min: 0, max: 1, step: 0.05 },
-                { label: 'k (steep.)', v: p.k, set: p.setK, min: 1, max: 10, step: 0.5 },
-                { label: 'Z-slice', v: p.zSlice, set: p.setZSlice, min: -3, max: 3, step: 0.1 },
+                {
+                    label: 'Buffer&nbsp;capacity&nbsp;<i>C</i>',
+                    v: p.capacity, set: p.setCapacity, min: 0, max: 1, step: 0.05,
+                },
+                {
+                    label: '&#963;<sub>G</sub>&nbsp;(cryptic&nbsp;genetic&nbsp;SD)',
+                    v: p.gSD, set: p.setGSD, min: 0, max: 2, step: 0.05,
+                },
+                {
+                    label: '&#963;<sub>E</sub>&nbsp;(environmental&nbsp;SD)',
+                    v: p.eSD, set: p.setESD, min: 0, max: 1, step: 0.05,
+                },
+                {
+                    label: '<i>k</i>&nbsp;(buffer&nbsp;threshold&nbsp;steepness)',
+                    v: p.k, set: p.setK, min: 1, max: 10, step: 0.5,
+                },
+                {
+                    label: 'cross-section slice',
+                    v: p.zSlice, set: p.setZSlice, min: -3, max: 3, step: 0.1,
+                },
             ].map(s => (
                 <div key={s.label} className="space-y-1">
                     <div className="flex justify-between">
-                        <span>{s.label}</span>
+                        <span dangerouslySetInnerHTML={{ __html: s.label }} />
+
                         <span className="text-lime-200">{s.v.toFixed(s.step < 1 ? 2 : 0)}</span>
                     </div>
                     <Input
