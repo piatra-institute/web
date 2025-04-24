@@ -3,6 +3,7 @@
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import Toggle from '@/components/Toggle';
+import SettingsContainer from '@/components/SettingsContainer';
 
 
 
@@ -30,70 +31,62 @@ export default function Settings({
     reset,
 }: SettingsProps) {
     return (
-        <div
-            className="fixed top-2 right-2 bg-black/80 backdrop-blur-xs p-4 w-80 z-20 border border-white/20 text-sm"
-        >
-            <div className="mb-4">
-                <h2 className="text-xl mb-2 border-b border-white/20 pb-1">Settings</h2>
+        <SettingsContainer>
+            <Input
+                value={W}
+                onChange={(value) => {
+                    const num = parseFloat(value);
+                    if (!isNaN(num)) setW(num);
+                }}
+                label="Whorl Expansion (W)"
+                type="number"
+                min={1}
+                max={5}
+                step={0.1}
+                compact={true}
+            />
 
-                <div className="space-y-4">
-                    <Input
-                        value={W}
-                        onChange={(value) => {
-                            const num = parseFloat(value);
-                            if (!isNaN(num)) setW(num);
-                        }}
-                        label="Whorl Expansion (W)"
-                        type="number"
-                        min={1}
-                        max={5}
-                        step={0.1}
-                        compact={true}
-                    />
+            <Input
+                value={D}
+                onChange={(value) => {
+                    const num = parseFloat(value);
+                    if (!isNaN(num)) setD(num);
+                }}
+                label="Distance Factor (D)"
+                type="number"
+                min={0.1}
+                max={1}
+                step={0.1}
+                compact={true}
+            />
 
-                    <Input
-                        value={D}
-                        onChange={(value) => {
-                            const num = parseFloat(value);
-                            if (!isNaN(num)) setD(num);
-                        }}
-                        label="Distance Factor (D)"
-                        type="number"
-                        min={0.1}
-                        max={1}
-                        step={0.1}
-                        compact={true}
-                    />
+            <Input
+                value={T}
+                onChange={(value) => {
+                    const num = parseFloat(value);
+                    if (!isNaN(num)) setT(num);
+                }}
+                label="Translation (T)"
+                type="number"
+                min={0}
+                max={3}
+                step={0.1}
+                compact={true}
+            />
 
-                    <Input
-                        value={T}
-                        onChange={(value) => {
-                            const num = parseFloat(value);
-                            if (!isNaN(num)) setT(num);
-                        }}
-                        label="Translation (T)"
-                        type="number"
-                        min={0}
-                        max={3}
-                        step={0.1}
-                        compact={true}
-                    />
+            <Toggle
+                value={autoRotate}
+                toggle={() => setAutoRotate(!autoRotate)}
+                text="Auto Rotate"
+            />
 
-                    <Toggle
-                        value={autoRotate}
-                        toggle={() => setAutoRotate(!autoRotate)}
-                        text="Auto Rotate"
-                    />
-
-                    <Button
-                        label="Reset"
-                        onClick={reset}
-                        style={{
-                            width: '100%',
-                        }}
-                    />
-                </div>
-            </div>
-        </div>
+            <Button
+                label="Reset"
+                onClick={reset}
+                style={{
+                    width: '100%',
+                }}
+            />
+        </SettingsContainer>
     );
 }

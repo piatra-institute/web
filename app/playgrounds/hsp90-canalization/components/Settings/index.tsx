@@ -1,11 +1,12 @@
+import { useState, useMemo } from 'react';
+
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import Toggle from '@/components/Toggle';
-import { useState, useMemo } from 'react';
+import SettingsContainer from '@/components/SettingsContainer';
 
 
 
-/* … props interface unchanged … */
 interface Props {
     capacity: number; setCapacity: (n: number) => void;
     gSD: number; setGSD: (n: number) => void;
@@ -53,92 +54,83 @@ export default function Settings(p: Props) {
 
     /* ---------------------------------------------------------------------- */
     return (
-        <div className="absolute right-0 top-0 z-10 mr-4 mt-4 w-[22rem]
-                    bg-black/60 backdrop-blur-sm border border-white/20 text-white">
-
-            <div className="border-b border-white/20 px-4 py-2 font-semibold">
-                Settings
+        <SettingsContainer>
+            {/* preset buttons */}
+            <div className="flex gap-2 justify-center">
+                <Button
+                    size="xs"
+                    onClick={() => {
+                        apply(p, { C: 1.0, g: 0.5, e: 0.3, k: 6 });
+                        setPresetNote('Wild-type baseline (all variance buffered)');
+                    }}
+                    label="Wild-type"
+                />
+                <Button
+                    size="xs"
+                    onClick={() => {
+                        apply(p, { C: 0.4, g: 1.0, e: 0.5, k: 6 });
+                        setPresetNote('Heat-shock (Hsp90 capacity transiently ↓)');
+                    }}
+                    label="Heat-shock"
+                />
+                <Button
+                    size="xs"
+                    onClick={() => {
+                        apply(p, { C: 0.05, g: 1.5, e: 0.2, k: 4 });
+                        setPresetNote('GA-inhibited / hsp83-/- (buffer almost gone)');
+                    }}
+                    label="GA-inhibited"
+                />
             </div>
 
-            <div className="p-4 space-y-4">
-
-                {/* preset buttons */}
-                <div className="flex gap-2 justify-center">
-                    <Button
-                        size="xs"
-                        onClick={() => {
-                            apply(p, { C: 1.0, g: 0.5, e: 0.3, k: 6 });
-                            setPresetNote('Wild-type baseline (all variance buffered)');
-                        }}
-                        label="Wild-type"
-                    />
-                    <Button
-                        size="xs"
-                        onClick={() => {
-                            apply(p, { C: 0.4, g: 1.0, e: 0.5, k: 6 });
-                            setPresetNote('Heat-shock (Hsp90 capacity transiently ↓)');
-                        }}
-                        label="Heat-shock"
-                    />
-                    <Button
-                        size="xs"
-                        onClick={() => {
-                            apply(p, { C: 0.05, g: 1.5, e: 0.2, k: 4 });
-                            setPresetNote('GA-inhibited / hsp83-/- (buffer almost gone)');
-                        }}
-                        label="GA-inhibited"
+            {/* sliders */}
+            {[
+                { label: 'Capacity (C)', v: p.capacity, set: p.setCapacity, min: 0, max: 1, step: 0.05 },
+                { label: 'σ G', v: p.gSD, set: p.setGSD, min: 0, max: 2, step: 0.05 },
+                { label: 'σ E', v: p.eSD, set: p.setESD, min: 0, max: 1, step: 0.05 },
+                { label: 'k (steep.)', v: p.k, set: p.setK, min: 1, max: 10, step: 0.5 },
+                { label: 'Z-slice', v: p.zSlice, set: p.setZSlice, min: -3, max: 3, step: 0.1 },
+            ].map(s => (
+                <div key={s.label} className="space-y-1">
+                    <div className="flex justify-between">
+                        <span>{s.label}</span>
+                        <span className="text-lime-200">{s.v.toFixed(s.step < 1 ? 2 : 0)}</span>
+                    </div>
+                    <Input
+                        type="range"
+                        min={s.min}
+                        max={s.max}
+                        step={s.step}
+                        value={s.v}
+                        onChange={v => { setPresetNote?.(''); s.set(parseFloat(v)); }}
+                        compact centered
                     />
                 </div>
+            ))}
 
-                {/* sliders */}
-                {[
-                    { label: 'Capacity (C)', v: p.capacity, set: p.setCapacity, min: 0, max: 1, step: 0.05 },
-                    { label: 'σ G', v: p.gSD, set: p.setGSD, min: 0, max: 2, step: 0.05 },
-                    { label: 'σ E', v: p.eSD, set: p.setESD, min: 0, max: 1, step: 0.05 },
-                    { label: 'k (steep.)', v: p.k, set: p.setK, min: 1, max: 10, step: 0.5 },
-                    { label: 'Z-slice', v: p.zSlice, set: p.setZSlice, min: -3, max: 3, step: 0.1 },
-                ].map(s => (
-                    <div key={s.label} className="space-y-1">
-                        <div className="flex justify-between">
-                            <span>{s.label}</span>
-                            <span className="text-lime-200">{s.v.toFixed(s.step < 1 ? 2 : 0)}</span>
-                        </div>
-                        <Input
-                            type="range"
-                            min={s.min}
-                            max={s.max}
-                            step={s.step}
-                            value={s.v}
-                            onChange={v => { setPresetNote?.(''); s.set(parseFloat(v)); }}
-                            compact centered
-                        />
-                    </div>
-                ))}
+            {/* toggles */}
+            <Toggle text="Show latent" value={p.showLatent} toggle={() => p.setShowLatent(!p.showLatent)} />
+            <Toggle text="Show section plane" value={p.showPlane} toggle={() => p.setShowPlane(!p.showPlane)} />
+            <Toggle text="Show halos" value={p.showHalos} toggle={() => p.setShowHalos(!p.showHalos)} />
 
-                {/* toggles */}
-                <Toggle text="Show latent" value={p.showLatent} toggle={() => p.setShowLatent(!p.showLatent)} />
-                <Toggle text="Show section plane" value={p.showPlane} toggle={() => p.setShowPlane(!p.showPlane)} />
-                <Toggle text="Show halos" value={p.showHalos} toggle={() => p.setShowHalos(!p.showHalos)} />
-
-                {/* metrics */}
-                <div className="mt-4 space-y-1 text-sm">
-                    <div>
-                        Buffered σ / Latent σ&nbsp;
-                        <span className="text-lime-200">{Math.sqrt(p.ratio).toFixed(2)}</span>
-                    </div>
-                    <div>
-                        Hidden variance&nbsp;
-                        <span className="text-lime-200">{((1 - p.ratio) * 100).toFixed(0)}%</span>
-                    </div>
+            {/* metrics */}
+            <div className="mt-4 space-y-1 text-sm">
+                <div>
+                    Buffered &#963; / Latent &#963;&nbsp;
+                    <span className="text-lime-200">{Math.sqrt(p.ratio).toFixed(2)}</span>
                 </div>
-
-                {/* interpretation */}
-                <div className="mt-3 bg-white/10 p-2 text-xs italic whitespace-pre-line rounded">
-                    {summary}
+                <div>
+                    Hidden variance&nbsp;
+                    <span className="text-lime-200">{((1 - p.ratio) * 100).toFixed(0)}%</span>
                 </div>
-
-                <Button className="w-full mt-4" onClick={() => { setPresetNote(''); p.reset(); }} label="Reset" />
             </div>
-        </div>
+
+            {/* interpretation */}
+            <div className="mt-3 bg-white/10 p-2 text-xs italic whitespace-pre-line rounded">
+                {summary}
+            </div>
+
+            <Button className="w-full mt-4" onClick={() => { setPresetNote(''); p.reset(); }} label="Reset" />
+        </SettingsContainer>
     );
 }

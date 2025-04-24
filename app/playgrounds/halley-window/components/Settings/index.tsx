@@ -1,14 +1,10 @@
 'use client';
 
-import {
-    useState,
-    useEffect,
-} from 'react';
-
 import Button from '@/components/Button';
 import Input from '@/components/Input';
-import Toggle from '@/components/Toggle';
-import Dropdown from '@/components/Dropdown';
+import SettingsContainer from '@/components/SettingsContainer';
+
+
 
 export interface SettingsProps {
     constant: number;
@@ -64,138 +60,130 @@ export default function Settings({
     reset,
 }: SettingsProps) {
     return (
-        <div
-            className="fixed top-2 right-2 bg-black/80 backdrop-blur-xs p-4 w-80 z-20 border border-white/20 text-sm"
-        >
-            <div className="mb-4">
-                <h2 className="text-xl mb-2 border-b border-white/20 pb-1">Settings</h2>
+        <SettingsContainer>
+            <Input
+                value={constant}
+                onChange={(value) => {
+                    const num = parseFloat(value);
+                    if (!isNaN(num)) {
+                        setConstant(num);
+                    }
+                }}
+                label="Constant"
+                type="number"
+                step={0.1}
+                compact={true}
+            />
 
-                <div className="space-y-3">
-                    <Input
-                        value={constant}
-                        onChange={(value) => {
-                            const num = parseFloat(value);
-                            if (!isNaN(num)) {
-                                setConstant(num);
-                            }
-                        }}
-                        label="Constant"
-                        type="number"
-                        step={0.1}
-                        compact={true}
-                    />
+            <Input
+                value={polynomialDegree}
+                onChange={(value) => {
+                    const num = parseInt(value);
+                    if (!isNaN(num) && num >= 2) {
+                        setPolynomialDegree(num);
+                    }
+                }}
+                label="Polynomial Degree"
+                type="number"
+                min={2}
+                step={1}
+                compact={true}
+            />
 
-                    <Input
-                        value={polynomialDegree}
-                        onChange={(value) => {
-                            const num = parseInt(value);
-                            if (!isNaN(num) && num >= 2) {
-                                setPolynomialDegree(num);
-                            }
-                        }}
-                        label="Polynomial Degree"
-                        type="number"
-                        min={2}
-                        step={1}
-                        compact={true}
-                    />
+            <Input
+                value={centerX}
+                onChange={(value) => {
+                    const num = parseFloat(value);
+                    if (!isNaN(num)) {
+                        setCenterX(num);
+                    }
+                }}
+                label="Center X"
+                type="number"
+                step={0.1}
+                compact={true}
+            />
 
-                    <Input
-                        value={centerX}
-                        onChange={(value) => {
-                            const num = parseFloat(value);
-                            if (!isNaN(num)) {
-                                setCenterX(num);
-                            }
-                        }}
-                        label="Center X"
-                        type="number"
-                        step={0.1}
-                        compact={true}
-                    />
+            <Input
+                value={centerY}
+                onChange={(value) => {
+                    const num = parseFloat(value);
+                    if (!isNaN(num)) {
+                        setCenterY(num);
+                    }
+                }}
+                label="Center Y"
+                type="number"
+                step={0.1}
+                compact={true}
+            />
 
-                    <Input
-                        value={centerY}
-                        onChange={(value) => {
-                            const num = parseFloat(value);
-                            if (!isNaN(num)) {
-                                setCenterY(num);
-                            }
-                        }}
-                        label="Center Y"
-                        type="number"
-                        step={0.1}
-                        compact={true}
-                    />
+            <Input
+                value={zoom}
+                onChange={(value) => {
+                    const num = parseFloat(value);
+                    if (!isNaN(num) && num > 0) {
+                        setZoom(num);
+                    }
+                }}
+                label="Zoom"
+                type="number"
+                min={0.1}
+                step={0.1}
+                compact={true}
+            />
 
-                    <Input
-                        value={zoom}
-                        onChange={(value) => {
-                            const num = parseFloat(value);
-                            if (!isNaN(num) && num > 0) {
-                                setZoom(num);
-                            }
-                        }}
-                        label="Zoom"
-                        type="number"
-                        min={0.1}
-                        step={0.1}
-                        compact={true}
-                    />
+            <Input
+                value={maxIterations}
+                onChange={(value) => {
+                    const num = parseInt(value);
+                    if (!isNaN(num) && num > 0) {
+                        setMaxIterations(num);
+                    }
+                }}
+                label="Max Iterations"
+                type="number"
+                min={1}
+                step={1}
+                compact={true}
+            />
 
-                    <Input
-                        value={maxIterations}
-                        onChange={(value) => {
-                            const num = parseInt(value);
-                            if (!isNaN(num) && num > 0) {
-                                setMaxIterations(num);
-                            }
-                        }}
-                        label="Max Iterations"
-                        type="number"
-                        min={1}
-                        step={1}
-                        compact={true}
-                    />
+            <Input
+                value={bailout}
+                onChange={(value) => {
+                    const num = parseFloat(value);
+                    if (!isNaN(num) && num > 0) {
+                        setBailout(num);
+                    }
+                }}
+                label="Bailout Radius"
+                type="number"
+                min={1}
+                step={1}
+                compact={true}
+            />
 
-                    <Input
-                        value={bailout}
-                        onChange={(value) => {
-                            const num = parseFloat(value);
-                            if (!isNaN(num) && num > 0) {
-                                setBailout(num);
-                            }
-                        }}
-                        label="Bailout Radius"
-                        type="number"
-                        min={1}
-                        step={1}
-                        compact={true}
-                    />
-
-                    <div className="pb-1">
-                        <label className="flex justify-between items-center cursor-pointer">
-                            <span>Color Mode</span>
-                            <select
-                                className="bg-black border border-white/30 rounded px-2 py-1"
-                                value={colorMode}
-                                onChange={(e) => setColorMode(e.target.value as 'hsl' | 'rgb')}
-                            >
-                                <option value="hsl">HSL</option>
-                                <option value="rgb">RGB</option>
-                            </select>
-                        </label>
-                    </div>
-
-                    <Button
-                        label="Reset"
-                        onClick={reset}
-                        style={{
-                            width: '100%',
-                        }}
-                    />
-                </div>
+            <div className="pb-1">
+                <label className="flex justify-between items-center cursor-pointer">
+                    <span>Color Mode</span>
+                    <select
+                        className="bg-black border border-white/30 rounded px-2 py-1"
+                        value={colorMode}
+                        onChange={(e) => setColorMode(e.target.value as 'hsl' | 'rgb')}
+                    >
+                        <option value="hsl">HSL</option>
+                        <option value="rgb">RGB</option>
+                    </select>
+                </label>
             </div>
-        </div>
+
+            <Button
+                label="Reset"
+                onClick={reset}
+                style={{
+                    width: '100%',
+                }}
+            />
+        </SettingsContainer>
     );
 }
