@@ -95,16 +95,26 @@ export default function Hsp90CanalizationPlayground() {
                     <br /> buffers — and releases — latent phenotypic variance */}
 
                     explore how the molecular chaperone Hsp90 buffers,
-                    <br /> reveals and reshapes hidden phenotypic variance
+                    <br />
+                    reveals and reshapes hidden phenotypic variance
+
                     <br />
                     <br />
-                    adjust C, σ<sub>G</sub>, σ<sub>E</sub> and k with live presets
+
+                    adjust buffer capacity <i>C</i>
                     <br />
-                    slice the cloud, toggle latent rings / halos,
+                    cryptic genetic standard deviation &#963;<sub>G</sub>
                     <br />
-                    read the variance-radar and fitness colours,
+                    environmental standard deviation &#963;<sub>E</sub>
                     <br />
-                    watch canalization strengthen or collapse in real time
+                    buffer threshold steepness <i>k</i>
+                    <br />
+                    <br />
+                    {/* slice the cloud, toggle latent rings / halos,
+                    <br />
+                    read the variance-radar and fitness colors,
+                    <br />
+                    watch canalization strengthen or collapse in real time */}
                 </div>
             </div>
 

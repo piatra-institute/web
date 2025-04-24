@@ -87,19 +87,19 @@ export default function Settings(p: Props) {
             {/* sliders */}
             {[
                 {
-                    label: 'Buffer&nbsp;capacity&nbsp;<i>C</i>',
+                    label: '<i>C</i>',
                     v: p.capacity, set: p.setCapacity, min: 0, max: 1, step: 0.05,
                 },
                 {
-                    label: '&#963;<sub>G</sub>&nbsp;(cryptic&nbsp;genetic&nbsp;SD)',
+                    label: '&#963;<sub>G</sub>&nbsp;',
                     v: p.gSD, set: p.setGSD, min: 0, max: 2, step: 0.05,
                 },
                 {
-                    label: '&#963;<sub>E</sub>&nbsp;(environmental&nbsp;SD)',
+                    label: '&#963;<sub>E</sub>&nbsp;',
                     v: p.eSD, set: p.setESD, min: 0, max: 1, step: 0.05,
                 },
                 {
-                    label: '<i>k</i>&nbsp;(buffer&nbsp;threshold&nbsp;steepness)',
+                    label: '<i>k</i>&nbsp;',
                     v: p.k, set: p.setK, min: 1, max: 10, step: 0.5,
                 },
                 {
