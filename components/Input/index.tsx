@@ -1,23 +1,25 @@
-import {
-    styleTrim,
-} from '@/logic/utilities';
+import { styleTrim } from '@/logic/utilities';
 
 
 
 export interface InputProps {
     value: string | number;
     onChange: (value: string) => void;
+
+    /* optional visuals */
     placeholder?: string;
     label?: string;
     compact?: boolean;
     centered?: boolean;
-    type?: 'text' | 'number';
+
+    type?: 'text' | 'number' | 'range';
+
+    /* numeric / range extras */
     min?: number;
     max?: number;
     step?: number;
     inputMode?: 'numeric' | 'decimal' | 'email';
 }
-
 
 const Input: React.FC<InputProps> = ({
     value,
@@ -26,40 +28,46 @@ const Input: React.FC<InputProps> = ({
     label,
     compact,
     centered,
+    type = 'text',
     ...rest
 }) => {
+    /* range gets its own width & removes text-specific classes */
+    const isRange = type === 'range';
+
     return (
         <div
-            className={compact ? 'flex gap-2 justify-between items-center mb-4' : 'm-10 select-none'}
+            className={
+                compact
+                    ? 'flex gap-2 justify-between items-center mb-4'
+                    : 'm-10 select-none'
+            }
         >
-            {label && (
-                <label className="block mb-1">{label}</label>
-            )}
+            {label && <label className="block mb-1">{label}</label>}
 
             <input
+                type={type}
                 className={styleTrim(`
-                    bg-lime-50 text-black placeholder-lime-500
-                    focus:outline-none focus:ring-2 focus:ring-lime-800
-                    border border-lime-800 rounded-none
-                    px-4 py-2
-                    ${compact ? 'w-24' : 'w-60 md:w-72'}
-                    ${centered ? 'text-center' : 'text-right'}
-                `)}
-                placeholder={placeholder}
+          ${isRange
+                        ? 'w-full h-2 bg-neutral-700 appearance-none cursor-pointer rounded'
+                        : `
+              bg-lime-50 text-black placeholder-lime-500
+              border border-lime-800 rounded-none
+              focus:outline-none focus:ring-2 focus:ring-lime-800
+              px-4 py-2
+              ${compact ? 'w-24' : 'w-60 md:w-72'}
+              ${centered ? 'text-center' : 'text-right'}
+            `}
+        `)}
                 value={value}
-                onChange={(e) => {
-                    onChange(e.target.value);
-                }}
+                placeholder={placeholder}
+                onChange={(e) => onChange(e.target.value)}
                 onFocus={(e) => {
-                    e.target.select();
+                    if (!isRange) e.target.select();
                 }}
-                name={label || 'input'}
-                lang="en"
                 {...rest}
             />
         </div>
     );
 };
-
 
 export default Input;

@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-
 import dynamic from 'next/dynamic';
 
 import {
@@ -9,19 +8,18 @@ import {
 
 
 export const metadata: Metadata = {
-    title: 'Halley window · playgrounds',
+    title: 'Hsp90 canalization · playgrounds',
     description: '',
 
     openGraph: {
         ...defaultOpenGraph,
-        title: 'Halley window · playgrounds · piatra.institute',
-        description: 'Halley\'s method fractal patterns',
+        title: 'Hsp90 canalization · playgrounds · piatra.institute',
+        description: 'chaperone-driven canalization of latent phenotypic variation',
     },
 };
 
-
 // Disable SSR for the playground canvas
-const HalleyWindowPlayground = dynamic(
+const Hsp90CanalizationPlayground = dynamic(
     () => import('./playground'),
     { ssr: false }
 );
@@ -29,6 +27,6 @@ const HalleyWindowPlayground = dynamic(
 
 export default function Page() {
     return (
-        <HalleyWindowPlayground />
+        <Hsp90CanalizationPlayground />
     );
 }

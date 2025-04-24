@@ -47,6 +47,11 @@ const playgrounds = [
         link: '/playgrounds/raupian-morphospace',
         description: 'coiling models',
     },
+    {
+        name: 'Hsp90 canalization',
+        link: '/playgrounds/hsp90-canalization',
+        description: 'chaperone-driven canalization of latent phenotypic variation',
+    },
 
     // {
     //     name: 'eyevolution',
