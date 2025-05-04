@@ -9,7 +9,7 @@ import {
 
 export const metadata: Metadata = {
     title: 'Hsp90 canalization · playgrounds',
-    description: '',
+    description: 'chaperone-driven canalization of latent phenotypic variation',
 
     openGraph: {
         ...defaultOpenGraph,
