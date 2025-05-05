@@ -13,6 +13,7 @@ interface SettingsProps {
     awarenessRate: number; setAwarenessRate: (n: number) => void;
     reflexiveRate: number; setReflexiveRate: (n: number) => void;
     motivationStrength: number; setMotivationStrength: (n: number) => void;
+    isRunning: boolean; setIsRunning: (n: boolean) => void;
     onRestart: () => void;
 }
 
@@ -23,6 +24,7 @@ export default function Settings({
     awarenessRate, setAwarenessRate,
     reflexiveRate, setReflexiveRate,
     motivationStrength, setMotivationStrength,
+    isRunning, setIsRunning,
     onRestart,
 }: SettingsProps) {
     const pace = useMemo(() => {
@@ -109,7 +111,18 @@ export default function Settings({
             </div>
 
             {/* actions ----------------------------------------------------------- */}
-            <Button className="w-full mt-4" label="Restart simulation" onClick={onRestart} />
+            <div className="flex mt-4 gap-2">
+                <Button 
+                    className="flex-1" 
+                    label={isRunning ? "Pause" : "Start"} 
+                    onClick={() => setIsRunning(!isRunning)} 
+                />
+                <Button 
+                    className="flex-1" 
+                    label="Restart" 
+                    onClick={onRestart} 
+                />
+            </div>
         </SettingsContainer>
     );
 }

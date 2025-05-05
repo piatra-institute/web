@@ -391,12 +391,17 @@ export default function LefebvrePlayground() {
 
     // --- Reset Function ---
     const handleReset = () => {
+        // Stop simulation if it's running
+        setIsRunning(false);
+        
+        // Reset all settings to defaults
         setNumAgents(defaultSettings.numAgents);
         setSys1Ratio(defaultSettings.sys1Ratio);
         setSpeed(defaultSettings.speed);
         setAwarenessRate(defaultSettings.awarenessRate);
         setReflexiveRate(defaultSettings.reflexiveRate);
         setMotivationStrength(defaultSettings.motivationStrength);
+        
         // Setup simulation will be triggered by state changes indirectly or call explicitly if needed
         setTimeout(setupSimulation, 50); // Call setup after state updates propagate
     };
@@ -430,19 +435,22 @@ export default function LefebvrePlayground() {
                 </div>
             </div>
 
-            {/* Right panel overlay with glass effect */}
+            {/* Settings panel - floating and fixed */}
+            <Settings
+                numAgents={numAgents} setNumAgents={setNumAgents}
+                sys1Ratio={sys1Ratio} setSys1Ratio={setSys1Ratio}
+                speed={speed} setSpeed={setSpeed}
+                awarenessRate={awarenessRate} setAwarenessRate={setAwarenessRate}
+                reflexiveRate={reflexiveRate} setReflexiveRate={setReflexiveRate}
+                motivationStrength={motivationStrength} setMotivationStrength={setMotivationStrength}
+                isRunning={isRunning} setIsRunning={setIsRunning}
+                onRestart={handleReset}
+            />
+
+            {/* Right panel overlay with glass effect - with padding for settings */}
             <div className="absolute top-0 right-0 z-10 h-full max-w-[400px] bg-black/40 backdrop-blur-sm">
-                <div className="h-full p-6 flex flex-col gap-6 overflow-y-auto">
+                <div className="h-full p-6 pt-[420px] flex flex-col gap-6 overflow-y-auto">
                     <Legend />
-                    <Settings
-                        numAgents={numAgents} setNumAgents={setNumAgents}
-                        sys1Ratio={sys1Ratio} setSys1Ratio={setSys1Ratio}
-                        speed={speed} setSpeed={setSpeed}
-                        awarenessRate={awarenessRate} setAwarenessRate={setAwarenessRate}
-                        reflexiveRate={reflexiveRate} setReflexiveRate={setReflexiveRate}
-                        motivationStrength={motivationStrength} setMotivationStrength={setMotivationStrength}
-                        onRestart={handleReset}
-                    />
                     <StatsDisplay stats={currentStats} />
                     <LogDisplay logEntries={logEntries} />
                     <ChartsDisplay chartData={chartDataHistory} />
