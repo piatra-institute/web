@@ -52,11 +52,11 @@ const playgrounds = [
         link: '/playgrounds/hsp90-canalization',
         description: 'chaperone-driven canalization of latent phenotypic variation',
     },
-    // {
-    //     name: 'Lefebvrian conscience',
-    //     link: '/playgrounds/lefebvrian-conscience',
-    //     description: 'algebra of conscience',
-    // },
+    {
+        name: 'Lefebvrian conscience',
+        link: '/playgrounds/lefebvrian-conscience',
+        description: 'algebra of conscience',
+    },
 
     // {
     //     name: 'eyevolution',

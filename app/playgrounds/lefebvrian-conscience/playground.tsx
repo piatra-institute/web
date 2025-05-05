@@ -182,17 +182,10 @@ export default function LefebvrePlayground() {
     }, [logEventCallback, motivationStrength, reflexiveRate, awarenessRate]); // Dependencies
 
     // --- Stats Calculation ---
-    const calculateCurrentStats = useCallback((): SimulationStats | null => {
-        if (agents.length === 0) return null;
-        let stats: SimulationStats = {
-            totalRes: 0, count: agents.length, groupARes: 0, groupACount: 0,
-            groupBRes: 0, groupBCount: 0, sys1Res: 0, sys1Count: 0,
-            sys2Res: 0, sys2Count: 0, saintRes: 0, saintCount: 0,
-            heroRes: 0, heroCount: 0, oppRes: 0, oppCount: 0,
-            hypRes: 0, hypCount: 0, totalAwareness: 0,
-            totalGuilt: 0, totalSuffering: 0
-        };
-        agents.forEach(agent => {
+    const calculateCurrentStats = useCallback((agentsToCalc: Agent[]): SimulationStats | null => {
+        if (agentsToCalc.length === 0) return null;
+        let stats: SimulationStats = { totalRes: 0, count: agentsToCalc.length, groupARes: 0, groupACount: 0, groupBRes: 0, groupBCount: 0, sys1Res: 0, sys1Count: 0, sys2Res: 0, sys2Count: 0, saintRes: 0, saintCount: 0, heroRes: 0, heroCount: 0, oppRes: 0, oppCount: 0, hypRes: 0, hypCount: 0, totalAwareness: 0, totalGuilt: 0, totalSuffering: 0 };
+        agentsToCalc.forEach(agent => {
             stats.totalRes += agent.resources; stats.totalAwareness += agent.awarenessLevel;
             stats.totalGuilt += agent.currentGuilt; stats.totalSuffering += agent.currentSuffering;
             if (agent.group === 'A') { stats.groupARes += agent.resources; stats.groupACount++; } else { stats.groupBRes += agent.resources; stats.groupBCount++; }
@@ -205,12 +198,7 @@ export default function LefebvrePlayground() {
             }
         });
         return stats;
-    }, [agents]); // Recalculate when agents state changes
-
-    // Update stats display whenever calculated stats change
-    useEffect(() => {
-        setCurrentStats(calculateCurrentStats());
-    }, [calculateCurrentStats]);
+    }, []); // No dependency on agents state here
 
     // --- Setup Function ---
     const setupSimulation = useCallback(() => {
@@ -252,152 +240,143 @@ export default function LefebvrePlayground() {
 
     // --- Simulation Loop Logic ---
     const runSimulationStep = useCallback(() => {
-        if (!isRunning) return; // Early return if not running
+        // *** Use functional update form of setAgents to ensure we have the latest state ***
+        setAgents(currentAgents => {
+            // If no agents or not running, return current state
+            if (!isRunning || currentAgents.length === 0) {
+                if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
+                animationFrameId.current = null;
+                return currentAgents;
+            }
 
-        frameCount.current++;
-        let interactionUpdates: any[] = [];
+            frameCount.current++;
+            let interactionUpdates: any[] = [];
 
-        // Create a mutable copy for this step's calculations
-        let currentAgents = agents.map(a => Object.assign(Object.create(Object.getPrototypeOf(a)), a));
+            // 1. Create a mutable copy WITH methods for calculations in this step
+            let tempAgents = currentAgents.map(a => Object.assign(Object.create(Object.getPrototypeOf(a)), a));
 
-        // 1. Move Agents
-        currentAgents.forEach(agent => {
-            agent.move(speed, canvasSize.current.width, canvasSize.current.height);
-        });
+            // 2. Move Agents in the temporary array
+            tempAgents.forEach(agent => {
+                if (agent && typeof agent.move === 'function') {
+                    agent.move(speed, canvasSize.current.width, canvasSize.current.height);
+                }
+            });
 
-        // 2. Check Interactions
-        for (let i = 0; i < currentAgents.length; i++) {
-            for (let j = i + 1; j < currentAgents.length; j++) {
-                const agentA = currentAgents[i];
-                const agentB = currentAgents[j];
-                if (!agentA || !agentB) continue;
+            // 3. Check Interactions using the temporary array
+            for (let i = 0; i < tempAgents.length; i++) {
+                for (let j = i + 1; j < tempAgents.length; j++) {
+                    const agentA = tempAgents[i];
+                    const agentB = tempAgents[j];
+                    if (!agentA || !agentB) continue;
 
-                const distance = getDistance(agentA, agentB);
-                if (distance < INTERACTION_RADIUS) {
-                    // Randomly choose initiator
-                    if (Math.random() < 0.5) {
-                        const update = handleInteraction(agentA, agentB);
-                        if (update) interactionUpdates.push(update);
-                    } else {
-                        const update = handleInteraction(agentB, agentA);
-                        if (update) interactionUpdates.push(update);
+                    const distance = getDistance(agentA, agentB);
+                    if (distance < INTERACTION_RADIUS) {
+                        // Check only initiator's cooldown *before* calling handleInteraction
+                        if (agentA.cooldown === 0) {
+                            const update = handleInteraction(agentA, agentB); // Pass instances from tempAgents
+                            if (update) interactionUpdates.push(update);
+                        }
+                        // Check B only if A didn't initiate and B is off cooldown
+                        else if (agentB.cooldown === 0 && !interactionUpdates.some(u => u.agentAId === agentA.id || u.agentBId === agentA.id)) {
+                            const update = handleInteraction(agentB, agentA); // Pass instances from tempAgents
+                            if (update) interactionUpdates.push(update);
+                        }
                     }
                 }
             }
-        }
 
-        // 3. Apply Interaction Updates to the state
-        setAgents(prevAgents => {
-            // Create a new array based on the previous state, maintaining prototype chain
-            let nextAgents = prevAgents.map(agent => {
-                // Create a new Agent instance with the same properties
-                const newAgent = Object.create(Object.getPrototypeOf(agent));
-                return Object.assign(newAgent, agent);
-            });
-
+            // 4. Apply Updates to the temporary array
             interactionUpdates.forEach(update => {
-                const agentAIndex = nextAgents.findIndex(a => a.id === update.agentAId);
-                const agentBIndex = nextAgents.findIndex(a => a.id === update.agentBId);
+                const agentAIndex = tempAgents.findIndex(a => a.id === update.agentAId);
+                const agentBIndex = tempAgents.findIndex(a => a.id === update.agentBId);
 
+                // Update Agent A (Initiator) in tempAgents
                 if (agentAIndex !== -1) {
-                    const updatedAgentA = Object.create(Object.getPrototypeOf(nextAgents[agentAIndex]));
-                    Object.assign(updatedAgentA, nextAgents[agentAIndex], {
-                        resources: nextAgents[agentAIndex].resources + update.resourceChangeA,
-                        cooldown: INTERACTION_COOLDOWN,
-                        currentGuilt: update.didHarm ? 1 : 0,
-                        currentSuffering: update.resourceChangeA < 0 ? 1 : 0,
-                        feelingResetTimer: FEELING_RESET_INTERVAL,
-                        lastInteractionResult: update.interactionOutcome
-                    });
-
+                    const agentAInstance = tempAgents[agentAIndex];
+                    agentAInstance.resources += update.resourceChangeA;
+                    agentAInstance.cooldown = INTERACTION_COOLDOWN;
+                    agentAInstance.updateFeelings(update.didHarm, update.resourceChangeA);
+                    agentAInstance.lastInteractionResult = update.interactionOutcome;
                     if (update.triggerAwareness) {
-                        if (updatedAgentA.awarenessLevel < AWARENESS_MAX_LEVEL) {
-                            updatedAgentA.awarenessLevel++;
-                        }
-                        if (updatedAgentA.ethicalSystem === 1) {
-                            updatedAgentA.currentInGroupHarmFactor += AWARENESS_FACTOR_ADJUST;
-                        } else {
-                            updatedAgentA.currentHarmThresholdModifier -= AWARENESS_FACTOR_ADJUST;
-                        }
-                        updatedAgentA.setState('aware', AWARENESS_GLOW_DURATION);
+                        agentAInstance.performAwarenessAct(); // This updates state/timer internally
+                    } else {
+                        agentAInstance.setState(update.didHarm ? 'harming' : 'helping', 15);
                     }
-
-                    nextAgents[agentAIndex] = updatedAgentA;
                 }
-
+                // Update Agent B (Target) in tempAgents
                 if (agentBIndex !== -1) {
-                    const updatedAgentB = Object.create(Object.getPrototypeOf(nextAgents[agentBIndex]));
-                    Object.assign(updatedAgentB, nextAgents[agentBIndex], {
-                        resources: nextAgents[agentBIndex].resources + update.resourceChangeB
-                    });
-                    nextAgents[agentBIndex] = updatedAgentB;
+                    const agentBInstance = tempAgents[agentBIndex];
+                    agentBInstance.resources += update.resourceChangeB;
+                    agentBInstance.setState(update.didHarm ? 'harmed' : 'helped', 15);
                 }
             });
 
-            // Apply move updates while maintaining prototype chain
-            nextAgents = nextAgents.map((agent, index) => {
-                const movedAgent = currentAgents[index];
-                const updatedAgent = Object.create(Object.getPrototypeOf(agent));
-                return Object.assign(updatedAgent, agent, {
-                    x: movedAgent.x,
-                    y: movedAgent.y,
-                    vx: movedAgent.vx,
-                    vy: movedAgent.vy,
-                    cooldown: movedAgent.cooldown > agent.cooldown ? movedAgent.cooldown : agent.cooldown,
-                    state: movedAgent.state !== 'idle' ? movedAgent.state : agent.state,
-                    stateTimer: movedAgent.stateTimer > agent.stateTimer ? movedAgent.stateTimer : agent.stateTimer,
-                    currentGuilt: movedAgent.currentGuilt,
-                    currentSuffering: movedAgent.currentSuffering,
-                    feelingResetTimer: movedAgent.feelingResetTimer,
-                });
-            });
-
-            return nextAgents;
-        });
-
-        // 4. Plotting (periodically)
-        if (frameCount.current % PLOT_INTERVAL === 0) {
-            const stats = calculateCurrentStats(); // Calculate based on *current* agent state
-            if (stats) {
-                setChartDataHistory(prev => {
-                    const newDataPoint: ChartDataPoint = {
-                        time: frameCount.current,
-                        avgResTotal: stats.totalRes / stats.count,
-                        avgResGroupA: stats.groupACount > 0 ? stats.groupARes / stats.groupACount : null,
-                        avgResGroupB: stats.groupBCount > 0 ? stats.groupBRes / stats.groupBCount : null,
-                        avgAwareness: stats.totalAwareness / stats.count,
-                        avgGuilt: (stats.totalGuilt / stats.count) * 100,
-                        avgSuffering: (stats.totalSuffering / stats.count) * 100,
-                    };
-                    const updatedHistory = [...prev, newDataPoint];
-                    return updatedHistory.slice(-MAX_PLOT_POINTS); // Limit history
-                });
+            // 5. Plotting (periodically) - Calculate stats based on the *updated* tempAgents
+            if (frameCount.current % PLOT_INTERVAL === 0) {
+                // Temporarily assign tempAgents to calculate stats correctly for this frame
+                const stats = calculateCurrentStats(tempAgents); // Pass tempAgents to calculator
+                if (stats) {
+                    setChartDataHistory(prev => {
+                        const newDataPoint: ChartDataPoint = {
+                            time: frameCount.current,
+                            avgResTotal: stats.totalRes / stats.count,
+                            avgResGroupA: stats.groupACount > 0 ? stats.groupARes / stats.groupACount : null,
+                            avgResGroupB: stats.groupBCount > 0 ? stats.groupBRes / stats.groupBCount : null,
+                            avgAwareness: stats.totalAwareness / stats.count,
+                            avgGuilt: (stats.totalGuilt / stats.count) * 100,
+                            avgSuffering: (stats.totalSuffering / stats.count) * 100,
+                        };
+                        const updatedHistory = [...prev, newDataPoint];
+                        return updatedHistory.slice(-MAX_PLOT_POINTS);
+                    });
+                }
             }
-        }
 
-        // 5. Schedule next frame - only if still running
+            // 6. Return the updated tempAgents array for the state update
+            return tempAgents;
+        }); // End of setAgents functional update
+
+        // 7. Schedule next frame - moved outside setAgents
         if (isRunning) {
             animationFrameId.current = requestAnimationFrame(runSimulationStep);
+        } else {
+            if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
+            animationFrameId.current = null;
         }
 
-    }, [agents, speed, handleInteraction, calculateCurrentStats, isRunning]); // Simplified dependencies
+    }, [isRunning, speed, handleInteraction, calculateCurrentStats]); // Dependencies
 
     // --- Effect to start/stop simulation loop ---
     useEffect(() => {
-        let isActive = true; // Flag to prevent updates after unmount
-
-        if (isRunning && isActive) {
-            animationFrameId.current = requestAnimationFrame(runSimulationStep);
-        }
-
-        return () => {
-            isActive = false;
+        if (isRunning) {
+            // Only start the loop if it's not already running
+            if (!animationFrameId.current) {
+                console.log("Requesting animation frame...");
+                animationFrameId.current = requestAnimationFrame(runSimulationStep);
+            }
+        } else {
+            // Clear the loop if it is running
             if (animationFrameId.current) {
+                console.log("Cancelling animation frame...");
                 cancelAnimationFrame(animationFrameId.current);
                 animationFrameId.current = null;
             }
+        }
+        // Cleanup function
+        return () => {
+            if (animationFrameId.current) {
+                cancelAnimationFrame(animationFrameId.current);
+                console.log("Animation frame cancelled on unmount/cleanup.");
+            }
         };
-    }, [isRunning, runSimulationStep]);
+    }, [isRunning, runSimulationStep]); // Rerun effect if isRunning or runSimulationStep changes
+
+    // Update stats display whenever calculated stats change
+    useEffect(() => {
+        // Calculate stats based on the *current* agents state
+        setCurrentStats(calculateCurrentStats(agents));
+    }, [agents, calculateCurrentStats]); // Depend on agents state
+
 
     // --- Effect to setup simulation on initial mount ---
     useEffect(() => {
