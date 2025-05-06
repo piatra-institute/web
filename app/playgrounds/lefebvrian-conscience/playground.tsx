@@ -200,44 +200,6 @@ export default function LefebvrePlayground() {
         return stats;
     }, []); // No dependency on agents state here
 
-    // --- Setup Function ---
-    const setupSimulation = useCallback(() => {
-        // Stop any existing simulation
-        if (animationFrameId.current) {
-            cancelAnimationFrame(animationFrameId.current);
-            animationFrameId.current = null;
-        }
-
-        // Reset frame counter
-        frameCount.current = 0;
-
-        // Initialize new agents
-        const newAgents: Agent[] = [];
-        for (let i = 0; i < numAgents; i++) {
-            const useSystem1 = Math.random() < sys1Ratio;
-            const group: Group = Math.random() < 0.5 ? 'A' : 'B';
-            const archetype: Archetype = (() => {
-                const r = Math.random();
-                if (r < 0.25) return 'saint';
-                if (r < 0.5) return 'hero';
-                if (r < 0.75) return 'opportunist';
-                return 'hypocrite';
-            })();
-
-            newAgents.push(new Agent(
-                i,
-                useSystem1 ? 1 : 2,
-                group,
-                archetype,
-                canvasSize.current.width,
-                canvasSize.current.height
-            ));
-        }
-        setAgents(newAgents);
-        setLogEntries([]);
-        setChartDataHistory([]);
-    }, [numAgents, sys1Ratio]);
-
     // --- Simulation Loop Logic ---
     const runSimulationStep = useCallback(() => {
         // *** Use functional update form of setAgents to ensure we have the latest state ***
@@ -346,14 +308,65 @@ export default function LefebvrePlayground() {
 
     }, [isRunning, speed, handleInteraction, calculateCurrentStats]); // Dependencies
 
+    // --- Setup Function ---
+    const setupSimulation = useCallback(() => {
+        const wasRunning = isRunning;
+
+        // Stop any existing simulation
+        if (animationFrameId.current) {
+            cancelAnimationFrame(animationFrameId.current);
+            animationFrameId.current = null;
+        }
+
+        // Reset frame counter
+        frameCount.current = 0;
+
+        // Initialize new agents
+        const newAgents: Agent[] = [];
+        for (let i = 0; i < numAgents; i++) {
+            const useSystem1 = Math.random() < sys1Ratio;
+            const group: Group = Math.random() < 0.5 ? 'A' : 'B';
+            const archetype: Archetype = (() => {
+                const r = Math.random();
+                if (r < 0.25) return 'saint';
+                if (r < 0.5) return 'hero';
+                if (r < 0.75) return 'opportunist';
+                return 'hypocrite';
+            })();
+
+            newAgents.push(new Agent(
+                i,
+                useSystem1 ? 1 : 2,
+                group,
+                archetype,
+                canvasSize.current.width,
+                canvasSize.current.height
+            ));
+        }
+        setAgents(newAgents);
+        setLogEntries([]);
+        setChartDataHistory([]);
+
+        // Restart animation frame if it was running before
+        if (wasRunning) {
+            setTimeout(() => {
+                if (isRunning) {  // Double-check isRunning is still true
+                    animationFrameId.current = requestAnimationFrame(runSimulationStep);
+                }
+            }, 0);
+        }
+    }, [numAgents, sys1Ratio, isRunning, runSimulationStep]);
+
     // --- Effect to start/stop simulation loop ---
     useEffect(() => {
+        // Always restart the animation frame when isRunning or settings change
         if (isRunning) {
-            // Only start the loop if it's not already running
-            if (!animationFrameId.current) {
-                console.log("Requesting animation frame...");
-                animationFrameId.current = requestAnimationFrame(runSimulationStep);
+            // Cancel any existing animation frame before starting a new one
+            if (animationFrameId.current) {
+                cancelAnimationFrame(animationFrameId.current);
             }
+            console.log("Requesting animation frame...");
+            animationFrameId.current = requestAnimationFrame(runSimulationStep);
         } else {
             // Clear the loop if it is running
             if (animationFrameId.current) {
@@ -379,21 +392,36 @@ export default function LefebvrePlayground() {
 
 
     // --- Effect to setup simulation on initial mount ---
+    const [needsSetup, setNeedsSetup] = useState(true);
+
     useEffect(() => {
-        setupSimulation();
+        if (needsSetup) {
+            setupSimulation();
+            setNeedsSetup(false);
+        }
+
         return () => {
             if (animationFrameId.current) {
                 cancelAnimationFrame(animationFrameId.current);
                 animationFrameId.current = null;
             }
         };
-    }, [setupSimulation]);
+    }, [needsSetup, setupSimulation]);
+
+    // Effect to handle settings changes separately
+    useEffect(() => {
+        if (!needsSetup) { // Skip on initial setup
+            if (isRunning) {
+                setupSimulation();
+            }
+        }
+    }, [sys1Ratio, needsSetup, isRunning, setupSimulation]);
 
     // --- Reset Function ---
     const handleReset = () => {
         // Stop simulation if it's running
         setIsRunning(false);
-        
+
         // Reset all settings to defaults
         setNumAgents(defaultSettings.numAgents);
         setSys1Ratio(defaultSettings.sys1Ratio);
@@ -401,7 +429,7 @@ export default function LefebvrePlayground() {
         setAwarenessRate(defaultSettings.awarenessRate);
         setReflexiveRate(defaultSettings.reflexiveRate);
         setMotivationStrength(defaultSettings.motivationStrength);
-        
+
         // Setup simulation will be triggered by state changes indirectly or call explicitly if needed
         setTimeout(setupSimulation, 50); // Call setup after state updates propagate
     };

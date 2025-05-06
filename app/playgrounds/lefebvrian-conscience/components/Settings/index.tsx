@@ -36,10 +36,9 @@ export default function Settings({
     return (
         <SettingsContainer>
             {/* numeric input ----------------------------------------------------- */}
-            <div className="space-y-1">
+            <div className="space-y-1 flex justify-between items-center">
                 <label className="flex justify-between">
                     <span>Agents</span>
-                    <span className="text-lime-200">{numAgents}</span>
                 </label>
                 <Input
                     type="number"
@@ -112,15 +111,15 @@ export default function Settings({
 
             {/* actions ----------------------------------------------------------- */}
             <div className="flex mt-4 gap-2">
-                <Button 
-                    className="flex-1" 
-                    label={isRunning ? "Pause" : "Start"} 
-                    onClick={() => setIsRunning(!isRunning)} 
+                <Button
+                    className="flex-1"
+                    label={isRunning ? "Pause" : "Start"}
+                    onClick={() => setIsRunning(!isRunning)}
                 />
-                <Button 
-                    className="flex-1" 
-                    label="Restart" 
-                    onClick={onRestart} 
+                <Button
+                    className="flex-1"
+                    label="Restart"
+                    onClick={onRestart}
                 />
             </div>
         </SettingsContainer>
