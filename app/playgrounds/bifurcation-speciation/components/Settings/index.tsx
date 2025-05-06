@@ -66,7 +66,7 @@ export default function Settings(props: Props) {
 
     return (
         <SettingsContainer>
-            <div className="px-2 mb-2">
+            <div>
                 <div className="text-white text-sm font-medium mb-1">Visualization</div>
                 <div className="flex gap-1 mb-2">
                     <Button
@@ -82,7 +82,7 @@ export default function Settings(props: Props) {
                 </div>
             </div>
 
-            <div className="px-2 mb-2">
+            <div>
                 <div className="text-white text-sm font-medium mb-1">Population</div>
                 <Tooltip content="Number of birds (PODs) in the simulation">
                     <Input
@@ -93,11 +93,12 @@ export default function Settings(props: Props) {
                         min={2}
                         max={200}
                         step={1}
+                        compact={true}
                     />
                 </Tooltip>
             </div>
 
-            <div className="px-2 mb-2">
+            <div>
                 <div className="text-white text-sm font-medium mb-1">Resource Distribution</div>
                 <Tooltip content="Mean of the resource distribution (a₁)">
                     <Input
@@ -108,6 +109,7 @@ export default function Settings(props: Props) {
                         min={0}
                         max={1}
                         step={0.01}
+                        compact={true}
                     />
                 </Tooltip>
                 <Tooltip content="Variance of the resource distribution (σg²)">
@@ -119,11 +121,12 @@ export default function Settings(props: Props) {
                         min={0.001}
                         max={0.5}
                         step={0.001}
+                        compact={true}
                     />
                 </Tooltip>
             </div>
 
-            <div className="px-2 mb-2">
+            <div>
                 <div className="text-white text-sm font-medium mb-1">Adaptation</div>
                 <Tooltip content="Rate at which birds adapt (C)">
                     <Input
@@ -134,6 +137,7 @@ export default function Settings(props: Props) {
                         min={0.01}
                         max={10}
                         step={0.01}
+                        compact={true}
                     />
                 </Tooltip>
                 <Tooltip content="Bifurcation parameter (λ)">
@@ -145,13 +149,14 @@ export default function Settings(props: Props) {
                         min={0.1}
                         max={10}
                         step={0.1}
+                        compact={true}
                         // disabled={visualizationMode === 'bifurcation'}
                     />
                 </Tooltip>
             </div>
 
             {visualizationMode === 'bifurcation' && (
-                <div className="px-2 mb-2">
+                <div>
                     <div className="text-white text-sm font-medium mb-1">Bifurcation Range</div>
                     <Input
                         label="Start Value"
@@ -161,6 +166,7 @@ export default function Settings(props: Props) {
                         min={0.1}
                         max={bifurcationEnd - 0.1}
                         step={0.1}
+                        compact={true}
                     />
                     <Input
                         label="End Value"
@@ -170,6 +176,7 @@ export default function Settings(props: Props) {
                         min={bifurcationStart + 0.1}
                         max={20}
                         step={0.1}
+                        compact={true}
                     />
                     <Input
                         label="Steps"
@@ -179,11 +186,12 @@ export default function Settings(props: Props) {
                         min={10}
                         max={200}
                         step={1}
+                        compact={true}
                     />
                 </div>
             )}
 
-            <div className="px-2 mb-2">
+            <div>
                 <div className="text-white text-sm font-medium mb-1">Simulation</div>
                 <Input
                     label="Iterations"
@@ -193,6 +201,7 @@ export default function Settings(props: Props) {
                     min={100}
                     max={10000}
                     step={100}
+                    compact={true}
                 />
             </div>
 
