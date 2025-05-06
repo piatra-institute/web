@@ -57,6 +57,11 @@ const playgrounds = [
         link: '/playgrounds/lefebvrian-conscience',
         description: 'algebra of conscience',
     },
+    {
+        name: 'bifurcation speciation',
+        link: '/playgrounds/bifurcation-speciation',
+        description: 'sympatric and allopatric speciation through bifurcation',
+    },
 
     // {
     //     name: 'eyevolution',
