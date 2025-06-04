@@ -40,7 +40,7 @@ export function createBifurcationDiagramPoints(
         const x = mapRange(bifurcationParam, bifurcationStart, bifurcationEnd, 0, canvasWidth);
         
         // For each final position of a bird in this simulation
-        positions.forEach(position => {
+        positions.forEach((position: number) => {
             // Map position to y-coordinate
             const y = mapRange(position, yMin, yMax, canvasHeight, 0);
             points.push([x, y]);
