@@ -62,6 +62,11 @@ const playgrounds = [
         link: '/playgrounds/bifurcation-speciation',
         description: 'sympatric and allopatric speciation through bifurcation',
     },
+    {
+        name: 'stochastic justice',
+        link: '/playgrounds/stochastic-justice',
+        description: 'fairness through randomness in corrupt systems',
+    },
 
     // {
     //     name: 'eyevolution',
