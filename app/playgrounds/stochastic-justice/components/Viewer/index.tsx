@@ -1,9 +1,10 @@
 import React, { useRef, useEffect, forwardRef, useImperativeHandle, useState, useCallback } from 'react';
-import { generateHeatmapData } from '../../logic';
+import { generateHeatmapData, CorruptionType } from '../../logic';
 
 interface ViewerProps {
   corruption: number;
   randomness: number;
+  corruptionType: CorruptionType;
   onMarkerDrag: (c: number, r: number) => void;
 }
 
@@ -17,14 +18,14 @@ interface ChartArea {
 }
 
 const Viewer = forwardRef<{ exportImage: () => void }, ViewerProps>(
-  ({ corruption, randomness, onMarkerDrag }, ref) => {
+  ({ corruption, randomness, corruptionType, onMarkerDrag }, ref) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const overlayRef = useRef<HTMLCanvasElement>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [hoveredCell, setHoveredCell] = useState<{ x: number; y: number; v: number } | null>(null);
     const [hoveredZone, setHoveredZone] = useState<string | null>(null);
     const chartAreaRef = useRef<ChartArea | null>(null);
-    const dataMatrixRef = useRef(generateHeatmapData(0.05));
+    const dataMatrixRef = useRef(generateHeatmapData(0.05, corruptionType));
 
     useImperativeHandle(ref, () => ({
       exportImage: () => {
@@ -76,25 +77,25 @@ const Viewer = forwardRef<{ exportImage: () => void }, ViewerProps>(
         const y = chartArea.top + (1 - cell.y) * chartArea.height;
         const alpha = Math.min(Math.max(cell.v, 0), 1);
         
-        // Enhanced color gradient based on fairness value
+        // Enhanced color gradient based on fairness value - adjusted for better text readability
         let r, g, b;
         if (cell.v < 0.3) {
-          // Low fairness: red to orange
-          r = 220;
-          g = Math.floor(50 + cell.v * 200);
-          b = 50;
+          // Low fairness: dark red to orange
+          r = 180;
+          g = Math.floor(30 + cell.v * 120);
+          b = 30;
         } else if (cell.v < 0.7) {
-          // Medium fairness: orange to yellow
+          // Medium fairness: orange to darker yellow
           const t = (cell.v - 0.3) / 0.4;
-          r = Math.floor(220 - t * 100);
-          g = Math.floor(150 + t * 100);
-          b = 50;
+          r = Math.floor(180 - t * 60);
+          g = Math.floor(120 + t * 60);
+          b = 30;
         } else {
-          // High fairness: yellow to green
+          // High fairness: darker yellow to darker green for better text contrast
           const t = (cell.v - 0.7) / 0.3;
-          r = Math.floor(120 - t * 31);
-          g = Math.floor(200 + t * 61);
-          b = Math.floor(50 + t * 29);
+          r = Math.floor(120 - t * 50);
+          g = Math.floor(180 - t * 30);
+          b = Math.floor(30 + t * 40);
         }
         
         ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${Math.max(alpha, 0.3)})`;
@@ -135,7 +136,7 @@ const Viewer = forwardRef<{ exportImage: () => void }, ViewerProps>(
 
       // Draw axis labels
       ctx.fillStyle = '#e0e0e0';
-      ctx.font = '12px sans-serif';
+      ctx.font = '12px "Libre Baskerville", serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
 
@@ -154,7 +155,7 @@ const Viewer = forwardRef<{ exportImage: () => void }, ViewerProps>(
       }
 
       // Draw axis titles
-      ctx.font = '14px sans-serif';
+      ctx.font = '14px "Libre Baskerville", serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
       ctx.fillText('Institutional Corruption Coefficient (C)', rect.width / 2, chartArea.bottom + 40);
@@ -168,7 +169,7 @@ const Viewer = forwardRef<{ exportImage: () => void }, ViewerProps>(
       ctx.restore();
 
       // Draw zone annotations with hover effects
-      ctx.font = '12px sans-serif';
+      ctx.font = '14px "Libre Baskerville", serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
@@ -219,7 +220,7 @@ const Viewer = forwardRef<{ exportImage: () => void }, ViewerProps>(
         );
         
         ctx.fillStyle = isHovered ? '#ffffff' : '#e0e0e0';
-        ctx.font = isHovered ? 'bold 12px sans-serif' : '12px sans-serif';
+        ctx.font = isHovered ? 'bold 14px "Libre Baskerville", serif' : '14px "Libre Baskerville", serif';
         ctx.fillText(
           zone.name,
           chartArea.left + zone.textX * chartArea.width,
@@ -255,7 +256,7 @@ const Viewer = forwardRef<{ exportImage: () => void }, ViewerProps>(
 
       ctx.beginPath();
       ctx.arc(markerX, markerY, 8, 0, 2 * Math.PI);
-      ctx.fillStyle = '#ffeb3b';
+      ctx.fillStyle = '#ffd700';
       ctx.strokeStyle = '#000000';
       ctx.lineWidth = 2;
       ctx.fill();
@@ -272,7 +273,7 @@ const Viewer = forwardRef<{ exportImage: () => void }, ViewerProps>(
         
         const fairnessLevel = hoveredCell.v > 0.7 ? 'High' : hoveredCell.v > 0.3 ? 'Medium' : 'Low';
         const text = `C: ${hoveredCell.x.toFixed(2)} | R: ${hoveredCell.y.toFixed(2)} | H*: ${hoveredCell.v.toFixed(3)} (${fairnessLevel})`;
-        ctx.font = '12px sans-serif';
+        ctx.font = '12px "Libre Baskerville", serif';
         const metrics = ctx.measureText(text);
         const padding = 8;
         const boxWidth = metrics.width + padding * 2;
@@ -295,6 +296,12 @@ const Viewer = forwardRef<{ exportImage: () => void }, ViewerProps>(
         ctx.fillText(text, boxX + boxWidth / 2, boxY + boxHeight / 2);
       }
     }, [corruption, randomness, hoveredCell]);
+
+    useEffect(() => {
+      // Regenerate heatmap data when corruption type changes
+      dataMatrixRef.current = generateHeatmapData(0.05, corruptionType);
+      drawHeatmap();
+    }, [corruptionType, drawHeatmap]);
 
     useEffect(() => {
       drawHeatmap();
