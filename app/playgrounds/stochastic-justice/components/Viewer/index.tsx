@@ -22,6 +22,7 @@ const Viewer = forwardRef<{ exportImage: () => void }, ViewerProps>(
     const overlayRef = useRef<HTMLCanvasElement>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [hoveredCell, setHoveredCell] = useState<{ x: number; y: number; v: number } | null>(null);
+    const [hoveredZone, setHoveredZone] = useState<string | null>(null);
     const chartAreaRef = useRef<ChartArea | null>(null);
     const dataMatrixRef = useRef(generateHeatmapData(0.05));
 
@@ -75,7 +76,28 @@ const Viewer = forwardRef<{ exportImage: () => void }, ViewerProps>(
         const y = chartArea.top + (1 - cell.y) * chartArea.height;
         const alpha = Math.min(Math.max(cell.v, 0), 1);
         
-        ctx.fillStyle = `rgba(89, 161, 79, ${alpha})`;
+        // Enhanced color gradient based on fairness value
+        let r, g, b;
+        if (cell.v < 0.3) {
+          // Low fairness: red to orange
+          r = 220;
+          g = Math.floor(50 + cell.v * 200);
+          b = 50;
+        } else if (cell.v < 0.7) {
+          // Medium fairness: orange to yellow
+          const t = (cell.v - 0.3) / 0.4;
+          r = Math.floor(220 - t * 100);
+          g = Math.floor(150 + t * 100);
+          b = 50;
+        } else {
+          // High fairness: yellow to green
+          const t = (cell.v - 0.7) / 0.3;
+          r = Math.floor(120 - t * 31);
+          g = Math.floor(200 + t * 61);
+          b = Math.floor(50 + t * 29);
+        }
+        
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${Math.max(alpha, 0.3)})`;
         ctx.fillRect(x - cellWidth / 2, y - cellHeight / 2, cellWidth, cellHeight);
       });
 
@@ -145,38 +167,66 @@ const Viewer = forwardRef<{ exportImage: () => void }, ViewerProps>(
       ctx.fillText('Decision Process Stochasticity (R)', 0, 0);
       ctx.restore();
 
-      // Draw zone annotations
+      // Draw zone annotations with hover effects
       ctx.font = '12px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
-      // Ideal Fair Zone
-      ctx.fillStyle = 'rgba(0, 200, 200, 0.15)';
-      ctx.fillRect(chartArea.left, chartArea.top, chartArea.width * 0.2, chartArea.height * 0.2);
-      ctx.strokeStyle = 'rgba(0, 200, 200, 0.5)';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(chartArea.left, chartArea.top, chartArea.width * 0.2, chartArea.height * 0.2);
-      ctx.fillStyle = '#e0e0e0';
-      ctx.fillText('Ideal Fair', chartArea.left + chartArea.width * 0.1, chartArea.top + chartArea.height * 0.1);
+      const zones = [
+        {
+          name: 'Ideal Fair',
+          bounds: { x: 0, y: 0, w: 0.2, h: 0.2 },
+          color: [0, 200, 200],
+          textX: 0.1,
+          textY: 0.1
+        },
+        {
+          name: 'Corrupt & Unfair',
+          bounds: { x: 0.8, y: 0.8, w: 0.2, h: 0.2 },
+          color: [255, 100, 0],
+          textX: 0.9,
+          textY: 0.9
+        },
+        {
+          name: 'Random Justice',
+          bounds: { x: 0.4, y: 0.4, w: 0.2, h: 0.2 },
+          color: [180, 180, 180],
+          textX: 0.5,
+          textY: 0.5
+        }
+      ];
 
-      // Corrupt & Unfair Zone
-      ctx.fillStyle = 'rgba(255, 100, 0, 0.15)';
-      ctx.fillRect(chartArea.left + chartArea.width * 0.8, chartArea.top + chartArea.height * 0.8, chartArea.width * 0.2, chartArea.height * 0.2);
-      ctx.strokeStyle = 'rgba(255, 100, 0, 0.5)';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(chartArea.left + chartArea.width * 0.8, chartArea.top + chartArea.height * 0.8, chartArea.width * 0.2, chartArea.height * 0.2);
-      ctx.fillStyle = '#e0e0e0';
-      ctx.fillText('Corrupt & Unfair', chartArea.left + chartArea.width * 0.9, chartArea.top + chartArea.height * 0.9);
-
-      // Random Justice Zone
-      ctx.fillStyle = 'rgba(180, 180, 180, 0.15)';
-      ctx.fillRect(chartArea.left + chartArea.width * 0.4, chartArea.top + chartArea.height * 0.4, chartArea.width * 0.2, chartArea.height * 0.2);
-      ctx.strokeStyle = 'rgba(180, 180, 180, 0.5)';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(chartArea.left + chartArea.width * 0.4, chartArea.top + chartArea.height * 0.4, chartArea.width * 0.2, chartArea.height * 0.2);
-      ctx.fillStyle = '#e0e0e0';
-      ctx.fillText('Random Justice', chartArea.left + chartArea.width * 0.5, chartArea.top + chartArea.height * 0.5);
-    }, []);
+      zones.forEach(zone => {
+        const isHovered = hoveredZone === zone.name;
+        const alpha = isHovered ? 0.3 : 0.15;
+        const strokeAlpha = isHovered ? 0.8 : 0.5;
+        
+        ctx.fillStyle = `rgba(${zone.color[0]}, ${zone.color[1]}, ${zone.color[2]}, ${alpha})`;
+        ctx.fillRect(
+          chartArea.left + zone.bounds.x * chartArea.width,
+          chartArea.top + zone.bounds.y * chartArea.height,
+          zone.bounds.w * chartArea.width,
+          zone.bounds.h * chartArea.height
+        );
+        
+        ctx.strokeStyle = `rgba(${zone.color[0]}, ${zone.color[1]}, ${zone.color[2]}, ${strokeAlpha})`;
+        ctx.lineWidth = isHovered ? 2 : 1;
+        ctx.strokeRect(
+          chartArea.left + zone.bounds.x * chartArea.width,
+          chartArea.top + zone.bounds.y * chartArea.height,
+          zone.bounds.w * chartArea.width,
+          zone.bounds.h * chartArea.height
+        );
+        
+        ctx.fillStyle = isHovered ? '#ffffff' : '#e0e0e0';
+        ctx.font = isHovered ? 'bold 12px sans-serif' : '12px sans-serif';
+        ctx.fillText(
+          zone.name,
+          chartArea.left + zone.textX * chartArea.width,
+          chartArea.top + zone.textY * chartArea.height
+        );
+      });
+    }, [hoveredZone]);
 
     const drawOverlay = useCallback(() => {
       const canvas = overlayRef.current;
@@ -220,7 +270,8 @@ const Viewer = forwardRef<{ exportImage: () => void }, ViewerProps>(
         ctx.strokeStyle = '#666';
         ctx.lineWidth = 1;
         
-        const text = `C: ${hoveredCell.x.toFixed(2)}, R: ${hoveredCell.y.toFixed(2)}, H*: ${hoveredCell.v.toFixed(3)}`;
+        const fairnessLevel = hoveredCell.v > 0.7 ? 'High' : hoveredCell.v > 0.3 ? 'Medium' : 'Low';
+        const text = `C: ${hoveredCell.x.toFixed(2)} | R: ${hoveredCell.y.toFixed(2)} | H*: ${hoveredCell.v.toFixed(3)} (${fairnessLevel})`;
         ctx.font = '12px sans-serif';
         const metrics = ctx.measureText(text);
         const padding = 8;
@@ -273,6 +324,20 @@ const Viewer = forwardRef<{ exportImage: () => void }, ViewerProps>(
         const plotX = (x - chartArea.left) / chartArea.width;
         const plotY = 1 - (y - chartArea.top) / chartArea.height;
 
+        // Check zone hover
+        let newHoveredZone = null;
+        if (plotX <= 0.2 && plotY >= 0.8) {
+          newHoveredZone = 'Ideal Fair';
+        } else if (plotX >= 0.8 && plotY <= 0.2) {
+          newHoveredZone = 'Corrupt & Unfair';
+        } else if (plotX >= 0.4 && plotX <= 0.6 && plotY >= 0.4 && plotY <= 0.6) {
+          newHoveredZone = 'Random Justice';
+        }
+        
+        if (newHoveredZone !== hoveredZone) {
+          setHoveredZone(newHoveredZone);
+        }
+
         // Find closest cell
         const step = 0.05;
         const closestX = Math.round(plotX / step) * step;
@@ -285,8 +350,9 @@ const Viewer = forwardRef<{ exportImage: () => void }, ViewerProps>(
         setHoveredCell(cell || null);
       } else {
         setHoveredCell(null);
+        setHoveredZone(null);
       }
-    }, []);
+    }, [hoveredZone]);
 
     const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
       const canvas = canvasRef.current;
@@ -331,7 +397,10 @@ const Viewer = forwardRef<{ exportImage: () => void }, ViewerProps>(
           className="absolute inset-0 w-full h-full"
           style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
           onMouseMove={handleMouseMove}
-          onMouseLeave={() => setHoveredCell(null)}
+          onMouseLeave={() => {
+            setHoveredCell(null);
+            setHoveredZone(null);
+          }}
         />
       </div>
     );

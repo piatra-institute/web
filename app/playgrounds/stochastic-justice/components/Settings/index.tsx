@@ -10,11 +10,14 @@ interface SettingsProps {
   randomness: number;
   showAbout: boolean;
   metrics: Metrics;
+  presets: Array<{ name: string; corruption: number; randomness: number }>;
+  isAnimating: boolean;
   onCorruptionChange: (value: number) => void;
   onRandomnessChange: (value: number) => void;
   onShowAboutChange: (value: boolean) => void;
   onReset: () => void;
   onExport: () => void;
+  onPresetSelect: (preset: { name: string; corruption: number; randomness: number }) => void;
 }
 
 export default function Settings({
@@ -22,11 +25,14 @@ export default function Settings({
   randomness,
   showAbout,
   metrics,
+  presets,
+  isAnimating,
   onCorruptionChange,
   onRandomnessChange,
   onShowAboutChange,
   onReset,
   onExport,
+  onPresetSelect,
 }: SettingsProps) {
   const qualitativeAssessment = getQualitativeAssessment(metrics.H_fair);
   const { zone, interpretation } = getZoneDescription(metrics.C, metrics.R, metrics.H_fair);
@@ -44,6 +50,7 @@ export default function Settings({
             step={0.01}
             value={corruption}
             onChange={(value) => onCorruptionChange(parseFloat(value))}
+            compact
           />
           <p className="text-xs text-gray-400 mt-1">
             0 = incorruptible, 1 = fully biased
@@ -61,10 +68,28 @@ export default function Settings({
             step={0.01}
             value={randomness}
             onChange={(value) => onRandomnessChange(parseFloat(value))}
+            compact
           />
           <p className="text-xs text-gray-400 mt-1">
             0 = fully deterministic, 1 = fully random
           </p>
+        </div>
+
+        <div className="border-t border-gray-700 pt-4">
+          <h3 className="font-semibold text-white mb-3 text-sm">Presets</h3>
+          <div className="grid grid-cols-1 gap-2">
+            {presets.map((preset) => (
+              <button
+                key={preset.name}
+                onClick={() => onPresetSelect(preset)}
+                disabled={isAnimating}
+                className="w-full px-3 py-2 text-xs bg-black hover:bg-gray-900 disabled:bg-gray-900 disabled:text-gray-500 text-left text-gray-200 rounded border border-gray-600 transition-colors duration-200"
+                title={`C: ${preset.corruption}, R: ${preset.randomness}`}
+              >
+                {preset.name}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="flex items-center justify-between">
@@ -110,12 +135,16 @@ export default function Settings({
             <div className="space-y-1">
               <h4 className="font-medium text-gray-200">Heatmap Colors</h4>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3" style={{ backgroundColor: 'rgba(89, 161, 79, 1)' }}></div>
-                <span className="text-gray-400">Higher Fairness Entropy (H*)</span>
+                <div className="w-3 h-3" style={{ backgroundColor: 'rgb(89, 161, 79)' }}></div>
+                <span className="text-gray-400">High Fairness (H* &gt; 0.7)</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3" style={{ backgroundColor: 'rgba(89, 161, 79, 0.3)' }}></div>
-                <span className="text-gray-400">Lower Fairness Entropy (H*)</span>
+                <div className="w-3 h-3" style={{ backgroundColor: 'rgb(250, 180, 50)' }}></div>
+                <span className="text-gray-400">Medium Fairness (0.3-0.7)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3" style={{ backgroundColor: 'rgb(220, 100, 50)' }}></div>
+                <span className="text-gray-400">Low Fairness (H* &lt; 0.3)</span>
               </div>
             </div>
 

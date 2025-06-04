@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import Header from '@/components/Header';
 import Title from '@/components/Title';
 import Settings from './components/Settings';
@@ -10,10 +10,19 @@ import { calculateMetrics } from './logic';
 const DEFAULT_CORRUPTION = 0.5;
 const DEFAULT_RANDOMNESS = 0.5;
 
+const PRESETS = [
+  { name: 'Ideal Fair', corruption: 0.1, randomness: 0.9 },
+  { name: 'Corrupt Deterministic', corruption: 0.9, randomness: 0.1 },
+  { name: 'Random Justice', corruption: 0.5, randomness: 0.8 },
+  { name: 'Moderate System', corruption: 0.3, randomness: 0.4 },
+  { name: 'Pure Random', corruption: 0.5, randomness: 1.0 },
+];
+
 export default function StochasticJusticePlayground() {
   const [corruption, setCorruption] = useState(DEFAULT_CORRUPTION);
   const [randomness, setRandomness] = useState(DEFAULT_RANDOMNESS);
   const [showAbout, setShowAbout] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const viewerRef = useRef<{ exportImage: () => void }>(null);
 
@@ -32,6 +41,39 @@ export default function StochasticJusticePlayground() {
     setCorruption(c);
     setRandomness(r);
   }, []);
+
+  const animateToValues = useCallback((targetC: number, targetR: number, duration: number = 800) => {
+    setIsAnimating(true);
+    const startC = corruption;
+    const startR = randomness;
+    const startTime = Date.now();
+    
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+      const easedProgress = easeOutCubic(progress);
+      
+      const currentC = startC + (targetC - startC) * easedProgress;
+      const currentR = startR + (targetR - startR) * easedProgress;
+      
+      setCorruption(currentC);
+      setRandomness(currentR);
+      
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        setIsAnimating(false);
+      }
+    };
+    
+    requestAnimationFrame(animate);
+  }, [corruption, randomness]);
+
+  const handlePresetSelect = useCallback((preset: typeof PRESETS[0]) => {
+    animateToValues(preset.corruption, preset.randomness);
+  }, [animateToValues]);
 
   return (
     <div className="h-screen w-screen relative bg-black">
@@ -65,11 +107,14 @@ export default function StochasticJusticePlayground() {
         randomness={randomness}
         showAbout={showAbout}
         metrics={metrics}
+        presets={PRESETS}
+        isAnimating={isAnimating}
         onCorruptionChange={setCorruption}
         onRandomnessChange={setRandomness}
         onShowAboutChange={setShowAbout}
         onReset={handleReset}
         onExport={handleExport}
+        onPresetSelect={handlePresetSelect}
       />
 
       {showAbout && (
