@@ -24,22 +24,22 @@ const defaults = {
 
 export default function BifurcationSpeciationPlayground() {
     const viewerRef = useRef<CaptureHandle>(null);
-    
+
     // BirdSym model parameters
     const [birdCount, setBirdCount] = useState(defaults.birdCount);
     const [resourceMean, setResourceMean] = useState(defaults.resourceMean);
     const [resourceVariance, setResourceVariance] = useState(defaults.resourceVariance);
     const [adaptationRate, setAdaptationRate] = useState(defaults.adaptationRate);
     const [bifurcationParameter, setBifurcationParameter] = useState(defaults.bifurcationParameter);
-    
+
     // Bifurcation diagram parameters
     const [bifurcationStart, setBifurcationStart] = useState(defaults.bifurcationStart);
     const [bifurcationEnd, setBifurcationEnd] = useState(defaults.bifurcationEnd);
     const [bifurcationSteps, setBifurcationSteps] = useState(defaults.bifurcationSteps);
-    
+
     // Simulation parameters
     const [iterations, setIterations] = useState(defaults.iterations);
-    
+
     // Visualization mode
     const [visualizationMode, setVisualizationMode] = useState(defaults.visualizationMode);
 
@@ -68,13 +68,13 @@ export default function BifurcationSpeciationPlayground() {
         setIterations(defaults.iterations);
         setVisualizationMode(defaults.visualizationMode);
     };
-    
+
     // Export the current view as a PNG image
     const exportPNG = () => {
         requestAnimationFrame(() => {
             if (!viewerRef.current) return;
             const dataURL = viewerRef.current.capture();
-            
+
             const a = document.createElement('a');
             a.href = dataURL;
             a.download = `birdsym_${visualizationMode}_${Date.now()}.png`;
@@ -92,8 +92,8 @@ export default function BifurcationSpeciationPlayground() {
                         Explore sympatric speciation through the BirdSym evolutionary model
                     </p>
                     <p className="text-gray-400">
-                        Investigate how resource competition drives species divergence through 
-                        bifurcation patterns, demonstrating the mathematical foundations of 
+                        Investigate how resource competition drives species divergence through
+                        bifurcation patterns, demonstrating the mathematical foundations of
                         evolutionary branching and adaptive radiation.
                     </p>
                 </div>
@@ -108,7 +108,6 @@ export default function BifurcationSpeciationPlayground() {
                         <Button
                             label="Randomize"
                             onClick={randomizeParameters}
-                            variant="highlight"
                         />
                     }
                 >
@@ -135,20 +134,20 @@ export default function BifurcationSpeciationPlayground() {
             content: (
                 <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                         <p>
-                            The BirdSym model demonstrates how sympatric speciation can emerge 
-                            through resource competition and adaptive dynamics. Unlike allopatric 
-                            speciation that requires geographic isolation, sympatric speciation 
+                            The BirdSym model demonstrates how sympatric speciation can emerge
+                            through resource competition and adaptive dynamics. Unlike allopatric
+                            speciation that requires geographic isolation, sympatric speciation
                             occurs within the same geographical area through ecological specialization.
                         </p>
                         <p>
-                            This playground visualizes bifurcation diagrams showing how populations 
-                            can split into distinct species as environmental parameters change. 
-                            The model captures the critical transitions where a single population 
+                            This playground visualizes bifurcation diagrams showing how populations
+                            can split into distinct species as environmental parameters change.
+                            The model captures the critical transitions where a single population
                             becomes unstable and bifurcates into multiple coexisting species.
                         </p>
                         <p>
-                            Key concepts include: adaptive dynamics, evolutionary branching, 
-                            resource competition, bifurcation theory, and the mathematics of 
+                            Key concepts include: adaptive dynamics, evolutionary branching,
+                            resource competition, bifurcation theory, and the mathematics of
                             speciation processes in ecological systems.
                         </p>
                 </div>

@@ -56,7 +56,7 @@ export default function TraumaEustressDynamicsPlayground() {
     const randomizeParameters = useCallback(() => {
         // Randomize constriction level
         setConstriction(Math.random() * 0.8 + 0.1); // 0.1 to 0.9
-        
+
         // Randomize mechanism weights
         setMechanisms(prev => prev.map(mechanism => ({
             ...mechanism,
@@ -84,7 +84,6 @@ export default function TraumaEustressDynamicsPlayground() {
                         <Button
                             label="Randomize"
                             onClick={randomizeParameters}
-                            variant="highlight"
                         />
                     }
                 >
