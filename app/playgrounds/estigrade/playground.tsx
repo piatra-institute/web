@@ -105,14 +105,14 @@ export default function EstigradePlayground() {
             content: (
                 <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                         <p>
-                            Estigrade is an experimental grading system designed to develop students' metacognitive skills
+                            Estigrade is an experimental grading system designed to develop students&apos; metacognitive skills
                             by incentivizing accurate self-assessment. Before taking an exam, students estimate their
                             expected score. Their final grade is then adjusted based on the accuracy of this prediction.
                         </p>
                         <p>
                             The formula balances two components: a reward for accurate estimation and a penalty for
                             inaccuracy. When students correctly predict their performance, they receive bonus points.
-                            When they're off the mark, points are deducted.
+                            When they&apos;re off the mark, points are deducted.
                         </p>
                         <p>
                             This approach encourages students to develop better self-awareness about their knowledge

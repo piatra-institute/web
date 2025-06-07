@@ -441,7 +441,7 @@ export default function SelfSortedArraysPlayground() {
                         Self-organizing cellular automata that sort themselves through local interactions
                     </p>
                     <p className="text-gray-400 mb-6">
-                        Based on Michael Levin et al.'s research on classical sorting algorithms 
+                        Based on Michael Levin et al.&apos;s research on classical sorting algorithms 
                         as a model of morphogenesis, exploring how distributed sorting behaviors 
                         can emerge from simple cellular rules.
                     </p>
@@ -554,7 +554,7 @@ export default function SelfSortedArraysPlayground() {
                         global organization through distributed computation.
                     </p>
                     <p>
-                        This playground implements concepts from Michael Levin's research on morphogenesis, 
+                        This playground implements concepts from Michael Levin&apos;s research on morphogenesis, 
                         showing how biological development might use similar algorithmic principles to 
                         organize cellular structures. The cells can exhibit various behaviors including 
                         mutation, damage, repair, conversion, division, and apoptosis.

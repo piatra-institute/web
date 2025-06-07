@@ -63,14 +63,14 @@ export default function RaupianMorphospacePlayground() {
             content: (
                 <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                     <p>
-                        David M. Raup's three-parameter model revolutionized our understanding 
+                        David M. Raup&apos;s three-parameter model revolutionized our understanding 
                         of shell morphology by reducing the infinite variety of mollusk shells 
                         to just three geometric parameters: whorl expansion rate (W), distance 
                         from coiling axis (D), and translation rate (T).
                     </p>
                     <p>
                         This morphospace visualization allows exploration of theoretical shell 
-                        forms, many of which don't exist in nature. By adjusting the three 
+                        forms, many of which don&apos;t exist in nature. By adjusting the three 
                         parameters, you can navigate through possible shell geometries and 
                         understand the constraints that shape biological form.
                     </p>

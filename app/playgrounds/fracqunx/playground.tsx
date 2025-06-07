@@ -44,7 +44,7 @@ export default function FracqunxPlayground() {
             content: (
                 <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                         <p>
-                            The Fracqunx (a play on "quincunx," the formal name for a Galton board) 
+                            The Fracqunx (a play on &quot;quincunx,&quot; the formal name for a Galton board) 
                             demonstrates fundamental principles of probability and statistics through 
                             physical simulation. As beads fall through randomly positioned pegs, 
                             they follow the laws of chance at the microscopic level.

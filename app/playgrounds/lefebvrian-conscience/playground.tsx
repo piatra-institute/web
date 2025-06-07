@@ -468,7 +468,7 @@ export default function LefebvrePlayground() {
             content: (
                 <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                     <p>
-                        This simulation explores Henri Lefebvre's theories about social space 
+                        This simulation explores Henri Lefebvre&apos;s theories about social space 
                         and consciousness through multi-agent interactions. Agents operate 
                         with different ethical systems (utilitarian vs deontological) and 
                         consciousness levels, creating complex emergent social dynamics.

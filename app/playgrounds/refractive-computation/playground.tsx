@@ -56,12 +56,12 @@ export default function RefractiveComputationPlayground() {
                         </p>
                         <p>
                             This approach leverages the wave nature of light and the continuous 
-                            mathematics of Snell's law to perform calculations. Unlike digital 
+                            mathematics of Snell&apos;s law to perform calculations. Unlike digital 
                             computers that use discrete binary states, refractive computation 
                             works with continuous optical states.
                         </p>
                         <p>
-                            Key concepts include: Snell's law applications, metamaterial design, 
+                            Key concepts include: Snell&apos;s law applications, metamaterial design, 
                             optical signal processing, analog computation principles, and 
                             photonic integrated circuits.
                         </p>

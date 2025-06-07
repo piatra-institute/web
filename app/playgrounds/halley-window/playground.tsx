@@ -36,10 +36,10 @@ export default function HalleyWindowPlayground() {
             content: (
                 <div className="mt-12">
                     <p className="text-xl text-gray-300 mb-4">
-                        Interactive fractal visualization using Halley's root-finding method
+                        Interactive fractal visualization using Halley&apos;s root-finding method
                     </p>
                     <p className="text-gray-400">
-                        Explore the beautiful patterns that emerge when applying Halley's method 
+                        Explore the beautiful patterns that emerge when applying Halley&apos;s method 
                         to find roots of complex polynomials, revealing the intricate structure 
                         of convergence basins in the complex plane.
                     </p>
@@ -73,8 +73,8 @@ export default function HalleyWindowPlayground() {
             content: (
                 <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                         <p>
-                            Halley's method is a root-finding algorithm that uses both first and 
-                            second derivatives to converge faster than Newton's method. When applied 
+                            Halley&apos;s method is a root-finding algorithm that uses both first and 
+                            second derivatives to converge faster than Newton&apos;s method. When applied 
                             to complex polynomials, it creates stunning fractal patterns that reveal 
                             the convergence basins for each root.
                         </p>

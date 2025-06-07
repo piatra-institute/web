@@ -20,7 +20,7 @@ export default function VoteNoPlayground() {
                         Exploring democratic resistance and the power of rejection
                     </p>
                     <p className="text-gray-400">
-                        Analyze the dynamics of "no" votes, abstentions, and democratic resistance 
+                        Analyze the dynamics of &quot;no&quot; votes, abstentions, and democratic resistance 
                         as mechanisms for social change and political expression in various 
                         governance systems.
                     </p>
@@ -54,7 +54,7 @@ export default function VoteNoPlayground() {
                             about social movements, resistance, and democratic health.
                         </p>
                         <p>
-                            This playground simulates various scenarios where "no" votes, abstentions, 
+                            This playground simulates various scenarios where &quot;no&quot; votes, abstentions, 
                             and organized resistance shape political outcomes. From referendum defeats 
                             to parliamentary opposition, the power to reject is as fundamental to 
                             democracy as the power to approve.
