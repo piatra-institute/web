@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import Button from '@/components/Button';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import Legend from './components/Legend';
@@ -52,6 +53,17 @@ export default function TraumaEustressDynamicsPlayground() {
         setIsPlaying(prev => !prev);
     }, []);
 
+    const randomizeParameters = useCallback(() => {
+        // Randomize constriction level
+        setConstriction(Math.random() * 0.8 + 0.1); // 0.1 to 0.9
+        
+        // Randomize mechanism weights
+        setMechanisms(prev => prev.map(mechanism => ({
+            ...mechanism,
+            weight: Math.random() * 2 + 0.1 // 0.1 to 2.1
+        })));
+    }, []);
+
     const handleAnimationUpdate = useCallback((newConstriction: number, newDirection: number) => {
         setConstriction(newConstriction);
         animationRef.current.targetConstriction = newConstriction;
@@ -67,8 +79,16 @@ export default function TraumaEustressDynamicsPlayground() {
             id: 'simulation',
             type: 'canvas' as const,
             content: (
-                <div className="absolute inset-0 bg-black overflow-hidden">
-                    <div className="absolute inset-0">
+                <PlaygroundViewer
+                    controls={
+                        <Button
+                            label="Randomize"
+                            onClick={randomizeParameters}
+                            variant="highlight"
+                        />
+                    }
+                >
+                    <div className="w-full h-[600px] bg-black overflow-hidden">
                         <Viewer
                             constriction={constriction}
                             mechanisms={mechanisms}
@@ -77,7 +97,7 @@ export default function TraumaEustressDynamicsPlayground() {
                             onAnimationUpdate={handleAnimationUpdate}
                         />
                     </div>
-                </div>
+                </PlaygroundViewer>
             ),
         },
         {

@@ -2,6 +2,8 @@
 
 import React, { useRef, useState } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
+import Button from '@/components/Button';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import CaptureHelper, { CaptureHandle } from './components/CaptureHelper';
@@ -40,6 +42,18 @@ export default function BifurcationSpeciationPlayground() {
     
     // Visualization mode
     const [visualizationMode, setVisualizationMode] = useState(defaults.visualizationMode);
+
+    // Randomize parameters
+    const randomizeParameters = () => {
+        setBirdCount(Math.floor(Math.random() * 50) + 10); // 10-60
+        setResourceMean(Math.random() * 0.8 + 0.1); // 0.1-0.9
+        setResourceVariance(Math.random() * 0.05 + 0.005); // 0.005-0.055
+        setAdaptationRate(Math.random() * 3 + 0.5); // 0.5-3.5
+        setBifurcationParameter(Math.random() * 8 + 1); // 1-9
+        setBifurcationStart(Math.random() * 2 + 0.1); // 0.1-2.1
+        setBifurcationEnd(Math.random() * 10 + 5); // 5-15
+        setIterations(Math.floor(Math.random() * 2000) + 500); // 500-2500
+    };
 
     // Reset all parameters to defaults
     const reset = () => {
@@ -89,7 +103,15 @@ export default function BifurcationSpeciationPlayground() {
             id: 'simulation',
             type: 'canvas' as const,
             content: (
-                <div className="absolute inset-0">
+                <PlaygroundViewer
+                    controls={
+                        <Button
+                            label="Randomize"
+                            onClick={randomizeParameters}
+                            variant="highlight"
+                        />
+                    }
+                >
                     <CaptureHelper ref={viewerRef}>
                         <Viewer
                             birdCount={birdCount}
@@ -104,7 +126,7 @@ export default function BifurcationSpeciationPlayground() {
                             visualizationMode={visualizationMode}
                         />
                     </CaptureHelper>
-                </div>
+                </PlaygroundViewer>
             ),
         },
         {

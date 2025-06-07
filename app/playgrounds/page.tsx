@@ -30,7 +30,7 @@ const playgrounds = [
     {
         name: 'coasellular morphogenesis',
         link: '/playgrounds/coasellular-morphogenesis',
-        description: '',
+        description: 'Coase theorem applied to cellular development and transaction costs',
     },
     {
         name: 'fracqunx',

@@ -3,7 +3,6 @@
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import Toggle from '@/components/Toggle';
-import SettingsContainer from '@/components/SettingsContainer';
 
 
 
@@ -31,7 +30,7 @@ export default function Settings({
     reset,
 }: SettingsProps) {
     return (
-        <SettingsContainer>
+        <>
             <Input
                 value={W}
                 onChange={(value) => {
@@ -87,6 +86,6 @@ export default function Settings({
                     width: '100%',
                 }}
             />
-        </SettingsContainer>
+        </>
     );
 }

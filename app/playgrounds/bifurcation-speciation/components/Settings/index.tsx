@@ -1,12 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-
 import Button from '@/components/Button';
 import Input from '@/components/Input';
-import Toggle from '@/components/Toggle';
-import SettingsContainer from '@/components/SettingsContainer';
 import Tooltip from '@/components/Tooltip';
+
+
 
 interface Props {
     // BirdSym parameters
@@ -65,7 +63,7 @@ export default function Settings(props: Props) {
     } = props;
 
     return (
-        <SettingsContainer>
+        <>
             <div>
                 <div className="text-white text-sm font-medium mb-1">Visualization</div>
                 <div className="flex gap-1 mb-2">
@@ -220,6 +218,6 @@ export default function Settings(props: Props) {
             <div className="mt-2 px-2 text-xs text-white/60">
                 <p className="text-[10px]">BirdSym model (Stewart, Elmhirst, Cohen 2000)</p>
             </div>
-        </SettingsContainer>
+        </>
     );
 }

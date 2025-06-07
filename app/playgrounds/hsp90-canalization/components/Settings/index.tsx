@@ -3,7 +3,6 @@ import { useState, useMemo } from 'react';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import Toggle from '@/components/Toggle';
-import SettingsContainer from '@/components/SettingsContainer';
 
 
 
@@ -55,7 +54,7 @@ export default function Settings(p: Props) {
 
     /* ---------------------------------------------------------------------- */
     return (
-        <SettingsContainer>
+        <>
             {/* preset buttons */}
             <div className="flex gap-2 justify-center mb-6">
                 <Button
@@ -162,6 +161,6 @@ export default function Settings(p: Props) {
                     p.onExport();
                 }}
             />
-        </SettingsContainer>
+        </>
     );
 }

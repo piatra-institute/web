@@ -1,8 +1,13 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import SettingsContainer from '@/components/SettingsContainer';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
+import Legend from '../Legend';
+import StatsDisplay from '../StatsDisplay';
+import LogDisplay from '../LogDisplay';
+import ChartsDisplay from '../ChartsDisplay';
+import { SimulationStats, LogEntryData, ChartDataPoint } from '../../lib/agent';
 
 
 
@@ -15,6 +20,9 @@ interface SettingsProps {
     motivationStrength: number; setMotivationStrength: (n: number) => void;
     isRunning: boolean; setIsRunning: (n: boolean) => void;
     onRestart: () => void;
+    stats: SimulationStats | null;
+    logEntries: LogEntryData[];
+    chartData: ChartDataPoint[];
 }
 
 export default function Settings({
@@ -26,15 +34,49 @@ export default function Settings({
     motivationStrength, setMotivationStrength,
     isRunning, setIsRunning,
     onRestart,
+    stats,
+    logEntries,
+    chartData,
 }: SettingsProps) {
+    const [activeTab, setActiveTab] = useState<'controls' | 'legend' | 'stats' | 'log' | 'analytics'>('controls');
+    
     const pace = useMemo(() => {
         if (speed < 1) return 'Slow';
         if (speed < 2) return 'Medium';
         return 'Fast';
     }, [speed]);
 
+    // Tab buttons
+    const tabs = [
+        { id: 'controls', label: 'Controls' },
+        { id: 'legend', label: 'Legend' },
+        { id: 'stats', label: 'Stats' },
+        { id: 'log', label: 'Log' },
+        { id: 'analytics', label: 'Analytics' },
+    ];
+
     return (
         <SettingsContainer>
+            {/* Tab Navigation */}
+            <div className="flex gap-1 mb-4 -mx-2 -mt-2">
+                {tabs.map(tab => (
+                    <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id as any)}
+                        className={`flex-1 px-2 py-1 text-xs transition-colors ${
+                            activeTab === tab.id 
+                                ? 'bg-white/20 text-white' 
+                                : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-gray-300'
+                        }`}
+                    >
+                        {tab.label}
+                    </button>
+                ))}
+            </div>
+
+            {/* Tab Content */}
+            {activeTab === 'controls' && (
+                <>
             {/* numeric input ----------------------------------------------------- */}
             <div className="space-y-1 flex justify-between items-center">
                 <label className="flex justify-between">
@@ -122,6 +164,32 @@ export default function Settings({
                     onClick={onRestart}
                 />
             </div>
+                </>
+            )}
+
+            {activeTab === 'legend' && (
+                <div className="space-y-4">
+                    <Legend />
+                </div>
+            )}
+
+            {activeTab === 'stats' && (
+                <div className="space-y-4">
+                    <StatsDisplay stats={stats} />
+                </div>
+            )}
+
+            {activeTab === 'log' && (
+                <div className="space-y-4">
+                    <LogDisplay logEntries={logEntries} />
+                </div>
+            )}
+
+            {activeTab === 'analytics' && (
+                <div className="space-y-4">
+                    <ChartsDisplay chartData={chartData} />
+                </div>
+            )}
         </SettingsContainer>
     );
 }

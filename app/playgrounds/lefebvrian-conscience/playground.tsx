@@ -2,7 +2,10 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
-import Settings from './components/Settings';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
+import PlaygroundSettings from '@/components/PlaygroundSettings';
+import Button from '@/components/Button';
+import Input from '@/components/Input';
 import Legend from './components/Legend';
 import StatsDisplay from './components/StatsDisplay';
 import LogDisplay from './components/LogDisplay';
@@ -442,24 +445,20 @@ export default function LefebvrePlayground() {
             id: 'simulation',
             type: 'canvas' as const,
             content: (
-                <div className="relative w-full h-full bg-black">
-                    <div className="simulation-area">
-                        <Viewer
-                            agents={agents}
-                            width={canvasSize.current.width}
-                            height={canvasSize.current.height}
+                <PlaygroundViewer
+                    controls={
+                        <Button
+                            label={isRunning ? 'Pause' : 'Play'}
+                            onClick={() => setIsRunning(!isRunning)}
                         />
-                    </div>
-
-                    <div className="absolute top-0 right-0 z-10 h-full max-w-[400px] bg-black/40 backdrop-blur-sm">
-                        <div className="h-full p-6 pt-[420px] flex flex-col gap-6 overflow-y-auto">
-                            <Legend />
-                            <StatsDisplay stats={currentStats} />
-                            <LogDisplay logEntries={logEntries} />
-                            <ChartsDisplay chartData={chartDataHistory} />
-                        </div>
-                    </div>
-                </div>
+                    }
+                >
+                    <Viewer
+                        agents={agents}
+                        width={canvasSize.current.width}
+                        height={canvasSize.current.height}
+                    />
+                </PlaygroundViewer>
             ),
         },
         {
@@ -468,21 +467,25 @@ export default function LefebvrePlayground() {
             content: (
                 <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                     <p>
-                        This simulation explores Henri Lefebvre&apos;s theories about social space 
-                        and consciousness through multi-agent interactions. Agents operate 
-                        with different ethical systems (utilitarian vs deontological) and 
-                        consciousness levels, creating complex emergent social dynamics.
+                        This simulation explores Vladimir Lefebvre&apos;s Algebra of Conscience,
+                        a mathematical framework for modeling ethical decision-making and
+                        self-reflection. Agents operate with two distinct ethical systems and
+                        four archetypal moral characters, creating complex patterns of social
+                        interaction through help and harm dynamics.
                     </p>
                     <p>
-                        Agents can help or harm each other based on their ethical frameworks, 
-                        resource levels, and awareness states. The simulation reveals how 
-                        different moral systems interact in shared spaces and how collective 
-                        behavior emerges from individual ethical decisions.
+                        In Lefebvre&apos;s model, System 1 agents (deontological) view compromise
+                        as positive and conflict as negative, while System 2 agents (utilitarian)
+                        have inverted values. Combined with self-evaluation levels (high/low),
+                        this creates four archetypes: saints (selfless helpers), heroes (guilt-driven
+                        helpers), opportunists (suffering-driven harmers), and hypocrites
+                        (avoiding negative feelings through harm).
                     </p>
                     <p>
-                        Key concepts include: social space theory, ethical systems interaction, 
-                        consciousness levels, emergent cooperation, moral decision-making, 
-                        and the dynamics of help versus harm in social systems.
+                        Key concepts include: reflexive control (strategic manipulation of
+                        others&apos; decisions), awareness acts (moments of ethical self-reflection),
+                        motivational overrides (feelings of guilt or suffering driving behavior),
+                        and the emergent dynamics between competing ethical systems in social space.
                     </p>
                 </div>
             ),
@@ -490,15 +493,93 @@ export default function LefebvrePlayground() {
     ];
 
     const settings = (
-        <Settings
-            numAgents={numAgents} setNumAgents={setNumAgents}
-            sys1Ratio={sys1Ratio} setSys1Ratio={setSys1Ratio}
-            speed={speed} setSpeed={setSpeed}
-            awarenessRate={awarenessRate} setAwarenessRate={setAwarenessRate}
-            reflexiveRate={reflexiveRate} setReflexiveRate={setReflexiveRate}
-            motivationStrength={motivationStrength} setMotivationStrength={setMotivationStrength}
-            isRunning={isRunning} setIsRunning={setIsRunning}
-            onRestart={handleReset}
+        <PlaygroundSettings
+            sections={[
+                {
+                    title: 'Controls',
+                    content: (
+                        <>
+                            <Input
+                                type="number"
+                                min={10}
+                                max={200}
+                                step={10}
+                                value={numAgents}
+                                onChange={v => setNumAgents(parseInt(v, 10))}
+                                label="Number of Agents"
+                            />
+                            <Input
+                                type="range"
+                                min={0}
+                                max={1}
+                                step={0.1}
+                                value={sys1Ratio}
+                                onChange={v => setSys1Ratio(parseFloat(v))}
+                                label={`System I ratio: ${sys1Ratio.toFixed(1)}`}
+                            />
+                            <Input
+                                type="range"
+                                min={0.5}
+                                max={3}
+                                step={0.1}
+                                value={speed}
+                                onChange={v => setSpeed(parseFloat(v))}
+                                label={`Speed: ${speed.toFixed(1)}`}
+                            />
+                            <Input
+                                type="range"
+                                min={0}
+                                max={0.2}
+                                step={0.01}
+                                value={awarenessRate}
+                                onChange={v => setAwarenessRate(parseFloat(v))}
+                                label={`Awareness rate: ${awarenessRate.toFixed(2)}`}
+                            />
+                            <Input
+                                type="range"
+                                min={0}
+                                max={0.2}
+                                step={0.01}
+                                value={reflexiveRate}
+                                onChange={v => setReflexiveRate(parseFloat(v))}
+                                label={`Reflexive-ctrl rate: ${reflexiveRate.toFixed(2)}`}
+                            />
+                            <Input
+                                type="range"
+                                min={0}
+                                max={1}
+                                step={0.1}
+                                value={motivationStrength}
+                                onChange={v => setMotivationStrength(parseFloat(v))}
+                                label={`Motivation strength: ${motivationStrength.toFixed(1)}`}
+                            />
+                            <div className="flex gap-2 mt-4">
+                                <Button
+                                    className="flex-1"
+                                    label="Restart"
+                                    onClick={handleReset}
+                                />
+                            </div>
+                        </>
+                    ),
+                },
+                {
+                    title: 'Legend',
+                    content: <Legend />,
+                },
+                {
+                    title: 'Statistics',
+                    content: <StatsDisplay stats={currentStats} />,
+                },
+                {
+                    title: 'Interaction Log',
+                    content: <LogDisplay logEntries={logEntries} />,
+                },
+                {
+                    title: 'Analytics',
+                    content: <ChartsDisplay chartData={chartDataHistory} />,
+                },
+            ]}
         />
     );
 
@@ -506,6 +587,11 @@ export default function LefebvrePlayground() {
         <PlaygroundLayout
             title="Lefebvrian Conscience Explorer"
             subtitle="agents with different ethical systems interact through help and harm; observe group dynamics and social consciousness emergence"
+            description={
+                <span>
+                    1982, Vladimir Lefebvre, Algebra of Conscience
+                </span>
+            }
             sections={sections}
             settings={settings}
         />

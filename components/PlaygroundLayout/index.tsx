@@ -107,12 +107,12 @@ export default function PlaygroundLayout({
                             <div className="mb-12">
                                 <Header />
                             </div>
-                            <div className="mb-8 max-w-4xl mx-auto">
+                            <div className="mb-8 flex flex-col items-center justify-center max-w-4xl mx-auto">
                                 <h1 className="font-serif text-xl font-normal tracking-wide uppercase mb-8">
                                     {title}
                                 </h1>
                                 {subtitle && (
-                                    <div className="font-serif text-base leading-relaxed mb-6">
+                                    <div className="font-serif max-w-[600px] text-base leading-relaxed mb-6">
                                         {subtitle}
                                     </div>
                                 )}
@@ -223,9 +223,8 @@ export default function PlaygroundLayout({
                         onClick={() => {
                             document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth' });
                         }}
-                        className={`w-2 h-2 rounded-full transition-all ${
-                            currentSection === index ? 'bg-white w-8' : 'bg-white/40'
-                        }`}
+                        className={`w-2 h-2 rounded-full transition-all ${currentSection === index ? 'bg-white w-8' : 'bg-white/40'
+                            }`}
                         aria-label={`Go to section ${index + 1}`}
                     />
                 ))}
