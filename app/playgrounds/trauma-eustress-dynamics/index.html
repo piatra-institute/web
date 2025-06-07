@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Trauma–Eustress Dynamics</title>
+<style>
+:root{--bg:#0a0a0a;--surface:#181818;--font:#e6e6e6;--muted:#909090;--border:#2d2d2d;--grid:#4d4d4d;--accent:#03dac6}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:system-ui,sans-serif;background:var(--bg);color:var(--font)}
+body{display:flex;flex-direction:column}
+#controls{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;gap:32px;flex-wrap:wrap;align-items:center;box-shadow:0 2px 6px rgba(0,0,0,.6)}
+#controls label{font-size:.9rem;display:flex;align-items:center;gap:8px}
+input[type=range]{accent-color:var(--accent)}
+button{background:var(--accent);border:none;color:var(--bg);font-weight:600;padding:6px 14px;border-radius:6px;cursor:pointer}
+#canvasContainer{flex:1;position:relative}
+#traumaCanvas{width:100%;height:100%;display:block;background:var(--bg)}
+#legend{position:absolute;bottom:18px;right:18px;background:rgba(24,24,24,.94);border:1px solid var(--border);border-radius:8px;padding:18px 24px;font-size:.72rem;line-height:1.38;max-width:420px;pointer-events:none}
+#legend h4{margin:0 0 6px;font-size:.82rem;color:var(--accent)}
+.item{display:flex;align-items:center;margin:4px 0}
+.swatch{width:11px;height:11px;border-radius:50%;margin-right:6px}
+#citations{margin-top:8px;color:var(--muted)}
+#interp{margin-top:8px;color:var(--font);font-weight:600}
+</style>
+</head>
+<body>
+<div id="controls">
+  <label>Constriction Δ (−1 → +1)
+    <input type="range" id="constriction" min="-1" max="1" step="0.01" value="0.30"/>
+  </label>
+  <button id="playBtn">Play</button>
+  <div id="mechControls"></div>
+</div>
+<div id="canvasContainer">
+  <canvas id="traumaCanvas"></canvas>
+  <div id="legend">
+    <h4>Axis Meaning</h4>
+    <p>Vertical represents <b>bandwidth change</b>: +1 = full threat-narrowing; –1 = max eustress bandwidth. Horizontal represents <b>time</b> from Pre-event to multiple post‑trauma trajectories.</p>
+    <h4>Outcome Trajectories</h4>
+    <div class="item"><span class="swatch" style="background:#2196f3"></span><b>Resilience</b> – minimal disturbance</div>
+    <div class="item"><span class="swatch" style="background:#ff9800"></span><b>Recovery</b> – delayed rebound</div>
+    <div class="item"><span class="swatch" style="background:#9c27b0"></span><b>Chronic</b> – sustained narrowing</div>
+    <div class="item"><span class="swatch" style="background:#009688"></span><b>Growth</b> – exploratory expansion</div>
+    <h4>Mechanisms (β‑scaled, 0–1)</h4>
+    <p>Spoke length & thickness scale with slider value.</p>
+    <div class="item"><span class="swatch" style="background:#ff5252"></span>Appraisal (threat ↔ meaning)</div>
+    <div class="item"><span class="swatch" style="background:#ffb300"></span>Rumination (intrusive ↔ deliberate)</div>
+    <div class="item"><span class="swatch" style="background:#64b5f6"></span>Social support</div>
+    <div class="item"><span class="swatch" style="background:#4db6ac"></span>Neuro‑flexibility</div>
+    <h4>Current Interpretation</h4>
+    <p id="interp"> </p>
+    <div id="citations">β‑weights from Tedeschi & Calhoun 1996; Cann 2011; Bonanno 2007; Kalisch 2015.</div>
+  </div>
+</div>
+<script>
+const canvas=document.getElementById('traumaCanvas');
+const ctx=canvas.getContext('2d');
+const constrict=document.getElementById('constriction');
+const playBtn=document.getElementById('playBtn');
+const mechWrap=document.getElementById('mechControls');
+const interp=document.getElementById('interp');
+
+const mechData=[
+  {name:'Appraisal',color:'#ff5252',inf:{res:-.10,rec:0,   chronic:+.15,growth:-.10},w:1},
+  {name:'Rumination',color:'#ffb300',inf:{res:0,   rec:+.08,chronic:+.20,growth:0   },w:1},
+  {name:'Social',   color:'#64b5f6',inf:{res:-.13,rec:-.08,chronic:0,   growth:0   },w:1},
+  {name:'NeuroFlex',color:'#4db6ac',inf:{res:0,   rec:0,   chronic:0,   growth:-.18},w:1}
+];
+mechData.forEach((m,i)=>{
+  const lbl=document.createElement('label');
+  const r=document.createElement('input');
+  Object.assign(r,{type:'range',min:0,max:1,step:0.01,value:m.w,style:'width:110px'});
+  r.oninput=e=>{mechData[i].w=parseFloat(e.target.value);};
+  lbl.appendChild(r);lbl.append(' '+m.name);mechWrap.appendChild(lbl);
+});
+
+const col={pre:'#4caf50',threat:'#f44336',eustress:'#66bb6a',res:'#2196f3',rec:'#ff9800',chronic:'#9c27b0',growth:'#009688'};
+
+let playing=false,dir=1,tgt=parseFloat(constrict.value),cur=tgt;
+playBtn.onclick=()=>{playing=!playing;playBtn.textContent=playing?'Pause':'Play';};
+constrict.oninput=e=>{tgt=parseFloat(e.target.value);};
+window.addEventListener('resize',resize);
+
+const lerp=(a,b,t)=>a+(b-a)*t;
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim()||'#888';
+function resize(){canvas.width=canvas.clientWidth;canvas.height=canvas.clientHeight;}
+
+function qualitative(v){
+  if(v>0.5) return 'high narrowing';
+  if(v>0.1) return 'moderate narrowing';
+  if(v>-0.1) return 'near baseline';
+  if(v>-0.5) return 'moderate expansion';
+  return 'deep expansion';
+}
+function mechSummary(){
+  return mechData.map(m=>{
+    const lvl=m.w>0.66?'high':m.w>0.33?'mid':'low';
+    return m.name+':'+lvl;
+  }).join(' | ');
+}
+
+function loop(){
+  if(playing){
+    tgt+=0.003*dir;
+    if(tgt>=1){tgt=1;dir=-1}
+    if(tgt<=-1){tgt=-1;dir=1}
+    constrict.value=tgt.toFixed(3);
+  }
+  cur=lerp(cur,tgt,0.06);
+  draw(cur);
+  requestAnimationFrame(loop);
+}
+
+function draw(Δ){
+  const w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);
+  const m=60;
+  const xPre=m+(w-2*m)*0.12;
+  const xTra=m+(w-2*m)*0.32;
+  const step=(w-2*m)*0.13;
+  const xRes=xTra+step,xRec=xRes+step,xChr=xRec+step,xGro=xChr+step;
+  const yMid=h/2;
+  const yTra=yMid-Δ*(yMid-m);
+  const yExp=yMid+(1-Δ)*(h-m-yMid);
+  const hRange=yMid-m;
+  const delta=tr=>mechData.reduce((s,mc)=>s+mc.w*(mc.inf[tr]||0),0);
+  const clamp=v=>Math.max(m,Math.min(h-m,v));
+  const clampX=v=>Math.max(m,Math.min(w-m,v));
+  const yRes=clamp(yMid+delta('res')*hRange);
+  const yRec=clamp(yMid-Δ*0.5*hRange+delta('rec')*hRange);
+  const yChr=clamp(yTra+delta('chronic')*hRange);
+  const yGro=clamp(yExp+delta('growth')*hRange);
+
+  // axes
+  ctx.strokeStyle=css('--grid');ctx.lineWidth=1.4;
+  ctx.beginPath();ctx.moveTo(m,yMid);ctx.lineTo(w-m,yMid);ctx.moveTo(m,m);ctx.lineTo(m,h-m);ctx.stroke();
+  ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(m,yMid);ctx.lineTo(w-m,yMid);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=css('--font');ctx.font='14px sans-serif';ctx.fillText('Time →',w-m-60,yMid-10);
+  ctx.save();ctx.translate(m+12,m+12);ctx.rotate(-Math.PI/2);ctx.fillText('+Narrowing | –Expansion',0,0);ctx.restore();
+
+  const node=(x,y,l,c,r=10)=>{ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.fillStyle=css('--font');ctx.fillText(l,x-ctx.measureText(l).width/2,y-r-6);};
+  const link=(x1,y1,x2,y2,c='#888',lw=1.4)=>{ctx.strokeStyle=c;ctx.lineWidth=lw;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();};
+
+  const label=Δ<0?'Eustress':'Trauma';
+  const centerCol=Δ<0?col.eustress:col.threat;
+
+  node(xPre,yMid,'Pre',col.pre);
+  node(xTra,yTra,label,centerCol);
+  node(xRes,yRes,'Resilience',col.res);
+  node(xRec,yRec,'Recovery',col.rec);
+  node(xChr,yChr,'Chronic',col.chronic);
+  node(xGro,yGro,'Growth',col.growth);
+  [ [xPre,yMid,xTra,yTra],[xTra,yTra,xRes,yRes],[xTra,yTra,xRec,yRec],[xTra,yTra,xChr,yChr],[xTra,yTra,xGro,yGro] ].forEach(l=>link(...l));
+
+  const base=60,extra=40,rad=9;
+  mechData.forEach((mc,i)=>{
+    if(mc.w===0) return;
+    const ang=-Math.PI/2+i*Math.PI/2;
+    const off=base+extra*mc.w;
+    let sx=xTra+off*Math.cos(ang),sy=yTra+off*Math.sin(ang);
+    sx=clampX(sx);sy=clamp(sy);
+    link(xTra,yTra,sx,sy,mc.color,1+2*mc.w);
+    node(sx,sy,mc.name,mc.color,rad);
+  });
+
+  ctx.fillText(`Δ=${Δ.toFixed(2)}`,m+6,m-20);
+  // === update interpretation ===
+  interp.textContent=`Currently: ${qualitative(Δ)} (Δ=${Δ.toFixed(2)}). Mechanisms → ${mechSummary()}`;
+}
+
+resize();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

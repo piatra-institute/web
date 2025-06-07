@@ -67,6 +67,11 @@ const playgrounds = [
         link: '/playgrounds/stochastic-justice',
         description: 'fairness through randomness in corrupt systems',
     },
+    {
+        name: 'trauma-eustress dynamics',
+        link: '/playgrounds/trauma-eustress-dynamics',
+        description: 'constriction and expansion influence on post-trauma trajectories',
+    },
 
     // {
     //     name: 'eyevolution',
