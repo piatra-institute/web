@@ -48,3 +48,7 @@ input::placeholder {
     color: black !important;
     font-size: 0.9rem;
 }
+
+a {
+    color: white !important;
+}

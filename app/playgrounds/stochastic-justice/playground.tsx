@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import Header from '@/components/Header';
-import Title from '@/components/Title';
+import PlaygroundLayout from '@/components/PlaygroundLayout';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import { calculateMetrics, CorruptionType } from './logic';
@@ -76,110 +75,100 @@ export default function StochasticJusticePlayground() {
     animateToValues(preset.corruption, preset.randomness);
   }, [animateToValues]);
 
-  return (
-    <div className="h-screen w-screen relative bg-black">
-      <div className="absolute inset-0">
-        <Viewer
-          ref={viewerRef}
-          corruption={corruption}
-          randomness={randomness}
-          corruptionType={corruptionType}
-          onMarkerDrag={handleMarkerDrag}
-        />
-      </div>
-
-      <div className="absolute top-0 left-0 z-10 p-6 pointer-events-none">
-        <Header />
-        <Title text="Stochastic Justice Playground" />
-
-        <div className="max-w-xl text-white/80 mt-2 text-sm text-center">
-          exploring fairness through randomness in corrupt systems
-          <br />
-          using information theory to model institutional bias
-          <br />
-          <br />
-          drag the yellow marker to explore different regimes
-          <br />
-          observe how randomness can counteract corruption
-        </div>
-      </div>
-
-      <Settings
-        corruption={corruption}
-        randomness={randomness}
-        showAbout={showAbout}
-        metrics={metrics}
-        presets={PRESETS}
-        isAnimating={isAnimating}
-        corruptionType={corruptionType}
-        onCorruptionChange={setCorruption}
-        onRandomnessChange={setRandomness}
-        onShowAboutChange={setShowAbout}
-        onCorruptionTypeChange={setCorruptionType}
-        onReset={handleReset}
-        onExport={handleExport}
-        onPresetSelect={handlePresetSelect}
-      />
-
-      {showAbout && (
-        <div className="absolute top-32 left-8 right-8 max-w-4xl bg-black/90 backdrop-blur-sm p-6 text-gray-300 text-sm overflow-y-auto max-h-[calc(100vh-200px)] border border-gray-800">
-          <h3 className="text-lg font-bold text-white mb-4">About: Conceptual Framework & Mechanics</h3>
-
-          <div className="space-y-4">
-            <div>
-              <h4 className="font-semibold text-white mb-2">Core Idea</h4>
-              <p>This playground models the complex relationship between institutional corruption, procedural randomness, and fairness using scientifically grounded information theory and decision science. It investigates when randomness may serve as a better proxy for fairness than biased deterministic rules — especially in corrupt systems.</p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-white mb-2">Variables & Corruption Types</h4>
-              <dl className="space-y-2">
-                <dt className="font-medium">C — Institutional Corruption Coefficient</dt>
-                <dd className="ml-4">Degree to which institutions deviate from impartiality (0 = incorruptible, 1 = fully compromised)</dd>
-                <dt className="font-medium">R — Decision Process Stochasticity</dt>
-                <dd className="ml-4">Degree of procedural randomness in outcomes (0 = fully deterministic, 1 = fully random)</dd>
-                <dt className="font-medium">Corruption Types</dt>
-                <dd className="ml-4">
-                  <strong>Directional Bias:</strong> Systematic preference for specific outcomes (classic corruption)<br/>
-                  <strong>Increased Variance:</strong> Corruption manifests as unpredictability and inconsistency<br/>
-                  <strong>Systematic Error:</strong> Institutional incompetence leading to persistent mistakes
-                </dd>
-              </dl>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-white mb-2">Enhanced Mathematical Framework</h4>
-              <ul className="list-disc list-inside space-y-1 ml-4">
-                <li><strong>Improved Fairness Metrics:</strong> Multiple complementary measures including demographic parity, total variation distance, and Jensen-Shannon divergence</li>
-                <li><strong>Realistic Corruption Models:</strong> Three distinct types modeling different real-world institutional failures</li>
-                <li><strong>Non-linear Randomness:</strong> Exponential decay model preserves bias structure while adding appropriate uncertainty</li>
-                <li><strong>Institutional Efficiency:</strong> New metric capturing the trade-off between fairness and operational effectiveness</li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-white mb-2">Visual Representation</h4>
-              <ul className="list-disc list-inside space-y-1 ml-4">
-                <li>2D Heatmap (C vs R) shows Effective Fairness Entropy, dynamically updated based on corruption type</li>
-                <li>Enhanced Color Gradient: Red (low fairness) → Orange → Yellow → Green (high fairness)</li>
-                <li>Interactive Zones: Hover effects highlight Ideal Fair, Corrupt & Unfair, and Random Justice regimes</li>
-                <li>Draggable Marker: Yellow dot for exploring specific (C, R) combinations with detailed tooltips</li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-white mb-2">Scientific Insights</h4>
-              <ul className="list-disc list-inside space-y-1 ml-4">
-                <li><strong>Corruption Type Matters:</strong> Different types of institutional failure require different remedies</li>
-                <li><strong>Randomness as Medicine:</strong> Strategic randomness can counteract systematic bias without destroying institutional function</li>
-                <li><strong>Non-linear Effects:</strong> Small changes in corruption or randomness can have disproportionate impacts on fairness</li>
-                <li><strong>Efficiency Trade-offs:</strong> Perfect fairness may conflict with institutional efficiency — optimal systems balance both</li>
-                <li><strong>Context Dependency:</strong> The same C,R combination produces different outcomes under different corruption models</li>
-              </ul>
-            </div>
+  const sections = [
+    {
+      id: 'intro',
+      type: 'intro' as const,
+    },
+    {
+      id: 'simulation',
+      type: 'canvas' as const,
+      content: (
+        <div className="h-screen w-screen relative bg-black">
+          <div className="absolute inset-0">
+            <Viewer
+              ref={viewerRef}
+              corruption={corruption}
+              randomness={randomness}
+              corruptionType={corruptionType}
+              onMarkerDrag={handleMarkerDrag}
+            />
           </div>
+          {showAbout && (
+            <div className="absolute top-32 left-8 right-8 max-w-4xl bg-black/90 backdrop-blur-sm p-6 text-gray-300 text-sm overflow-y-auto max-h-[calc(100vh-200px)] border border-gray-800">
+              <h3 className="text-lg font-bold text-white mb-4">About: Conceptual Framework & Mechanics</h3>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-white mb-2">Core Idea</h4>
+                  <p>This playground models the complex relationship between institutional corruption, procedural randomness, and fairness using scientifically grounded information theory and decision science.</p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      )}
-    </div>
+      ),
+    },
+    {
+      id: 'about',
+      type: 'outro' as const,
+      content: (
+        <>
+          <p>
+            Stochastic Justice explores when randomness can serve as a better proxy 
+            for fairness than biased deterministic rules. Using information theory 
+            and decision science, this playground models the complex relationship 
+            between institutional corruption and procedural randomness.
+          </p>
+          <p>
+            The visualization shows how different types of corruption (directional bias, 
+            increased variance, systematic error) respond differently to randomness. 
+            In some corrupt systems, strategic randomness can counteract bias more 
+            effectively than deterministic reforms.
+          </p>
+          <p>
+            Key concepts include: information theory, institutional corruption, 
+            procedural fairness, decision science, entropy measures, and the 
+            trade-offs between fairness and efficiency in governance systems.
+          </p>
+        </>
+      ),
+    },
+  ];
+
+  const settings = (
+    <Settings
+      corruption={corruption}
+      randomness={randomness}
+      showAbout={showAbout}
+      metrics={metrics}
+      presets={PRESETS}
+      isAnimating={isAnimating}
+      corruptionType={corruptionType}
+      onCorruptionChange={setCorruption}
+      onRandomnessChange={setRandomness}
+      onShowAboutChange={setShowAbout}
+      onCorruptionTypeChange={setCorruptionType}
+      onReset={handleReset}
+      onExport={handleExport}
+      onPresetSelect={handlePresetSelect}
+    />
+  );
+
+  return (
+    <PlaygroundLayout
+      title="stochastic justice"
+      subtitle="exploring fairness through randomness in corrupt systems; drag marker to explore regimes where randomness counteracts corruption"
+      description={
+        <a
+          href="https://doi.org/10.1017/S0003055418000746"
+          target="_blank"
+          className="text-blue-400 hover:text-blue-300 underline"
+        >
+          2019, Dworkin et al., Procedural Justice and Corruption
+        </a>
+      }
+      sections={sections}
+      settings={settings}
+    />
   );
 }

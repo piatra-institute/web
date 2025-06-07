@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 
-import Header from '@/components/Header';
-import Title from '@/components/Title';
+import PlaygroundLayout from '@/components/PlaygroundLayout';
 import Settings from '@/app/playgrounds/halley-window/components/Settings';
 import Fractal from '@/app/playgrounds/halley-window/components/Fractal';
 
@@ -30,54 +29,99 @@ export default function HalleyWindowPlayground() {
         setPolynomialDegree(3);
     };
 
-    return (
-        <div className="relative min-h-screen">
-            <div className="absolute inset-0 bg-black">
-                <Fractal
-                    constant={constant}
-                    centerX={centerX}
-                    centerY={centerY}
-                    setCenterX={setCenterX}
-                    setCenterY={setCenterY}
-                    zoom={zoom}
-                    setZoom={setZoom}
-                    maxIterations={maxIterations}
-                    bailout={bailout}
-                    colorMode={colorMode}
-                    polynomialDegree={polynomialDegree}
-                />
-            </div>
-
-            <div className="absolute top-0 left-0 z-10 p-6">
-                <Header />
-                <Title text="halley's method fractal" />
-
-                <div className="max-w-xl text-white/80 mt-2 text-sm text-center">
-                    Halley&apos;s method is a root-finding algorithm
-                    <br />
-                    that uses first and second derivatives
+    const sections = [
+        {
+            id: 'intro',
+            type: 'intro' as const,
+            content: (
+                <div className="mt-12">
+                    <p className="text-xl text-gray-300 mb-4">
+                        Interactive fractal visualization using Halley's root-finding method
+                    </p>
+                    <p className="text-gray-400">
+                        Explore the beautiful patterns that emerge when applying Halley's method 
+                        to find roots of complex polynomials, revealing the intricate structure 
+                        of convergence basins in the complex plane.
+                    </p>
                 </div>
-            </div>
+            ),
+        },
+        {
+            id: 'fractal',
+            type: 'canvas' as const,
+            content: (
+                <div className="absolute inset-0 bg-black">
+                    <Fractal
+                        constant={constant}
+                        centerX={centerX}
+                        centerY={centerY}
+                        setCenterX={setCenterX}
+                        setCenterY={setCenterY}
+                        zoom={zoom}
+                        setZoom={setZoom}
+                        maxIterations={maxIterations}
+                        bailout={bailout}
+                        colorMode={colorMode}
+                        polynomialDegree={polynomialDegree}
+                    />
+                </div>
+            ),
+        },
+        {
+            id: 'about',
+            type: 'outro' as const,
+            content: (
+                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <p>
+                            Halley's method is a root-finding algorithm that uses both first and 
+                            second derivatives to converge faster than Newton's method. When applied 
+                            to complex polynomials, it creates stunning fractal patterns that reveal 
+                            the convergence basins for each root.
+                        </p>
+                        <p>
+                            Each colored region represents points that converge to the same root, 
+                            while the intricate boundaries between regions showcase the chaotic 
+                            behavior of the iterative method. The fractal structure emerges from 
+                            the sensitivity of the convergence to initial conditions.
+                        </p>
+                        <p>
+                            Key concepts include: numerical analysis, root-finding algorithms, 
+                            complex analysis, fractal geometry, convergence basins, and the 
+                            relationship between mathematical iteration and visual beauty.
+                        </p>
+                </div>
+            ),
+        },
+    ];
 
-            <Settings
-                constant={constant}
-                setConstant={setConstant}
-                centerX={centerX}
-                setCenterX={setCenterX}
-                centerY={centerY}
-                setCenterY={setCenterY}
-                zoom={zoom}
-                setZoom={setZoom}
-                maxIterations={maxIterations}
-                setMaxIterations={setMaxIterations}
-                bailout={bailout}
-                setBailout={setBailout}
-                colorMode={colorMode}
-                setColorMode={setColorMode}
-                polynomialDegree={polynomialDegree}
-                setPolynomialDegree={setPolynomialDegree}
-                reset={reset}
-            />
-        </div>
+    const settings = (
+        <Settings
+            constant={constant}
+            setConstant={setConstant}
+            centerX={centerX}
+            setCenterX={setCenterX}
+            centerY={centerY}
+            setCenterY={setCenterY}
+            zoom={zoom}
+            setZoom={setZoom}
+            maxIterations={maxIterations}
+            setMaxIterations={setMaxIterations}
+            bailout={bailout}
+            setBailout={setBailout}
+            colorMode={colorMode}
+            setColorMode={setColorMode}
+            polynomialDegree={polynomialDegree}
+            setPolynomialDegree={setPolynomialDegree}
+            reset={reset}
+        />
+    );
+
+    return (
+        <PlaygroundLayout
+            title="Halley's Method Fractal"
+            subtitle="Root-Finding Algorithms in the Complex Plane"
+            sections={sections}
+            settings={settings}
+        />
     );
 }

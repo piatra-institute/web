@@ -10,16 +10,16 @@ import EyevolutionPlayground from './playground';
 
 export const metadata: Metadata = {
     title: 'eyevolution · playgrounds',
-    description: '',
+    description: 'evolutionary development of visual systems across species',
 
     openGraph: {
         ...defaultOpenGraph,
         title: 'eyevolution · playgrounds · piatra.institute',
-        description: '',
+        description: 'evolutionary development of visual systems across species',
     },
 };
 
-export default function Fracqunx() {
+export default function Eyevolution() {
     return (
         <EyevolutionPlayground />
     );

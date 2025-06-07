@@ -7,8 +7,9 @@ import {
     useEffect,
 } from 'react';
 
-import Header from '@/components/Header';
-import Title from '@/components/Title';
+import PlaygroundLayout from '@/components/PlaygroundLayout';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
+import PlaygroundSettings from '@/components/PlaygroundSettings';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 
@@ -430,211 +431,241 @@ export default function SelfSortedArraysPlayground() {
 
 
     // #region render
-    return (
-        <div
-            className="relative min-h-screen flex items-center justify-center bg-contain bg-no-repeat bg-center"
-            style={{
-                backgroundImage: showBackground ? "url('/playgrounds-ssa-logo.png')" : '',
-            }}
-        >
-            <div className="absolute inset-0 bg-black opacity-85" />
-
-            {selectedCell && (
-                <CellViewer
-                    data={distribution.find(cell => cell.id === selectedCell)!}
-                    swaps={swaps[selectedCell] || []}
-                    distribution={distribution}
-                    close={() => {
-                        setSelectedCell(null);
-                    }}
-                />
-            )}
-
-            <Settings
-                distribution={distribution}
-                setDistribution={setDistribution}
-
-                setCount={setCount}
-
-                selectedCell={selectedCell}
-
-                colorType={colorType}
-                setColorType={setColorType}
-                showBackground={showBackground}
-                setShowBackground={setShowBackground}
-
-                minimumValue={minimumValue}
-                setMinimumValue={setMinimumValue}
-                maximumValue={maximumValue}
-                setMaximumValue={setMaximumValue}
-                duplicationDegree={duplicationDegree}
-                setDuplicationDegree={setDuplicationDegree}
-
-                proactivePercent={proactivePercent}
-                setProactivePercent={setProactivePercent}
-                passivePercent={passivePercent}
-                setPassivePercent={setPassivePercent}
-                frozenPercent={frozenPercent}
-                setFrozenPercent={setFrozenPercent}
-
-                bubbleSortPercent={bubbleSortPercent}
-                setBubbleSortPercent={setBubbleSortPercent}
-                insertionSortPercent={insertionSortPercent}
-                setInsertionSortPercent={setInsertionSortPercent}
-                selectionSortPercent={selectionSortPercent}
-                setSelectionSortPercent={setSelectionSortPercent}
-
-                allowMutationable={allowMutationable}
-                setAllowMutationable={setAllowMutationable}
-                mutationableMinimum={mutationableMinimum}
-                setMutationableMinimum={setMutationableMinimum}
-                mutationableMaximum={mutationableMaximum}
-                setMutationableMaximum={setMutationableMaximum}
-                mutationableStrategy={mutationableStrategy}
-                setMutationableStrategy={setMutationableStrategy}
-
-                allowDamageable={allowDamageable}
-                setAllowDamageable={setAllowDamageable}
-                damageableMinimum={damageableMinimum}
-                setDamageableMinimum={setDamageableMinimum}
-                damageableMaximum={damageableMaximum}
-                setDamageableMaximum={setDamageableMaximum}
-                damageablePassiveThreshold={damageablePassiveThreshold}
-                setDamageablePassiveThreshold={setDamageablePassiveThreshold}
-                damageableFrozenThreshold={damageableFrozenThreshold}
-                setDamageableFrozenThreshold={setDamageableFrozenThreshold}
-
-                allowRepairable={allowRepairable}
-                setAllowRepairable={setAllowRepairable}
-
-                allowConvertible={allowConvertible}
-                setAllowConvertible={setAllowConvertible}
-                convertibleMinimum={convertibleMinimum}
-                setConvertibleMinimum={setConvertibleMinimum}
-                convertibleMaximum={convertibleMaximum}
-                setConvertibleMaximum={setConvertibleMaximum}
-
-                allowDivisible={allowDivisible}
-                setAllowDivisible={setAllowDivisible}
-                divisibleMinimum={divisibleMinimum}
-                setDivisibleMinimum={setDivisibleMinimum}
-                divisibleMaximum={divisibleMaximum}
-                setDivisibleMaximum={setDivisibleMaximum}
-
-                allowApoptosable={allowApoptosable}
-                setAllowApoptosable={setAllowApoptosable}
-                apoptosableMinimum={apoptosableMinimum}
-                setApoptosableMinimum={setApoptosableMinimum}
-                apoptosableMaximum={apoptosableMaximum}
-                setApoptosableMaximum={setApoptosableMaximum}
-
-                allowSpeed={allowSpeed}
-                setAllowSpeed={setAllowSpeed}
-                speedMinimum={speedMinimum}
-                setSpeedMinimum={setSpeedMinimum}
-                speedMaximum={speedMaximum}
-                setSpeedMaximum={setSpeedMaximum}
-
-                allowResponsiveness={allowResponsiveness}
-                setAllowResponsiveness={setAllowResponsiveness}
-                responsivenessMinimum={responsivenessMinimum}
-                setResponsivenessMinimum={setResponsivenessMinimum}
-                responsivenessMaximum={responsivenessMaximum}
-                setResponsivenessMaximum={setResponsivenessMaximum}
-
-                clearTissue={clearTissue}
-            />
-
-            <div
-                className="z-10 relative flex flex-col items-center justify-center min-h-screen py-2"
-            >
-                <Header />
-
-                <Title
-                    text="self-sorted arrays playground"
-                />
-
-                <h2
-                    className={"text-sm -mt-6 text-center leading-relaxed"}
-                >
-                    based on
-                    <br />
-                    <a
-                        href="https://arxiv.org/abs/2401.05375"
-                        target="_blank"
-                    >
-                        2023, Michael Levin et al., <i>Classical Sorting Algorithms as a Model of Morphogenesis</i>
-                    </a>
-                </h2>
-
-
-                <Input
-                    value={count}
-                    onChange={(value) => {
-                        const count = parseInt(value);
-                        if (isNaN(count)) {
-                            setCount('' as any);
-                            return;
-                        }
-
-                        if (count <= 0 || count > 999) {
-                            return;
-                        }
-
-                        setCount(count);
-                    }}
-                    placeholder="enter a number around 40"
-                    type="number"
-                    min={0}
-                    max={999}
-                    centered={true}
-                />
-
-                <CellsChart1D
-                    data={distribution}
-                    selectedCell={selectedCell}
-                    setSelectedCell={setSelectedCell}
-                />
-
-                {count > 0 ? (
-                    <Button
-                        label={sorted && !sorting
-                            ? 'Regenerate'
-                            : sorting ? "stepping..." : 'Step'}
-                        onClick={() => {
-                            step();
-                        }}
-                        disabled={sorting}
-                    />
-                ) : (
-                    <div
-                        style={{
-                            height: '80px',
-                        }}
-                    />
-                )}
-
-                {count > 0 ? (
-                    <Button
-                        label={'Loop'}
-                        onClick={() => {
-                            loop();
-                        }}
-                        disabled={sorting || (sorted && !sorting)}
-                    />
-                ) : (
-                    <div
-                        style={{
-                            height: '80px',
-                        }}
-                    />
-                )}
-
+    const sections = [
+        {
+            id: 'intro',
+            type: 'intro' as const,
+            content: (
+                <div className="mt-12">
+                    <p className="text-xl text-gray-300 mb-4">
+                        Self-organizing cellular automata that sort themselves through local interactions
+                    </p>
+                    <p className="text-gray-400 mb-6">
+                        Based on Michael Levin et al.'s research on classical sorting algorithms 
+                        as a model of morphogenesis, exploring how distributed sorting behaviors 
+                        can emerge from simple cellular rules.
+                    </p>
+                    <div className="text-center">
+                        <a
+                            href="https://arxiv.org/abs/2401.05375"
+                            target="_blank"
+                            className="text-blue-400 hover:text-blue-300 text-sm underline"
+                        >
+                            2023, Michael Levin et al., Classical Sorting Algorithms as a Model of Morphogenesis
+                        </a>
+                    </div>
+                </div>
+            ),
+        },
+        {
+            id: 'simulation',
+            type: 'canvas' as const,
+            content: (
                 <div
-                    className="h-[100px]"
-                />
-            </div>
-        </div>
+                    className="relative w-full h-full bg-contain bg-no-repeat bg-center"
+                    style={{
+                        backgroundImage: showBackground ? "url('/playgrounds-ssa-logo.png')" : '',
+                    }}
+                >
+                    <div className="absolute inset-0 bg-black opacity-85" />
+
+                    {selectedCell && (
+                        <CellViewer
+                            data={distribution.find(cell => cell.id === selectedCell)!}
+                            swaps={swaps[selectedCell] || []}
+                            distribution={distribution}
+                            close={() => {
+                                setSelectedCell(null);
+                            }}
+                        />
+                    )}
+
+                    <PlaygroundViewer
+                        controls={
+                            <>
+                                {count > 0 ? (
+                                    <Button
+                                        label={sorted && !sorting
+                                            ? 'Regenerate'
+                                            : sorting ? "stepping..." : 'Step'}
+                                        onClick={() => {
+                                            step();
+                                        }}
+                                        disabled={sorting}
+                                    />
+                                ) : (
+                                    <div style={{ height: '80px' }} />
+                                )}
+
+                                {count > 0 ? (
+                                    <Button
+                                        label={'Loop'}
+                                        onClick={() => {
+                                            loop();
+                                        }}
+                                        disabled={sorting || (sorted && !sorting)}
+                                    />
+                                ) : (
+                                    <div style={{ height: '80px' }} />
+                                )}
+                            </>
+                        }
+                    >
+                        <div className="flex flex-col items-center space-y-6">
+                            <Input
+                                value={count}
+                                onChange={(value) => {
+                                    const count = parseInt(value);
+                                    if (isNaN(count)) {
+                                        setCount('' as any);
+                                        return;
+                                    }
+                                    if (count <= 0 || count > 999) {
+                                        return;
+                                    }
+                                    setCount(count);
+                                }}
+                                placeholder="enter a number around 40"
+                                type="number"
+                                min={0}
+                                max={999}
+                                centered={true}
+                            />
+
+                            <CellsChart1D
+                                data={distribution}
+                                selectedCell={selectedCell}
+                                setSelectedCell={setSelectedCell}
+                            />
+                        </div>
+                    </PlaygroundViewer>
+                </div>
+            ),
+        },
+        {
+            id: 'about',
+            type: 'outro' as const,
+            content: (
+                <>
+                    <p>
+                        Self-sorted arrays demonstrate how complex organizational behaviors can emerge 
+                        from simple local rules. Each cell follows basic sorting algorithms (bubble, 
+                        insertion, or selection sort) but operates independently, creating emergent 
+                        global organization through distributed computation.
+                    </p>
+                    <p>
+                        This playground implements concepts from Michael Levin's research on morphogenesis, 
+                        showing how biological development might use similar algorithmic principles to 
+                        organize cellular structures. The cells can exhibit various behaviors including 
+                        mutation, damage, repair, conversion, division, and apoptosis.
+                    </p>
+                    <p>
+                        Key concepts include: distributed sorting algorithms, emergent organization, 
+                        cellular automata, morphogenetic algorithms, and bio-inspired computation.
+                    </p>
+                </>
+            ),
+        },
+    ];
+
+    const settings = (
+        <Settings
+            distribution={distribution}
+            setDistribution={setDistribution}
+            setCount={setCount}
+            selectedCell={selectedCell}
+            colorType={colorType}
+            setColorType={setColorType}
+            showBackground={showBackground}
+            setShowBackground={setShowBackground}
+            minimumValue={minimumValue}
+            setMinimumValue={setMinimumValue}
+            maximumValue={maximumValue}
+            setMaximumValue={setMaximumValue}
+            duplicationDegree={duplicationDegree}
+            setDuplicationDegree={setDuplicationDegree}
+            proactivePercent={proactivePercent}
+            setProactivePercent={setProactivePercent}
+            passivePercent={passivePercent}
+            setPassivePercent={setPassivePercent}
+            frozenPercent={frozenPercent}
+            setFrozenPercent={setFrozenPercent}
+            bubbleSortPercent={bubbleSortPercent}
+            setBubbleSortPercent={setBubbleSortPercent}
+            insertionSortPercent={insertionSortPercent}
+            setInsertionSortPercent={setInsertionSortPercent}
+            selectionSortPercent={selectionSortPercent}
+            setSelectionSortPercent={setSelectionSortPercent}
+            allowMutationable={allowMutationable}
+            setAllowMutationable={setAllowMutationable}
+            mutationableMinimum={mutationableMinimum}
+            setMutationableMinimum={setMutationableMinimum}
+            mutationableMaximum={mutationableMaximum}
+            setMutationableMaximum={setMutationableMaximum}
+            mutationableStrategy={mutationableStrategy}
+            setMutationableStrategy={setMutationableStrategy}
+            allowDamageable={allowDamageable}
+            setAllowDamageable={setAllowDamageable}
+            damageableMinimum={damageableMinimum}
+            setDamageableMinimum={setDamageableMinimum}
+            damageableMaximum={damageableMaximum}
+            setDamageableMaximum={setDamageableMaximum}
+            damageablePassiveThreshold={damageablePassiveThreshold}
+            setDamageablePassiveThreshold={setDamageablePassiveThreshold}
+            damageableFrozenThreshold={damageableFrozenThreshold}
+            setDamageableFrozenThreshold={setDamageableFrozenThreshold}
+            allowRepairable={allowRepairable}
+            setAllowRepairable={setAllowRepairable}
+            allowConvertible={allowConvertible}
+            setAllowConvertible={setAllowConvertible}
+            convertibleMinimum={convertibleMinimum}
+            setConvertibleMinimum={setConvertibleMinimum}
+            convertibleMaximum={convertibleMaximum}
+            setConvertibleMaximum={setConvertibleMaximum}
+            allowDivisible={allowDivisible}
+            setAllowDivisible={setAllowDivisible}
+            divisibleMinimum={divisibleMinimum}
+            setDivisibleMinimum={setDivisibleMinimum}
+            divisibleMaximum={divisibleMaximum}
+            setDivisibleMaximum={setDivisibleMaximum}
+            allowApoptosable={allowApoptosable}
+            setAllowApoptosable={setAllowApoptosable}
+            apoptosableMinimum={apoptosableMinimum}
+            setApoptosableMinimum={setApoptosableMinimum}
+            apoptosableMaximum={apoptosableMaximum}
+            setApoptosableMaximum={setApoptosableMaximum}
+            allowSpeed={allowSpeed}
+            setAllowSpeed={setAllowSpeed}
+            speedMinimum={speedMinimum}
+            setSpeedMinimum={setSpeedMinimum}
+            speedMaximum={speedMaximum}
+            setSpeedMaximum={setSpeedMaximum}
+            allowResponsiveness={allowResponsiveness}
+            setAllowResponsiveness={setAllowResponsiveness}
+            responsivenessMinimum={responsivenessMinimum}
+            setResponsivenessMinimum={setResponsivenessMinimum}
+            responsivenessMaximum={responsivenessMaximum}
+            setResponsivenessMaximum={setResponsivenessMaximum}
+            clearTissue={clearTissue}
+        />
+    );
+
+    return (
+        <PlaygroundLayout
+            title="self-sorted arrays"
+            subtitle="emergent organization through distributed sorting"
+            description={
+                <a
+                    href="https://arxiv.org/abs/2401.05375"
+                    target="_blank"
+                    className="text-blue-400 hover:text-blue-300 underline"
+                >
+                    2023, Michael Levin et al., Classical Sorting Algorithms as a Model of Morphogenesis
+                </a>
+            }
+            sections={sections}
+            settings={settings}
+        />
     );
     // #endregion render
 }

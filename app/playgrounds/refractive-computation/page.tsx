@@ -10,12 +10,12 @@ import RefractiveComputationPlayground from './playground';
 
 export const metadata: Metadata = {
     title: 'refractive computation · playgrounds',
-    description: '',
+    description: 'computing with light through optical refraction principles',
 
     openGraph: {
         ...defaultOpenGraph,
         title: 'refractive computation · playgrounds · piatra.institute',
-        description: '',
+        description: 'computing with light through optical refraction principles',
     },
 };
 

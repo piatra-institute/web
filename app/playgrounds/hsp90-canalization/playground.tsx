@@ -1,8 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import Header from '@/components/Header';
-import Title from '@/components/Title';
+import PlaygroundLayout from '@/components/PlaygroundLayout';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import RadarGlyph from './components/RadarGlyph';
@@ -61,77 +60,96 @@ export default function Hsp90CanalizationPlayground() {
         });
     };
 
+    const sections = [
+        {
+            id: 'intro',
+            type: 'intro' as const,
+        },
+        {
+            id: 'simulation',
+            type: 'canvas' as const,
+            content: (
+                <div className="absolute inset-0">
+                    <Viewer
+                        ref={viewerRef}
+                        capacity={capacity}
+                        gSD={gSD}
+                        eSD={eSD}
+                        k={k}
+                        zSlice={zSlice}
+                        showLatent={showLatent}
+                        showPlane={showPlane}
+                        showHalos={showHalos}
+                        setRatio={setRatio}
+                        setAxisVar={setAxisVar}
+                    />
+
+                    <RadarGlyph {...axisVar} />
+
+                    <div className="absolute bottom-4 left-4">
+                        <FitnessLegend />
+                    </div>
+                </div>
+            ),
+        },
+        {
+            id: 'about',
+            type: 'outro' as const,
+            content: (
+                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                    <p>
+                        Hsp90 is a molecular chaperone that plays a crucial role in genetic 
+                        canalization - the ability of organisms to maintain consistent 
+                        phenotypes despite genetic and environmental variation. This playground 
+                        visualizes how Hsp90 buffers latent phenotypic variance.
+                    </p>
+                    <p>
+                        Under normal conditions, Hsp90 masks the effects of cryptic genetic 
+                        variation, ensuring stable development. However, when Hsp90 function 
+                        is compromised (by stress, mutations, or inhibition), previously 
+                        hidden traits become visible, potentially accelerating evolution.
+                    </p>
+                    <p>
+                        Key concepts include: genetic canalization, phenotypic buffering, 
+                        cryptic genetic variation, molecular chaperones, and evolutionary 
+                        capacitance in developmental systems.
+                    </p>
+                </div>
+            ),
+        },
+    ];
+
+    const settings = (
+        <Settings
+            capacity={capacity} setCapacity={setCapacity}
+            gSD={gSD} setGSD={setGSD}
+            eSD={eSD} setESD={setESD}
+            k={k} setK={setK}
+            zSlice={zSlice} setZSlice={setZSlice}
+            showLatent={showLatent} setShowLatent={setShowLatent}
+            showPlane={showPlane} setShowPlane={setShowPlane}
+            showHalos={showHalos} setShowHalos={setShowHalos}
+            ratio={ratio}
+            reset={reset}
+            onExport={exportPNG}
+        />
+    );
+
     return (
-        <div className="relative min-h-screen">
-            {/* 3-D viewer fills page */}
-            <div className="absolute inset-0">
-                <Viewer
-                    ref={viewerRef}
-                    capacity={capacity}
-                    gSD={gSD}
-                    eSD={eSD}
-                    k={k}
-                    zSlice={zSlice}
-                    showLatent={showLatent}
-                    showPlane={showPlane}
-                    showHalos={showHalos}
-                    setRatio={setRatio}
-                    setAxisVar={setAxisVar}
-                />
-
-                <RadarGlyph {...axisVar} />
-
-                <div className="absolute bottom-4 left-4">
-                    <FitnessLegend />
-                </div>
-            </div>
-
-            {/* overlay text */}
-            <div className="absolute top-0 left-0 z-10 p-6 pointer-events-none">
-                <Header />
-                <Title text="Hsp90 Canalization Explorer" />
-                <div className="max-w-xl text-white/80 mt-2 text-sm text-center">
-                    {/* interactively visualising how the chaperone&nbsp;Hsp90
-                    <br /> buffers — and releases — latent phenotypic variance */}
-
-                    explore how the molecular chaperone Hsp90 buffers,
-                    <br />
-                    reveals and reshapes hidden phenotypic variance
-
-                    <br />
-                    <br />
-
-                    adjust buffer capacity <i>C</i>
-                    <br />
-                    cryptic genetic standard deviation &#963;<sub>G</sub>
-                    <br />
-                    environmental standard deviation &#963;<sub>E</sub>
-                    <br />
-                    buffer threshold steepness <i>k</i>
-                    <br />
-                    <br />
-                    {/* slice the cloud, toggle latent rings / halos,
-                    <br />
-                    read the variance-radar and fitness colors,
-                    <br />
-                    watch canalization strengthen or collapse in real time */}
-                </div>
-            </div>
-
-            {/* right-hand settings panel */}
-            <Settings
-                capacity={capacity} setCapacity={setCapacity}
-                gSD={gSD} setGSD={setGSD}
-                eSD={eSD} setESD={setESD}
-                k={k} setK={setK}
-                zSlice={zSlice} setZSlice={setZSlice}
-                showLatent={showLatent} setShowLatent={setShowLatent}
-                showPlane={showPlane} setShowPlane={setShowPlane}
-                showHalos={showHalos} setShowHalos={setShowHalos}
-                ratio={ratio}
-                reset={reset}
-                onExport={exportPNG}
-            />
-        </div>
+        <PlaygroundLayout
+            title="hsp90 canalization"
+            subtitle="molecular chaperone buffers and reveals hidden phenotypic variance; explore how hsp90 shapes evolutionary potential"
+            description={
+                <a
+                    href="https://doi.org/10.1038/31159"
+                    target="_blank"
+                    className="text-blue-400 hover:text-blue-300 underline"
+                >
+                    1998, Rutherford & Lindquist, Hsp90 as a Capacitor for Morphological Evolution
+                </a>
+            }
+            sections={sections}
+            settings={settings}
+        />
     );
 }

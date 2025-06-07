@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Header from '@/components/Header';
-import Title from '@/components/Title';
+import PlaygroundLayout from '@/components/PlaygroundLayout';
 import Settings from './components/Settings';
 import Legend from './components/Legend';
 import StatsDisplay from './components/StatsDisplay';
@@ -434,56 +433,81 @@ export default function LefebvrePlayground() {
         setTimeout(setupSimulation, 50); // Call setup after state updates propagate
     };
 
-    // --- Render Component ---
+    const sections = [
+        {
+            id: 'intro',
+            type: 'intro' as const,
+        },
+        {
+            id: 'simulation',
+            type: 'canvas' as const,
+            content: (
+                <div className="relative w-full h-full bg-black">
+                    <div className="simulation-area">
+                        <Viewer
+                            agents={agents}
+                            width={canvasSize.current.width}
+                            height={canvasSize.current.height}
+                        />
+                    </div>
+
+                    <div className="absolute top-0 right-0 z-10 h-full max-w-[400px] bg-black/40 backdrop-blur-sm">
+                        <div className="h-full p-6 pt-[420px] flex flex-col gap-6 overflow-y-auto">
+                            <Legend />
+                            <StatsDisplay stats={currentStats} />
+                            <LogDisplay logEntries={logEntries} />
+                            <ChartsDisplay chartData={chartDataHistory} />
+                        </div>
+                    </div>
+                </div>
+            ),
+        },
+        {
+            id: 'about',
+            type: 'outro' as const,
+            content: (
+                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                    <p>
+                        This simulation explores Henri Lefebvre's theories about social space 
+                        and consciousness through multi-agent interactions. Agents operate 
+                        with different ethical systems (utilitarian vs deontological) and 
+                        consciousness levels, creating complex emergent social dynamics.
+                    </p>
+                    <p>
+                        Agents can help or harm each other based on their ethical frameworks, 
+                        resource levels, and awareness states. The simulation reveals how 
+                        different moral systems interact in shared spaces and how collective 
+                        behavior emerges from individual ethical decisions.
+                    </p>
+                    <p>
+                        Key concepts include: social space theory, ethical systems interaction, 
+                        consciousness levels, emergent cooperation, moral decision-making, 
+                        and the dynamics of help versus harm in social systems.
+                    </p>
+                </div>
+            ),
+        },
+    ];
+
+    const settings = (
+        <Settings
+            numAgents={numAgents} setNumAgents={setNumAgents}
+            sys1Ratio={sys1Ratio} setSys1Ratio={setSys1Ratio}
+            speed={speed} setSpeed={setSpeed}
+            awarenessRate={awarenessRate} setAwarenessRate={setAwarenessRate}
+            reflexiveRate={reflexiveRate} setReflexiveRate={setReflexiveRate}
+            motivationStrength={motivationStrength} setMotivationStrength={setMotivationStrength}
+            isRunning={isRunning} setIsRunning={setIsRunning}
+            onRestart={handleReset}
+        />
+    );
+
     return (
-        <div className="relative min-h-screen flex items-center justify-center bg-black">
-            {/* Main simulation view centered */}
-            <div className="simulation-area">
-                <Viewer
-                    agents={agents}
-                    width={canvasSize.current.width}
-                    height={canvasSize.current.height}
-                />
-            </div>
-
-            {/* Header overlay */}
-            <div className="absolute top-0 left-0 z-10 p-6">
-                <Header />
-                <Title text="Lefebvrian Conscience Explorer" />
-
-                <div className="max-w-xl text-white/80 mt-2 text-sm text-center">
-                    explore how agents with different ethical systems interact
-                    <br />
-                    through help, harm, and strategic behavior
-                    <br />
-                    <br />
-                    observe Group dynamics, Ethical Systems,
-                    <br />
-                    Awareness levels, and Feelings in real-time
-                </div>
-            </div>
-
-            {/* Settings panel - floating and fixed */}
-            <Settings
-                numAgents={numAgents} setNumAgents={setNumAgents}
-                sys1Ratio={sys1Ratio} setSys1Ratio={setSys1Ratio}
-                speed={speed} setSpeed={setSpeed}
-                awarenessRate={awarenessRate} setAwarenessRate={setAwarenessRate}
-                reflexiveRate={reflexiveRate} setReflexiveRate={setReflexiveRate}
-                motivationStrength={motivationStrength} setMotivationStrength={setMotivationStrength}
-                isRunning={isRunning} setIsRunning={setIsRunning}
-                onRestart={handleReset}
-            />
-
-            {/* Right panel overlay with glass effect - with padding for settings */}
-            <div className="absolute top-0 right-0 z-10 h-full max-w-[400px] bg-black/40 backdrop-blur-sm">
-                <div className="h-full p-6 pt-[420px] flex flex-col gap-6 overflow-y-auto">
-                    <Legend />
-                    <StatsDisplay stats={currentStats} />
-                    <LogDisplay logEntries={logEntries} />
-                    <ChartsDisplay chartData={chartDataHistory} />
-                </div>
-            </div>
-        </div>
+        <PlaygroundLayout
+            title="Lefebvrian Conscience Explorer"
+            subtitle="agents with different ethical systems interact through help and harm; observe group dynamics and social consciousness emergence"
+            sections={sections}
+            settings={settings}
+        />
     );
 }

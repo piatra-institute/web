@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-import Header from '@/components/Header';
-import Title from '@/components/Title';
+import PlaygroundLayout from '@/components/PlaygroundLayout';
 import Settings from '@/app/playgrounds/raupian-morphospace/components/Settings';
 import Viewer from '@/app/playgrounds/raupian-morphospace/components/Viewer';
 
@@ -36,47 +35,84 @@ export default function RaupianMorphospacePlayground() {
         }, 5_000);
     }, []);
 
-    return (
-        <div className="relative min-h-screen">
-            <div className="absolute inset-0">
-                <Viewer
-                    W={W}
-                    D={D}
-                    T={T}
-                    autoRotate={autoRotate}
-                    setW={setW}
-                    setD={setD}
-                    setT={setT}
-                />
-            </div>
-
-            <div className="absolute top-0 left-0 z-10 p-6 pointer-events-none"> {/* Disable pointer events for overlay text */}
-                <Header />
-                <Title text="Raupian Morphospace Explorer" />
-
-                <div className="max-w-xl text-white/80 mt-2 text-sm text-center">
-                    visualizing theoretical shell morphology
-                    <br />
-                    using David M. Raup&apos;s three-parameter model (W, D, T)
-                    <br />
-                    <br />
-                    navigate plane with arrows
-                    <br />
-                    switch plane with ⇧+↑/↓
+    const sections = [
+        {
+            id: 'intro',
+            type: 'intro' as const,
+        },
+        {
+            id: 'morphospace',
+            type: 'canvas' as const,
+            content: (
+                <div className="absolute inset-0">
+                    <Viewer
+                        W={W}
+                        D={D}
+                        T={T}
+                        autoRotate={autoRotate}
+                        setW={setW}
+                        setD={setD}
+                        setT={setT}
+                    />
                 </div>
-            </div>
+            ),
+        },
+        {
+            id: 'about',
+            type: 'outro' as const,
+            content: (
+                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                    <p>
+                        David M. Raup's three-parameter model revolutionized our understanding 
+                        of shell morphology by reducing the infinite variety of mollusk shells 
+                        to just three geometric parameters: whorl expansion rate (W), distance 
+                        from coiling axis (D), and translation rate (T).
+                    </p>
+                    <p>
+                        This morphospace visualization allows exploration of theoretical shell 
+                        forms, many of which don't exist in nature. By adjusting the three 
+                        parameters, you can navigate through possible shell geometries and 
+                        understand the constraints that shape biological form.
+                    </p>
+                    <p>
+                        Key concepts include: theoretical morphology, parametric modeling, 
+                        evolutionary constraints, shell geometry, and the relationship between 
+                        mathematical possibility and biological reality.
+                    </p>
+                </div>
+            ),
+        },
+    ];
 
-            <Settings
-                W={W}
-                setW={setW}
-                D={D}
-                setD={setD}
-                T={T}
-                setT={setT}
-                autoRotate={autoRotate}
-                setAutoRotate={setAutoRotate}
-                reset={reset}
-            />
-        </div>
+    const settings = (
+        <Settings
+            W={W}
+            setW={setW}
+            D={D}
+            setD={setD}
+            T={T}
+            setT={setT}
+            autoRotate={autoRotate}
+            setAutoRotate={setAutoRotate}
+            reset={reset}
+        />
+    );
+
+    return (
+        <PlaygroundLayout
+            title="raupian morphospace"
+            subtitle="visualizing theoretical shell morphology using david m. raup's three-parameter model; navigate forms with arrows and shift"
+            description={
+                <a
+                    href="https://doi.org/10.1086/282663"
+                    target="_blank"
+                    className="text-blue-400 hover:text-blue-300 underline"
+                >
+                    1966, Raup, Geometric Analysis of Shell Coiling
+                </a>
+            }
+            sections={sections}
+            settings={settings}
+        />
     );
 }

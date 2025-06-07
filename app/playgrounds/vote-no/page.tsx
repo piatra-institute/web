@@ -10,12 +10,12 @@ import VoteNoPlayground from './playground';
 
 export const metadata: Metadata = {
     title: 'vote no · playgrounds',
-    description: '',
+    description: 'exploring democratic resistance and the power of rejection',
 
     openGraph: {
         ...defaultOpenGraph,
         title: 'vote no · playgrounds · piatra.institute',
-        description: '',
+        description: 'exploring democratic resistance and the power of rejection',
     },
 };
 

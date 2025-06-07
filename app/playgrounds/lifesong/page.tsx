@@ -10,12 +10,12 @@ import LifesongPlayground from './playground';
 
 export const metadata: Metadata = {
     title: 'lifesong · playgrounds',
-    description: '',
+    description: 'musical patterns that emerge from biological processes',
 
     openGraph: {
         ...defaultOpenGraph,
         title: 'lifesong · playgrounds · piatra.institute',
-        description: '',
+        description: 'musical patterns that emerge from biological processes',
     },
 };
 

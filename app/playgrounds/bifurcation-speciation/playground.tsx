@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
-import Header from '@/components/Header';
-import Title from '@/components/Title';
+import PlaygroundLayout from '@/components/PlaygroundLayout';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import CaptureHelper, { CaptureHandle } from './components/CaptureHelper';
@@ -69,67 +68,105 @@ export default function BifurcationSpeciationPlayground() {
         });
     };
 
-    return (
-        <div className="relative min-h-screen">
-            {/* Full-screen visualization */}
-            <div className="absolute inset-0">
-                <CaptureHelper ref={viewerRef}>
-                    <Viewer
-                        birdCount={birdCount}
-                        resourceMean={resourceMean}
-                        resourceVariance={resourceVariance}
-                        adaptationRate={adaptationRate}
-                        bifurcationParameter={bifurcationParameter}
-                        bifurcationStart={bifurcationStart}
-                        bifurcationEnd={bifurcationEnd}
-                        bifurcationSteps={bifurcationSteps}
-                        iterations={iterations}
-                        visualizationMode={visualizationMode}
-                    />
-                </CaptureHelper>
-            </div>
-
-            {/* Top-left header and title */}
-            <div className="absolute top-0 left-0 z-10 p-6 pointer-events-none">
-                <Header />
-                <Title text="Bifurcation Speciation Explorer" />
-                <div className="max-w-xl text-white/80 mt-2 text-sm text-center">
-                    Explore the dynamics of the BirdSym model where resource competition 
-                    <br />
-                    drives sympatric speciation through bifurcation patterns
-                    <br />
-                    <br />
-                    Adjust resource distribution, adaptation rate, and bifurcation parameter
-                    <br />
-                    to observe how species divergence emerges from the model
+    const sections = [
+        {
+            id: 'intro',
+            type: 'intro' as const,
+            content: (
+                <div className="mt-12">
+                    <p className="text-xl text-gray-300 mb-4">
+                        Explore sympatric speciation through the BirdSym evolutionary model
+                    </p>
+                    <p className="text-gray-400">
+                        Investigate how resource competition drives species divergence through 
+                        bifurcation patterns, demonstrating the mathematical foundations of 
+                        evolutionary branching and adaptive radiation.
+                    </p>
                 </div>
-            </div>
+            ),
+        },
+        {
+            id: 'simulation',
+            type: 'canvas' as const,
+            content: (
+                <div className="absolute inset-0">
+                    <CaptureHelper ref={viewerRef}>
+                        <Viewer
+                            birdCount={birdCount}
+                            resourceMean={resourceMean}
+                            resourceVariance={resourceVariance}
+                            adaptationRate={adaptationRate}
+                            bifurcationParameter={bifurcationParameter}
+                            bifurcationStart={bifurcationStart}
+                            bifurcationEnd={bifurcationEnd}
+                            bifurcationSteps={bifurcationSteps}
+                            iterations={iterations}
+                            visualizationMode={visualizationMode}
+                        />
+                    </CaptureHelper>
+                </div>
+            ),
+        },
+        {
+            id: 'about',
+            type: 'outro' as const,
+            content: (
+                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <p>
+                            The BirdSym model demonstrates how sympatric speciation can emerge 
+                            through resource competition and adaptive dynamics. Unlike allopatric 
+                            speciation that requires geographic isolation, sympatric speciation 
+                            occurs within the same geographical area through ecological specialization.
+                        </p>
+                        <p>
+                            This playground visualizes bifurcation diagrams showing how populations 
+                            can split into distinct species as environmental parameters change. 
+                            The model captures the critical transitions where a single population 
+                            becomes unstable and bifurcates into multiple coexisting species.
+                        </p>
+                        <p>
+                            Key concepts include: adaptive dynamics, evolutionary branching, 
+                            resource competition, bifurcation theory, and the mathematics of 
+                            speciation processes in ecological systems.
+                        </p>
+                </div>
+            ),
+        },
+    ];
 
-            {/* Right-side settings panel */}
-            <Settings
-                birdCount={birdCount}
-                setBirdCount={setBirdCount}
-                resourceMean={resourceMean}
-                setResourceMean={setResourceMean}
-                resourceVariance={resourceVariance}
-                setResourceVariance={setResourceVariance}
-                adaptationRate={adaptationRate}
-                setAdaptationRate={setAdaptationRate}
-                bifurcationParameter={bifurcationParameter}
-                setBifurcationParameter={setBifurcationParameter}
-                bifurcationStart={bifurcationStart}
-                setBifurcationStart={setBifurcationStart}
-                bifurcationEnd={bifurcationEnd}
-                setBifurcationEnd={setBifurcationEnd}
-                bifurcationSteps={bifurcationSteps}
-                setBifurcationSteps={setBifurcationSteps}
-                iterations={iterations}
-                setIterations={setIterations}
-                visualizationMode={visualizationMode}
-                setVisualizationMode={setVisualizationMode}
-                reset={reset}
-                onExport={exportPNG}
-            />
-        </div>
+    const settings = (
+        <Settings
+            birdCount={birdCount}
+            setBirdCount={setBirdCount}
+            resourceMean={resourceMean}
+            setResourceMean={setResourceMean}
+            resourceVariance={resourceVariance}
+            setResourceVariance={setResourceVariance}
+            adaptationRate={adaptationRate}
+            setAdaptationRate={setAdaptationRate}
+            bifurcationParameter={bifurcationParameter}
+            setBifurcationParameter={setBifurcationParameter}
+            bifurcationStart={bifurcationStart}
+            setBifurcationStart={setBifurcationStart}
+            bifurcationEnd={bifurcationEnd}
+            setBifurcationEnd={setBifurcationEnd}
+            bifurcationSteps={bifurcationSteps}
+            setBifurcationSteps={setBifurcationSteps}
+            iterations={iterations}
+            setIterations={setIterations}
+            visualizationMode={visualizationMode}
+            setVisualizationMode={setVisualizationMode}
+            reset={reset}
+            onExport={exportPNG}
+        />
+    );
+
+    return (
+        <PlaygroundLayout
+            title="Bifurcation Speciation Explorer"
+            subtitle="Sympatric Speciation Through Adaptive Dynamics"
+            sections={sections}
+            settings={settings}
+        />
     );
 }

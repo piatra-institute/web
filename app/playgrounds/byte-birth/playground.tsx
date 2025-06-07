@@ -6,9 +6,9 @@ import PlaygroundSettings from '@/components/PlaygroundSettings';
 import Input from '@/components/Input';
 import { useState } from 'react';
 
-export default function LifesongPlayground() {
-    const [tempo, setTempo] = useState(120);
-    const [complexity, setComplexity] = useState(5);
+export default function ByteBirthPlayground() {
+    const [birthRate, setBirthRate] = useState(0.3);
+    const [complexity, setComplexity] = useState(8);
 
     const sections = [
         {
@@ -17,26 +17,25 @@ export default function LifesongPlayground() {
             content: (
                 <div className="mt-12">
                     <p className="text-xl text-gray-300 mb-4">
-                        Musical patterns that emerge from biological processes
+                        The emergence of digital life from computational primitives
                     </p>
                     <p className="text-gray-400">
-                        Explore how the rhythms and patterns of life itself can be translated 
-                        into musical compositions, creating soundscapes that reflect the 
-                        underlying harmony of biological systems.
+                        Explore how simple computational rules can give rise to complex, 
+                        self-organizing digital organisms through emergent byte-level interactions.
                     </p>
                 </div>
             ),
         },
         {
-            id: 'composition',
+            id: 'simulation',
             type: 'canvas' as const,
             content: (
                 <PlaygroundViewer>
                     <div className="flex items-center justify-center w-full h-64 border-2 border-dashed border-gray-600 rounded-lg">
                         <div className="text-center text-gray-400">
-                            <div className="text-6xl mb-4">🎵</div>
+                            <div className="text-6xl mb-4">🧬</div>
                             <p className="text-lg mb-2">Simulation Coming Soon</p>
-                            <p className="text-sm">Life-inspired musical compositions will be generated here</p>
+                            <p className="text-sm">Digital life emergence will be visualized here</p>
                         </div>
                     </div>
                 </PlaygroundViewer>
@@ -48,21 +47,19 @@ export default function LifesongPlayground() {
             content: (
                 <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                         <p>
-                            Lifesong explores the musical dimensions of biological processes, 
-                            translating the rhythms of life into audible compositions. From the 
-                            steady beat of a heart to the complex patterns of neural activity, 
-                            life itself is inherently musical.
+                            Byte Birth investigates the fundamental question of how digital life might 
+                            emerge from simple computational processes. Starting with basic byte-level 
+                            operations, we explore how complexity can arise through iteration and 
+                            self-organization.
                         </p>
                         <p>
-                            This playground generates musical compositions based on various 
-                            biological data sources: cellular oscillations, population dynamics, 
-                            genetic sequences, and metabolic cycles all contribute to unique 
-                            soundscapes that reflect the underlying patterns of life.
+                            The simulation models various scenarios where computational primitives 
+                            combine to create increasingly sophisticated behaviors, potentially leading 
+                            to digital organisms with emergent properties.
                         </p>
                         <p>
-                            Key concepts include: biological rhythm analysis, data sonification, 
-                            algorithmic composition, and the mathematical relationships between 
-                            biological patterns and musical harmony.
+                            Key concepts include: computational evolution, self-replication, emergent 
+                            complexity, and the minimal requirements for digital life.
                         </p>
                 </div>
             ),
@@ -73,26 +70,27 @@ export default function LifesongPlayground() {
         <PlaygroundSettings
             sections={[
                 {
-                    title: 'Musical Parameters',
+                    title: 'Birth Parameters',
                     content: (
                         <>
                             <Input
-                                value={tempo}
-                                onChange={(e) => setTempo(parseInt(e) || 60)}
-                                label="Tempo (BPM)"
+                                value={birthRate}
+                                onChange={(e) => setBirthRate(parseFloat(e) || 0)}
+                                label="Birth Rate"
                                 compact={true}
                                 type="number"
-                                min={60}
-                                max={200}
+                                min={0}
+                                max={1}
+                                step={0.1}
                             />
                             <Input
                                 value={complexity}
                                 onChange={(e) => setComplexity(parseInt(e) || 1)}
-                                label="Complexity Level"
+                                label="Initial Complexity"
                                 compact={true}
                                 type="number"
                                 min={1}
-                                max={10}
+                                max={16}
                             />
                         </>
                     ),
@@ -103,8 +101,8 @@ export default function LifesongPlayground() {
 
     return (
         <PlaygroundLayout
-            title="Lifesong"
-            subtitle="Musical Patterns from Biological Processes"
+            title="Byte Birth"
+            subtitle="Emergence of Digital Life"
             sections={sections}
             settings={settings}
         />

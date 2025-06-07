@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
-import Header from '@/components/Header';
-import Title from '@/components/Title';
+import PlaygroundLayout from '@/components/PlaygroundLayout';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import Legend from './components/Legend';
@@ -58,40 +58,81 @@ export default function TraumaEustressDynamicsPlayground() {
         animationRef.current.direction = newDirection;
     }, []);
 
-    return (
-        <div className="relative h-screen bg-black overflow-hidden">
-            <div className="absolute inset-0">
-                <Viewer
-                    constriction={constriction}
-                    mechanisms={mechanisms}
-                    isPlaying={isPlaying}
-                    animationRef={animationRef}
-                    onAnimationUpdate={handleAnimationUpdate}
-                />
-            </div>
-
-            <div className="absolute top-0 left-0 z-10 p-6">
-                <Header />
-                <Title text="Trauma-Eustress Dynamics" />
-                <div className="mt-2 text-sm text-gray-400 text-center max-w-2xl">
-                    Explore how constriction and expansion influence post-trauma trajectories
-                    through resilience, recovery, chronic narrowing, and growth pathways.
+    const sections = [
+        {
+            id: 'intro',
+            type: 'intro' as const,
+        },
+        {
+            id: 'simulation',
+            type: 'canvas' as const,
+            content: (
+                <div className="absolute inset-0 bg-black overflow-hidden">
+                    <div className="absolute inset-0">
+                        <Viewer
+                            constriction={constriction}
+                            mechanisms={mechanisms}
+                            isPlaying={isPlaying}
+                            animationRef={animationRef}
+                            onAnimationUpdate={handleAnimationUpdate}
+                        />
+                    </div>
                 </div>
-            </div>
+            ),
+        },
+        {
+            id: 'about',
+            type: 'outro' as const,
+            content: (
+                <>
+                    <p>
+                        This visualization explores how individuals respond to trauma through 
+                        different psychological and physiological mechanisms. The model 
+                        distinguishes between constriction (defensive narrowing) and expansion 
+                        (growth-oriented opening) as fundamental response patterns.
+                    </p>
+                    <p>
+                        Four key mechanisms shape post-trauma trajectories: resilience 
+                        (maintaining stability), recovery (returning to baseline), chronic 
+                        narrowing (persistent constriction), and post-traumatic growth 
+                        (expansion beyond previous functioning levels).
+                    </p>
+                    <p>
+                        Key concepts include: trauma response patterns, resilience theory, 
+                        post-traumatic growth, stress adaptation, eustress versus distress, 
+                        and the dynamics of psychological constriction and expansion.
+                    </p>
+                </>
+            ),
+        },
+    ];
 
-            <Settings
-                constriction={constriction}
-                mechanisms={mechanisms}
-                isPlaying={isPlaying}
-                onConstrictionChange={handleConstrictionChange}
-                onMechanismChange={handleMechanismChange}
-                onPlayPause={handlePlayPause}
-            />
+    const settings = (
+        <Settings
+            constriction={constriction}
+            mechanisms={mechanisms}
+            isPlaying={isPlaying}
+            onConstrictionChange={handleConstrictionChange}
+            onMechanismChange={handleMechanismChange}
+            onPlayPause={handlePlayPause}
+        />
+    );
 
-            <Legend
-                constriction={constriction}
-                mechanisms={mechanisms}
-            />
-        </div>
+    return (
+        <PlaygroundLayout
+            title="trauma-eustress dynamics"
+            subtitle="explore how constriction and expansion influence post-trauma trajectories; observe resilience, recovery, and growth pathways"
+            description={
+                <a
+                    href="https://doi.org/10.1207/s15327752jpa7503_01"
+                    target="_blank"
+                    className="text-blue-400 hover:text-blue-300 underline"
+                >
+                    2006, Tedeschi & Calhoun, The Foundations of Posttraumatic Growth
+                </a>
+            }
+            sections={sections}
+            settings={settings}
+        />
     );
 }

@@ -5,56 +5,71 @@ import {
     useState,
 } from 'react';
 
-import Header from '@/components/Header';
-import Title from '@/components/Title';
+import PlaygroundLayout from '@/components/PlaygroundLayout';
 
 import Board from './components/Board';
 
 
 
 export default function FracqunxPlayground() {
-    const [isLoaded, setIsLoaded] = useState(false);
-    const [showTitle, setShowTitle] = useState(true);
-
-    useEffect(() => {
-        setIsLoaded(false);
-
-        const timer = setTimeout(() => {
-            setIsLoaded(true);
-        }, 5000);
-
-        return () => clearTimeout(timer);
-    }, []);
+    const sections = [
+        {
+            id: 'intro',
+            type: 'intro' as const,
+            content: (
+                <div className="mt-12">
+                    <p className="text-xl text-gray-300 mb-4">
+                        Interactive Galton board exploring probability, statistics, and emergence
+                    </p>
+                    <p className="text-gray-400">
+                        Drop beads through a lattice of pegs to observe how individual random 
+                        events combine to create predictable statistical patterns and emergent 
+                        distributions.
+                    </p>
+                </div>
+            ),
+        },
+        {
+            id: 'simulation',
+            type: 'canvas' as const,
+            content: (
+                <div className="relative w-full h-full">
+                    <Board toggleTitle={() => {}} />
+                </div>
+            ),
+        },
+        {
+            id: 'about',
+            type: 'outro' as const,
+            content: (
+                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <p>
+                            The Fracqunx (a play on "quincunx," the formal name for a Galton board) 
+                            demonstrates fundamental principles of probability and statistics through 
+                            physical simulation. As beads fall through randomly positioned pegs, 
+                            they follow the laws of chance at the microscopic level.
+                        </p>
+                        <p>
+                            Despite the randomness of individual bead paths, the collective behavior 
+                            creates predictable patterns - typically forming a bell curve or normal 
+                            distribution. This emergent behavior illustrates the central limit theorem 
+                            and shows how deterministic physical laws and random events interact.
+                        </p>
+                        <p>
+                            Key concepts include: central limit theorem, normal distribution, 
+                            emergent statistical behavior, probability visualization, and the 
+                            relationship between microscopic randomness and macroscopic order.
+                        </p>
+                </div>
+            ),
+        },
+    ];
 
     return (
-        <div
-            className="z-10 relative flex flex-col items-center justify-center min-h-screen py-2"
-        >
-            {showTitle && (
-                <div
-                    className={`
-                        absolute top-0 left-0 right-0 z-50
-                        pointer-events-none
-                        transition-opacity duration-300
-                        hover:opacity-100
-                        ${isLoaded ? 'opacity-30' : 'opacity-100'}
-                    `}
-                >
-                    <div
-                        className="flex justify-center"
-                    >
-                        <Header />
-                    </div>
-
-                    <Title
-                        text="fracqunx"
-                    />
-                </div>
-            )}
-
-            <Board
-                toggleTitle={() => setShowTitle(!showTitle)}
-            />
-        </div>
+        <PlaygroundLayout
+            title="Fracqunx"
+            subtitle="Interactive Galton Board Probability Explorer"
+            sections={sections}
+        />
     );
 }
