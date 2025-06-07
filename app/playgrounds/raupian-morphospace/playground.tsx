@@ -63,20 +63,20 @@ export default function RaupianMorphospacePlayground() {
             content: (
                 <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                     <p>
-                        David M. Raup&apos;s three-parameter model revolutionized our understanding 
-                        of shell morphology by reducing the infinite variety of mollusk shells 
-                        to just three geometric parameters: whorl expansion rate (W), distance 
+                        David M. Raup&apos;s three-parameter model revolutionized our understanding
+                        of shell morphology by reducing the infinite variety of mollusk shells
+                        to just three geometric parameters: whorl expansion rate (W), distance
                         from coiling axis (D), and translation rate (T).
                     </p>
                     <p>
-                        This morphospace visualization allows exploration of theoretical shell 
-                        forms, many of which don&apos;t exist in nature. By adjusting the three 
-                        parameters, you can navigate through possible shell geometries and 
+                        This morphospace visualization allows exploration of theoretical shell
+                        forms, many of which don&apos;t exist in nature. By adjusting the three
+                        parameters, you can navigate through possible shell geometries and
                         understand the constraints that shape biological form.
                     </p>
                     <p>
-                        Key concepts include: theoretical morphology, parametric modeling, 
-                        evolutionary constraints, shell geometry, and the relationship between 
+                        Key concepts include: theoretical morphology, parametric modeling,
+                        evolutionary constraints, shell geometry, and the relationship between
                         mathematical possibility and biological reality.
                     </p>
                 </div>
@@ -104,7 +104,7 @@ export default function RaupianMorphospacePlayground() {
             subtitle="visualizing theoretical shell morphology using david m. raup's three-parameter model; navigate forms with arrows and shift"
             description={
                 <a
-                    href="https://doi.org/10.1086/282663"
+                    href="https://www.jstor.org/stable/1301992"
                     target="_blank"
                     className="text-blue-400 hover:text-blue-300 underline"
                 >

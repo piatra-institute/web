@@ -47,27 +47,27 @@ export default function StochasticJusticePlayground() {
     const startC = corruption;
     const startR = randomness;
     const startTime = Date.now();
-    
+
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      
+
       const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
       const easedProgress = easeOutCubic(progress);
-      
+
       const currentC = startC + (targetC - startC) * easedProgress;
       const currentR = startR + (targetR - startR) * easedProgress;
-      
+
       setCorruption(currentC);
       setRandomness(currentR);
-      
+
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
         setIsAnimating(false);
       }
     };
-    
+
     requestAnimationFrame(animate);
   }, [corruption, randomness]);
 
@@ -114,20 +114,20 @@ export default function StochasticJusticePlayground() {
       content: (
         <>
           <p>
-            Stochastic Justice explores when randomness can serve as a better proxy 
-            for fairness than biased deterministic rules. Using information theory 
-            and decision science, this playground models the complex relationship 
+            Stochastic Justice explores when randomness can serve as a better proxy
+            for fairness than biased deterministic rules. Using information theory
+            and decision science, this playground models the complex relationship
             between institutional corruption and procedural randomness.
           </p>
           <p>
-            The visualization shows how different types of corruption (directional bias, 
-            increased variance, systematic error) respond differently to randomness. 
-            In some corrupt systems, strategic randomness can counteract bias more 
+            The visualization shows how different types of corruption (directional bias,
+            increased variance, systematic error) respond differently to randomness.
+            In some corrupt systems, strategic randomness can counteract bias more
             effectively than deterministic reforms.
           </p>
           <p>
-            Key concepts include: information theory, institutional corruption, 
-            procedural fairness, decision science, entropy measures, and the 
+            Key concepts include: information theory, institutional corruption,
+            procedural fairness, decision science, entropy measures, and the
             trade-offs between fairness and efficiency in governance systems.
           </p>
         </>
@@ -158,15 +158,6 @@ export default function StochasticJusticePlayground() {
     <PlaygroundLayout
       title="stochastic justice"
       subtitle="exploring fairness through randomness in corrupt systems; drag marker to explore regimes where randomness counteracts corruption"
-      description={
-        <a
-          href="https://doi.org/10.1017/S0003055418000746"
-          target="_blank"
-          className="text-blue-400 hover:text-blue-300 underline"
-        >
-          2019, Dworkin et al., Procedural Justice and Corruption
-        </a>
-      }
       sections={sections}
       settings={settings}
     />

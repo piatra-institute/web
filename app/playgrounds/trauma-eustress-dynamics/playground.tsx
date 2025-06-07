@@ -86,20 +86,20 @@ export default function TraumaEustressDynamicsPlayground() {
             content: (
                 <>
                     <p>
-                        This visualization explores how individuals respond to trauma through 
-                        different psychological and physiological mechanisms. The model 
-                        distinguishes between constriction (defensive narrowing) and expansion 
+                        This visualization explores how individuals respond to trauma through
+                        different psychological and physiological mechanisms. The model
+                        distinguishes between constriction (defensive narrowing) and expansion
                         (growth-oriented opening) as fundamental response patterns.
                     </p>
                     <p>
-                        Four key mechanisms shape post-trauma trajectories: resilience 
-                        (maintaining stability), recovery (returning to baseline), chronic 
-                        narrowing (persistent constriction), and post-traumatic growth 
+                        Four key mechanisms shape post-trauma trajectories: resilience
+                        (maintaining stability), recovery (returning to baseline), chronic
+                        narrowing (persistent constriction), and post-traumatic growth
                         (expansion beyond previous functioning levels).
                     </p>
                     <p>
-                        Key concepts include: trauma response patterns, resilience theory, 
-                        post-traumatic growth, stress adaptation, eustress versus distress, 
+                        Key concepts include: trauma response patterns, resilience theory,
+                        post-traumatic growth, stress adaptation, eustress versus distress,
                         and the dynamics of psychological constriction and expansion.
                     </p>
                 </>
@@ -124,9 +124,9 @@ export default function TraumaEustressDynamicsPlayground() {
             subtitle="explore how constriction and expansion influence post-trauma trajectories; observe resilience, recovery, and growth pathways"
             description={
                 <a
-                    href="https://doi.org/10.1207/s15327752jpa7503_01"
+                    href="https://psycnet.apa.org/record/2006-05098-001"
                     target="_blank"
-                    className="text-blue-400 hover:text-blue-300 underline"
+                    className="underline"
                 >
                     2006, Tedeschi & Calhoun, The Foundations of Posttraumatic Growth
                 </a>

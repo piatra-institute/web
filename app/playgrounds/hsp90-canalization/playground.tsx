@@ -98,20 +98,20 @@ export default function Hsp90CanalizationPlayground() {
             content: (
                 <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                     <p>
-                        Hsp90 is a molecular chaperone that plays a crucial role in genetic 
-                        canalization - the ability of organisms to maintain consistent 
-                        phenotypes despite genetic and environmental variation. This playground 
+                        Hsp90 is a molecular chaperone that plays a crucial role in genetic
+                        canalization - the ability of organisms to maintain consistent
+                        phenotypes despite genetic and environmental variation. This playground
                         visualizes how Hsp90 buffers latent phenotypic variance.
                     </p>
                     <p>
-                        Under normal conditions, Hsp90 masks the effects of cryptic genetic 
-                        variation, ensuring stable development. However, when Hsp90 function 
-                        is compromised (by stress, mutations, or inhibition), previously 
+                        Under normal conditions, Hsp90 masks the effects of cryptic genetic
+                        variation, ensuring stable development. However, when Hsp90 function
+                        is compromised (by stress, mutations, or inhibition), previously
                         hidden traits become visible, potentially accelerating evolution.
                     </p>
                     <p>
-                        Key concepts include: genetic canalization, phenotypic buffering, 
-                        cryptic genetic variation, molecular chaperones, and evolutionary 
+                        Key concepts include: genetic canalization, phenotypic buffering,
+                        cryptic genetic variation, molecular chaperones, and evolutionary
                         capacitance in developmental systems.
                     </p>
                 </div>
@@ -141,7 +141,7 @@ export default function Hsp90CanalizationPlayground() {
             subtitle="molecular chaperone buffers and reveals hidden phenotypic variance; explore how hsp90 shapes evolutionary potential"
             description={
                 <a
-                    href="https://doi.org/10.1038/31159"
+                    href="https://www.nature.com/articles/24550"
                     target="_blank"
                     className="text-blue-400 hover:text-blue-300 underline"
                 >
