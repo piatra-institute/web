@@ -72,6 +72,11 @@ const playgrounds = [
         link: '/playgrounds/trauma-eustress-dynamics',
         description: 'constriction and expansion influence on post-trauma trajectories',
     },
+    {
+        name: 'open source sustainability',
+        link: '/playgrounds/open-source-sustainability',
+        description: 'pressure dynamics in open source license transitions',
+    },
 
     // {
     //     name: 'eyevolution',

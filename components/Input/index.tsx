@@ -19,6 +19,7 @@ export interface InputProps {
     max?: number;
     step?: number;
     inputMode?: 'numeric' | 'decimal' | 'email';
+    disabled?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
