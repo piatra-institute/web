@@ -11,6 +11,7 @@ export interface InputProps {
     label?: string;
     compact?: boolean;
     centered?: boolean;
+    className?: string;
 
     type?: 'text' | 'number' | 'range';
 
@@ -29,6 +30,7 @@ const Input: React.FC<InputProps> = ({
     label,
     compact,
     centered,
+    className,
     type = 'text',
     ...rest
 }) => {
@@ -58,6 +60,7 @@ const Input: React.FC<InputProps> = ({
               ${compact ? 'w-24' : 'w-60 md:w-72'}
               ${centered ? 'text-center' : 'text-right'}
             `}
+          ${className || ''}
         `)}
                 value={value}
                 placeholder={placeholder}

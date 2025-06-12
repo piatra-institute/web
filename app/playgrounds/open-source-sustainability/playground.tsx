@@ -11,6 +11,8 @@ import {
   caseStudies,
   SimulationState,
   TimelineEvent,
+  FormulaCoefficients,
+  defaultCoefficients,
 } from './logic';
 
 export default function Playground() {
@@ -22,6 +24,7 @@ export default function Playground() {
   const [donations, setDonations] = useState(50);
   const [cloud, setCloud] = useState(50);
   const [showStalks, setShowStalks] = useState(true);
+  const [coefficients, setCoefficients] = useState<FormulaCoefficients>(defaultCoefficients);
 
   // Simulation state
   const [isPlaying, setIsPlaying] = useState(false);
@@ -33,9 +36,15 @@ export default function Playground() {
 
   const simulationRef = useRef<NodeJS.Timeout | null>(null);
   const eventTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const coefficientsRef = useRef(coefficients);
+  
+  // Keep ref in sync with state
+  useEffect(() => {
+    coefficientsRef.current = coefficients;
+  }, [coefficients]);
 
   // Calculate current coordinates
-  const coordinates = calculatePhaseCoordinates(community, donations, cloud, maturity);
+  const coordinates = calculatePhaseCoordinates(community, donations, cloud, maturity, coefficients);
 
   // Reset simulation
   const handleReset = useCallback(() => {
@@ -114,8 +123,8 @@ export default function Playground() {
       setCurrentEvent(null);
     }, 4000);
 
-    setTrajectory([calculatePhaseCoordinates(community, donations, cloud, maturity)]);
-  }, [activeCaseStudy, maturity, community, donations, cloud]);
+    // Don't set trajectory here, let the main effect handle it
+  }, [activeCaseStudy, maturity]);
 
   // Play/pause simulation
   const handlePlayPause = useCallback(() => {
@@ -148,7 +157,7 @@ export default function Playground() {
             setCloud(event.pressure);
             setCurrentEvent(event);
 
-            setTrajectory(prev => [...prev, calculatePhaseCoordinates(event.community, event.funding, event.pressure, event.maturity)]);
+            setTrajectory(prev => [...prev, calculatePhaseCoordinates(event.community, event.funding, event.pressure, event.maturity, coefficientsRef.current)]);
 
             return prevIndex + 1;
           });
@@ -165,7 +174,7 @@ export default function Playground() {
           });
 
           setTrajectory(prev => {
-            const newPoint = calculatePhaseCoordinates(community, donations, cloud, maturity);
+            const newPoint = calculatePhaseCoordinates(community, donations, cloud, maturity, coefficientsRef.current);
             const updated = [...prev, newPoint];
             return updated.length > 200 ? updated.slice(1) : updated;
           });
@@ -196,6 +205,13 @@ export default function Playground() {
       }
     }
   }, [activeCaseStudy, caseStudyTimelineIndex, isPlaying]);
+
+  // Update trajectory on shock
+  useEffect(() => {
+    if (currentEvent && !activeCaseStudy && !isPlaying) {
+      setTrajectory([coordinates]);
+    }
+  }, [currentEvent, activeCaseStudy, isPlaying, coordinates]);
 
   const sections = [
     {
@@ -317,6 +333,8 @@ export default function Playground() {
           showStalks={showStalks}
           onShowStalksChange={setShowStalks}
           sandboxTime={sandboxTime}
+          coefficients={coefficients}
+          onCoefficientsChange={setCoefficients}
         />
       }
     />

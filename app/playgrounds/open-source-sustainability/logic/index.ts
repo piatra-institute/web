@@ -1,3 +1,34 @@
+export interface FormulaCoefficients {
+  // Support formula coefficients
+  communityBase: number;
+  communityMaturityCoeff: number;
+  communityMaturityPower: number;
+  donationBase: number;
+  donationMaturityCoeff: number;
+  donationMaturityPower: number;
+  synergyAmplitude: number;
+  
+  // Pressure formula coefficients
+  communityResistCoeff: number;
+  financialBufferCoeff: number;
+  maturityInertiaCoeff: number;
+  maturityInertiaPower: number;
+}
+
+export const defaultCoefficients: FormulaCoefficients = {
+  communityBase: 0.7,
+  communityMaturityCoeff: 0.3,
+  communityMaturityPower: 0.8,
+  donationBase: 0.6,
+  donationMaturityCoeff: 0.4,
+  donationMaturityPower: 0.6,
+  synergyAmplitude: 0.5,
+  communityResistCoeff: 0.3,
+  financialBufferCoeff: 0.2,
+  maturityInertiaCoeff: 0.4,
+  maturityInertiaPower: 1.2,
+};
+
 export interface TimelineEvent {
   year: number;
   maturity: number;
@@ -97,27 +128,28 @@ export function calculatePhaseCoordinates(
   community: number, 
   donations: number, 
   cloud: number,
-  maturity: number = 50
+  maturity: number = 50,
+  coefficients: FormulaCoefficients = defaultCoefficients
 ): {x: number, y: number} {
   // Sheaf-theoretic model: local interactions determine global position
   
   // 1. Community-Maturity interaction: mature communities are more effective
-  const communityEffect = community * (0.7 + 0.3 * Math.pow(maturity / 100, 0.8));
+  const communityEffect = community * (coefficients.communityBase + coefficients.communityMaturityCoeff * Math.pow(maturity / 100, coefficients.communityMaturityPower));
   
   // 2. Donations-Maturity interaction: mature projects use funds more efficiently
-  const donationEffect = donations * (0.6 + 0.4 * Math.pow(maturity / 100, 0.6));
+  const donationEffect = donations * (coefficients.donationBase + coefficients.donationMaturityCoeff * Math.pow(maturity / 100, coefficients.donationMaturityPower));
   
   // 3. Support emerges from community-donation synergy (non-linear coupling)
-  const synergyFactor = 1 + 0.5 * Math.sin(Math.PI * community * donations / 10000);
+  const synergyFactor = 1 + coefficients.synergyAmplitude * Math.sin(Math.PI * community * donations / 10000);
   const supportScore = 100 * Math.sqrt((communityEffect + donationEffect) / 200 * synergyFactor);
   
   // 4. Pressure modulated by all four variables interacting
   // Community resists pressure through solidarity
-  const communityResistance = 1 - 0.3 * (community / 100);
+  const communityResistance = 1 - coefficients.communityResistCoeff * (community / 100);
   // Donations provide buffer against pressure
-  const financialBuffer = 1 - 0.2 * (donations / 100);
+  const financialBuffer = 1 - coefficients.financialBufferCoeff * (donations / 100);
   // Maturity provides institutional inertia
-  const maturityInertia = 1 - 0.4 * Math.pow(maturity / 100, 1.2);
+  const maturityInertia = 1 - coefficients.maturityInertiaCoeff * Math.pow(maturity / 100, coefficients.maturityInertiaPower);
   
   // Combined resistance is multiplicative (each factor compounds)
   const totalResistance = communityResistance * financialBuffer * maturityInertia;

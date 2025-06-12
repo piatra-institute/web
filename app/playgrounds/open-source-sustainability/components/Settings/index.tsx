@@ -1,7 +1,9 @@
+import { useState, useEffect } from 'react';
 import Button from '@/components/Button';
+import Input from '@/components/Input';
 import SliderInput from '@/components/SliderInput';
 import Toggle from '@/components/Toggle';
-import { CaseStudy, TimelineEvent } from '../../logic';
+import { CaseStudy, TimelineEvent, FormulaCoefficients, defaultCoefficients } from '../../logic';
 
 interface SettingsProps {
   maturity: number;
@@ -24,6 +26,8 @@ interface SettingsProps {
   showStalks: boolean;
   onShowStalksChange: (value: boolean) => void;
   sandboxTime: number;
+  coefficients: FormulaCoefficients;
+  onCoefficientsChange: (coefficients: FormulaCoefficients) => void;
 }
 
 export default function Settings({
@@ -47,9 +51,32 @@ export default function Settings({
   showStalks,
   onShowStalksChange,
   sandboxTime,
+  coefficients,
+  onCoefficientsChange,
 }: SettingsProps) {
   const supportScore = coordinates.y;
   const pressureScore = coordinates.x;
+
+  const [isEditingFormulas, setIsEditingFormulas] = useState(false);
+  const [editingCoefficients, setEditingCoefficients] = useState<FormulaCoefficients>(coefficients);
+
+  useEffect(() => {
+    setEditingCoefficients(coefficients);
+  }, [coefficients]);
+
+  const handleSaveFormulas = () => {
+    onCoefficientsChange(editingCoefficients);
+    setIsEditingFormulas(false);
+  };
+
+  const handleResetFormulas = () => {
+    setEditingCoefficients(defaultCoefficients);
+    onCoefficientsChange(defaultCoefficients);
+  };
+
+  const updateCoefficient = (key: keyof FormulaCoefficients, value: number) => {
+    setEditingCoefficients(prev => ({ ...prev, [key]: value }));
+  };
 
   return (
     <div className="w-full h-full overflow-y-auto p-4">
@@ -148,29 +175,179 @@ export default function Settings({
         </div>
 
         <div className="pt-4 border-t border-gray-700">
-          <h3 className="text-lg font-semibold mb-3">The Model Explained</h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-semibold">The Model Explained</h3>
+            <div className="flex gap-2">
+              {isEditingFormulas && (
+                <Button
+                  label="Reset"
+                  onClick={handleResetFormulas}
+                  size="sm"
+                  className="text-xs"
+                />
+              )}
+              <Button
+                label={isEditingFormulas ? 'Save' : 'Edit'}
+                onClick={isEditingFormulas ? handleSaveFormulas : () => setIsEditingFormulas(true)}
+                size="sm"
+                className="text-xs"
+              />
+            </div>
+          </div>
         <div className="p-3 bg-black/50 border border-white/20 text-gray-300 text-sm space-y-3">
           <p>Sheaf-theoretic model: all four variables interact locally to determine global behavior</p>
           <div>
             <strong className="text-lime-400">Support emerges from synergies:</strong>
-            <code className="block text-xs bg-black p-2 rounded mt-1 font-mono text-white leading-relaxed">
-              community_eff = community × (0.7 + 0.3 × maturity^0.8)<br/>
-              donation_eff = donations × (0.6 + 0.4 × maturity^0.6)<br/>
-              synergy = 1 + 0.5 × sin(π × community × donations/10000)<br/>
-              support = 100 × √((c_eff + d_eff)/200 × synergy)
-            </code>
+            {isEditingFormulas ? (
+              <div className="space-y-2 mt-2">
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="font-mono">community_eff = community × (</span>
+                  <Input
+                    type="number"
+                    value={editingCoefficients.communityBase}
+                    onChange={(e) => updateCoefficient('communityBase', parseFloat(e) || 0)}
+                    step={0.1}
+                    compact
+                    className="!w-[70px]"
+                  />
+                  <span className="font-mono">+</span>
+                  <Input
+                    type="number"
+                    value={editingCoefficients.communityMaturityCoeff}
+                    onChange={(e) => updateCoefficient('communityMaturityCoeff', parseFloat(e) || 0)}
+                    step={0.1}
+                    compact
+                    className="!w-[70px]"
+                  />
+                  <span className="font-mono">× maturity^</span>
+                  <Input
+                    type="number"
+                    value={editingCoefficients.communityMaturityPower}
+                    onChange={(e) => updateCoefficient('communityMaturityPower', parseFloat(e) || 0)}
+                    step={0.1}
+                    compact
+                    className="!w-[70px]"
+                  />
+                  <span className="font-mono">)</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="font-mono">donation_eff = donations × (</span>
+                  <Input
+                    type="number"
+                    value={editingCoefficients.donationBase}
+                    onChange={(e) => updateCoefficient('donationBase', parseFloat(e) || 0)}
+                    step={0.1}
+                    compact
+                    className="!w-[70px]"
+                  />
+                  <span className="font-mono">+</span>
+                  <Input
+                    type="number"
+                    value={editingCoefficients.donationMaturityCoeff}
+                    onChange={(e) => updateCoefficient('donationMaturityCoeff', parseFloat(e) || 0)}
+                    step={0.1}
+                    compact
+                    className="!w-[70px]"
+                  />
+                  <span className="font-mono">× maturity^</span>
+                  <Input
+                    type="number"
+                    value={editingCoefficients.donationMaturityPower}
+                    onChange={(e) => updateCoefficient('donationMaturityPower', parseFloat(e) || 0)}
+                    step={0.1}
+                    compact
+                    className="!w-[70px]"
+                  />
+                  <span className="font-mono">)</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="font-mono">synergy = 1 +</span>
+                  <Input
+                    type="number"
+                    value={editingCoefficients.synergyAmplitude}
+                    onChange={(e) => updateCoefficient('synergyAmplitude', parseFloat(e) || 0)}
+                    step={0.1}
+                    compact
+                    className="!w-[70px]"
+                  />
+                  <span className="font-mono">× sin(π × community × donations/10000)</span>
+                </div>
+                <div className="text-xs font-mono text-gray-400">
+                  support = 100 × √((c_eff + d_eff)/200 × synergy)
+                </div>
+              </div>
+            ) : (
+              <code className="block text-xs bg-black p-2 rounded mt-1 font-mono text-white leading-relaxed">
+                community_eff = community × ({coefficients.communityBase} + {coefficients.communityMaturityCoeff} × maturity^{coefficients.communityMaturityPower})<br/>
+                donation_eff = donations × ({coefficients.donationBase} + {coefficients.donationMaturityCoeff} × maturity^{coefficients.donationMaturityPower})<br/>
+                synergy = 1 + {coefficients.synergyAmplitude} × sin(π × community × donations/10000)<br/>
+                support = 100 × √((c_eff + d_eff)/200 × synergy)
+              </code>
+            )}
             <p className="text-right font-mono text-lg text-lime-400 mt-1">
               {supportScore.toFixed(1)}
             </p>
           </div>
           <div>
             <strong className="text-red-400">Pressure dampened by triple resistance:</strong>
-            <code className="block text-xs bg-black p-2 rounded mt-1 font-mono text-white leading-relaxed">
-              community_resist = 1 - 0.3×(community/100)<br/>
-              financial_buffer = 1 - 0.2×(donations/100)<br/>
-              maturity_inertia = 1 - 0.4×(maturity/100)^1.2<br/>
-              pressure = (cloud × Π(resistances))² / 100
-            </code>
+            {isEditingFormulas ? (
+              <div className="space-y-2 mt-2">
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="font-mono">community_resist = 1 -</span>
+                  <Input
+                    type="number"
+                    value={editingCoefficients.communityResistCoeff}
+                    onChange={(e) => updateCoefficient('communityResistCoeff', parseFloat(e) || 0)}
+                    step={0.1}
+                    compact
+                    className="!w-[70px]"
+                  />
+                  <span className="font-mono">×(community/100)</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="font-mono">financial_buffer = 1 -</span>
+                  <Input
+                    type="number"
+                    value={editingCoefficients.financialBufferCoeff}
+                    onChange={(e) => updateCoefficient('financialBufferCoeff', parseFloat(e) || 0)}
+                    step={0.1}
+                    compact
+                    className="!w-[70px]"
+                  />
+                  <span className="font-mono">×(donations/100)</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="font-mono">maturity_inertia = 1 -</span>
+                  <Input
+                    type="number"
+                    value={editingCoefficients.maturityInertiaCoeff}
+                    onChange={(e) => updateCoefficient('maturityInertiaCoeff', parseFloat(e) || 0)}
+                    step={0.1}
+                    compact
+                    className="!w-[70px]"
+                  />
+                  <span className="font-mono">×(maturity/100)^</span>
+                  <Input
+                    type="number"
+                    value={editingCoefficients.maturityInertiaPower}
+                    onChange={(e) => updateCoefficient('maturityInertiaPower', parseFloat(e) || 0)}
+                    step={0.1}
+                    compact
+                    className="!w-[70px]"
+                  />
+                </div>
+                <div className="text-xs font-mono text-gray-400">
+                  pressure = (cloud × Π(resistances))² / 100
+                </div>
+              </div>
+            ) : (
+              <code className="block text-xs bg-black p-2 rounded mt-1 font-mono text-white leading-relaxed">
+                community_resist = 1 - {coefficients.communityResistCoeff}×(community/100)<br/>
+                financial_buffer = 1 - {coefficients.financialBufferCoeff}×(donations/100)<br/>
+                maturity_inertia = 1 - {coefficients.maturityInertiaCoeff}×(maturity/100)^{coefficients.maturityInertiaPower}<br/>
+                pressure = (cloud × Π(resistances))² / 100
+              </code>
+            )}
             <p className="text-right font-mono text-lg text-orange-400 mt-1">
               {pressureScore.toFixed(1)}
             </p>
