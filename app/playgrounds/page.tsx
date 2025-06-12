@@ -47,37 +47,6 @@ const playgrounds = [
         link: '/playgrounds/raupian-morphospace',
         description: 'coiling models',
     },
-    {
-        name: 'Hsp90 canalization',
-        link: '/playgrounds/hsp90-canalization',
-        description: 'chaperone-driven canalization of latent phenotypic variation',
-    },
-    {
-        name: 'Lefebvrian conscience',
-        link: '/playgrounds/lefebvrian-conscience',
-        description: 'algebra of conscience',
-    },
-    {
-        name: 'bifurcation speciation',
-        link: '/playgrounds/bifurcation-speciation',
-        description: 'sympatric and allopatric speciation through bifurcation',
-    },
-    {
-        name: 'stochastic justice',
-        link: '/playgrounds/stochastic-justice',
-        description: 'fairness through randomness in corrupt systems',
-    },
-    {
-        name: 'trauma-eustress dynamics',
-        link: '/playgrounds/trauma-eustress-dynamics',
-        description: 'constriction and expansion influence on post-trauma trajectories',
-    },
-    {
-        name: 'open source sustainability',
-        link: '/playgrounds/open-source-sustainability',
-        description: 'pressure dynamics in open source license transitions',
-    },
-
     // {
     //     name: 'eyevolution',
     //     link: '/playgrounds/eyevolution',
@@ -118,6 +87,36 @@ const playgrounds = [
     //     link: '/playgrounds/everything-relevant',
     //     description: '',
     // },
+    {
+        name: 'Hsp90 canalization',
+        link: '/playgrounds/hsp90-canalization',
+        description: 'chaperone-driven canalization of latent phenotypic variation',
+    },
+    {
+        name: 'Lefebvrian conscience',
+        link: '/playgrounds/lefebvrian-conscience',
+        description: 'algebra of conscience',
+    },
+    {
+        name: 'bifurcation speciation',
+        link: '/playgrounds/bifurcation-speciation',
+        description: 'sympatric and allopatric speciation through bifurcation',
+    },
+    {
+        name: 'stochastic justice',
+        link: '/playgrounds/stochastic-justice',
+        description: 'fairness through randomness in corrupt systems',
+    },
+    {
+        name: 'trauma-eustress dynamics',
+        link: '/playgrounds/trauma-eustress-dynamics',
+        description: 'constriction and expansion influence on post-trauma trajectories',
+    },
+    {
+        name: 'open source sustainability',
+        link: '/playgrounds/open-source-sustainability',
+        description: 'pressure dynamics in open source license transitions',
+    },
 ];
 
 
