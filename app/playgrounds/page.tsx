@@ -117,6 +117,11 @@ const playgrounds = [
         link: '/playgrounds/open-source-sustainability',
         description: 'pressure dynamics in open source license transitions',
     },
+    {
+        name: 'resentment against desire',
+        link: '/playgrounds/resentment-against-desire',
+        description: 'the psychology of fairness in the ultimatum game',
+    },
 ];
 
 

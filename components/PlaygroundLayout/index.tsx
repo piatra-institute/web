@@ -61,15 +61,28 @@ export default function PlaygroundLayout({
     };
 
     useEffect(() => {
-        const handleEscape = (e: KeyboardEvent) => {
+        const handleKeyPress = (e: KeyboardEvent) => {
+            // Close settings with Escape
             if (e.key === 'Escape' && showSettings) {
                 setShowSettings(false);
                 onSettingsToggle?.(false);
             }
+
+            // Toggle settings with 's' key (not when typing in inputs)
+            if (e.key === 's' &&
+                !e.ctrlKey && !e.metaKey && !e.altKey &&
+                e.target instanceof Element &&
+                !['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) {
+                e.preventDefault();
+                const newState = !showSettings;
+                setShowSettings(newState);
+                onSettingsToggle?.(newState);
+                defocus();
+            }
         };
 
-        window.addEventListener('keydown', handleEscape);
-        return () => window.removeEventListener('keydown', handleEscape);
+        window.addEventListener('keydown', handleKeyPress);
+        return () => window.removeEventListener('keydown', handleKeyPress);
     }, [showSettings, onSettingsToggle]);
 
     useEffect(() => {
@@ -232,3 +245,4 @@ export default function PlaygroundLayout({
         </div>
     );
 }
+
