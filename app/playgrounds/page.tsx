@@ -122,6 +122,11 @@ const playgrounds = [
         link: '/playgrounds/resentment-against-desire',
         description: 'the psychology of fairness in the ultimatum game',
     },
+    {
+        name: 'debt singularity',
+        link: '/playgrounds/debt-singularity',
+        description: 'phase transitions of debt through economic conditions',
+    },
 ];
 
 
