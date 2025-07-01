@@ -101,13 +101,13 @@ export default function EntropyCafePlayground() {
             content: (
                 <>
                     <p>
-                        Sean M. Carroll uses the metaphor of coffee and cream mixing to illustrate the journey of entropy in our universe. The unmixed state represents low entropy—ordered and simple. As the fluids mix, entropy increases, creating beautiful swirls of intermediate complexity. Eventually, everything becomes uniformly mixed: high entropy, but simple again.
+                        Sean M. Carroll uses coffee and cream mixing as a metaphor for entropy in the universe. The unmixed state has low entropy: ordered and simple. When the fluids mix, entropy increases and creates swirls of intermediate complexity. The final state is uniformly mixed with high entropy but simple structure again.
                     </p>
                     <p>
-                        This mirrors the universe&apos;s evolution from a simple, low-entropy beginning through our complex present, toward a simple, high-entropy future. The tension between increasing entropy and emerging complexity is resolved by understanding that Earth isn&apos;t a closed system—we receive low-entropy energy from the sun and radiate high-entropy heat to space.
+                        This parallels the universe&apos;s evolution from a simple, low-entropy beginning through the complex present, toward a simple, high-entropy future. The apparent contradiction between increasing entropy and emerging complexity is resolved by recognizing that Earth is not a closed system. It receives low-entropy energy from the sun and radiates high-entropy heat to space.
                     </p>
                     <p>
-                        Just as cleaning your room decreases local entropy while increasing universal entropy through your effort, life creates local order by accelerating the universe&apos;s overall entropy increase. Complexity emerges not despite the second law of thermodynamics, but because of it—riding the gradient from order to disorder.
+                        Organizing a room decreases local entropy while increasing universal entropy through the work performed. Similarly, life creates local order by accelerating the universe&apos;s overall entropy increase. Complexity emerges not despite the second law of thermodynamics, but because of it. Systems ride the gradient from order to disorder.
                     </p>
                 </>
             ),
