@@ -127,6 +127,11 @@ const playgrounds = [
         link: '/playgrounds/debt-singularity',
         description: 'phase transitions of debt through economic conditions',
     },
+    {
+        name: 'entropy café',
+        link: '/playgrounds/entropy-cafe',
+        description: 'entropy and complexity through coffee mixing metaphor',
+    },
 ];
 
 
