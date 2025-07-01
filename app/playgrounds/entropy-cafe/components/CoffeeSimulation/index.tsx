@@ -14,6 +14,7 @@ export interface CoffeeSimulationRef {
     reset: () => void;
     setPaused: (paused: boolean) => void;
     setStirring: (stirring: boolean) => void;
+    setSpeed: (speed: number) => void;
 }
 
 const CoffeeSimulation = forwardRef<CoffeeSimulationRef, CoffeeSimulationProps>(
@@ -38,6 +39,9 @@ const CoffeeSimulation = forwardRef<CoffeeSimulationRef, CoffeeSimulationProps>(
             },
             setStirring: (stirring: boolean) => {
                 particleSystemRef.current?.setStirring(stirring);
+            },
+            setSpeed: (speed: number) => {
+                particleSystemRef.current?.setSpeed(speed);
             },
         }));
 

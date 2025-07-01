@@ -19,6 +19,7 @@ interface SimulationState {
     complexityValue: number;
     entropyHistory: number[];
     complexityHistory: number[];
+    speed: number;
 }
 
 export default function EntropyCafePlayground() {
@@ -30,6 +31,7 @@ export default function EntropyCafePlayground() {
         complexityValue: 0,
         entropyHistory: [],
         complexityHistory: [],
+        speed: 1,
     });
 
     const handleAddCream = () => {
@@ -51,6 +53,7 @@ export default function EntropyCafePlayground() {
             complexityValue: 0,
             entropyHistory: [],
             complexityHistory: [],
+            speed: 1,
         });
     };
 
@@ -58,6 +61,11 @@ export default function EntropyCafePlayground() {
         const newPausedState = !simulationState.isPaused;
         setSimulationState(prev => ({ ...prev, isPaused: newPausedState }));
         simulationRef.current?.setPaused(newPausedState);
+    };
+
+    const handleSpeedChange = (speed: number) => {
+        setSimulationState(prev => ({ ...prev, speed }));
+        simulationRef.current?.setSpeed(speed);
     };
 
     const handleMetricsUpdate = useCallback((entropy: number, complexity: number) => {
@@ -122,10 +130,12 @@ export default function EntropyCafePlayground() {
                         <Settings
                             isPaused={simulationState.isPaused}
                             isStirring={simulationState.isStirring}
+                            speed={simulationState.speed}
                             onAddCream={handleAddCream}
                             onStir={handleStir}
                             onReset={handleReset}
                             onPause={handlePause}
+                            onSpeedChange={handleSpeedChange}
                         />
                     ),
                 },

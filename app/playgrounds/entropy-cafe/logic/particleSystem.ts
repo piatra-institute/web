@@ -15,6 +15,7 @@ export class ParticleSystem {
     private particleSystem: THREE.Points;
     private isPaused = false;
     private isStirring = false;
+    private speed = 1;
     private onMetricsUpdate?: (entropy: number, complexity: number) => void;
     private frameCounter = 0;
 
@@ -154,6 +155,10 @@ export class ParticleSystem {
         this.isStirring = stirring;
     }
 
+    setSpeed(speed: number) {
+        this.speed = speed;
+    }
+
     update() {
         if (!this.isPaused && this.particles.length > 0) {
             this.updateParticles();
@@ -167,9 +172,9 @@ export class ParticleSystem {
     }
 
     private updateParticles() {
-        const stirForce = 0.05;
-        const gravity = -0.0001;
-        const diffusion = 0.002;
+        const stirForce = 0.05 * this.speed;
+        const gravity = -0.0001 * this.speed;
+        const diffusion = 0.002 * this.speed;
 
         for (let i = 0; i < this.PARTICLE_COUNT; i++) {
             const p = this.particles[i];
@@ -189,7 +194,8 @@ export class ParticleSystem {
             p.velocity.z += (Math.random() - 0.5) * diffusion;
 
             // Update position
-            p.position.add(p.velocity);
+            const velocityDelta = p.velocity.clone().multiplyScalar(this.speed);
+            p.position.add(velocityDelta);
 
             // Boundary checks (cup walls)
             const yNormalized = p.position.y / this.cupHeight;
