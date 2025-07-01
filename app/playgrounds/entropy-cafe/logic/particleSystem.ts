@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { fluidVertexShader, fluidFragmentShader } from '../shaders/fluidParticle';
 
 interface Particle {
     position: THREE.Vector3;
@@ -19,12 +20,12 @@ export class ParticleSystem {
     private onMetricsUpdate?: (entropy: number, complexity: number) => void;
     private frameCounter = 0;
 
-    private readonly PARTICLE_COUNT = 15000;
+    private readonly PARTICLE_COUNT = 30000; // Even more particles for denser fluid
     private readonly cupHeight = 10;
     private readonly cupRadiusTop = 4;
     private readonly cupRadiusBottom = 3;
-    private readonly coffeeColor = new THREE.Color(0x4a2c17);
-    private readonly creamColor = new THREE.Color(0xf5e6d3);
+    private readonly coffeeColor = new THREE.Color(0x6b4423); // Rich brown coffee
+    private readonly creamColor = new THREE.Color(0xfff5e6); // Creamy white
     private readonly gridDivisions = 10;
 
     constructor(scene: THREE.Scene, onMetricsUpdate?: (entropy: number, complexity: number) => void) {
@@ -33,35 +34,34 @@ export class ParticleSystem {
 
         this.positions = new Float32Array(this.PARTICLE_COUNT * 3);
         this.colors = new Float32Array(this.PARTICLE_COUNT * 3);
+        const sizes = new Float32Array(this.PARTICLE_COUNT);
+        
+        // Initialize sizes - much larger for continuous fluid surface
+        for (let i = 0; i < this.PARTICLE_COUNT; i++) {
+            sizes[i] = 0.8 + Math.random() * 0.4; // Much larger for better coverage
+        }
+        
         this.particleGeometry = new THREE.BufferGeometry();
+        this.particleGeometry.setAttribute('position', new THREE.BufferAttribute(this.positions, 3));
+        this.particleGeometry.setAttribute('customColor', new THREE.BufferAttribute(this.colors, 3));
+        this.particleGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
-        // Load a circular texture for particles
-        const canvas = document.createElement('canvas');
-        canvas.width = 32;
-        canvas.height = 32;
-        const context = canvas.getContext('2d')!;
-        const gradient = context.createRadialGradient(16, 16, 0, 16, 16, 16);
-        gradient.addColorStop(0, 'rgba(255,255,255,1)');
-        gradient.addColorStop(0.5, 'rgba(255,255,255,0.5)');
-        gradient.addColorStop(1, 'rgba(255,255,255,0)');
-        context.fillStyle = gradient;
-        context.fillRect(0, 0, 32, 32);
-        
-        const texture = new THREE.CanvasTexture(canvas);
-        
-        const particleMaterial = new THREE.PointsMaterial({
-            size: 0.15,
-            vertexColors: true,
+        // Create custom shader material for fluid-like appearance
+        const particleMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                opacity: { value: 0.95 },
+                pointTexture: { value: null }
+            },
+            vertexShader: fluidVertexShader,
+            fragmentShader: fluidFragmentShader,
             transparent: true,
-            opacity: 0.9,
-            blending: THREE.NormalBlending,
             depthWrite: false,
-            sizeAttenuation: true,
-            map: texture,
+            blending: THREE.NormalBlending, // Normal blending for more opaque fluid
+            vertexColors: false,
         });
 
         this.particleSystem = new THREE.Points(this.particleGeometry, particleMaterial);
-        // Don't offset the particle system itself, particles already have correct positions
+        this.particleSystem.sortParticles = true;
         this.scene.add(this.particleSystem);
 
         this.reset();
@@ -79,7 +79,8 @@ export class ParticleSystem {
             yPos / this.cupHeight
         );
 
-        const r = currentRadius * Math.sqrt(Math.random());
+        // Better distribution to fill the cup
+        const r = currentRadius * Math.sqrt(Math.random()) * 0.95; // Slightly less than full radius
         const theta = Math.random() * 2 * Math.PI;
 
         pos.x = r * Math.cos(theta);
@@ -172,9 +173,10 @@ export class ParticleSystem {
     }
 
     private updateParticles() {
-        const stirForce = 0.05 * this.speed;
-        const gravity = -0.0001 * this.speed;
-        const diffusion = 0.002 * this.speed;
+        const stirForce = 0.03 * this.speed; // Reduced for more viscous stirring
+        const gravity = -0.00008 * this.speed; // Slower settling
+        const diffusion = 0.001 * this.speed; // Less random motion
+        const viscosity = 0.98; // Damping factor for fluid-like behavior
 
         for (let i = 0; i < this.PARTICLE_COUNT; i++) {
             const p = this.particles[i];
@@ -229,8 +231,8 @@ export class ParticleSystem {
                 p.velocity.y *= -0.1;
             }
 
-            // Dampen velocity
-            p.velocity.multiplyScalar(0.97);
+            // Dampen velocity (viscosity)
+            p.velocity.multiplyScalar(viscosity);
 
             // Update buffer
             p.position.toArray(this.positions, i * 3);
@@ -288,9 +290,13 @@ export class ParticleSystem {
     }
 
     private updateGeometry() {
-        this.particleGeometry.setAttribute('position', new THREE.BufferAttribute(this.positions, 3));
-        this.particleGeometry.setAttribute('color', new THREE.BufferAttribute(this.colors, 3));
-        this.particleGeometry.attributes.position!.needsUpdate = true;
-        this.particleGeometry.attributes.color!.needsUpdate = true;
+        const positionAttribute = this.particleGeometry.getAttribute('position') as THREE.BufferAttribute;
+        const colorAttribute = this.particleGeometry.getAttribute('customColor') as THREE.BufferAttribute;
+        
+        positionAttribute.array = this.positions;
+        colorAttribute.array = this.colors;
+        
+        positionAttribute.needsUpdate = true;
+        colorAttribute.needsUpdate = true;
     }
 }
