@@ -16,17 +16,17 @@ export default function MetricsOverlay({
     entropyHistory,
     complexityHistory,
 }: MetricsOverlayProps) {
-    // Convert history arrays to chart data format
-    const entropyData = React.useMemo(() => 
+        // Convert history arrays to chart data format with safety checks
+    const entropyData = React.useMemo(() =>
         entropyHistory.map((value, index) => ({
             index,
-            value,
+            value: isFinite(value) ? value : 0,
         })), [entropyHistory]);
 
     const complexityData = React.useMemo(() =>
         complexityHistory.map((value, index) => ({
             index,
-            value,
+            value: isFinite(value) ? value : 0,
         })), [complexityHistory]);
 
     return (
@@ -36,7 +36,7 @@ export default function MetricsOverlay({
                     <div className="flex justify-between items-baseline mb-2">
                         <h3 className="text-sm font-medium text-white/80">Entropy</h3>
                         <span className="font-mono text-lg text-green-400">
-                            {entropyValue.toFixed(3)}
+                            {isFinite(entropyValue) ? entropyValue.toFixed(3) : '0.000'}
                         </span>
                     </div>
                     <div className="h-20">
@@ -60,7 +60,7 @@ export default function MetricsOverlay({
                     <div className="flex justify-between items-baseline mb-2">
                         <h3 className="text-sm font-medium text-white/80">Complexity</h3>
                         <span className="font-mono text-lg text-purple-400">
-                            {complexityValue}
+                            {isFinite(complexityValue) ? complexityValue.toFixed(3) : '0.000'}
                         </span>
                     </div>
                     <div className="h-20">

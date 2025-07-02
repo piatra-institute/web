@@ -6,7 +6,7 @@ import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import PlaygroundSettings from '@/components/PlaygroundSettings';
 
-import CoffeeSimulation from './components/CoffeeSimulation';
+import WebGPUCoffeeSimulation from './components/WebGPUCoffeeSimulation';
 import Settings from './components/Settings';
 import MetricsOverlay from './components/MetricsOverlay';
 
@@ -34,8 +34,8 @@ export default function EntropyCafePlayground() {
         speed: 1,
     });
 
-    const handleAddCream = () => {
-        simulationRef.current?.addCream();
+    const handleAddCream = async () => {
+        await simulationRef.current?.addCream();
     };
 
     const handleStir = () => {
@@ -89,7 +89,7 @@ export default function EntropyCafePlayground() {
             content: (
                 <PlaygroundViewer>
                     <div className="relative w-full h-full">
-                        <CoffeeSimulation
+                        <WebGPUCoffeeSimulation
                             ref={simulationRef}
                             onMetricsUpdate={handleMetricsUpdate}
                         />
@@ -147,9 +147,17 @@ export default function EntropyCafePlayground() {
         <PlaygroundLayout
             title="entropy cafe"
             subtitle="a 3D particle simulation exploring entropy and complexity"
-            description={<a href="https://www.youtube.com/watch?v=SWP2ktac34k" target="_blank" rel="noopener noreferrer" className="underline">
-                Sean M. Carroll&apos;s coffee mixing metaphor
-            </a>}
+            description={(
+                <>
+                    <a href="https://www.youtube.com/watch?v=SWP2ktac34k" target="_blank" rel="noopener noreferrer" className="underline">
+                        Sean M. Carroll&apos;s coffee mixing metaphor
+                    </a>&nbsp;
+                    and&nbsp;
+                    <a href="https://github.com/matsuoka-601/WebGPU-Ocean" target="_blank" rel="noopener noreferrer" className="underline">
+                        matsuoka-601/WebGPU-Ocean
+                    </a>
+                </>
+            )}
             sections={sections}
             settings={settings}
         />
