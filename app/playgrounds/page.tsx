@@ -155,6 +155,12 @@ const playgrounds = [
     //     description: 'entropy and complexity through coffee mixing metaphor',
     //     date: 'July 2025',
     // },
+    {
+        name: 'geometry becoming topology',
+        link: '/playgrounds/geometry-becoming-topology',
+        description: 'the transformation from geometric to topological properties',
+        date: 'July 2025',
+    },
 ];
 
 
