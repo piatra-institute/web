@@ -1,0 +1,159 @@
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import PlaygroundLayout from '@/components/PlaygroundLayout';
+import Settings from './components/Settings';
+import Wallpaper2D from './components/Wallpaper2D';
+import SpaceGroup3D from './components/SpaceGroup3D';
+import SpaceGroup4D from './components/SpaceGroup4D';
+import { wallpaperGroups } from './components/Wallpaper2D/wallpaperGroups';
+import { spaceGroups3D } from './components/SpaceGroup3D/spaceGroups';
+import { spaceGroups4D } from './components/SpaceGroup4D/spaceGroups';
+
+export default function CrystallographicGroupsPlayground() {
+    const [activeTab, setActiveTab] = useState<'2d' | '3d' | '4d'>('2d');
+    const [wallpaperGroup, setWallpaperGroup] = useState('p1');
+    const [spaceGroup3D, setSpaceGroup3D] = useState('P1');
+    const [spaceGroup4D, setSpaceGroup4D] = useState('P4_332');
+    const [wSlice, setWSlice] = useState(0);
+    const [xyRotation, setXYRotation] = useState(0);
+    const [xwRotation, setXWRotation] = useState(20);
+
+    const handleKeyDown = useCallback((e: KeyboardEvent) => {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            e.preventDefault();
+            const direction = e.key === 'ArrowLeft' ? -1 : 1;
+
+            if (activeTab === '2d') {
+                const currentIndex = wallpaperGroups.findIndex(g => g.id === wallpaperGroup);
+                const newIndex = (currentIndex + direction + wallpaperGroups.length) % wallpaperGroups.length;
+                setWallpaperGroup(wallpaperGroups[newIndex].id);
+            } else if (activeTab === '3d') {
+                const currentIndex = spaceGroups3D.findIndex(g => g.id === spaceGroup3D);
+                const newIndex = (currentIndex + direction + spaceGroups3D.length) % spaceGroups3D.length;
+                setSpaceGroup3D(spaceGroups3D[newIndex].id);
+            } else if (activeTab === '4d') {
+                const currentIndex = spaceGroups4D.findIndex(g => g.id === spaceGroup4D);
+                const newIndex = (currentIndex + direction + spaceGroups4D.length) % spaceGroups4D.length;
+                setSpaceGroup4D(spaceGroups4D[newIndex].id);
+            }
+        }
+    }, [activeTab, wallpaperGroup, spaceGroup3D, spaceGroup4D]);
+
+    useEffect(() => {
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [handleKeyDown]);
+
+    const introContent = (
+        <div className="prose prose-invert max-w-none">
+            <p className="text-lg">
+                An interactive exploration of crystallographic symmetry groups across dimensions.
+            </p>
+            <p>
+                Discover the mathematical beauty of wallpaper groups in 2D, space groups in 3D,
+                and their exotic 4D counterparts. Each pattern represents a unique way that
+                symmetry operations can combine to fill space.
+            </p>
+            <p className="text-sm text-gray-400 mt-4">
+                Use <kbd className="px-2 py-1 text-xs bg-gray-800 border border-gray-700">←</kbd> <kbd className="px-2 py-1 text-xs bg-gray-800 border border-gray-700">→</kbd> arrow keys to navigate between groups
+            </p>
+        </div>
+    );
+
+    const simulationContent = (
+        <div className="absolute inset-0">
+            {activeTab === '2d' && (
+                <Wallpaper2D
+                    currentGroup={wallpaperGroup}
+                    onGroupChange={setWallpaperGroup}
+                />
+            )}
+            {activeTab === '3d' && (
+                <SpaceGroup3D
+                    currentGroup={spaceGroup3D}
+                    onGroupChange={setSpaceGroup3D}
+                />
+            )}
+            {activeTab === '4d' && (
+                <SpaceGroup4D
+                    currentGroup={spaceGroup4D}
+                    onGroupChange={setSpaceGroup4D}
+                    wSlice={wSlice}
+                    xyRotation={xyRotation}
+                    xwRotation={xwRotation}
+                    onWSliceChange={setWSlice}
+                    onXYRotationChange={setXYRotation}
+                    onXWRotationChange={setXWRotation}
+                />
+            )}
+        </div>
+    );
+
+    const aboutContent = (
+        <div className="prose prose-invert max-w-none">
+            <h3>Crystallographic Groups</h3>
+            <p>
+                Crystallographic groups mathematically describe all possible discrete symmetries of
+                periodic structures in n-dimensional Euclidean space. They represent the complete
+                set of isometries that preserve a crystal lattice.
+            </p>
+            <h4>2D Plane Groups (Wallpaper Groups)</h4>
+            <p>
+                The 17 plane symmetry groups, proven complete by Fedorov (1891) and Pólya (1924),
+                classify all two-dimensional repetitive patterns. Each group is generated by combinations
+                of translations, rotations (2-, 3-, 4-, or 6-fold), reflections, and glide reflections,
+                subject to the crystallographic restriction theorem.
+            </p>
+            <h4>3D Space Groups</h4>
+            <p>
+                The 230 three-dimensional space groups, independently derived by Fedorov (1890),
+                Schönflies (1891), and Barlow (1894), extend plane groups with additional symmetry
+                operations including screw axes and glide planes. These groups are fundamental to
+                X-ray crystallography and the International Tables for Crystallography.
+            </p>
+            <h4>4D Crystallographic Groups</h4>
+            <p>
+                Based on the systematic enumeration by Brown, Bülow, Neubüser, Wondratschek, and
+                Zassenhaus (1978), there are 4,783 four-dimensional space groups (4,894 including
+                enantiomorphic pairs). This visualization implements stereographic projection from
+                4D to 3D, with interactive controls for hyperplane sectioning and 4D rotations.
+                The work extends Bieberbach&apos;s theorems and utilizes computational group theory for
+                the complete classification.
+            </p>
+        </div>
+    );
+
+    const sections = [
+        { id: 'intro', type: 'intro' as const, content: introContent },
+        { id: 'simulation', type: 'canvas' as const, content: simulationContent },
+        { id: 'about', type: 'outro' as const, content: aboutContent },
+    ];
+
+    const settings = (
+        <Settings
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+        />
+    );
+
+    return (
+        <PlaygroundLayout
+            title="Crystallographic Groups"
+            subtitle="Symmetry patterns in 2D, 3D, and 4D"
+            description={(
+                <a
+                    href="https://onlinelibrary.wiley.com/doi/10.1002/crat.19790140519"
+                    target="_blank"
+                    className="underline"
+                >
+                    1978, H. Brown et al., Crystallographic Groups of Four-Dimensional Space
+                </a>
+            )}
+            sections={sections}
+            settings={settings}
+        />
+    );
+}

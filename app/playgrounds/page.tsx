@@ -161,6 +161,12 @@ const playgrounds = [
         description: 'the transformation from geometric to topological properties',
         date: 'July 2025',
     },
+    {
+        name: 'crystallographic groups',
+        link: '/playgrounds/crystallographic-groups',
+        description: 'symmetry patterns in 2D, 3D, and 4D',
+        date: 'July 2025',
+    },
 ];
 
 
