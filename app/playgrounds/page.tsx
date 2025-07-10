@@ -167,6 +167,12 @@ const playgrounds = [
         description: 'symmetry patterns in 2D, 3D, and 4D',
         date: 'July 2025',
     },
+    {
+        name: 'story-suffering coherence',
+        link: '/playgrounds/story-suffering-coherence',
+        description: 'narrative emergence from suffering integration',
+        date: 'July 2025',
+    },
 ];
 
 

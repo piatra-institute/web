@@ -94,7 +94,6 @@ export default function CrystallographicGroupsPlayground() {
 
     const aboutContent = (
         <div className="prose prose-invert max-w-none">
-            <h3>Crystallographic Groups</h3>
             <p>
                 Crystallographic groups mathematically describe all possible discrete symmetries of
                 periodic structures in n-dimensional Euclidean space. They represent the complete
