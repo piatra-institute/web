@@ -173,6 +173,12 @@ const playgrounds = [
         description: 'narrative emergence from suffering integration',
         date: 'July 2025',
     },
+    {
+        name: 'ramsey ports',
+        link: '/playgrounds/ramsey-ports',
+        description: 'welfare economics of airport pricing strategies',
+        date: 'July 2025',
+    },
 ];
 
 
