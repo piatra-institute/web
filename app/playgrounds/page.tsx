@@ -179,6 +179,12 @@ const playgrounds = [
         description: 'welfare economics of airport pricing strategies',
         date: 'July 2025',
     },
+    {
+        name: 'expected free energy',
+        link: '/playgrounds/expected-free-energy',
+        description: 'monte-carlo visualization of active inference',
+        date: 'July 2025',
+    },
 ];
 
 
