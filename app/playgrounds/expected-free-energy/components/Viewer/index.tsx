@@ -165,7 +165,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>(({
             <div className="w-full max-w-6xl space-y-8">
                 <div className="text-center">
                     <h2 className="text-2xl font-bold text-white mb-2">
-                        EFE Monte-Carlo Visualization
+                        EFE Monte Carlo Visualization
                     </h2>
                     <p className="text-gray-400 text-sm">
                         Simulating {samples} trajectories over {horizon} time steps
