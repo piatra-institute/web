@@ -40,10 +40,10 @@ export default function Playground() {
             content: (
                 <div className="mt-12">
                     <p className="text-xl text-gray-300 mb-4">
-                        Monte-Carlo Exploration of Active Inference
+                        Monte Carlo Exploration of Active Inference
                     </p>
                     <p className="text-gray-400">
-                        Explore how Expected Free Energy (EFE) is estimated via Monte-Carlo sampling,
+                        Explore how Expected Free Energy (EFE) is estimated via Monte Carlo sampling,
                         visualizing the balance between goal-seeking behavior and uncertainty reduction.
                     </p>
                 </div>

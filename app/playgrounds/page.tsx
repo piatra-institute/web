@@ -182,7 +182,7 @@ const playgrounds = [
     {
         name: 'expected free energy',
         link: '/playgrounds/expected-free-energy',
-        description: 'monte-carlo visualization of active inference',
+        description: 'Monte Carlo visualization of active inference',
         date: 'July 2025',
     },
 ];
