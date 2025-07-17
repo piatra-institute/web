@@ -185,6 +185,12 @@ const playgrounds = [
         description: 'Monte Carlo visualization of active inference',
         date: 'July 2025',
     },
+    {
+        name: 'criticality',
+        link: '/playgrounds/criticality',
+        description: 'branching processes and distance-to-criticality metrics',
+        date: 'July 2025',
+    },
 ];
 
 
