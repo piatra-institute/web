@@ -191,6 +191,12 @@ const playgrounds = [
         description: 'branching processes and distance-to-criticality metrics',
         date: 'July 2025',
     },
+    {
+        name: 'meaning autogenesis',
+        link: '/playgrounds/meaning-autogenesis',
+        description: 'biosemiotic emergence from molecule to sign',
+        date: 'July 2025',
+    },
 ];
 
 
