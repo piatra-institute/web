@@ -197,6 +197,12 @@ const playgrounds = [
         description: 'biosemiotic emergence from molecule to sign',
         date: 'July 2025',
     },
+    {
+        name: 'agency erosion',
+        link: '/playgrounds/agency-erosion',
+        description: 'identity substitution dynamics in amplified environments',
+        date: 'July 2025',
+    },
 ];
 
 
