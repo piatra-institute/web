@@ -11,15 +11,24 @@ import {
 interface ViewerProps {
     currentLevel: number;
     simulationRunning: boolean;
+    simulationPaused: boolean;
     refreshKey: number;
     onCanDisruptChange?: (canDisrupt: boolean) => void;
+    simulationParams?: {
+        substrateCount: number;
+        catalystCount: number;
+        fragilityThreshold: number;
+        simulationSpeed: number;
+    };
 }
 
-const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void }, ViewerProps>(({
+const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void; stepSimulation: () => void; exportData: () => void }, ViewerProps>(({
     currentLevel,
     simulationRunning,
+    simulationPaused,
     refreshKey,
-    onCanDisruptChange
+    onCanDisruptChange,
+    simulationParams = { substrateCount: 80, catalystCount: 10, fragilityThreshold: 20, simulationSpeed: 1 }
 }, ref) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const animationFrameId = useRef<number>();
@@ -27,22 +36,40 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void 
     const autogensRef = useRef<Autogen[]>([]);
     const effectsRef = useRef<Effect[]>([]);
     const templateRef = useRef<Template | null>(null);
+    const stepOnceRef = useRef<boolean>(false);
+    const dataLogRef = useRef<Array<{
+        time: number;
+        substrates: number;
+        catalysts: number;
+        capsidParts: number;
+        autogens: number;
+    }>>([]);
+    const startTimeRef = useRef<number>(0);
     const [molecules, setMolecules] = useState<Molecule[]>([]);
     const [autogens, setAutogens] = useState<Autogen[]>([]);
     const [effects, setEffects] = useState<Effect[]>([]);
     const [template, setTemplate] = useState<Template | null>(null);
-    const [statusText, setStatusText] = useState('Select a level and press "Start Simulation".');
+    const [statusText, setStatusText] = useState('Select a level in the Settings panel and press "Start Simulation".');
     const [fragility, setFragility] = useState(0);
     const [autogenCount, setAutogenCount] = useState(0);
+    const [hoveredMolecule, setHoveredMolecule] = useState<{ x: number; y: number; type: string } | null>(null);
+    const [eventAnnotation, setEventAnnotation] = useState<{ text: string; x: number; y: number; life: number } | null>(null);
+
+    // Helper function to show event annotations
+    const showEventAnnotation = (text: string, x: number, y: number) => {
+        setEventAnnotation({ text, x, y, life: 180 }); // Show for ~3 seconds at 60fps
+    };
 
     useImperativeHandle(ref, () => ({
         disruptCapsid: () => {
             if (autogens[0] && autogens[0].isFormed) {
-                disruptAutogen(autogens[0]);
-                setEffects(prev => [...prev, createEffect(autogens[0].x, autogens[0].y, 'shatter')]);
+                const ag = autogens[0];
+                disruptAutogen(ag);
+                setEffects(prev => [...prev, createEffect(ag.x, ag.y, 'shatter')]);
                 setAutogens(prev => prev.filter((_, i) => i !== 0));
                 setStatusText('Capsid disrupted! Catalysts released.');
                 onCanDisruptChange?.(false);
+                showEventAnnotation('Capsid broken! The autogen responds by rebuilding.', ag.x, ag.y);
             }
         },
         exportCanvas: () => {
@@ -51,6 +78,39 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void 
             link.download = 'biosemiotics-playground.png';
             link.href = canvasRef.current.toDataURL();
             link.click();
+        },
+        stepSimulation: () => {
+            stepOnceRef.current = true;
+        },
+        exportData: () => {
+            if (dataLogRef.current.length === 0) {
+                alert('No data to export. Run the simulation first.');
+                return;
+            }
+            
+            // Create CSV content
+            const headers = ['Time (s)', 'Substrates (A+D)', 'Catalysts (C+F)', 'Capsid Parts (G)', 'Autogens'];
+            const rows = dataLogRef.current.map(entry => [
+                entry.time.toFixed(2),
+                entry.substrates,
+                entry.catalysts,
+                entry.capsidParts,
+                entry.autogens
+            ]);
+            
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.join(','))
+            ].join('\n');
+            
+            // Download CSV
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `autogenesis-data-level${currentLevel}-${new Date().toISOString().slice(0,19)}.csv`;
+            link.click();
+            URL.revokeObjectURL(url);
         }
     }));
 
@@ -84,10 +144,12 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void 
         autogensRef.current = [];
         effectsRef.current = [];
         templateRef.current = null;
-        setStatusText('Select a level and press "Start Simulation".');
+        setStatusText('Select a level in the Settings panel and press "Start Simulation".');
         setFragility(0);
         setAutogenCount(0);
         onCanDisruptChange?.(false);
+        dataLogRef.current = [];
+        startTimeRef.current = 0;
         
         if (animationFrameId.current) {
             cancelAnimationFrame(animationFrameId.current);
@@ -111,11 +173,11 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void 
         const newMolecules: Molecule[] = [];
         const newAutogens: Autogen[] = [];
         
-        // Spawn molecules
-        const numSubstrates = 80;
-        const numCatalysts = 10;
+        // Spawn molecules using parameters
+        const numSubstrates = simulationParams.substrateCount;
+        const numCatalysts = simulationParams.catalystCount;
         
-        for (let i = 0; i < numSubstrates; i++) {
+        for (let i = 0; i < numSubstrates / 2; i++) {
             newMolecules.push(createMolecule(
                 Math.random() * canvas.width,
                 Math.random() * canvas.height,
@@ -141,6 +203,17 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void 
             ));
         }
         
+        // Add initial G molecules near the center to help start capsid formation
+        if (currentLevel < 3) {
+            for (let i = 0; i < 8; i++) {
+                newMolecules.push(createMolecule(
+                    canvas.width / 2 + (Math.random() - 0.5) * 80,
+                    canvas.height / 2 + (Math.random() - 0.5) * 80,
+                    'G'
+                ));
+            }
+        }
+        
         setMolecules(newMolecules);
         moleculesRef.current = newMolecules;
         
@@ -149,14 +222,21 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void 
             setTemplate(newTemplate);
             templateRef.current = newTemplate;
         } else {
-            newAutogens.push(createAutogen(canvas.width / 2, canvas.height / 2));
+            const newAutogen = createAutogen(canvas.width / 2, canvas.height / 2);
+            // Set fragility threshold from parameters for Level 2
+            if (currentLevel === 2) {
+                newAutogen.fragilityThreshold = simulationParams.fragilityThreshold;
+            }
+            newAutogens.push(newAutogen);
             setAutogens(newAutogens);
             autogensRef.current = newAutogens;
         }
         
         setStatusText('Simulation running...');
         setAutogenCount(0);
-    }, [simulationRunning, currentLevel]);
+        startTimeRef.current = Date.now();
+        dataLogRef.current = [];
+    }, [simulationRunning, currentLevel, simulationParams.substrateCount, simulationParams.catalystCount, simulationParams.fragilityThreshold]);
 
     // Animation loop
     useEffect(() => {
@@ -167,6 +247,17 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void 
         if (!ctx) return;
         
         const animate = () => {
+            // Check if paused and not stepping
+            if (simulationPaused && !stepOnceRef.current) {
+                animationFrameId.current = requestAnimationFrame(animate);
+                return;
+            }
+            
+            // Reset step flag if we're stepping
+            if (stepOnceRef.current) {
+                stepOnceRef.current = false;
+            }
+            
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             // Update molecules
@@ -174,8 +265,24 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void 
             const updatedAutogens = [...autogensRef.current];
             const updatedEffects = effectsRef.current.filter(e => e.life > 0);
             
-            // Move molecules
-            updatedMolecules.forEach(m => moveMolecule(m, updatedAutogens, canvas.width, canvas.height));
+            // Move molecules with speed adjustment
+            const speed = simulationParams.simulationSpeed;
+            updatedMolecules.forEach(m => {
+                if (!m.boundTo) {
+                    const isContained = updatedAutogens.some(ag => ag.isFormed && ag.enclosedMolecules.includes(m));
+                    if (!isContained) {
+                        m.x += m.vx * speed;
+                        m.y += m.vy * speed;
+                        
+                        if (m.x - m.radius < 0 || m.x + m.radius > canvas.width) {
+                            m.vx *= -1;
+                        }
+                        if (m.y - m.radius < 0 || m.y + m.radius > canvas.height) {
+                            m.vy *= -1;
+                        }
+                    }
+                }
+            });
             
             // Check collisions and reactions
             if (currentLevel < 3) {
@@ -192,6 +299,13 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void 
                         if (distanceBetween(m1, m2) < m1.radius + m2.radius) {
                             const reaction = checkReaction(m1, m2, currentLevel);
                             if (reaction) {
+                                // Add visual effect for reaction
+                                updatedEffects.push(createEffect(
+                                    (m1.x + m2.x) / 2,
+                                    (m1.y + m2.y) / 2,
+                                    'flash'
+                                ));
+                                
                                 reaction.products.forEach(p => updatedMolecules.push(p));
                                 reaction.consumed.forEach(c => {
                                     const index = updatedMolecules.indexOf(c);
@@ -207,9 +321,9 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void 
             updatedAutogens.forEach(ag => {
                 if (!ag.isFormed && !ag.isForming) {
                     const nearbyCapsidParts = updatedMolecules.filter(m => 
-                        m.type === 'G' && distanceBetween(ag, m) < 100
+                        m.type === 'G' && distanceBetween(ag, m) < 80
                     );
-                    if (nearbyCapsidParts.length > 20) {
+                    if (nearbyCapsidParts.length >= 8) {
                         formAutogen(ag, updatedMolecules);
                         nearbyCapsidParts.forEach(p => {
                             const index = updatedMolecules.indexOf(p);
@@ -219,18 +333,27 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void 
                     }
                 }
                 
-                const status = updateAutogenFormation(ag);
-                if (status) {
-                    setStatusText(status);
-                    if (currentLevel === 1 && ag.isFormed) {
-                        onCanDisruptChange?.(true);
+                // Update autogen formation with speed adjustment
+                if (ag.isForming && !ag.isFormed) {
+                    ag.radius += 2 * speed;
+                    if (ag.radius >= ag.maxRadius) {
+                        ag.radius = ag.maxRadius;
+                        ag.isFormed = true;
+                        ag.isForming = false;
+                        setStatusText('Autogen formed! It is now inert.');
+                        if (currentLevel === 1) {
+                            onCanDisruptChange?.(true);
+                            showEventAnnotation('Capsid formed! The autogen is now protected.', ag.x, ag.y - 60);
+                        }
                     }
                 }
                 
                 // Level 2: substrate binding
                 if (currentLevel === 2 && ag.isFormed) {
+                    // Speed affects how quickly substrates bind
+                    const bindingChance = Math.min(0.5 * speed, 1);
                     updatedMolecules.filter(m => m.type === 'D' && !m.boundTo).forEach(m => {
-                        if (distanceBetween(ag, m) < ag.radius + 20) {
+                        if (distanceBetween(ag, m) < ag.radius + 20 && Math.random() < bindingChance) {
                             m.boundTo = ag;
                             ag.fragility += 1;
                         }
@@ -245,6 +368,7 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void 
                         if (index > -1) updatedAutogens.splice(index, 1);
                         setStatusText('Capsid fragility threshold reached! Autogen disrupted.');
                         setFragility(0);
+                        showEventAnnotation('High substrate concentration detected! Time to reproduce.', ag.x, ag.y);
                     }
                 }
             });
@@ -294,7 +418,7 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void 
                 
                 // Check for new autogen formation
                 const freeCapsidParts = updatedMolecules.filter(m => m.type === 'G');
-                if (freeCapsidParts.length > 25) {
+                if (freeCapsidParts.length > 15) {
                     const avgX = freeCapsidParts.reduce((sum, m) => sum + m.x, 0) / freeCapsidParts.length;
                     const avgY = freeCapsidParts.reduce((sum, m) => sum + m.y, 0) / freeCapsidParts.length;
                     
@@ -370,22 +494,22 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void 
                 }
             });
             
-            // Draw effects
+            // Draw effects with speed adjustment
             updatedEffects.forEach(e => {
-                e.life--;
+                e.life -= speed;
                 if (e.type === 'flash') {
                     ctx.beginPath();
                     ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
                     ctx.fillStyle = `rgba(190, 242, 100, ${e.life / 10})`; // lime-300 with opacity
                     ctx.fill();
-                    e.radius += 2;
+                    e.radius += 2 * speed;
                 } else if (e.type === 'shatter') {
                     ctx.beginPath();
                     ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
                     ctx.strokeStyle = `rgba(132, 204, 22, ${e.life / 10})`; // lime-400 with opacity
                     ctx.lineWidth = 3;
                     ctx.stroke();
-                    e.radius += 4;
+                    e.radius += 4 * speed;
                 }
             });
             
@@ -398,6 +522,31 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void 
             setAutogens(updatedAutogens);
             setEffects(updatedEffects);
             
+            // Update event annotation with speed adjustment
+            if (eventAnnotation && eventAnnotation.life > 0) {
+                setEventAnnotation(prev => prev ? { ...prev, life: prev.life - speed } : null);
+            } else if (eventAnnotation && eventAnnotation.life <= 0) {
+                setEventAnnotation(null);
+            }
+            
+            // Log data every 10 frames (about 6 times per second at 60fps)
+            if (moleculesRef.current.length > 0 && Date.now() - startTimeRef.current > 0) {
+                const frameCount = dataLogRef.current.length;
+                if (frameCount === 0 || frameCount % 10 === 0) {
+                    const substrates = updatedMolecules.filter(m => ['A', 'D'].includes(m.type)).length;
+                    const catalysts = updatedMolecules.filter(m => ['C', 'F'].includes(m.type)).length;
+                    const capsidParts = updatedMolecules.filter(m => m.type === 'G').length;
+                    
+                    dataLogRef.current.push({
+                        time: (Date.now() - startTimeRef.current) / 1000,
+                        substrates,
+                        catalysts,
+                        capsidParts,
+                        autogens: updatedAutogens.filter(ag => ag.isFormed).length
+                    });
+                }
+            }
+            
             animationFrameId.current = requestAnimationFrame(animate);
         };
         
@@ -408,14 +557,71 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void 
                 cancelAnimationFrame(animationFrameId.current);
             }
         };
-    }, [simulationRunning, currentLevel, onCanDisruptChange]);
+    }, [simulationRunning, currentLevel, simulationPaused, onCanDisruptChange]);
+
+    // Handle mouse movement for hover effects
+    const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+        if (!canvasRef.current || !simulationRunning) return;
+        
+        const rect = canvasRef.current.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Check if hovering over any molecule
+        const hovered = molecules.find(m => {
+            const dist = Math.sqrt((m.x - x) ** 2 + (m.y - y) ** 2);
+            return dist < m.radius + 5;
+        });
+        
+        if (hovered) {
+            const labels: { [key: string]: string } = {
+                'A': 'Substrate A',
+                'D': 'Substrate D',
+                'C': 'Catalyst C',
+                'F': 'Catalyst F',
+                'G': 'Capsid Part'
+            };
+            setHoveredMolecule({
+                x: hovered.x,
+                y: hovered.y,
+                type: labels[hovered.type] || hovered.type
+            });
+        } else {
+            setHoveredMolecule(null);
+        }
+    };
 
     return (
         <div className="w-full h-screen relative">
             <canvas
                 ref={canvasRef}
                 className="w-full h-full bg-black"
+                onMouseMove={handleMouseMove}
+                onMouseLeave={() => setHoveredMolecule(null)}
             />
+            {hoveredMolecule && (
+                <div 
+                    className="absolute bg-black/90 border border-lime-400 px-2 py-1 text-xs text-lime-400 pointer-events-none"
+                    style={{
+                        left: hoveredMolecule.x + 10,
+                        top: hoveredMolecule.y - 25
+                    }}
+                >
+                    {hoveredMolecule.type}
+                </div>
+            )}
+            {eventAnnotation && eventAnnotation.life > 0 && (
+                <div 
+                    className="absolute bg-black border-2 border-lime-400 px-3 py-2 text-sm text-white pointer-events-none animate-pulse"
+                    style={{
+                        left: eventAnnotation.x - 100,
+                        top: eventAnnotation.y - 40,
+                        opacity: Math.min(1, eventAnnotation.life / 60)
+                    }}
+                >
+                    {eventAnnotation.text}
+                </div>
+            )}
             <div className="absolute bottom-4 left-4 right-4 text-center text-sm text-gray-400 bg-black/75 py-2 px-4">
                 {statusText}
             </div>

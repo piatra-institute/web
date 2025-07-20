@@ -11,19 +11,37 @@ import Viewer from './components/Viewer';
 export default function MeaningAutogenesisPlayground() {
     const [currentLevel, setCurrentLevel] = useState(0);
     const [simulationRunning, setSimulationRunning] = useState(false);
+    const [simulationPaused, setSimulationPaused] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
     const [canDisrupt, setCanDisrupt] = useState(false);
-    const viewerRef = useRef<{ disruptCapsid: () => void; exportCanvas: () => void }>(null);
+    const [simulationParams, setSimulationParams] = useState({
+        substrateCount: 80,
+        catalystCount: 10,
+        fragilityThreshold: 20,
+        simulationSpeed: 1
+    });
+    const viewerRef = useRef<{ disruptCapsid: () => void; exportCanvas: () => void; stepSimulation: () => void; exportData: () => void }>(null);
 
     const handleStartReset = () => {
         if (simulationRunning) {
             setSimulationRunning(false);
+            setSimulationPaused(false);
             setCanDisrupt(false);
             setRefreshKey(prev => prev + 1);
         } else {
             if (currentLevel === 0) return;
             setSimulationRunning(true);
+            setSimulationPaused(false);
         }
+    };
+
+    const handlePausePlay = () => {
+        setSimulationPaused(!simulationPaused);
+    };
+
+    const handleStep = () => {
+        if (!simulationRunning) return;
+        viewerRef.current?.stepSimulation();
     };
 
     const handleDisrupt = () => {
@@ -34,10 +52,19 @@ export default function MeaningAutogenesisPlayground() {
         viewerRef.current?.exportCanvas();
     };
 
+    const handleExportData = () => {
+        viewerRef.current?.exportData();
+    };
+
+    const handleParamChange = (param: string, value: number) => {
+        setSimulationParams(prev => ({ ...prev, [param]: value }));
+    };
+
     const handleLevelChange = (level: number) => {
         if (level === currentLevel && simulationRunning) return;
         setCurrentLevel(level);
         setSimulationRunning(false);
+        setSimulationPaused(false);
         setCanDisrupt(false);
         setRefreshKey(prev => prev + 1);
     };
@@ -81,8 +108,10 @@ export default function MeaningAutogenesisPlayground() {
                                     ref={viewerRef}
                                     currentLevel={currentLevel}
                                     simulationRunning={simulationRunning}
+                                    simulationPaused={simulationPaused}
                                     refreshKey={refreshKey}
                                     onCanDisruptChange={setCanDisrupt}
+                                    simulationParams={simulationParams}
                                 />
                             </div>
                         </PlaygroundViewer>
@@ -161,11 +190,17 @@ export default function MeaningAutogenesisPlayground() {
                 <Settings
                     currentLevel={currentLevel}
                     simulationRunning={simulationRunning}
+                    simulationPaused={simulationPaused}
                     canDisrupt={canDisrupt}
                     onLevelChange={handleLevelChange}
                     onStartReset={handleStartReset}
+                    onPausePlay={handlePausePlay}
+                    onStep={handleStep}
                     onDisrupt={handleDisrupt}
                     onExport={handleExport}
+                    onExportData={handleExportData}
+                    onParamChange={handleParamChange}
+                    simulationParams={simulationParams}
                 />
             }
         />

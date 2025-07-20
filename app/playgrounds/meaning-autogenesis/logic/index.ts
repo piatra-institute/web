@@ -56,8 +56,8 @@ export function createMolecule(x: number, y: number, type: Molecule['type']): Mo
     return {
         x,
         y,
-        vx: (Math.random() - 0.5) * 2,
-        vy: (Math.random() - 0.5) * 2,
+        vx: (Math.random() - 0.5) * 3,
+        vy: (Math.random() - 0.5) * 3,
         radius: 5,
         type,
         color: colors[type] || '#f97316',
@@ -139,17 +139,16 @@ export function checkReaction(m1: Molecule, m2: Molecule, level: number): {
     
     if (types === 'AC') {
         const substrate = m1.type === 'A' ? m1 : m2;
+        const catalyst = m1.type === 'C' ? m1 : m2;
         return {
-            products: [createMolecule(substrate.x, substrate.y, 'C')],
+            products: [createMolecule(catalyst.x, catalyst.y, 'C')],
             consumed: [substrate]
         };
     } else if (types === 'DF') {
         const substrate = m1.type === 'D' ? m1 : m2;
+        const catalyst = m1.type === 'F' ? m1 : m2;
         return {
-            products: [
-                createMolecule(substrate.x, substrate.y, 'F'),
-                createMolecule(substrate.x + 10, substrate.y + 10, 'G')
-            ],
+            products: [createMolecule(substrate.x + 10, substrate.y + 10, 'G')],
             consumed: [substrate]
         };
     }
@@ -218,25 +217,35 @@ export function checkTemplateReaction(
         if (site1.boundMolecule && site2.boundMolecule) {
             const reactionX = (site1.boundMolecule.x + site2.boundMolecule.x) / 2;
             
-            const substrateA = molecules.find(m => 
-                m.type === 'A' && !m.boundTo && Math.abs(m.x - reactionX) < 50
-            );
-            const substrateD = molecules.find(m => 
-                m.type === 'D' && !m.boundTo && Math.abs(m.x - reactionX) < 50
-            );
-            
-            if (substrateA && substrateD) {
-                result.effects.push(createEffect(reactionX, template.y1, 'flash'));
-                result.products.push(
-                    createMolecule(substrateA.x, substrateA.y, 'C'),
-                    createMolecule(substrateD.x, substrateD.y, 'F'),
-                    createMolecule(reactionX, template.y1 + 20, 'G')
+            // Check if we have C and F adjacent
+            if ((site1.type === 'C' && site2.type === 'F') || (site1.type === 'F' && site2.type === 'C')) {
+                const substrateA = molecules.find(m => 
+                    m.type === 'A' && !m.boundTo && Math.abs(m.x - reactionX) < 50
+                );
+                const substrateD = molecules.find(m => 
+                    m.type === 'D' && !m.boundTo && Math.abs(m.x - reactionX) < 50
                 );
                 
-                result.consumed.push(substrateA, substrateD);
-                result.unboundSites.push(i, i + 1);
-                
-                return result;
+                // React if we have either substrate
+                if (substrateA || substrateD) {
+                    result.effects.push(createEffect(reactionX, template.y1, 'flash'));
+                    
+                    if (substrateA) {
+                        result.products.push(createMolecule(substrateA.x, substrateA.y, 'C'));
+                        result.consumed.push(substrateA);
+                    }
+                    if (substrateD) {
+                        result.products.push(createMolecule(reactionX, template.y1 + 20, 'G'));
+                        result.consumed.push(substrateD);
+                    }
+                    
+                    // Only unbind if both reactions happened
+                    if (substrateA && substrateD) {
+                        result.unboundSites.push(i, i + 1);
+                    }
+                    
+                    return result;
+                }
             }
         }
     }

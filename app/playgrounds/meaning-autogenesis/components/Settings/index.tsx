@@ -2,15 +2,27 @@
 
 import Button from '@/components/Button';
 import PlaygroundSettings from '@/components/PlaygroundSettings';
+import SliderInput from '@/components/SliderInput';
 
 interface SettingsProps {
     currentLevel: number;
     simulationRunning: boolean;
+    simulationPaused: boolean;
     canDisrupt: boolean;
     onLevelChange: (level: number) => void;
     onStartReset: () => void;
+    onPausePlay: () => void;
+    onStep: () => void;
     onDisrupt: () => void;
     onExport: () => void;
+    onExportData: () => void;
+    onParamChange: (param: string, value: number) => void;
+    simulationParams: {
+        substrateCount: number;
+        catalystCount: number;
+        fragilityThreshold: number;
+        simulationSpeed: number;
+    };
 }
 
 const levelDescriptions = {
@@ -49,11 +61,17 @@ const levelDescriptions = {
 export default function Settings({
     currentLevel,
     simulationRunning,
+    simulationPaused,
     canDisrupt,
     onLevelChange,
     onStartReset,
+    onPausePlay,
+    onStep,
     onDisrupt,
-    onExport
+    onExport,
+    onExportData,
+    onParamChange,
+    simulationParams
 }: SettingsProps) {
     return (
         <PlaygroundSettings
@@ -109,6 +127,35 @@ export default function Settings({
                                 size="sm"
                                 disabled={currentLevel === 0 && !simulationRunning}
                             />
+                            {simulationRunning && (
+                                <>
+                                    <div className="flex gap-2">
+                                        <Button
+                                            label={simulationPaused ? 'Play' : 'Pause'}
+                                            onClick={onPausePlay}
+                                            className="flex-1"
+                                            size="sm"
+                                        />
+                                        <Button
+                                            label="Step"
+                                            onClick={onStep}
+                                            className="flex-1"
+                                            size="sm"
+                                            disabled={!simulationPaused}
+                                        />
+                                    </div>
+                                    <SliderInput
+                                        label="Simulation Speed"
+                                        value={simulationParams.simulationSpeed}
+                                        onChange={(value) => onParamChange('simulationSpeed', value)}
+                                        min={0.1}
+                                        max={3}
+                                        step={0.1}
+                                        colorClass="text-lime-400"
+                                        showDecimals={true}
+                                    />
+                                </>
+                            )}
                             {currentLevel === 1 && simulationRunning && canDisrupt && (
                                 <Button
                                     label="Disrupt Capsid"
@@ -117,12 +164,104 @@ export default function Settings({
                                     size="sm"
                                 />
                             )}
-                            <Button
-                                label="Export Canvas"
-                                onClick={onExport}
-                                className="w-full"
-                                size="sm"
+                            <div className="flex gap-2">
+                                <Button
+                                    label="Export Canvas"
+                                    onClick={onExport}
+                                    className="flex-1"
+                                    size="sm"
+                                />
+                                <Button
+                                    label="Export Data"
+                                    onClick={onExportData}
+                                    className="flex-1"
+                                    size="sm"
+                                />
+                            </div>
+                        </div>
+                    )
+                },
+                {
+                    title: 'Scientific Foundations',
+                    content: (
+                        <div className="space-y-4 text-sm text-gray-400">
+                            <div className="space-y-2">
+                                <h4 className="text-white font-medium">Reaction Schemas</h4>
+                                <div className="bg-black/50 p-3 font-mono text-xs space-y-1">
+                                    <p className="text-lime-400">Reciprocal Catalysis:</p>
+                                    <p>A + C → 2C  (substrate A → catalyst C)</p>
+                                    <p>D + F → F + G  (substrate D → capsid G)</p>
+                                    <p className="text-lime-400 mt-2">Self-Assembly:</p>
+                                    <p>nG → Capsid  (n ≈ 8-12 subunits)</p>
+                                </div>
+                            </div>
+                            
+                            <div className="space-y-2">
+                                <h4 className="text-white font-medium">Theoretical Basis</h4>
+                                <p>Based on Terrence Deacon's autogenic model from <em>"How Molecules Became Signs"</em> (2021). The autogen demonstrates how semiotic processes can emerge from simple chemical dynamics.</p>
+                                <p>Connects to established origin-of-life models like Gánti's chemoton: autocatalytic metabolism (C/F), self-assembled container (capsid), and hereditary molecule (template in Level 3).</p>
+                            </div>
+                            
+                            <div className="space-y-2">
+                                <h4 className="text-white font-medium">Biological Analogies</h4>
+                                <ul className="space-y-1 list-disc list-inside">
+                                    <li><strong className="text-white">Level 1:</strong> Basic homeostasis (cell membrane repair)</li>
+                                    <li><strong className="text-white">Level 2:</strong> Bacterial chemotaxis (environmental sensing)</li>
+                                    <li><strong className="text-white">Level 3:</strong> Genetic code (DNA/RNA template)</li>
+                                </ul>
+                            </div>
+                            
+                            <div className="space-y-2">
+                                <h4 className="text-white font-medium">Key Concepts</h4>
+                                <p><strong className="text-white">Autogen:</strong> A minimal self-maintaining system of coupled autocatalysis and self-assembly.</p>
+                                <p><strong className="text-white">Semiosis:</strong> The process of sign interpretation, progressing from iconic (resemblance) to indexical (correlation) to symbolic (arbitrary code).</p>
+                            </div>
+                        </div>
+                    )
+                },
+                {
+                    title: 'Experimental Parameters',
+                    content: (
+                        <div className="space-y-4">
+                            <SliderInput
+                                label="Initial Substrate Count"
+                                value={simulationParams.substrateCount}
+                                onChange={(value) => onParamChange('substrateCount', value)}
+                                min={20}
+                                max={200}
+                                step={10}
+                                disabled={simulationRunning}
+                                colorClass="text-lime-400"
                             />
+                            
+                            <SliderInput
+                                label="Initial Catalyst Count"
+                                value={simulationParams.catalystCount}
+                                onChange={(value) => onParamChange('catalystCount', value)}
+                                min={2}
+                                max={20}
+                                step={1}
+                                disabled={simulationRunning}
+                                colorClass="text-lime-400"
+                            />
+                            
+                            {currentLevel === 2 && (
+                                <SliderInput
+                                    label="Fragility Threshold"
+                                    value={simulationParams.fragilityThreshold}
+                                    onChange={(value) => onParamChange('fragilityThreshold', value)}
+                                    min={10}
+                                    max={40}
+                                    step={5}
+                                    disabled={simulationRunning}
+                                    colorClass="text-lime-400"
+                                />
+                            )}
+                            
+                            <p className="text-gray-400 text-xs mt-3">
+                                Parameters can only be adjusted before starting the simulation. 
+                                Experiment with different values to see how they affect system dynamics.
+                            </p>
                         </div>
                     )
                 }
