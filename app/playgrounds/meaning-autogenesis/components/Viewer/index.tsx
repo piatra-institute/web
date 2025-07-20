@@ -64,6 +64,16 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void;
         disruptCapsid: () => {
             if (autogens[0] && autogens[0].isFormed) {
                 const ag = autogens[0];
+                
+                // Release the enclosed molecules and give them velocity
+                ag.enclosedMolecules.forEach(m => {
+                    m.boundTo = null;
+                    // Scatter the molecules outward
+                    const angle = Math.random() * Math.PI * 2;
+                    m.vx = Math.cos(angle) * 3;
+                    m.vy = Math.sin(angle) * 3;
+                });
+                
                 disruptAutogen(ag);
                 setEffects(prev => [...prev, createEffect(ag.x, ag.y, 'shatter')]);
                 setAutogens(prev => prev.filter((_, i) => i !== 0));
@@ -232,7 +242,7 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void;
             autogensRef.current = newAutogens;
         }
         
-        setStatusText('Simulation running...');
+        setStatusText(`Simulation running... Spawned ${newMolecules.length} molecules`);
         setAutogenCount(0);
         startTimeRef.current = Date.now();
         dataLogRef.current = [];
@@ -311,6 +321,10 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void;
                                     const index = updatedMolecules.indexOf(c);
                                     if (index > -1) updatedMolecules.splice(index, 1);
                                 });
+                                
+                                // Update status to show reactions are happening
+                                const gCount = updatedMolecules.filter(m => m.type === 'G').length;
+                                setStatusText(`Reaction! G molecules: ${gCount}`);
                             }
                         }
                     }
@@ -323,6 +337,12 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void;
                     const nearbyCapsidParts = updatedMolecules.filter(m => 
                         m.type === 'G' && distanceBetween(ag, m) < 80
                     );
+                    
+                    // Always show G count for debugging
+                    if (nearbyCapsidParts.length > 0) {
+                        setStatusText(`Waiting for capsid formation... G molecules nearby: ${nearbyCapsidParts.length}/8`);
+                    }
+                    
                     if (nearbyCapsidParts.length >= 8) {
                         formAutogen(ag, updatedMolecules);
                         nearbyCapsidParts.forEach(p => {
@@ -335,6 +355,14 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void;
                 
                 // Update autogen formation with speed adjustment
                 if (ag.isForming && !ag.isFormed) {
+                    // Continuously capture catalysts during formation
+                    updatedMolecules.forEach(m => {
+                        if (['C', 'F'].includes(m.type) && distanceBetween(ag, m) < ag.radius && !ag.enclosedMolecules.includes(m)) {
+                            ag.enclosedMolecules.push(m);
+                            m.boundTo = ag;
+                        }
+                    });
+                    
                     ag.radius += 2 * speed;
                     if (ag.radius >= ag.maxRadius) {
                         ag.radius = ag.maxRadius;
@@ -480,9 +508,16 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void;
             updatedAutogens.forEach(ag => {
                 ctx.beginPath();
                 ctx.arc(ag.x, ag.y, ag.radius, 0, Math.PI * 2);
-                ctx.strokeStyle = '#84cc16';
-                ctx.lineWidth = 5;
+                ctx.strokeStyle = ag.isFormed ? '#84cc16' : '#84cc1680'; // Solid when formed, translucent when forming
+                ctx.lineWidth = ag.isFormed ? 5 : 3;
                 ctx.stroke();
+                
+                // Draw enclosed molecules count for debugging
+                if (ag.enclosedMolecules.length > 0) {
+                    ctx.fillStyle = '#84cc16';
+                    ctx.font = '12px monospace';
+                    ctx.fillText(`C/F: ${ag.enclosedMolecules.length}`, ag.x - 20, ag.y - ag.radius - 10);
+                }
                 
                 // Draw bound substrates for level 2
                 if (currentLevel === 2 && ag.isFormed) {
