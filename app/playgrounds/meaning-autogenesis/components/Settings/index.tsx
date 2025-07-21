@@ -198,8 +198,8 @@ export default function Settings({
                             
                             <div className="space-y-2">
                                 <h4 className="text-white font-medium">Theoretical Basis</h4>
-                                <p>Based on Terrence Deacon's autogenic model from <em>"How Molecules Became Signs"</em> (2021). The autogen demonstrates how semiotic processes can emerge from simple chemical dynamics.</p>
-                                <p>Connects to established origin-of-life models like Gánti's chemoton: autocatalytic metabolism (C/F), self-assembled container (capsid), and hereditary molecule (template in Level 3).</p>
+                                <p>Based on Terrence Deacon&apos;s autogenic model from <em>&ldquo;How Molecules Became Signs&rdquo;</em> (2021). The autogen demonstrates how semiotic processes can emerge from simple chemical dynamics.</p>
+                                <p>Connects to established origin-of-life models like Gánti&apos;s chemoton: autocatalytic metabolism (C/F), self-assembled container (capsid), and hereditary molecule (template in Level 3).</p>
                             </div>
                             
                             <div className="space-y-2">

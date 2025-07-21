@@ -592,7 +592,7 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void;
                 cancelAnimationFrame(animationFrameId.current);
             }
         };
-    }, [simulationRunning, currentLevel, simulationPaused, onCanDisruptChange]);
+    }, [simulationRunning, currentLevel, simulationPaused, onCanDisruptChange, eventAnnotation, simulationParams.simulationSpeed]);
 
     // Handle mouse movement for hover effects
     const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
