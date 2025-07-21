@@ -218,6 +218,14 @@ export default function Playgrounds() {
             />
 
             <div
+                className="max-w-[600px] text-center mb-4"
+            >
+                the playgrounds are in various stages of development
+                <br />
+                varying from conceptual sketches to fully functional applications
+            </div>
+
+            <div
                 className="p-6"
             >
                 {playgrounds.map((playground) => {
