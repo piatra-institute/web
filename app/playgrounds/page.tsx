@@ -203,6 +203,12 @@ const playgrounds = [
         description: 'identity substitution dynamics in amplified environments',
         date: 'July 2025',
     },
+    {
+        name: 'berkshire engine',
+        link: '/playgrounds/berkshire-engine',
+        description: 'Warren Buffett\'s insurance float as an investment engine',
+        date: 'August 2025',
+    },
 ];
 
 
