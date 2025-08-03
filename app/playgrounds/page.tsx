@@ -206,7 +206,7 @@ const playgrounds = [
     {
         name: 'berkshire engine',
         link: '/playgrounds/berkshire-engine',
-        description: 'Warren Buffett\'s insurance float as an investment engine',
+        description: 'insurance float as investment capital',
         date: 'August 2025',
     },
 ];

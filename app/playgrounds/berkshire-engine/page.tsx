@@ -10,12 +10,12 @@ import BerkshireEnginePlayground from './playground';
 
 export const metadata: Metadata = {
     title: 'berkshire engine · playgrounds',
-    description: 'explore how Warren Buffett uses insurance float as an investment engine',
+    description: 'insurance float as investment capital',
 
     openGraph: {
         ...defaultOpenGraph,
         title: 'berkshire engine · playgrounds · piatra.institute',
-        description: 'explore how Warren Buffett uses insurance float as an investment engine',
+        description: 'insurance float as investment capital',
     },
 };
 
