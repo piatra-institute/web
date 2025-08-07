@@ -209,6 +209,12 @@ const playgrounds = [
         description: 'insurance float as investment capital',
         date: 'August 2025',
     },
+    {
+        name: 'authoritarian paternalism',
+        link: '/playgrounds/authoritarian-paternalism',
+        description: 'dark agent simulation of paternal authority dynamics',
+        date: 'August 2025',
+    },
 ];
 
 
