@@ -212,7 +212,7 @@ const playgrounds = [
     {
         name: 'authoritarian paternalism',
         link: '/playgrounds/authoritarian-paternalism',
-        description: 'dark agent simulation of paternal authority dynamics',
+        description: 'paternal authority and citizen support dynamics',
         date: 'August 2025',
     },
 ];

@@ -10,7 +10,7 @@ const Playground = dynamic(
 
 export const metadata: Metadata = {
     title: 'authoritarian paternalism · playgrounds',
-    description: 'Dark agent simulation exploring paternal signaling, order, and support co-evolution in authoritarian systems',
+    description: 'Paternal signaling, order, and support co-evolution in authoritarian systems',
 };
 
 export default function AuthoritarianPaternalismPage() {

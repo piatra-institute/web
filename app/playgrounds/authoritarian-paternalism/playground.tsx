@@ -84,7 +84,7 @@ export default function AuthoritarianPaternalismPlayground() {
     return (
         <PlaygroundLayout
             title="authoritarian paternalism"
-            subtitle="dark agent simulation of paternal authority dynamics"
+            subtitle="paternal authority and citizen support dynamics"
             sections={[
                 {
                     id: 'intro',
