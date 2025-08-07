@@ -231,6 +231,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
             });
             setTelemetry({ t: 0, F: F0, Order: Order0, Support: support, AvgAgency: Amed, VarShare: 0 });
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -265,6 +266,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
         }, speedMs);
 
         return () => clearInterval(timer);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isRunning, T, F0, Order0, a, b, c, d, kappa, g, r, p, k, rho, eta, phi, psi, N, thetas, q10, q50, q90, lambda, sigmaEps, speedMs, series, agentSeries]);
 
     const [snap, setSnap] = useState({ t: 0, F: F0, Order: Order0 });

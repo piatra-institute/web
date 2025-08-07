@@ -196,7 +196,7 @@ export default function AuthoritarianPaternalismPlayground() {
                                                 A[i] = |c·θ[i]·F| / (|baseline| + |c·θ[i]·F|)
                                             </div>
                                             <p className="text-sm text-gray-400">
-                                                Measures how much individual i's choice depends on their paternal preference vs regime incentives
+                                                Measures how much individual i&apos;s choice depends on their paternal preference vs regime incentives
                                             </p>
                                         </div>
                                         <div>
