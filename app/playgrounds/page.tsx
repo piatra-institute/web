@@ -215,6 +215,12 @@ const playgrounds = [
         description: 'paternal authority and citizen support dynamics',
         date: 'August 2025',
     },
+    {
+        name: 'tuition resentment',
+        link: '/playgrounds/tuition-resentment',
+        description: 'high-tuition psychodynamics and attribution of blame',
+        date: 'August 2025',
+    },
 ];
 
 
