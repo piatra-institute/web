@@ -87,7 +87,7 @@ export default function SelfSortedArraysPlayground() {
     const [allowMutationable, setAllowMutationable] = useState(false);
     const [mutationableMinimum, setMutationableMinimum] = useState(0);
     const [mutationableMaximum, setMutationableMaximum] = useState(10);
-    const [mutationableStrategy, setMutationableStrategy] = useState<CellMutationStrategy>('random');
+    const [mutationStrategy, setMutationStrategy] = useState<CellMutationStrategy>('random');
 
     const [allowDamageable, setAllowDamageable] = useState(false);
     const [damageableMinimum, setDamageableMinimum] = useState(0);
@@ -170,7 +170,7 @@ export default function SelfSortedArraysPlayground() {
             const randomSwap = computeSwap();
 
             const mutationable = allowMutationable ? integerBetweenLimits(mutationableMaximum, mutationableMinimum) : undefined;
-            const mutationStrategy = allowMutationable ? 'random' : undefined;
+            const mutationStrategyValue = allowMutationable ? mutationStrategy : undefined;
             const damageable = allowDamageable ? integerBetweenLimits(damageableMaximum, damageableMinimum) : undefined;
             const convertible = allowConvertible ? integerBetweenLimits(convertibleMaximum, convertibleMinimum) : undefined;
             const divisible = allowDivisible ? integerBetweenLimits(divisibleMaximum, divisibleMinimum) : undefined;
@@ -191,7 +191,7 @@ export default function SelfSortedArraysPlayground() {
                 swap: randomSwap,
                 // swap: 'proactive',
                 mutationable,
-                mutationStrategy,
+                mutationStrategy: mutationStrategyValue,
                 damageable,
                 convertible,
                 divisible,
@@ -361,7 +361,7 @@ export default function SelfSortedArraysPlayground() {
 
             mutationableMinimum,
             mutationableMaximum,
-            mutationableStrategy,
+            mutationStrategy,
 
             damageableMinimum,
             damageableMaximum,
@@ -405,7 +405,7 @@ export default function SelfSortedArraysPlayground() {
 
         mutationableMinimum,
         mutationableMaximum,
-        mutationableStrategy,
+        mutationStrategy,
 
         damageableMinimum,
         damageableMaximum,
@@ -602,8 +602,8 @@ export default function SelfSortedArraysPlayground() {
             setMutationableMinimum={setMutationableMinimum}
             mutationableMaximum={mutationableMaximum}
             setMutationableMaximum={setMutationableMaximum}
-            mutationableStrategy={mutationableStrategy}
-            setMutationableStrategy={setMutationableStrategy}
+            mutationStrategy={mutationStrategy}
+            setMutationStrategy={setMutationStrategy}
             allowDamageable={allowDamageable}
             setAllowDamageable={setAllowDamageable}
             damageableMinimum={damageableMinimum}

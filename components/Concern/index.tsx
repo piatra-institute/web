@@ -329,7 +329,7 @@ export default function Concern({
                     </div>
 
                     <div
-                        className="leading-releaxed"
+                        className="leading-relaxed"
                         dangerouslySetInnerHTML={{ __html: contextValue }}
                     />
                 </div>

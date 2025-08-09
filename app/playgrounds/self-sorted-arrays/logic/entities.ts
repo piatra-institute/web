@@ -138,7 +138,7 @@ export class Cell extends EventTarget implements CellData {
     private onSwaps() {
         if (this.checkAction(this.mutationable)) {
             if (this.swaps >= this.mutationable) {
-                if (this.options?.mutationableStrategy === 'random') {
+                if (this.options?.mutationStrategy === 'random') {
                     this.value = Math.floor(
                         Math.random() * (this.options?.maximumValue! - this.options?.minimumValue!) + this.options?.minimumValue!
                     );

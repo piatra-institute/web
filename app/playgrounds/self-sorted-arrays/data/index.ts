@@ -79,7 +79,7 @@ export interface CellOptions {
 
     mutationableMinimum: number;
     mutationableMaximum: number;
-    mutationableStrategy: CellMutationStrategy;
+    mutationStrategy: CellMutationStrategy;
 
     damageableMinimum: number;
     damageableMaximum: number;

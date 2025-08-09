@@ -18,7 +18,7 @@ const defaultCellOptions: CellOptions = {
 
     mutationableMinimum: 0,
     mutationableMaximum: 10,
-    mutationableStrategy: 'random',
+    mutationStrategy: 'random',
 
     damageableMinimum: 0,
     damageableMaximum: 10,
@@ -175,12 +175,10 @@ test('Tissue sorts bubble simple 1', () => {
         ));
     }
 
-    tissue.printCells();
     tissue.step();
-    tissue.printCells();
     tissue.step();
-    tissue.printCells();
 
+    expect(tissue.cells.map(c => c.value)).toEqual([1, 1, 2, 3, 4, 5]);
     expect(tissue.atEquilibrium).toBe(true);
 });
 

@@ -88,8 +88,8 @@ export interface SettingsProperties {
     setMutationableMinimum: React.Dispatch<React.SetStateAction<number>>;
     mutationableMaximum: number;
     setMutationableMaximum: React.Dispatch<React.SetStateAction<number>>;
-    mutationableStrategy: 'random' | 'increment' | 'decrement' | 'environmental';
-    setMutationableStrategy: React.Dispatch<React.SetStateAction<'random' | 'increment' | 'decrement' | 'environmental'>>;
+    mutationStrategy: 'random' | 'increment' | 'decrement' | 'environmental';
+    setMutationStrategy: React.Dispatch<React.SetStateAction<'random' | 'increment' | 'decrement' | 'environmental'>>;
 
     allowDamageable: boolean;
     setAllowDamageable: React.Dispatch<React.SetStateAction<boolean>>;
@@ -188,8 +188,8 @@ export default function Settings(
         setMutationableMinimum,
         mutationableMaximum,
         setMutationableMaximum,
-        mutationableStrategy,
-        setMutationableStrategy,
+        mutationStrategy,
+        setMutationStrategy,
 
         allowDamageable,
         setAllowDamageable,
@@ -654,16 +654,16 @@ export default function Settings(
                             />
 
                             <Dropdown
-                                name="mutationable strategy"
-                                selected={mutationableStrategy}
+                                name="mutation strategy"
+                                selected={mutationStrategy}
                                 selectables={[
                                     'random',
                                     'increment',
                                     'decrement',
                                     'environmental',
                                 ]}
-                                atSelect={(mutationableStrategy) => {
-                                    setMutationableStrategy(mutationableStrategy as any);
+                                atSelect={(mutationStrategy) => {
+                                    setMutationStrategy(mutationStrategy as any);
                                 }}
                             />
                         </div>
