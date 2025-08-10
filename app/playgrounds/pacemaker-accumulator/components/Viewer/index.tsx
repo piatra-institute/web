@@ -359,6 +359,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
     // Reset when parameters change
     useEffect(() => {
         resetSimulation();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.pacemakerRate, props.accumulatorThreshold, props.duration]);
 
     return (

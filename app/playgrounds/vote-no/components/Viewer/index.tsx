@@ -338,6 +338,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>(({
     // Draw statistics
     drawStatistics(ctx, canvas.width, canvas.height);
     
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [members, proposals, consensusHistory, statistics, showNetwork, showProposals, showConsensus, colorMode]);
 
   const drawSocialNetwork = (ctx: CanvasRenderingContext2D) => {

@@ -414,7 +414,7 @@ export default function TruthViolenceDynamicsPlayground() {
                                 </div>
                                 
                                 <p className="text-sm text-gray-400 italic">
-                                    "The first casualty when war comes is truth" — but truth-seeking itself may be the 
+                                    &ldquo;The first casualty when war comes is truth&rdquo; — but truth-seeking itself may be the 
                                     earlier casualty, creating conditions where violence becomes acceptable.
                                 </p>
                             </div>

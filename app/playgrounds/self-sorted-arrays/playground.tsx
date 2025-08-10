@@ -203,6 +203,7 @@ export default function SelfSortedArraysPlayground() {
             return cell;
         });
         setDistribution(distribution);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         colorType,
         getRandomNumber,
@@ -219,7 +220,7 @@ export default function SelfSortedArraysPlayground() {
         allowApoptosable,
         allowSpeed,
         allowResponsiveness,
-
+        mutationStrategy,
         mutationableMinimum,
         mutationableMaximum,
 

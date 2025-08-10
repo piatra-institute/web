@@ -325,10 +325,11 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>(({
         cancelAnimationFrame(animationRef.current);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     speedMs, couplingConstant, quantumFluctuations, spacetimeCurvature,
     timeTranslation, spaceTranslation, rotation, gauge,
-    projectionType, animateFields, fields, spacetime, particles, time
+    projectionType, animateFields, fields, spacetime, particles, time, dimensionality
   ]);
 
   // Canvas rendering
@@ -377,6 +378,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>(({
     // Draw info overlay
     drawInfoOverlay(ctx, canvas.width, canvas.height);
     
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     particles, fields, spacetime, conservedQuantities,
     showParticles, showForces, showSpacetime, showQuantumFoam, showEquation,

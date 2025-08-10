@@ -482,12 +482,14 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
 
         animate();
         return () => cancelAnimationFrame(animationId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isRunning, props, grains, vibrationModes, currentTime]);
 
     // Initialize grains when parameters change
     useEffect(() => {
         initializeGrains();
         setCurrentTime(0);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.grainCount, props.packingFraction, props.grainStiffness]);
 
     // Control functions

@@ -282,9 +282,10 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>(({
         cancelAnimationFrame(animationRef.current);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     speedMs, timeScale, attractorType, nonlinearity, biologicalRhythms,
-    phaseSpacePoints.length, dimensions
+    phaseSpacePoints.length, dimensions, phaseSpacePoints, time
   ]);
 
   // Canvas rendering
@@ -320,6 +321,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>(({
     // Draw info overlay
     drawInfoOverlay(ctx, canvas.width, canvas.height);
     
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phaseSpacePoints, biologicalRhythms, spectrum, showPhaseSpace, showRhythms, showSpectrum, colorMode, time]);
 
   const drawPhaseSpace = (ctx: CanvasRenderingContext2D, centerX: number, centerY: number) => {

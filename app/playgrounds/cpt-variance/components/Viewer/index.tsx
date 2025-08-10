@@ -137,6 +137,7 @@ const Viewer: React.FC<ViewerProps> = ({
     // Draw violation indicators
     drawViolationIndicators(ctx, canvas);
     
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [particles, showIndividualTransforms, showCombinedTransforms, showKaonOscillations, showMatterAntimatter, chargeViolation, parityViolation, timeViolation, cptViolation, time]);
 
   const drawParticle = (ctx: CanvasRenderingContext2D, particle: Particle) => {

@@ -414,12 +414,14 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
 
         animate();
         return () => cancelAnimationFrame(animationId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isRunning, props, nodes, connections, currentTime]);
 
     // Initialize lattice when parameters change
     useEffect(() => {
         generateLattice();
         setCurrentTime(0);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.latticeType, props.unitCells, props.connectivity, props.cellSize]);
 
     const toggleSimulation = () => setIsRunning(!isRunning);
