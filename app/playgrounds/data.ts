@@ -203,4 +203,10 @@ export const playgrounds = [
         description: 'high-tuition psychodynamics and attribution of blame',
         date: 'August 2025',
     },
+    {
+        name: 'truth-violence dynamics',
+        link: '/playgrounds/truth-violence-dynamics',
+        description: 'parrhesia suppression through pressure and punitive support dynamics',
+        date: 'August 2025',
+    },
 ];
