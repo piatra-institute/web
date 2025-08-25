@@ -31,10 +31,10 @@ const links = [
         href: '/playgrounds',
         label: 'playgrounds',
     },
-    // {
-    //     href: '/press',
-    //     label: 'press',
-    // },
+    {
+        href: '/press',
+        label: 'press',
+    },
 ];
 
 

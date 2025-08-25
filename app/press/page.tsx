@@ -18,6 +18,17 @@ export const metadata: Metadata = {
 };
 
 
+const otherPress = [
+    {
+        link: 'https://github.com/piatra-institute/deep-representation-learning-book',
+        title: 'Învățarea Reprezentărilor Profunde ale Distribuțiilor de Date',
+        originalTitle: 'Learning Deep Representations of Data Distributions',
+        authors: 'Sam Buchanan, Druv Pai, Peng Wang, Yi Ma',
+        year: '2025'
+    }
+];
+
+
 export default function Press() {
     const pressItems = getPressItems();
 
@@ -52,6 +63,38 @@ export default function Press() {
                         </Link>
                     );
                 })}
+
+                {otherPress.map((item) => (
+                    <Link
+                        key={item.title + item.link}
+                        href={item.link}
+                        className="max-w-[600px] mb-8 block focus:outline-none focus:ring-1 focus:ring-white text-center p-3"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <div className="font-bold mb-2">
+                            {item.title}
+                        </div>
+
+                        {item.year && (
+                            <div className="text-white text-sm">
+                                {item.year}
+                            </div>
+                        )}
+
+                        {item.authors && (
+                            <div className="text-white text-sm my-2">
+                                {item.authors}
+                            </div>
+                        )}
+
+                        {item.originalTitle && (
+                            <div className="text-white text-sm opacity-70">
+                                {item.originalTitle}
+                            </div>
+                        )}
+                    </Link>
+                ))}
             </div>
         </div>
     );
