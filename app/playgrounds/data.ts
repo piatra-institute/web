@@ -209,4 +209,10 @@ export const playgrounds = [
         description: 'parrhesia suppression through pressure and punitive support dynamics',
         date: 'August 2025',
     },
+    {
+        name: 'neural-cellular-automaton',
+        link: '/playgrounds/neural-cellular-automaton',
+        description: 'neural networks evolved through cellular automaton rules',
+        date: 'August 2025',
+    },
 ];
