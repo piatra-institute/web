@@ -11,6 +11,8 @@ import {
     getPressItems,
 } from './logic';
 
+import { ExternalLink } from 'lucide-react';
+
 
 
 export const metadata: Metadata = {
@@ -24,7 +26,8 @@ const otherPress = [
         title: 'Învățarea Reprezentărilor Profunde ale Distribuțiilor de Date',
         originalTitle: 'Learning Deep Representations of Data Distributions',
         authors: 'Sam Buchanan, Druv Pai, Peng Wang, Yi Ma',
-        year: '2025'
+        year: '2025',
+        doi: 'https://doi.org/10.5281/zenodo.16982585'
     }
 ];
 
@@ -65,22 +68,19 @@ export default function Press() {
                 })}
 
                 {otherPress.map((item) => (
-                    <Link
+                    <div
                         key={item.title + item.link}
-                        href={item.link}
-                        className="max-w-[600px] mb-8 block focus:outline-none focus:ring-1 focus:ring-white text-center p-3"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        className="max-w-[600px] mb-8 block text-center p-3 border border-transparent hover:border-lime transition-colors"
                     >
-                        <div className="font-bold mb-2">
-                            {item.title}
-                        </div>
-
                         {item.year && (
-                            <div className="text-white text-sm">
+                            <div className="text-white text-sm mb-2">
                                 {item.year}
                             </div>
                         )}
+
+                        <div className="font-bold mb-2">
+                            {item.title}
+                        </div>
 
                         {item.authors && (
                             <div className="text-white text-sm my-2">
@@ -93,7 +93,31 @@ export default function Press() {
                                 {item.originalTitle}
                             </div>
                         )}
-                    </Link>
+
+                        <div className="flex items-center justify-center gap-4 mt-3">
+                            <a
+                                href={item.link}
+                                className="inline-flex items-center gap-1 text-lime hover:underline text-sm"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <span>GitHub</span>
+                                <ExternalLink className="w-3 h-3" />
+                            </a>
+
+                            {item.doi && (
+                                <a
+                                    href={item.doi}
+                                    className="inline-flex items-center gap-1 text-lime hover:underline text-sm"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <span>DOI: {item.doi.replace('https://doi.org/', '')}</span>
+                                    <ExternalLink className="w-3 h-3" />
+                                </a>
+                            )}
+                        </div>
+                    </div>
                 ))}
             </div>
         </div>
