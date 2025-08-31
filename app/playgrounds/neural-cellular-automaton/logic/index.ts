@@ -1,7 +1,7 @@
 export interface NeuralCell {
     state: number;
     activation: number[];
-    weights: number[][];
+    weights: number[][][];
     bias: number[];
     history: number[];
 }

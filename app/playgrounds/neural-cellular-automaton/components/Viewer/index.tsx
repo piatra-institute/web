@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useRef, useEffect, useCallback, forwardRef, useImperativeHandle } from 'react';
 import { NeuralCellularAutomaton, GridState } from '../../logic';
 
 interface ViewerProps {
@@ -94,7 +94,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
         return '#84cc16';
     };
     
-    const render = (timestamp: number) => {
+    const render = useCallback((timestamp: number) => {
         const canvas = canvasRef.current;
         if (!canvas || !ncaRef.current) return;
         
@@ -155,7 +155,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
         ctx.fillText(`Fitness: ${gridState.fitness.toFixed(3)}`, 10, 35);
         
         animationRef.current = requestAnimationFrame(render);
-    };
+    }, [props, getColor]);
     
     useEffect(() => {
         animationRef.current = requestAnimationFrame(render);
@@ -164,7 +164,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
                 cancelAnimationFrame(animationRef.current);
             }
         };
-    }, [props]);
+    }, [render]);
     
     return (
         <canvas
