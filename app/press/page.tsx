@@ -27,8 +27,8 @@ const otherPress = [
         originalTitle: 'Learning Deep Representations of Data Distributions',
         authors: 'Sam Buchanan, Druv Pai, Peng Wang, Yi Ma',
         year: '2025',
-        doi: 'https://doi.org/10.5281/zenodo.16982585'
-    }
+        doi: 'https://doi.org/10.5281/zenodo.17024756',
+    },
 ];
 
 
