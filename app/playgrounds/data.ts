@@ -215,4 +215,10 @@ export const playgrounds = [
         description: 'neural networks evolved through cellular automaton rules',
         date: 'August 2025',
     },
+    {
+        name: 'scarcity-over-technology',
+        link: '/playgrounds/scarcity-over-technology',
+        description: 'economy as the derivative of scarcity with respect to technology',
+        date: 'September 2025',
+    },
 ];
