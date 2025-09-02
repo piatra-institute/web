@@ -61,7 +61,7 @@ export default function Settings(props: SettingsProps) {
                         />
                         <div className="text-xs text-gray-500 text-right">{props.gridSize}</div>
                     </div>
-                    
+
                     <div>
                         <label className="text-xs text-gray-400 block mb-1">CA Rule (1D)</label>
                         <input
@@ -74,7 +74,7 @@ export default function Settings(props: SettingsProps) {
                         />
                         <div className="text-xs text-gray-500 text-right">Rule {props.rule}</div>
                     </div>
-                    
+
                     <div>
                         <label className="text-xs text-gray-400 block mb-1">Neighborhood Type</label>
                         <select
@@ -89,7 +89,7 @@ export default function Settings(props: SettingsProps) {
                     </div>
                 </div>
             </div>
-            
+
             <div>
                 <h3 className="text-sm font-semibold text-lime-400 mb-3">Neural Network</h3>
                 <div className="space-y-3">
@@ -105,7 +105,7 @@ export default function Settings(props: SettingsProps) {
                         />
                         <div className="text-xs text-gray-500 text-right">{props.layers}</div>
                     </div>
-                    
+
                     <div>
                         <label className="text-xs text-gray-400 block mb-1">Neurons per Cell</label>
                         <input
@@ -118,7 +118,7 @@ export default function Settings(props: SettingsProps) {
                         />
                         <div className="text-xs text-gray-500 text-right">{props.neuronsPerCell}</div>
                     </div>
-                    
+
                     <div>
                         <label className="text-xs text-gray-400 block mb-1">Activation Function</label>
                         <select
@@ -132,7 +132,7 @@ export default function Settings(props: SettingsProps) {
                             <option value="leaky_relu">Leaky ReLU</option>
                         </select>
                     </div>
-                    
+
                     <div>
                         <label className="text-xs text-gray-400 block mb-1">Learning Rate</label>
                         <input
@@ -148,7 +148,7 @@ export default function Settings(props: SettingsProps) {
                     </div>
                 </div>
             </div>
-            
+
             <div>
                 <h3 className="text-sm font-semibold text-lime-400 mb-3">Evolution</h3>
                 <div className="space-y-3">
@@ -165,7 +165,7 @@ export default function Settings(props: SettingsProps) {
                             <option value="genetic">Genetic Algorithm</option>
                         </select>
                     </div>
-                    
+
                     <div>
                         <label className="text-xs text-gray-400 block mb-1">Mutation Rate</label>
                         <input
@@ -179,7 +179,7 @@ export default function Settings(props: SettingsProps) {
                         />
                         <div className="text-xs text-gray-500 text-right">{props.mutationRate.toFixed(3)}</div>
                     </div>
-                    
+
                     <div>
                         <label className="text-xs text-gray-400 block mb-1">Fitness Function</label>
                         <select
@@ -195,7 +195,7 @@ export default function Settings(props: SettingsProps) {
                     </div>
                 </div>
             </div>
-            
+
             <div>
                 <h3 className="text-sm font-semibold text-lime-400 mb-3">Visualization</h3>
                 <div className="space-y-3">
@@ -212,7 +212,7 @@ export default function Settings(props: SettingsProps) {
                             <option value="diversity">Activation Diversity</option>
                         </select>
                     </div>
-                    
+
                     <div>
                         <label className="text-xs text-gray-400 block mb-1">Color Scheme</label>
                         <select
@@ -225,7 +225,7 @@ export default function Settings(props: SettingsProps) {
                             <option value="heatmap">Heatmap</option>
                         </select>
                     </div>
-                    
+
                     <div className="flex items-center">
                         <input
                             type="checkbox"
@@ -235,7 +235,7 @@ export default function Settings(props: SettingsProps) {
                         />
                         <label className="text-xs text-gray-400">Show Connections</label>
                     </div>
-                    
+
                     <div className="flex items-center">
                         <input
                             type="checkbox"
@@ -247,7 +247,7 @@ export default function Settings(props: SettingsProps) {
                     </div>
                 </div>
             </div>
-            
+
             <div>
                 <h3 className="text-sm font-semibold text-lime-400 mb-3">Simulation</h3>
                 <div className="space-y-3">
@@ -263,7 +263,7 @@ export default function Settings(props: SettingsProps) {
                         />
                         <div className="text-xs text-gray-500 text-right">{props.speedMs}ms</div>
                     </div>
-                    
+
                     <div className="flex items-center">
                         <input
                             type="checkbox"
@@ -275,7 +275,7 @@ export default function Settings(props: SettingsProps) {
                     </div>
                 </div>
             </div>
-            
+
             <div className="flex gap-2">
                 <button
                     onClick={props.onReset}
