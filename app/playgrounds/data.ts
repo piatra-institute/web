@@ -221,4 +221,10 @@ export const playgrounds = [
         description: 'economy as the derivative of scarcity with respect to technology',
         date: 'September 2025',
     },
+    {
+        name: 'plr-harmony',
+        link: '/playgrounds/plr-harmony',
+        description: 'neo-Riemannian PLR transformations and triadic harmony',
+        date: 'September 2025',
+    },
 ];
