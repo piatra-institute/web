@@ -227,4 +227,10 @@ export const playgrounds = [
         description: 'neo-Riemannian PLR transformations and triadic harmony',
         date: 'September 2025',
     },
+    {
+        name: 'ownership parity rule',
+        link: '/playgrounds/ownership-parity-rule',
+        description: 'consumer-equity parity principle: investing equal amounts when purchasing tech products',
+        date: 'October 2025',
+    },
 ];
