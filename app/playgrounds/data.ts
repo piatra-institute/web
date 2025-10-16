@@ -233,4 +233,10 @@ export const playgrounds = [
         description: 'consumer-equity parity principle: investing equal amounts when purchasing tech products',
         date: 'October 2025',
     },
+    {
+        name: 'subconscious state space',
+        link: '/playgrounds/subconscious-state-space',
+        description: 'exploring molecular-scale control of conscious access through neural dynamics simulation',
+        date: 'October 2025',
+    },
 ];
