@@ -239,4 +239,10 @@ export const playgrounds = [
         description: 'exploring molecular-scale control of conscious access through neural dynamics simulation',
         date: 'October 2025',
     },
+    {
+        name: 'social propagation',
+        link: '/playgrounds/social-propagation',
+        description: 'comparing free-for-all vs policy-based social networks to measure political manipulation reduction',
+        date: 'October 2025',
+    },
 ];
