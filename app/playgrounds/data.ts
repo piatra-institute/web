@@ -245,4 +245,10 @@ export const playgrounds = [
         description: 'comparing free-for-all vs policy-based social networks to measure political manipulation reduction',
         date: 'October 2025',
     },
+    {
+        name: 'placebo-nocebo dynamics',
+        link: '/playgrounds/placebo-nocebo-dynamics',
+        description: 'precision-weighted prediction model of placebo analgesia and nocebo hyperalgesia',
+        date: 'October 2025',
+    },
 ];
