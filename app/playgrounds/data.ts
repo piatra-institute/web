@@ -230,25 +230,25 @@ export const playgrounds = [
     {
         name: 'ownership parity rule',
         link: '/playgrounds/ownership-parity-rule',
-        description: 'consumer-equity parity principle: investing equal amounts when purchasing tech products',
+        description: 'matching equity purchases with consumer technology spending',
         date: 'October 2025',
     },
     {
         name: 'subconscious state space',
         link: '/playgrounds/subconscious-state-space',
-        description: 'exploring molecular-scale control of conscious access through neural dynamics simulation',
+        description: 'molecular-scale modulation of conscious access and awareness',
         date: 'October 2025',
     },
     {
         name: 'social propagation',
         link: '/playgrounds/social-propagation',
-        description: 'comparing free-for-all vs policy-based social networks to measure political manipulation reduction',
+        description: 'policy interventions reducing viral political manipulation',
         date: 'October 2025',
     },
     {
         name: 'placebo-nocebo dynamics',
         link: '/playgrounds/placebo-nocebo-dynamics',
-        description: 'precision-weighted prediction model of placebo analgesia and nocebo hyperalgesia',
+        description: 'precision weighting in placebo analgesia and nocebo responses',
         date: 'October 2025',
     },
 ];
