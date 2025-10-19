@@ -3,6 +3,7 @@
 import { forwardRef, useImperativeHandle, useState, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { ViewerRef, SimulationParams } from '../../playground';
+import Equation from '@/components/Equation';
 
 interface DataPoint {
     s: number;
@@ -178,15 +179,12 @@ const Viewer = forwardRef<ViewerRef>((_, ref) => {
                 </div>
 
                 <div className="bg-black border border-lime-500/20 p-4">
-                    <h3 className="text-lime-400 font-semibold mb-3">Model Equation</h3>
-                    <div className="text-sm text-gray-300 space-y-2 font-mono">
-                        <div>Analgesia = saturate(w · s₊ · [r_μ(1−naloxone) + r_CB1(1−rimonabant)·conditioning])</div>
-                        <div>Nocebo = saturate(w · s₋ · r_CCK(1−proglumide))</div>
-                        <div>Net = Analgesia − Nocebo</div>
-                        <div className="mt-3 text-gray-400">
-                            where saturate(x) = x/(1+|x|), s₊ = max(0,s), s₋ = max(0,−s), w = Π_p/(Π_p + Π_y(1+attention))
-                        </div>
-                    </div>
+                    <h3 className="text-lime-400 font-semibold mb-3">Model Equations</h3>
+                    <Equation mode="block" math="\text{Analgesia} = \text{saturate}\left(w \cdot s_+ \cdot \left[r_\mu(1-\text{naloxone}) + r_{\text{CB1}}(1-\text{rimonabant}) \cdot \text{conditioning}\right]\right)" />
+                    <Equation mode="block" math="\text{Nocebo} = \text{saturate}\left(w \cdot s_- \cdot r_{\text{CCK}}(1-\text{proglumide})\right)" />
+                    <Equation mode="block" math="\text{Net} = \text{Analgesia} - \text{Nocebo}" />
+                    <p className="text-gray-300 mt-4 text-sm text-center">where</p>
+                    <Equation mode="block" math="\text{saturate}(x) = \frac{x}{1+|x|}, \quad s_+ = \max(0,s), \quad s_- = \max(0,-s), \quad w = \frac{\Pi_p}{\Pi_p + \Pi_y(1+\text{attention})}" />
                 </div>
 
                 <div className="bg-black border border-lime-500/20 p-4">

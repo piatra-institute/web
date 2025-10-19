@@ -34,6 +34,7 @@ When an ideation folder exists with demo.tsx and/or info.md:
    - No rounded corners on main containers or buttons
    - Use existing components from `/components` directory
    - Implement useImperativeHandle pattern for Settings → Viewer communication
+   - Use the `Equation` component for mathematical notation instead of plain text
 4. **Register in index**: Add entry to `/app/playgrounds/data.ts`
 5. **Ensure functionality**:
    - Convert ideation algorithms to React hooks
@@ -41,6 +42,26 @@ When an ideation folder exists with demo.tsx and/or info.md:
    - Handle responsive sizing (typically 90% viewport)
    - Format numbers appropriately in visualizations
 
+
+## Mathematical Notation
+
+When displaying mathematical equations in playgrounds, use the `Equation` component from `/components/Equation`:
+
+- **Inline equations** (within text): `<Equation math="w = \frac{\Pi_p}{\Pi_p + \Pi_y}" />`
+- **Block equations** (centered on own line): `<Equation mode="block" math="\text{Net} = \text{Analgesia} - \text{Nocebo}" />`
+- Use LaTeX syntax for all mathematical notation
+- Import the component: `import Equation from '@/components/Equation';`
+
+Example usage:
+```tsx
+<p className="text-gray-300">
+    The prior weight{' '}
+    <Equation math="w = \frac{\Pi_p}{\Pi_p + \Pi_y}" />
+    {' '}determines the relative influence...
+</p>
+
+<Equation mode="block" math="\text{saturate}(x) = \frac{x}{1+|x|}" />
+```
 
 ## TypeScript
 

@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayout';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+import Equation from '@/components/Equation';
 
 export interface ViewerRef {
     updateSimulation: (params: SimulationParams) => void;
@@ -43,7 +44,7 @@ export default function Playground() {
             id: 'canvas',
             type: 'canvas',
             content: (
-                <div className="w-full h-full flex items-center justify-center p-8">
+                <div className="w-full h-full flex flex-col items-center justify-center p-8 space-y-8">
                     <Viewer ref={viewerRef} />
                 </div>
             ),
@@ -57,8 +58,9 @@ export default function Playground() {
                         <h4 className="text-lime-400 font-semibold mb-2">Precision-Weighted Prediction Model</h4>
                         <p className="text-gray-300">
                             The model implements a precision-weighted integration of prior expectations and sensory
-                            evidence within a predictive coding framework. The prior weight w = Π_p / (Π_p + Π_y)
-                            determines the relative influence of top-down predictions versus bottom-up sensory input.
+                            evidence within a predictive coding framework. The prior weight{' '}
+                            <Equation math="w = \frac{\Pi_p}{\Pi_p + \Pi_y}" />
+                            {' '}determines the relative influence of top-down predictions versus bottom-up sensory input.
                             When prior precision dominates, contextual cues exert stronger control over pain perception;
                             when sensory precision dominates (elevated by attention), actual nociceptive input determines
                             outcomes. This precision balance mechanistically accounts for individual differences in
@@ -84,8 +86,9 @@ export default function Playground() {
                     <div className="border-l-2 border-lime-500/50 pl-4">
                         <h4 className="text-lime-400 font-semibold mb-2">Saturating Nonlinearity and Net Effect</h4>
                         <p className="text-gray-300">
-                            Each pathway undergoes saturating nonlinear transformation x/(1+|x|), preventing unbounded
-                            responses and capturing the biological ceiling/floor effects observed in pain modulation.
+                            Each pathway undergoes saturating nonlinear transformation{' '}
+                            <Equation math="\frac{x}{1+|x|}" />
+                            , preventing unbounded responses and capturing the biological ceiling/floor effects observed in pain modulation.
                             The net signed output combines analgesia (positive) and hyperalgesia (negative), yielding a
                             continuous landscape from maximum pain enhancement through neutral to maximum pain suppression.
                             The model predicts crossover points where opposing mechanisms balance, regions of dominance for
