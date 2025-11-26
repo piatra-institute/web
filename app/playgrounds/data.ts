@@ -251,4 +251,10 @@ export const playgrounds = [
         description: 'precision weighting in placebo analgesia and nocebo responses',
         date: 'October 2025',
     },
+    {
+        name: 'space between algorithms',
+        link: '/playgrounds/space-between-algorithms',
+        description: 'intra- and inter-algorithm freedom through policy manifolds and goal slack',
+        date: 'November 2025',
+    },
 ];
