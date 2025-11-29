@@ -9,7 +9,9 @@ import { playgrounds } from './data';
 
 
 const YEARS = ['2024', '2025', '2026'];
-const MONTHS = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+const MONTHS_ROW_1 = ['01', '02', '03', '04', '05', '06'];
+const MONTHS_ROW_2 = ['07', '08', '09', '10', '11', '12'];
+const MONTHS = [...MONTHS_ROW_1, ...MONTHS_ROW_2];
 const MONTH_NAMES: Record<string, string> = {
     'January': '01',
     'February': '02',
@@ -93,7 +95,7 @@ export default function PlaygroundsList() {
             <div className="flex flex-wrap justify-center gap-2 mb-4">
                 <button
                     onClick={() => handleYearClick(null)}
-                    className={`px-4 py-1.5 text-sm border transition-colors ${
+                    className={`px-4 py-1.5 text-sm border transition-colors focus:outline-none focus:ring-1 focus:ring-white ${
                         selectedYear === null
                             ? 'border-lime-500 text-lime-400 bg-lime-500/10'
                             : 'border-lime-500/30 text-gray-400 hover:border-lime-500/50 hover:text-gray-300'
@@ -105,7 +107,7 @@ export default function PlaygroundsList() {
                     <button
                         key={year}
                         onClick={() => handleYearClick(year)}
-                        className={`px-4 py-1.5 text-sm border transition-colors ${
+                        className={`px-4 py-1.5 text-sm border transition-colors focus:outline-none focus:ring-1 focus:ring-white ${
                             selectedYear === year
                                 ? 'border-lime-500 text-lime-400 bg-lime-500/10'
                                 : 'border-lime-500/30 text-gray-400 hover:border-lime-500/50 hover:text-gray-300'
@@ -117,12 +119,12 @@ export default function PlaygroundsList() {
             </div>
 
             {/* Month Filter (fixed height container to prevent layout shift) */}
-            <div className="h-10 mb-4">
+            <div className="h-[100px] md:h-10 mb-4">
                 {selectedYear && (
-                    <div className="flex flex-wrap justify-center gap-1.5">
+                    <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-1.5">
                         <button
                             onClick={() => setSelectedMonth(null)}
-                            className={`px-2 py-1 text-xs border transition-colors ${
+                            className={`px-2 py-1 text-xs border transition-colors focus:outline-none focus:ring-1 focus:ring-white ${
                                 selectedMonth === null
                                     ? 'border-lime-500 text-lime-400 bg-lime-500/10'
                                     : 'border-lime-500/30 text-gray-400 hover:border-lime-500/50 hover:text-gray-300'
@@ -130,27 +132,52 @@ export default function PlaygroundsList() {
                         >
                             YEAR
                         </button>
-                        {MONTHS.map((month) => {
-                            const isAvailable = availableMonths.includes(month);
-                            const isSelected = selectedMonth === month;
+                        <div className="flex gap-1.5">
+                            {MONTHS_ROW_1.map((month) => {
+                                const isAvailable = availableMonths.includes(month);
+                                const isSelected = selectedMonth === month;
 
-                            return (
-                                <button
-                                    key={month}
-                                    onClick={() => isAvailable && handleMonthClick(month)}
-                                    disabled={!isAvailable}
-                                    className={`w-10 py-1 text-xs border transition-colors ${
-                                        isSelected
-                                            ? 'border-lime-500 text-lime-400 bg-lime-500/10'
-                                            : isAvailable
-                                              ? 'border-lime-500/30 text-gray-400 hover:border-lime-500/50 hover:text-gray-300'
-                                              : 'border-gray-800 text-gray-700 cursor-not-allowed'
-                                    }`}
-                                >
-                                    {month}
-                                </button>
-                            );
-                        })}
+                                return (
+                                    <button
+                                        key={month}
+                                        onClick={() => isAvailable && handleMonthClick(month)}
+                                        disabled={!isAvailable}
+                                        className={`w-10 py-1 text-xs border transition-colors focus:outline-none focus:ring-1 focus:ring-white ${
+                                            isSelected
+                                                ? 'border-lime-500 text-lime-400 bg-lime-500/10'
+                                                : isAvailable
+                                                  ? 'border-lime-500/30 text-gray-400 hover:border-lime-500/50 hover:text-gray-300'
+                                                  : 'border-gray-800 text-gray-700 cursor-not-allowed'
+                                        }`}
+                                    >
+                                        {month}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        <div className="flex gap-1.5">
+                            {MONTHS_ROW_2.map((month) => {
+                                const isAvailable = availableMonths.includes(month);
+                                const isSelected = selectedMonth === month;
+
+                                return (
+                                    <button
+                                        key={month}
+                                        onClick={() => isAvailable && handleMonthClick(month)}
+                                        disabled={!isAvailable}
+                                        className={`w-10 py-1 text-xs border transition-colors focus:outline-none focus:ring-1 focus:ring-white ${
+                                            isSelected
+                                                ? 'border-lime-500 text-lime-400 bg-lime-500/10'
+                                                : isAvailable
+                                                  ? 'border-lime-500/30 text-gray-400 hover:border-lime-500/50 hover:text-gray-300'
+                                                  : 'border-gray-800 text-gray-700 cursor-not-allowed'
+                                        }`}
+                                    >
+                                        {month}
+                                    </button>
+                                );
+                            })}
+                        </div>
                     </div>
                 )}
             </div>
