@@ -257,4 +257,10 @@ export const playgrounds = [
         description: 'intra- and inter-algorithm freedom through policy manifolds and goal slack',
         date: 'November 2025',
     },
+    {
+        name: 'algorithmic monodominance',
+        link: '/playgrounds/algorithmic-monodominance',
+        description: 'phase transitions from concave to convex returns in algorithmic competition',
+        date: 'November 2025',
+    },
 ];
