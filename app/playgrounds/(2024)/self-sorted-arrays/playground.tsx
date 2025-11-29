@@ -17,20 +17,20 @@ import {
     integerBetweenLimits,
 } from '@/logic/utilities';
 
-import CellsChart1D from '@/app/playgrounds/self-sorted-arrays/components/CellsChart1D';
-import CellViewer from '@/app/playgrounds/self-sorted-arrays/components/CellViewer';
-import Settings from '@/app/playgrounds/self-sorted-arrays/components/Settings';
+import CellsChart1D from '@/app/playgrounds/(2024)/self-sorted-arrays/components/CellsChart1D';
+import CellViewer from '@/app/playgrounds/(2024)/self-sorted-arrays/components/CellViewer';
+import Settings from '@/app/playgrounds/(2024)/self-sorted-arrays/components/Settings';
 
 import {
     CellData,
     CellMutationStrategy,
-} from '@/app/playgrounds/self-sorted-arrays/data';
+} from '@/app/playgrounds/(2024)/self-sorted-arrays/data';
 
 import {
     randomColor,
     biasedBlueRandomColor,
     biasedLimeRandomColor,
-} from '@/app/playgrounds/self-sorted-arrays/logic';
+} from '@/app/playgrounds/(2024)/self-sorted-arrays/logic';
 
 import {
     Tissue,
@@ -442,8 +442,8 @@ export default function SelfSortedArraysPlayground() {
                         Self-organizing cellular automata that sort themselves through local interactions
                     </p>
                     <p className="text-gray-400 mb-6">
-                        Based on Michael Levin et al.&apos;s research on classical sorting algorithms 
-                        as a model of morphogenesis, exploring how distributed sorting behaviors 
+                        Based on Michael Levin et al.&apos;s research on classical sorting algorithms
+                        as a model of morphogenesis, exploring how distributed sorting behaviors
                         can emerge from simple cellular rules.
                     </p>
                     <div className="text-center">
@@ -549,19 +549,19 @@ export default function SelfSortedArraysPlayground() {
             content: (
                 <>
                     <p>
-                        Self-sorted arrays demonstrate how complex organizational behaviors can emerge 
-                        from simple local rules. Each cell follows basic sorting algorithms (bubble, 
-                        insertion, or selection sort) but operates independently, creating emergent 
+                        Self-sorted arrays demonstrate how complex organizational behaviors can emerge
+                        from simple local rules. Each cell follows basic sorting algorithms (bubble,
+                        insertion, or selection sort) but operates independently, creating emergent
                         global organization through distributed computation.
                     </p>
                     <p>
-                        This playground implements concepts from Michael Levin&apos;s research on morphogenesis, 
-                        showing how biological development might use similar algorithmic principles to 
-                        organize cellular structures. The cells can exhibit various behaviors including 
+                        This playground implements concepts from Michael Levin&apos;s research on morphogenesis,
+                        showing how biological development might use similar algorithmic principles to
+                        organize cellular structures. The cells can exhibit various behaviors including
                         mutation, damage, repair, conversion, division, and apoptosis.
                     </p>
                     <p>
-                        Key concepts include: distributed sorting algorithms, emergent organization, 
+                        Key concepts include: distributed sorting algorithms, emergent organization,
                         cellular automata, morphogenetic algorithms, and bio-inspired computation.
                     </p>
                 </>

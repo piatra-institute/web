@@ -6,7 +6,7 @@ Each playground follows this structure:
 ```
 app/playgrounds/[playground-name]/
 ├── ideation/           # Initial concept (if provided)
-│   ├── demo.tsx       # Original demo/prototype code
+│   ├── demo.xtsx       # Original demo/prototype code in TypeScript/React, with xtsx extension to avoid being treated as a TypeScript file
 │   └── info.md        # Concept documentation
 ├── components/         # Playground-specific components
 │   ├── Settings/      # Control panel component

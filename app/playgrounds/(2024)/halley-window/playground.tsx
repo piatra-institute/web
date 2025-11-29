@@ -6,7 +6,7 @@ import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundSettings from '@/components/PlaygroundSettings';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
-import Fractal from '@/app/playgrounds/halley-window/components/Fractal';
+import Fractal from '@/app/playgrounds/(2024)/halley-window/components/Fractal';
 
 export default function HalleyWindowPlayground() {
     // Default values calibrated to match the reference image
@@ -41,8 +41,8 @@ export default function HalleyWindowPlayground() {
                         Interactive fractal visualization using Halley&apos;s root-finding method
                     </p>
                     <p className="text-gray-400">
-                        Explore the beautiful patterns that emerge when applying Halley&apos;s method 
-                        to find roots of complex polynomials, revealing the intricate structure 
+                        Explore the beautiful patterns that emerge when applying Halley&apos;s method
+                        to find roots of complex polynomials, revealing the intricate structure
                         of convergence basins in the complex plane.
                     </p>
                 </div>
@@ -75,20 +75,20 @@ export default function HalleyWindowPlayground() {
             content: (
                 <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                         <p>
-                            Halley&apos;s method is a root-finding algorithm that uses both first and 
-                            second derivatives to converge faster than Newton&apos;s method. When applied 
-                            to complex polynomials, it creates stunning fractal patterns that reveal 
+                            Halley&apos;s method is a root-finding algorithm that uses both first and
+                            second derivatives to converge faster than Newton&apos;s method. When applied
+                            to complex polynomials, it creates stunning fractal patterns that reveal
                             the convergence basins for each root.
                         </p>
                         <p>
-                            Each colored region represents points that converge to the same root, 
-                            while the intricate boundaries between regions showcase the chaotic 
-                            behavior of the iterative method. The fractal structure emerges from 
+                            Each colored region represents points that converge to the same root,
+                            while the intricate boundaries between regions showcase the chaotic
+                            behavior of the iterative method. The fractal structure emerges from
                             the sensitivity of the convergence to initial conditions.
                         </p>
                         <p>
-                            Key concepts include: numerical analysis, root-finding algorithms, 
-                            complex analysis, fractal geometry, convergence basins, and the 
+                            Key concepts include: numerical analysis, root-finding algorithms,
+                            complex analysis, fractal geometry, convergence basins, and the
                             relationship between mathematical iteration and visual beauty.
                         </p>
                 </div>

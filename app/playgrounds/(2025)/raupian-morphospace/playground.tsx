@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 
 import PlaygroundLayout from '@/components/PlaygroundLayout';
-import Settings from '@/app/playgrounds/raupian-morphospace/components/Settings';
-import Viewer from '@/app/playgrounds/raupian-morphospace/components/Viewer';
+import Settings from '@/app/playgrounds/(2025)/raupian-morphospace/components/Settings';
+import Viewer from '@/app/playgrounds/(2025)/raupian-morphospace/components/Viewer';
 
 
 

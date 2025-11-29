@@ -2,11 +2,11 @@ import React from 'react';
 
 import {
     Point,
-} from '@/app/playgrounds/coasellular-morphogenesis/logic';
+} from '@/app/playgrounds/(2024)/coasellular-morphogenesis/logic';
 
 import {
     useRotatingCircles,
-} from '@/app/playgrounds/coasellular-morphogenesis/components/hooks';
+} from '@/app/playgrounds/(2024)/coasellular-morphogenesis/components/hooks';
 
 import Button from '@/components/Button';
 import Toggle from '@/components/Toggle';
