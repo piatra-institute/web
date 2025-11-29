@@ -6,6 +6,7 @@ import Title from '@/components/Title';
 import PlaygroundsList from './PlaygroundsList';
 
 
+
 export const metadata: Metadata = {
     title: 'playgrounds',
 };
