@@ -2,9 +2,24 @@
 
 The playground must use the playground layout like the other playgrounds and must have a similar file structure, it must use the black and lime color palette like the rest of the app, if a ui component is needed check if it doesn't exist in ./components, make sure the playground is registered in the index, app/playgrounds/page.tsx
 
+Playgrounds are organized into year-based route groups:
+```
+app/playgrounds/
+├── (2024)/             # Route group for 2024 playgrounds
+│   └── [playground-name]/
+├── (2025)/             # Route group for 2025 playgrounds
+│   └── [playground-name]/
+├── (2026)/             # Route group for 2026 playgrounds
+│   └── [playground-name]/
+├── data.ts             # Playground registry
+└── page.tsx            # Playgrounds index page
+```
+
+Note: The parentheses `(year)` create Next.js route groups that organize files without affecting URLs. A playground at `app/playgrounds/(2025)/my-playground/` is accessed at `/playgrounds/my-playground`.
+
 Each playground follows this structure:
 ```
-app/playgrounds/[playground-name]/
+app/playgrounds/(year)/[playground-name]/
 ├── ideation/           # Initial concept (if provided)
 │   ├── demo.xtsx       # Original demo/prototype code in TypeScript/React, with xtsx extension to avoid being treated as a TypeScript file
 │   └── info.md        # Concept documentation
