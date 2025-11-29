@@ -263,4 +263,10 @@ export const playgrounds = [
         description: 'phase transitions from concave to convex returns in algorithmic competition',
         date: 'November 2025',
     },
+    {
+        name: 'closedness adverse selection',
+        link: '/playgrounds/closedness-adverse-selection',
+        description: 'how no-criticism constraints filter entrants toward lower moral aversion',
+        date: 'November 2025',
+    },
 ];
