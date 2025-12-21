@@ -269,4 +269,10 @@ export const playgrounds = [
         description: 'how no-criticism constraints filter entrants toward lower moral aversion',
         date: 'November 2025',
     },
+    {
+        name: 'logical morphogenesis',
+        link: '/playgrounds/logical-morphogenesis',
+        description: 'truth-value rhythms from self-referential sentences',
+        date: 'December 2025',
+    },
 ];
