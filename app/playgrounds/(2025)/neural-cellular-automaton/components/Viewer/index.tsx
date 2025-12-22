@@ -27,8 +27,8 @@ interface ViewerProps {
 
 const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const animationRef = useRef<number>();
-    const ncaRef = useRef<NeuralCellularAutomaton>();
+    const animationRef = useRef<number | undefined>(undefined);
+    const ncaRef = useRef<NeuralCellularAutomaton | undefined>(undefined);
     const lastUpdateRef = useRef<number>(0);
 
     useImperativeHandle(ref, () => ({

@@ -1,6 +1,7 @@
 import {
     DetailedHTMLProps,
     ButtonHTMLAttributes,
+    ReactNode,
 } from 'react';
 
 import Image from 'next/image';
@@ -16,9 +17,9 @@ import {
 
 
 export type LinkButtonProps = {
-    text: string | JSX.Element;
+    text: ReactNode;
     centered?: boolean;
-    icon?: string | JSX.Element;
+    icon?: string | ReactNode;
 } & DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
 
 

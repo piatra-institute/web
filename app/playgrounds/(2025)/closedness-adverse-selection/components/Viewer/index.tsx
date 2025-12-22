@@ -54,7 +54,7 @@ export default function Viewer({ params }: ViewerProps) {
                         </p>
                     </div>
                     <div className="p-4 h-72">
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                             <LineChart data={plotData} margin={{ left: 0, right: 20, top: 10, bottom: 10 }}>
                                 <XAxis
                                     dataKey="x"
@@ -72,7 +72,7 @@ export default function Viewer({ params }: ViewerProps) {
                                     domain={[0, maxPdf * 1.1]}
                                 />
                                 <Tooltip
-                                    formatter={(val: number) => val.toFixed(3)}
+                                    formatter={(val) => typeof val === 'number' ? val.toFixed(3) : val}
                                     labelFormatter={(x) => `m = ${Number(x).toFixed(3)}`}
                                     contentStyle={{ backgroundColor: '#111', border: '1px solid #333' }}
                                 />
@@ -116,7 +116,7 @@ export default function Viewer({ params }: ViewerProps) {
                         </p>
                     </div>
                     <div className="p-4 h-72">
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                             <AreaChart data={plotData} margin={{ left: 0, right: 20, top: 10, bottom: 10 }}>
                                 <XAxis
                                     dataKey="x"
@@ -133,7 +133,7 @@ export default function Viewer({ params }: ViewerProps) {
                                     tick={{ fill: '#888', fontSize: 11 }}
                                 />
                                 <Tooltip
-                                    formatter={(val: number) => val.toFixed(3)}
+                                    formatter={(val) => typeof val === 'number' ? val.toFixed(3) : val}
                                     labelFormatter={(x) => `m = ${Number(x).toFixed(3)}`}
                                     contentStyle={{ backgroundColor: '#111', border: '1px solid #333' }}
                                 />

@@ -121,7 +121,7 @@ const Viewer = forwardRef(({
             <div className="bg-black border border-gray-800 p-4">
                 <h3 className="text-sm font-semibold text-lime-400 mb-4">State Variables (t, u, v)</h3>
                 <div className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                         <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                             <XAxis 
@@ -197,7 +197,7 @@ const Viewer = forwardRef(({
             <div className="bg-black border border-gray-800 p-4">
                 <h3 className="text-sm font-semibold text-lime-400 mb-4">Drivers & Risk (E, M, I_T, R)</h3>
                 <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                         <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                             <XAxis 

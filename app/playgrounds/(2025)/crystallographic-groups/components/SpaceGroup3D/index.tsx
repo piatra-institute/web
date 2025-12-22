@@ -12,12 +12,12 @@ interface SpaceGroup3DProps {
 
 export default function SpaceGroup3D({ currentGroup, onGroupChange }: SpaceGroup3DProps) {
     const mountRef = useRef<HTMLDivElement>(null);
-    const sceneRef = useRef<THREE.Scene>();
-    const rendererRef = useRef<THREE.WebGLRenderer>();
-    const cameraRef = useRef<THREE.PerspectiveCamera>();
-    const controlsRef = useRef<OrbitControls>();
-    const atomsRef = useRef<THREE.Group>();
-    const animationIdRef = useRef<number>();
+    const sceneRef = useRef<THREE.Scene | undefined>(undefined);
+    const rendererRef = useRef<THREE.WebGLRenderer | undefined>(undefined);
+    const cameraRef = useRef<THREE.PerspectiveCamera | undefined>(undefined);
+    const controlsRef = useRef<OrbitControls | undefined>(undefined);
+    const atomsRef = useRef<THREE.Group | undefined>(undefined);
+    const animationIdRef = useRef<number | undefined>(undefined);
 
     const groups = spaceGroups3D;
 

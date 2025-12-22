@@ -44,7 +44,7 @@ const ChartsDisplay: React.FC<ChartsDisplayProps> = ({ chartData }) => {
             <div className="mb-6">
                 <h5 className="text-white/70 text-sm font-medium mb-2">Average Resources Over Time</h5>
                 <div className="bg-black/30 p-2 rounded">
-                    <ResponsiveContainer width="100%" height={200}>
+                    <ResponsiveContainer width="100%" minHeight={0} minWidth={0} height={200}>
                         <LineChart data={filteredData} margin={{ top: 5, right: 20, left: -10, bottom: 20 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)"/>
                             <XAxis dataKey="time" stroke="rgba(255,255,255,0.5)">
@@ -55,7 +55,7 @@ const ChartsDisplay: React.FC<ChartsDisplayProps> = ({ chartData }) => {
                             </YAxis>
                             <Tooltip
                                 contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: '1px solid #555', color: 'white', fontSize: '0.9em' }}
-                                formatter={(value: number) => value !== null ? value.toFixed(1) : 'N/A'}
+                                formatter={(value) => typeof value === 'number' ? value.toFixed(1) : 'N/A'}
                             />
                             <RechartsLegend verticalAlign="top" height={30} wrapperStyle={{ color: 'rgba(255,255,255,0.7)' }}/>
                             <Line type="monotone" dataKey="avgResTotal" name="Total" stroke="rgb(75, 192, 192)" strokeWidth={2} dot={false} connectNulls />
@@ -70,7 +70,7 @@ const ChartsDisplay: React.FC<ChartsDisplayProps> = ({ chartData }) => {
             <div className="mb-6">
                 <h5 className="text-white/70 text-sm font-medium mb-2">Average Awareness Level Over Time</h5>
                 <div className="bg-black/30 p-2 rounded">
-                    <ResponsiveContainer width="100%" height={200}>
+                    <ResponsiveContainer width="100%" minHeight={0} minWidth={0} height={200}>
                         <LineChart data={filteredData} margin={{ top: 5, right: 20, left: -10, bottom: 20 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)"/>
                             <XAxis dataKey="time" stroke="rgba(255,255,255,0.5)">
@@ -81,7 +81,7 @@ const ChartsDisplay: React.FC<ChartsDisplayProps> = ({ chartData }) => {
                             </YAxis>
                             <Tooltip
                                 contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: '1px solid #555', color: 'white', fontSize: '0.9em' }}
-                                formatter={(value: number) => value !== null ? value.toFixed(2) : 'N/A'}
+                                formatter={(value) => typeof value === 'number' ? value.toFixed(2) : 'N/A'}
                             />
                             <RechartsLegend verticalAlign="top" height={30} wrapperStyle={{ color: 'rgba(255,255,255,0.7)' }}/>
                             <Line type="monotone" dataKey="avgAwareness" name="Awareness" stroke="rgb(255, 205, 86)" strokeWidth={2} dot={false} connectNulls />
@@ -94,7 +94,7 @@ const ChartsDisplay: React.FC<ChartsDisplayProps> = ({ chartData }) => {
             <div>
                 <h5 className="text-white/70 text-sm font-medium mb-2">Prevalence of Feelings Over Time (%)</h5>
                 <div className="bg-black/30 p-2 rounded">
-                    <ResponsiveContainer width="100%" height={200}>
+                    <ResponsiveContainer width="100%" minHeight={0} minWidth={0} height={200}>
                         <LineChart data={filteredData} margin={{ top: 5, right: 20, left: -10, bottom: 20 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)"/>
                             <XAxis dataKey="time" stroke="rgba(255,255,255,0.5)">
@@ -105,7 +105,7 @@ const ChartsDisplay: React.FC<ChartsDisplayProps> = ({ chartData }) => {
                             </YAxis>
                             <Tooltip
                                 contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: '1px solid #555', color: 'white', fontSize: '0.9em' }}
-                                formatter={(value: number) => value !== null ? value.toFixed(1) + '%' : 'N/A'}
+                                formatter={(value) => typeof value === 'number' ? value.toFixed(1) + '%' : 'N/A'}
                             />
                             <RechartsLegend verticalAlign="top" height={30} wrapperStyle={{ color: 'rgba(255,255,255,0.7)' }}/>
                             <Line type="monotone" dataKey="avgGuilt" name="Guilt" stroke="rgb(220, 53, 69)" strokeWidth={2} dot={false} connectNulls />

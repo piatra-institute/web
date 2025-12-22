@@ -174,7 +174,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
     const [currentTime, setCurrentTime] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
     const [simulationData, setSimulationData] = useState<any[]>([]);
-    const intervalRef = useRef<NodeJS.Timeout>();
+    const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
     // Simulation state
     const [accumulatorValue, setAccumulatorValue] = useState(0);

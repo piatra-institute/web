@@ -110,7 +110,7 @@ const Viewer = forwardRef<ViewerRef>((_, ref) => {
                 <div className="bg-black border border-lime-500/20 p-4">
                     <h3 className="text-lime-400 font-semibold mb-4">Placebo/Nocebo vs Cue–Drug Similarity</h3>
                     <div className="h-96">
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                             <LineChart data={data} margin={{ top: 10, right: 20, bottom: 45, left: 10 }}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#84cc16" opacity={0.1} />
                                 <XAxis
@@ -145,7 +145,7 @@ const Viewer = forwardRef<ViewerRef>((_, ref) => {
                                         border: '1px solid rgba(132, 204, 22, 0.2)',
                                         color: '#84cc16',
                                     }}
-                                    formatter={(value: number) => value.toFixed(4)}
+                                    formatter={(value) => typeof value === 'number' ? value.toFixed(4) : String(value)}
                                 />
                                 <Legend wrapperStyle={{ color: '#84cc16' }} />
                                 <ReferenceLine y={0} stroke="#84cc16" opacity={0.3} />

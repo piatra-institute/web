@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
-import dynamic from 'next/dynamic';
 import { defaultOpenGraph } from '@/data/metadata';
-
-
+import ClientPlayground from './ClientPlayground';
 
 export const metadata: Metadata = {
     title: 'debt singularity · playgrounds',
@@ -14,12 +12,6 @@ export const metadata: Metadata = {
     },
 };
 
-
-const Playground = dynamic(
-    () => import('./playground'),
-    { ssr: false }
-);
-
 export default function Page() {
-    return <Playground />;
+    return <ClientPlayground />;
 }

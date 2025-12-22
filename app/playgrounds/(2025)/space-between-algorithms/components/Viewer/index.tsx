@@ -320,7 +320,7 @@ const Viewer = forwardRef<ViewerRef, ViewerProps>(({ params }, ref) => {
                                     </div>
                                     <div className="h-2 w-full bg-gray-900 overflow-hidden">
                                         <div
-                                            className="h-full bg-gradient-to-r from-lime-600 to-lime-400"
+                                            className="h-full bg-linear-to-r from-lime-600 to-lime-400"
                                             style={{ width: `${value * 100}%` }}
                                         />
                                     </div>

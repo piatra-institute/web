@@ -1,10 +1,5 @@
 import { Metadata } from 'next';
-import dynamic from 'next/dynamic';
-
-const Playground = dynamic(
-    () => import('./playground'),
-    { ssr: false }
-);
+import ClientPlayground from './ClientPlayground';
 
 export const metadata: Metadata = {
     title: 'tuition resentment · playgrounds',
@@ -12,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function TuitionResentmentPage() {
-    return <Playground />;
+    return <ClientPlayground />;
 }

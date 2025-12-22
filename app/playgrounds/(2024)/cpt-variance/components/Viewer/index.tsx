@@ -35,7 +35,7 @@ const Viewer: React.FC<ViewerProps> = ({
   animationSpeed,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | undefined>(undefined);
   const [particles, setParticles] = useState<Particle[]>([]);
   const [time, setTime] = useState(0);
 

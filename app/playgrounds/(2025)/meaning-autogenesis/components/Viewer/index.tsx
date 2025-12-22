@@ -31,7 +31,7 @@ const Viewer = forwardRef<{ disruptCapsid: () => void; exportCanvas: () => void;
     simulationParams = { substrateCount: 80, catalystCount: 10, fragilityThreshold: 20, simulationSpeed: 1 }
 }, ref) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const animationFrameId = useRef<number>();
+    const animationFrameId = useRef<number | undefined>(undefined);
     const moleculesRef = useRef<Molecule[]>([]);
     const autogensRef = useRef<Autogen[]>([]);
     const effectsRef = useRef<Effect[]>([]);

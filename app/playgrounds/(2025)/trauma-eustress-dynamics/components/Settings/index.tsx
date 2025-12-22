@@ -109,19 +109,19 @@ const Settings: FC<SettingsProps> = ({
                     <h4 className="text-[#03dac6] font-semibold mb-3 text-sm">Outcome Trajectories</h4>
                     <div className="space-y-2 mb-4">
                         <div className="flex items-center">
-                            <span className="w-2.5 h-2.5 rounded-full bg-[#2196f3] mr-2 flex-shrink-0" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#2196f3] mr-2 shrink-0" />
                             <span className="text-sm text-gray-300"><strong>Resilience</strong> – minimal disturbance</span>
                         </div>
                         <div className="flex items-center">
-                            <span className="w-2.5 h-2.5 rounded-full bg-[#ff9800] mr-2 flex-shrink-0" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#ff9800] mr-2 shrink-0" />
                             <span className="text-sm text-gray-300"><strong>Recovery</strong> – delayed rebound</span>
                         </div>
                         <div className="flex items-center">
-                            <span className="w-2.5 h-2.5 rounded-full bg-[#9c27b0] mr-2 flex-shrink-0" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#9c27b0] mr-2 shrink-0" />
                             <span className="text-sm text-gray-300"><strong>Chronic</strong> – sustained narrowing</span>
                         </div>
                         <div className="flex items-center">
-                            <span className="w-2.5 h-2.5 rounded-full bg-[#009688] mr-2 flex-shrink-0" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#009688] mr-2 shrink-0" />
                             <span className="text-sm text-gray-300"><strong>Growth</strong> – exploratory expansion</span>
                         </div>
                     </div>
@@ -130,19 +130,19 @@ const Settings: FC<SettingsProps> = ({
                     <p className="text-gray-300 mb-2 text-sm">Spoke length & thickness scale with slider value.</p>
                     <div className="space-y-2 mb-4">
                         <div className="flex items-center">
-                            <span className="w-2.5 h-2.5 rounded-full bg-[#ff5252] mr-2 flex-shrink-0" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#ff5252] mr-2 shrink-0" />
                             <span className="text-sm text-gray-300">Appraisal (threat ↔ meaning)</span>
                         </div>
                         <div className="flex items-center">
-                            <span className="w-2.5 h-2.5 rounded-full bg-[#ffb300] mr-2 flex-shrink-0" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#ffb300] mr-2 shrink-0" />
                             <span className="text-sm text-gray-300">Rumination (intrusive ↔ deliberate)</span>
                         </div>
                         <div className="flex items-center">
-                            <span className="w-2.5 h-2.5 rounded-full bg-[#64b5f6] mr-2 flex-shrink-0" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#64b5f6] mr-2 shrink-0" />
                             <span className="text-sm text-gray-300">Social support</span>
                         </div>
                         <div className="flex items-center">
-                            <span className="w-2.5 h-2.5 rounded-full bg-[#4db6ac] mr-2 flex-shrink-0" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#4db6ac] mr-2 shrink-0" />
                             <span className="text-sm text-gray-300">Neuro‑flexibility</span>
                         </div>
                     </div>

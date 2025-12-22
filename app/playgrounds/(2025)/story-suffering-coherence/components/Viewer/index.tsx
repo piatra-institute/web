@@ -24,7 +24,7 @@ export function Viewer({
 }: ViewerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const systemRef = useRef<ParticleSystem | null>(null)
-  const animationRef = useRef<number>()
+  const animationRef = useRef<number | undefined>(undefined)
   const [currentState, setCurrentState] = useState<SystemState>('harmony')
   const [coherenceScore, setCoherenceScore] = useState(0)
 

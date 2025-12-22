@@ -53,7 +53,7 @@ export default function Viewer({
     return (
         <div className="w-full h-full flex flex-col">
             {/* Controls bar at top */}
-            <div className="flex items-center justify-center gap-4 py-3 px-8 border-b border-gray-800 flex-shrink-0">
+            <div className="flex items-center justify-center gap-4 py-3 px-8 border-b border-gray-800 shrink-0">
                 {/* View Mode Toggle */}
                 <div className="flex gap-2">
                     <button
@@ -635,7 +635,8 @@ function AttractorPlot({ points, is3D }: { points: Array<{ x: number; y: number;
             projected.sort((a, b) => (a.projected.z ?? 0) - (b.projected.z ?? 0));
         }
         return projected;
-    }, [points, is3D, rotation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [points, is3D, rotation, size]);
 
     return (
         <div

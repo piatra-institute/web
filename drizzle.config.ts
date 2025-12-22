@@ -1,4 +1,4 @@
-import { Config } from 'drizzle-kit';
+import { defineConfig } from 'drizzle-kit';
 
 import dotenv from 'dotenv';
 
@@ -9,12 +9,12 @@ dotenv.config({
 });
 
 
-export default {
+export default defineConfig({
     schema: './database/schema',
-    driver: 'turso',
+    dialect: 'turso',
     dbCredentials: {
         url: process.env.DATABASE_URL!,
         authToken: process.env.DATABASE_AUTH_TOKEN!,
     },
     out: './drizzle',
-} satisfies Config;
+});

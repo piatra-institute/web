@@ -1,11 +1,6 @@
 import type { Metadata } from 'next';
 import { defaultOpenGraph } from '@/data/metadata';
-import dynamic from 'next/dynamic';
-
-const TraumaEustressDynamicsPlayground = dynamic(
-    () => import('./playground'),
-    { ssr: false }
-);
+import ClientPlayground from './ClientPlayground';
 
 export const metadata: Metadata = {
     title: 'trauma-eustress dynamics · playgrounds',
@@ -18,5 +13,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-    return <TraumaEustressDynamicsPlayground />;
+    return <ClientPlayground />;
 }

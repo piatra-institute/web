@@ -208,7 +208,7 @@ export default function Settings({
                     onChange={(e) => updateCoefficient('communityBase', parseFloat(e) || 0)}
                     step={0.1}
                     compact
-                    className="!w-[70px]"
+                    className="w-[70px]!"
                   />
                   <span className="font-mono">+</span>
                   <Input
@@ -217,7 +217,7 @@ export default function Settings({
                     onChange={(e) => updateCoefficient('communityMaturityCoeff', parseFloat(e) || 0)}
                     step={0.1}
                     compact
-                    className="!w-[70px]"
+                    className="w-[70px]!"
                   />
                   <span className="font-mono">× maturity^</span>
                   <Input
@@ -226,7 +226,7 @@ export default function Settings({
                     onChange={(e) => updateCoefficient('communityMaturityPower', parseFloat(e) || 0)}
                     step={0.1}
                     compact
-                    className="!w-[70px]"
+                    className="w-[70px]!"
                   />
                   <span className="font-mono">)</span>
                 </div>
@@ -238,7 +238,7 @@ export default function Settings({
                     onChange={(e) => updateCoefficient('donationBase', parseFloat(e) || 0)}
                     step={0.1}
                     compact
-                    className="!w-[70px]"
+                    className="w-[70px]!"
                   />
                   <span className="font-mono">+</span>
                   <Input
@@ -247,7 +247,7 @@ export default function Settings({
                     onChange={(e) => updateCoefficient('donationMaturityCoeff', parseFloat(e) || 0)}
                     step={0.1}
                     compact
-                    className="!w-[70px]"
+                    className="w-[70px]!"
                   />
                   <span className="font-mono">× maturity^</span>
                   <Input
@@ -256,7 +256,7 @@ export default function Settings({
                     onChange={(e) => updateCoefficient('donationMaturityPower', parseFloat(e) || 0)}
                     step={0.1}
                     compact
-                    className="!w-[70px]"
+                    className="w-[70px]!"
                   />
                   <span className="font-mono">)</span>
                 </div>
@@ -268,7 +268,7 @@ export default function Settings({
                     onChange={(e) => updateCoefficient('synergyAmplitude', parseFloat(e) || 0)}
                     step={0.1}
                     compact
-                    className="!w-[70px]"
+                    className="w-[70px]!"
                   />
                   <span className="font-mono">× sin(π × community × donations/10000)</span>
                 </div>
@@ -300,7 +300,7 @@ export default function Settings({
                     onChange={(e) => updateCoefficient('communityResistCoeff', parseFloat(e) || 0)}
                     step={0.1}
                     compact
-                    className="!w-[70px]"
+                    className="w-[70px]!"
                   />
                   <span className="font-mono">×(community/100)</span>
                 </div>
@@ -312,7 +312,7 @@ export default function Settings({
                     onChange={(e) => updateCoefficient('financialBufferCoeff', parseFloat(e) || 0)}
                     step={0.1}
                     compact
-                    className="!w-[70px]"
+                    className="w-[70px]!"
                   />
                   <span className="font-mono">×(donations/100)</span>
                 </div>
@@ -324,7 +324,7 @@ export default function Settings({
                     onChange={(e) => updateCoefficient('maturityInertiaCoeff', parseFloat(e) || 0)}
                     step={0.1}
                     compact
-                    className="!w-[70px]"
+                    className="w-[70px]!"
                   />
                   <span className="font-mono">×(maturity/100)^</span>
                   <Input
@@ -333,7 +333,7 @@ export default function Settings({
                     onChange={(e) => updateCoefficient('maturityInertiaPower', parseFloat(e) || 0)}
                     step={0.1}
                     compact
-                    className="!w-[70px]"
+                    className="w-[70px]!"
                   />
                 </div>
                 <div className="text-xs font-mono text-gray-400">

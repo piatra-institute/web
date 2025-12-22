@@ -200,7 +200,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>(({
 
                     <div className="bg-black border border-gray-800 p-6">
                         <h3 className="text-lg font-semibold text-white mb-4">EFE vs KL Divergence</h3>
-                        <ResponsiveContainer width="100%" height={300}>
+                        <ResponsiveContainer width="100%" minHeight={0} minWidth={0} height={300}>
                             <BarChart
                                 data={chartData}
                                 margin={{ top: 20, right: 30, bottom: 60, left: 20 }}

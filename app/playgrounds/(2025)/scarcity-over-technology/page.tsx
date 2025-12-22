@@ -4,7 +4,7 @@ import {
     defaultOpenGraph,
 } from '@/data/metadata';
 
-import ScarcityOverTechnologyPlayground from './playground';
+import ClientPlayground from './ClientPlayground';
 
 
 
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
 
 export default function ScarcityOverTechnology() {
     return (
-        <ScarcityOverTechnologyPlayground />
+        <ClientPlayground />
     );
 }

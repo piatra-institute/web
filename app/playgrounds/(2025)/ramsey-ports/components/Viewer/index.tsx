@@ -74,7 +74,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>(({
                 </div>
 
                 <div ref={chartRef} className="relative w-full h-[450px] max-h-[60vh]">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                         <BarChart
                             data={chartData}
                             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}

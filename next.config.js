@@ -7,6 +7,14 @@ const nextConfig = {
         });
         return config;
     },
+    turbopack: {
+        rules: {
+            '*.wgsl': {
+                loaders: ['raw-loader'],
+                as: '*.js',
+            },
+        },
+    },
 }
 
 module.exports = nextConfig

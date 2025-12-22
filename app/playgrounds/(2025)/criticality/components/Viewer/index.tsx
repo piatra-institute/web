@@ -75,7 +75,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>(({
                     {/* Avalanche Distribution */}
                     <div className="bg-black border border-gray-800 p-6">
                         <h3 className="text-lg font-semibold text-white mb-4">Avalanche Size Distribution</h3>
-                        <ResponsiveContainer width="100%" height={300}>
+                        <ResponsiveContainer width="100%" minHeight={0} minWidth={0} height={300}>
                             <LineChart
                                 data={distribution}
                                 margin={{ top: 10, right: 30, left: 40, bottom: 40 }}
@@ -118,7 +118,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>(({
                     {/* Bifurcation Diagram */}
                     <div className="bg-black border border-gray-800 p-6">
                         <h3 className="text-lg font-semibold text-white mb-4">Bifurcation Diagram</h3>
-                        <ResponsiveContainer width="100%" height={300}>
+                        <ResponsiveContainer width="100%" minHeight={0} minWidth={0} height={300}>
                             <LineChart
                                 data={bifurcationData}
                                 margin={{ top: 10, right: 30, left: 40, bottom: 40 }}

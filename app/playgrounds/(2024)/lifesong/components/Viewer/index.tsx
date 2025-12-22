@@ -82,8 +82,8 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>(({
   speedMs,
 }, ref) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>();
-  const audioContextRef = useRef<AudioContext>();
+  const animationRef = useRef<number | undefined>(undefined);
+  const audioContextRef = useRef<AudioContext | undefined>(undefined);
   const oscillatorsRef = useRef<OscillatorNode[]>([]);
   
   const [time, setTime] = useState(0);

@@ -170,7 +170,7 @@ export default function Viewer({ params }: ViewerProps) {
                         <div className="h-24 flex items-end justify-center">
                             <div className="relative w-full h-full bg-gray-900">
                                 <div
-                                    className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-lime-600 to-lime-400"
+                                    className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-lime-600 to-lime-400"
                                     style={{ height: `${concentration * 100}%` }}
                                 />
                                 <div className="absolute inset-0 flex items-center justify-center">
@@ -199,7 +199,7 @@ export default function Viewer({ params }: ViewerProps) {
                         <div className="h-24 flex items-end justify-center">
                             <div className="relative w-full h-full bg-gray-900">
                                 <div
-                                    className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-lime-600 to-lime-400"
+                                    className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-lime-600 to-lime-400"
                                     style={{ height: `${gini * 100}%` }}
                                 />
                                 <div className="absolute inset-0 flex items-center justify-center">
@@ -239,7 +239,7 @@ export default function Viewer({ params }: ViewerProps) {
                                     </div>
                                     <div className="h-2 w-full bg-gray-900 overflow-hidden">
                                         <div
-                                            className="h-full bg-gradient-to-r from-lime-600 to-lime-400"
+                                            className="h-full bg-linear-to-r from-lime-600 to-lime-400"
                                             style={{ width: `${percent}%` }}
                                         />
                                     </div>

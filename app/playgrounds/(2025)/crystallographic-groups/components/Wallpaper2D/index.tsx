@@ -10,7 +10,7 @@ interface Wallpaper2DProps {
 
 export default function Wallpaper2D({ currentGroup, onGroupChange }: Wallpaper2DProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const animationRef = useRef<number>();
+    const animationRef = useRef<number | undefined>(undefined);
     const currentIndexRef = useRef(0);
 
     const groups = wallpaperGroups;

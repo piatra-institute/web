@@ -25,7 +25,7 @@ const GaltonAnalysis = ({
         <div className="p-4 min-w-[600px] m-8 bg-black select-none">
             <h2 className="text-center font-bold mb-8">System Dynamics Analysis</h2>
             <div className="h-[500px]">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                     <LineChart
                         data={data.length > 0 ? data : emptyData}
                         margin={{ top: 5, right: 30, left: 20, bottom: 30 }}

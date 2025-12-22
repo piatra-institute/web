@@ -237,7 +237,7 @@ const Viewer = forwardRef<ViewerRef>((_, ref) => {
                         {consolidated ? 'Portfolio Value Over Time' : 'Individual Event Values Over Time'}
                     </h3>
                     <div className="h-96">
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                             <AreaChart data={chartData}>
                                 <defs>
                                     <linearGradient id="gTotal" x1="0" y1="0" x2="0" y2="1">
@@ -264,7 +264,7 @@ const Viewer = forwardRef<ViewerRef>((_, ref) => {
                                         border: '1px solid rgba(132, 204, 22, 0.2)',
                                         color: '#84cc16'
                                     }}
-                                    formatter={(value: number) => [`$${value.toLocaleString()}`, '']}
+                                    formatter={(value) => typeof value === 'number' ? [`$${value.toLocaleString()}`, ''] : [String(value), '']}
                                 />
                                 <Legend wrapperStyle={{ color: '#84cc16' }} />
                                 {consolidated ? (

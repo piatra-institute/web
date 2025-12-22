@@ -144,7 +144,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Signaling vs Agency */}
                 <ChartCard title="Signaling vs Agency">
-                    <ResponsiveContainer width="100%" height={250}>
+                    <ResponsiveContainer width="100%" minHeight={0} minWidth={0} height={250}>
                         <LineChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                             <XAxis dataKey="t" stroke="#4b5563" tick={{ fill: '#9ca3af', fontSize: 10 }} />
                             <YAxis stroke="#4b5563" tick={{ fill: '#9ca3af', fontSize: 10 }} domain={[0, 'auto']} />
@@ -159,7 +159,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
 
                 {/* Substitution Index & CMS */}
                 <ChartCard title="Substitution Index (SI) & CMS">
-                    <ResponsiveContainer width="100%" height={250}>
+                    <ResponsiveContainer width="100%" minHeight={0} minWidth={0} height={250}>
                         <LineChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                             <XAxis dataKey="t" stroke="#4b5563" tick={{ fill: '#9ca3af', fontSize: 10 }} />
                             <YAxis stroke="#4b5563" tick={{ fill: '#9ca3af', fontSize: 10 }} />
@@ -174,7 +174,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
 
                 {/* Coalition & Fragmentation */}
                 <ChartCard title="Coalition (C) & Fragmentation (H)">
-                    <ResponsiveContainer width="100%" height={250}>
+                    <ResponsiveContainer width="100%" minHeight={0} minWidth={0} height={250}>
                         <LineChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                             <XAxis dataKey="t" stroke="#4b5563" tick={{ fill: '#9ca3af', fontSize: 10 }} />
                             <YAxis stroke="#4b5563" tick={{ fill: '#9ca3af', fontSize: 10 }} domain={[0, 1]} />
@@ -188,7 +188,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
 
                 {/* Distortion */}
                 <ChartCard title="Distortion (D)">
-                    <ResponsiveContainer width="100%" height={250}>
+                    <ResponsiveContainer width="100%" minHeight={0} minWidth={0} height={250}>
                         <AreaChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                             <XAxis dataKey="t" stroke="#4b5563" tick={{ fill: '#9ca3af', fontSize: 10 }} />
                             <YAxis stroke="#4b5563" tick={{ fill: '#9ca3af', fontSize: 10 }} />

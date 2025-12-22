@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import Playground from './playground';
+import ClientPlayground from './ClientPlayground';
 
 export const metadata: Metadata = {
     title: 'subconscious state space · playgrounds',
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-    return <Playground />;
+    return <ClientPlayground />;
 }

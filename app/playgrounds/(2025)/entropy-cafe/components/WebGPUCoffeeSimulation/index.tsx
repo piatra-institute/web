@@ -29,8 +29,6 @@ const WebGPUCoffeeSimulation = forwardRef<CoffeeSimulationRef, WebGPUCoffeeSimul
         const [isWebGPUSupported, setIsWebGPUSupported] = useState(true);
         const [isInitialized, setIsInitialized] = useState(false);
 
-        console.log('WebGPUCoffeeSimulation component rendering, instance:', instanceIdRef.current);
-
         useImperativeHandle(ref, () => ({
             addCream: async () => {
                 await simulationRef.current?.addCream();

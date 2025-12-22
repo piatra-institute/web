@@ -34,19 +34,19 @@ const Legend: FC<LegendProps> = ({ constriction, mechanisms }) => {
             <h4 className="text-[#03dac6] font-semibold mb-2 text-sm">Outcome Trajectories</h4>
             <div className="space-y-1 mb-3">
                 <div className="flex items-center">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#2196f3] mr-2 flex-shrink-0" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#2196f3] mr-2 shrink-0" />
                     <span><strong>Resilience</strong> – minimal disturbance</span>
                 </div>
                 <div className="flex items-center">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#ff9800] mr-2 flex-shrink-0" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#ff9800] mr-2 shrink-0" />
                     <span><strong>Recovery</strong> – delayed rebound</span>
                 </div>
                 <div className="flex items-center">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#9c27b0] mr-2 flex-shrink-0" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#9c27b0] mr-2 shrink-0" />
                     <span><strong>Chronic</strong> – sustained narrowing</span>
                 </div>
                 <div className="flex items-center">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#009688] mr-2 flex-shrink-0" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#009688] mr-2 shrink-0" />
                     <span><strong>Growth</strong> – exploratory expansion</span>
                 </div>
             </div>
@@ -55,19 +55,19 @@ const Legend: FC<LegendProps> = ({ constriction, mechanisms }) => {
             <p className="text-gray-300 mb-2">Spoke length & thickness scale with slider value.</p>
             <div className="space-y-1 mb-3">
                 <div className="flex items-center">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#ff5252] mr-2 flex-shrink-0" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#ff5252] mr-2 shrink-0" />
                     <span>Appraisal (threat ↔ meaning)</span>
                 </div>
                 <div className="flex items-center">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#ffb300] mr-2 flex-shrink-0" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#ffb300] mr-2 shrink-0" />
                     <span>Rumination (intrusive ↔ deliberate)</span>
                 </div>
                 <div className="flex items-center">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#64b5f6] mr-2 flex-shrink-0" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#64b5f6] mr-2 shrink-0" />
                     <span>Social support</span>
                 </div>
                 <div className="flex items-center">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#4db6ac] mr-2 flex-shrink-0" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#4db6ac] mr-2 shrink-0" />
                     <span>Neuro‑flexibility</span>
                 </div>
             </div>

@@ -40,7 +40,7 @@ export default function MetricsOverlay({
                         </span>
                     </div>
                     <div className="h-20">
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                             <LineChart data={entropyData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
                                 <XAxis dataKey="index" hide />
                                 <YAxis hide domain={[0, 'dataMax']} />
@@ -64,7 +64,7 @@ export default function MetricsOverlay({
                         </span>
                     </div>
                     <div className="h-20">
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                             <LineChart data={complexityData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
                                 <XAxis dataKey="index" hide />
                                 <YAxis hide domain={[0, 'dataMax']} />

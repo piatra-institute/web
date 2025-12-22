@@ -4,12 +4,12 @@ import {
 
 import {
     Tooltip,
-    FlowbiteTooltipTheme,
+    type TooltipTheme,
 } from 'flowbite-react';
 
 
 
-const theme: FlowbiteTooltipTheme = {
+const theme: TooltipTheme = {
     "target": "w-fit",
     "animation": "transition-opacity",
     "arrow": {

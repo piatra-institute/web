@@ -89,7 +89,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>(({
   speedMs,
 }, ref) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | undefined>(undefined);
   
   const [time, setTime] = useState(0);
   const [particles, setParticles] = useState<Particle[]>([]);

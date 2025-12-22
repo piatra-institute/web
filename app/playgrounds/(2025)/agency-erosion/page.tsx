@@ -1,12 +1,5 @@
 import { Metadata } from 'next';
-import dynamic from 'next/dynamic';
-
-
-
-const Playground = dynamic(
-    () => import('./playground'),
-    { ssr: false }
-);
+import ClientPlayground from './ClientPlayground';
 
 export const metadata: Metadata = {
     title: 'agency erosion · playgrounds',
@@ -14,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function AgencyErosionPage() {
-    return <Playground />;
+    return <ClientPlayground />;
 }

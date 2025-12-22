@@ -1,11 +1,6 @@
 import type { Metadata } from 'next';
-import dynamic from 'next/dynamic';
-
-import {
-    defaultOpenGraph,
-} from '@/data/metadata';
-
-
+import { defaultOpenGraph } from '@/data/metadata';
+import ClientPlayground from './ClientPlayground';
 
 export const metadata: Metadata = {
     title: 'Hsp90 canalization · playgrounds',
@@ -18,15 +13,6 @@ export const metadata: Metadata = {
     },
 };
 
-// Disable SSR for the playground canvas
-const Hsp90CanalizationPlayground = dynamic(
-    () => import('./playground'),
-    { ssr: false }
-);
-
-
 export default function Page() {
-    return (
-        <Hsp90CanalizationPlayground />
-    );
+    return <ClientPlayground />;
 }

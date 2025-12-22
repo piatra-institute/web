@@ -14,7 +14,7 @@ interface ViewerProps {
 
 const Viewer: React.FC<ViewerProps> = ({ agents, width, height }) => {
     const canvasRef = React.useRef<HTMLCanvasElement>(null);
-    const animationFrameIdRef = React.useRef<number>();
+    const animationFrameIdRef = React.useRef<number | undefined>(undefined);
 
     React.useEffect(() => {
         const canvas = canvasRef.current;

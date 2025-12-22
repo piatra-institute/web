@@ -161,7 +161,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>(({
                     </div>
                     <div className="flex-1 flex flex-col">
                         <div ref={chartRef} className="flex-1" style={{ minHeight: 'calc(90vh - 250px)' }}>
-                            <ResponsiveContainer width="100%" height="100%">
+                            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                         <LineChart data={chartData} margin={{ top: 10, right: 30, left: 50, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
                             <XAxis 

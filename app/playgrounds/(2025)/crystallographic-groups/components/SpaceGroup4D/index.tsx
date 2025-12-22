@@ -27,13 +27,13 @@ export default function SpaceGroup4D({
     onXWRotationChange,
 }: SpaceGroup4DProps) {
     const mountRef = useRef<HTMLDivElement>(null);
-    const sceneRef = useRef<THREE.Scene>();
-    const rendererRef = useRef<THREE.WebGLRenderer>();
-    const cameraRef = useRef<THREE.PerspectiveCamera>();
-    const controlsRef = useRef<OrbitControls>();
-    const points3DRef = useRef<THREE.Points>();
+    const sceneRef = useRef<THREE.Scene | undefined>(undefined);
+    const rendererRef = useRef<THREE.WebGLRenderer | undefined>(undefined);
+    const cameraRef = useRef<THREE.PerspectiveCamera | undefined>(undefined);
+    const controlsRef = useRef<OrbitControls | undefined>(undefined);
+    const points3DRef = useRef<THREE.Points | undefined>(undefined);
     const points4DRef = useRef<THREE.Vector4[]>([]);
-    const animationIdRef = useRef<number>();
+    const animationIdRef = useRef<number | undefined>(undefined);
 
     const groups = spaceGroups4D;
 

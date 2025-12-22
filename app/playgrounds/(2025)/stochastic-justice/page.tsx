@@ -1,10 +1,6 @@
 import type { Metadata } from 'next';
-import dynamic from 'next/dynamic';
 import { defaultOpenGraph } from '@/data/metadata';
-
-const StochasticJusticePlayground = dynamic(() => import('./playground'), {
-  ssr: false,
-});
+import ClientPlayground from './ClientPlayground';
 
 export const metadata: Metadata = {
   title: 'stochastic justice · playgrounds',
@@ -18,5 +14,5 @@ export const metadata: Metadata = {
 };
 
 export default function StochasticJusticePage() {
-  return <StochasticJusticePlayground />;
+  return <ClientPlayground />;
 }

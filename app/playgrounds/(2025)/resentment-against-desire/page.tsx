@@ -1,12 +1,6 @@
 import { Metadata } from 'next';
 import { defaultOpenGraph } from '@/data/metadata';
-import dynamic from 'next/dynamic';
-
-
-
-const Playground = dynamic(() => import('./playground'), {
-    ssr: false,
-});
+import ClientPlayground from './ClientPlayground';
 
 export const metadata: Metadata = {
     title: 'resentment against desire · playgrounds',
@@ -19,5 +13,5 @@ export const metadata: Metadata = {
 };
 
 export default function ResentmentAgainstDesirePage() {
-    return <Playground />;
+    return <ClientPlayground />;
 }
