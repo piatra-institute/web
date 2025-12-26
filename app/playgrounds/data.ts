@@ -275,4 +275,10 @@ export const playgrounds = [
         description: 'truth-value rhythms from self-referential sentences',
         date: 'December 2025',
     },
+    // {
+    //     name: 'unknot studio',
+    //     link: '/playgrounds/unknot-studio',
+    //     description: 'torus knots, connected sums, and projection invariants',
+    //     date: 'December 2025',
+    // },
 ];
