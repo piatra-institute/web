@@ -287,4 +287,10 @@ export const playgrounds = [
         description: 'stupidity, intelligence, helplessness, and banditry distributions',
         date: 'December 2025',
     },
+    {
+        name: 'Chladni generator',
+        link: '/playgrounds/chladni-generator',
+        description: 'standing waves, reaction-diffusion, and morphogenesis patterns',
+        date: 'December 2025',
+    },
 ];
