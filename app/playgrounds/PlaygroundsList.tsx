@@ -119,7 +119,7 @@ export default function PlaygroundsList() {
             </div>
 
             {/* Month Filter (fixed height container to prevent layout shift) */}
-            <div className="h-[100px] md:h-10 mb-4">
+            <div className="h-25 md:h-10 mb-4">
                 {selectedYear && (
                     <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-1.5">
                         <button

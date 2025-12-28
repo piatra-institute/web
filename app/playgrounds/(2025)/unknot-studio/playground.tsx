@@ -305,7 +305,7 @@ export default function UnknotStudioPlayground() {
     return (
         <PlaygroundLayout
             title="Unknot Studio"
-            subtitle="Torus Knots, Connected Sums, and Projection Invariants"
+            subtitle="torus knots, connected sums, and projection invariants"
             sections={sections}
             settings={settings}
         />
