@@ -281,4 +281,10 @@ export const playgrounds = [
         description: 'torus knots, connected sums, and projection invariants',
         date: 'December 2025',
     },
+    {
+        name: 'Cipolla quadrant',
+        link: '/playgrounds/cipolla-quadrant',
+        description: 'stupidity, intelligence, helplessness, and banditry distributions',
+        date: 'December 2025',
+    },
 ];
