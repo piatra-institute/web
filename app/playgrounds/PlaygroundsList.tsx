@@ -1,17 +1,17 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 
+import IndexLayout from '@/components/IndexLayout';
 import { linkAnchorStyle } from '@/data/styles';
 import { playgrounds } from './data';
 
 
-
+const STORAGE_KEY = 'playgrounds-filter';
 const YEARS = ['2024', '2025', '2026'];
 const MONTHS_ROW_1 = ['01', '02', '03', '04', '05', '06'];
 const MONTHS_ROW_2 = ['07', '08', '09', '10', '11', '12'];
-const MONTHS = [...MONTHS_ROW_1, ...MONTHS_ROW_2];
 const MONTH_NAMES: Record<string, string> = {
     'January': '01',
     'February': '02',
@@ -43,6 +43,35 @@ function parseDateString(dateStr: string): { year: string; month: string } | nul
 export default function PlaygroundsList() {
     const [selectedYear, setSelectedYear] = useState<string | null>(null);
     const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
+    const [initialized, setInitialized] = useState(false);
+
+    // Load from localStorage on mount
+    useEffect(() => {
+        try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                const { year, month } = JSON.parse(stored);
+                if (year) setSelectedYear(year);
+                if (month) setSelectedMonth(month);
+            }
+        } catch {
+            // Ignore errors
+        }
+        setInitialized(true);
+    }, []);
+
+    // Save to localStorage when selection changes
+    useEffect(() => {
+        if (!initialized) return;
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                year: selectedYear,
+                month: selectedMonth,
+            }));
+        } catch {
+            // Ignore errors
+        }
+    }, [selectedYear, selectedMonth, initialized]);
 
     // Get available months for selected year
     const availableMonths = useMemo(() => {
@@ -89,8 +118,22 @@ export default function PlaygroundsList() {
         }
     };
 
+    // Don't render until localStorage is loaded to prevent flicker
+    if (!initialized) {
+        return <div className="min-h-screen" />;
+    }
+
     return (
-        <>
+        <IndexLayout
+            title="playgrounds"
+            description={
+                <>
+                    the playgrounds are in various stages of development
+                    <br />
+                    from conceptual sketches to fully functional applications
+                </>
+            }
+        >
             {/* Year Filter */}
             <div className="flex flex-wrap justify-center gap-2 mb-4">
                 <button
@@ -192,8 +235,8 @@ export default function PlaygroundsList() {
             {/* Playgrounds List */}
             <div className="p-6">
                 {filteredPlaygrounds.length === 0 ? (
-                    <div className="text-center text-gray-500">
-                        No playgrounds found for this period.
+                    <div className="text-center text-sm text-gray-500">
+                        no playgrounds for this period
                     </div>
                 ) : (
                     filteredPlaygrounds.map((playground) => {
@@ -216,6 +259,6 @@ export default function PlaygroundsList() {
                     })
                 )}
             </div>
-        </>
+        </IndexLayout>
     );
 }
