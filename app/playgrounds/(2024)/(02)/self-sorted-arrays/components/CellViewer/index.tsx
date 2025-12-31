@@ -12,7 +12,7 @@ import {
 
 import {
     CellData,
-} from '@/app/playgrounds/(2024)/self-sorted-arrays/data';
+} from '@/app/playgrounds/(2024)/(02)/self-sorted-arrays/data';
 
 import {
     checkInputEvent,

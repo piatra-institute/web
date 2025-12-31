@@ -17,20 +17,20 @@ import {
     integerBetweenLimits,
 } from '@/logic/utilities';
 
-import CellsChart1D from '@/app/playgrounds/(2024)/self-sorted-arrays/components/CellsChart1D';
-import CellViewer from '@/app/playgrounds/(2024)/self-sorted-arrays/components/CellViewer';
-import Settings from '@/app/playgrounds/(2024)/self-sorted-arrays/components/Settings';
+import CellsChart1D from '@/app/playgrounds/(2024)/(02)/self-sorted-arrays/components/CellsChart1D';
+import CellViewer from '@/app/playgrounds/(2024)/(02)/self-sorted-arrays/components/CellViewer';
+import Settings from '@/app/playgrounds/(2024)/(02)/self-sorted-arrays/components/Settings';
 
 import {
     CellData,
     CellMutationStrategy,
-} from '@/app/playgrounds/(2024)/self-sorted-arrays/data';
+} from '@/app/playgrounds/(2024)/(02)/self-sorted-arrays/data';
 
 import {
     randomColor,
     biasedBlueRandomColor,
     biasedLimeRandomColor,
-} from '@/app/playgrounds/(2024)/self-sorted-arrays/logic';
+} from '@/app/playgrounds/(2024)/(02)/self-sorted-arrays/logic';
 
 import {
     Tissue,

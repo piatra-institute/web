@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import {
     RotatingCircles,
-} from '@/app/playgrounds/(2024)/coasellular-morphogenesis/logic';
+} from '@/app/playgrounds/(2024)/(11)/coasellular-morphogenesis/logic';
 
 
 

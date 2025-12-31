@@ -6,7 +6,7 @@ import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundSettings from '@/components/PlaygroundSettings';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
-import Fractal from '@/app/playgrounds/(2024)/halley-window/components/Fractal';
+import Fractal from '@/app/playgrounds/(2025)/(02)/halley-window/components/Fractal';
 
 export default function HalleyWindowPlayground() {
     // Default values calibrated to match the reference image

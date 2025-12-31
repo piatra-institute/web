@@ -131,12 +131,12 @@ export const playgrounds = [
         description: 'phase transitions of debt through economic conditions',
         date: 'June 2025',
     },
-    // {
-    //     name: 'entropy café',
-    //     link: '/playgrounds/entropy-cafe',
-    //     description: 'entropy and complexity through coffee mixing metaphor',
-    //     date: 'July 2025',
-    // },
+    {
+        name: 'entropy café',
+        link: '/playgrounds/entropy-cafe',
+        description: 'entropy and complexity through coffee mixing metaphor',
+        date: 'July 2025',
+    },
     {
         name: 'geometry becoming topology',
         link: '/playgrounds/geometry-becoming-topology',
