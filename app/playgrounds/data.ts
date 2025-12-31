@@ -293,4 +293,10 @@ export const playgrounds = [
         description: 'standing waves, reaction-diffusion, and morphogenesis patterns',
         date: 'December 2025',
     },
+    {
+        name: 'do-calculus',
+        link: '/playgrounds/do-calculus',
+        description: 'Judea Pearl\'s interventional framework for causal inference on spiking neurons',
+        date: 'December 2025',
+    },
 ];
