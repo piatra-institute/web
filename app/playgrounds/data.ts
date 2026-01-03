@@ -299,4 +299,10 @@ export const playgrounds = [
         description: 'Judea Pearl\'s interventional framework for causal inference on spiking neurons',
         date: 'December 2025',
     },
+    {
+        name: 'activation functions lab',
+        link: '/playgrounds/activation-functions-lab',
+        description: 'invent, explore, and compare neural network activation functions',
+        date: 'January 2026',
+    },
 ];

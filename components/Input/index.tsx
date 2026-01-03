@@ -10,6 +10,7 @@ export interface InputProps {
     placeholder?: string;
     label?: string;
     compact?: boolean;
+    fullWidth?: boolean;
     centered?: boolean;
     className?: string;
 
@@ -29,6 +30,7 @@ const Input: React.FC<InputProps> = ({
     placeholder,
     label,
     compact,
+    fullWidth,
     centered,
     className,
     type = 'text',
@@ -37,14 +39,14 @@ const Input: React.FC<InputProps> = ({
     /* range gets its own width & removes text-specific classes */
     const isRange = type === 'range';
 
+    const wrapperClass = compact
+        ? 'flex gap-2 justify-between items-center mb-4'
+        : fullWidth
+        ? 'select-none'
+        : 'm-10 select-none';
+
     return (
-        <div
-            className={
-                compact
-                    ? 'flex gap-2 justify-between items-center mb-4'
-                    : 'm-10 select-none'
-            }
-        >
+        <div className={wrapperClass}>
             {label && <label className="block mb-1">{label}</label>}
 
             <input
@@ -57,7 +59,7 @@ const Input: React.FC<InputProps> = ({
               border border-lime-800 rounded-none
               focus:outline-none focus:ring-2 focus:ring-lime-800
               px-4 py-2
-              ${compact ? 'w-24' : 'w-60 md:w-72'}
+              ${compact ? 'w-24' : fullWidth ? 'w-full' : 'w-60 md:w-72'}
               ${centered ? 'text-center' : 'text-right'}
             `}
           ${className || ''}

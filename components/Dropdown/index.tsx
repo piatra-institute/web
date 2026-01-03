@@ -24,7 +24,7 @@ import Tooltip from '@/components/Tooltip';
 
 const theme: DropdownTheme = {
     "arrowIcon": "ml-2 h-4 w-4",
-    "content": "bg-black focus:outline-none",
+    "content": "bg-black focus:outline-none max-h-[200px] overflow-y-auto",
     "floating": {
         "animation": "transition-opacity",
         "arrow": {
@@ -36,7 +36,7 @@ const theme: DropdownTheme = {
             },
             "placement": "-4px"
         },
-        "base": "z-10 w-fit border divide-y divide-stone-100 shadow focus:outline-none",
+        "base": "z-10 w-fit border divide-y divide-stone-100 shadow focus:outline-none max-h-[200px] overflow-y-auto",
         "content": "py-1 text-sm text-stone-700 dark:text-stone-200",
         "divider": "my-1 h-px bg-stone-100 dark:bg-stone-600",
         "header": "block py-2 px-4 text-sm text-stone-700 dark:text-stone-200",
