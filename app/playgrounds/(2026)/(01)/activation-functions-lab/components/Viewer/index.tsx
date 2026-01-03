@@ -418,17 +418,17 @@ const Viewer = forwardRef<ViewerRef, ViewerProps>(function Viewer(
     );
 
     return (
-        <div className="w-[90vw] h-[90vh] flex gap-4 p-4">
+        <div className="w-[90vw] h-[90vh] flex flex-col lg:flex-row gap-4 p-2 lg:p-4 overflow-auto">
             {/* Main Chart Area */}
-            <div className="flex-1 flex flex-col gap-4 min-w-0">
+            <div className="flex-1 flex flex-col gap-2 lg:gap-4 min-w-0 min-h-[400px] lg:min-h-0">
                 {/* Header */}
                 <div className={`text-center ${invertChart ? 'bg-white px-2 py-1' : ''}`}>
-                    <h2 className={`font-mono text-sm truncate ${invertChart ? 'text-lime-600' : 'text-lime-400'}`}>{formula}</h2>
+                    <h2 className={`font-mono text-xs lg:text-sm truncate ${invertChart ? 'text-lime-600' : 'text-lime-400'}`}>{formula}</h2>
                     {spec.kind === 'builtin' && (() => {
                         const meta = ACTIVATION_META.find((m) => m.name === spec.builtinType);
                         if (!meta?.paper && !meta?.arxiv) return null;
                         return (
-                            <div className={`text-xs mt-1 ${invertChart ? 'text-gray-600' : 'text-gray-500'}`}>
+                            <div className={`text-[10px] lg:text-xs mt-1 hidden sm:block ${invertChart ? 'text-gray-600' : 'text-gray-500'}`}>
                                 {meta.paper && <span>{meta.paper}{meta.year ? ` (${meta.year})` : ''}</span>}
                                 {meta.arxiv && (
                                     <>
@@ -543,7 +543,7 @@ const Viewer = forwardRef<ViewerRef, ViewerProps>(function Viewer(
                 </div>
 
                 {/* Stats Panel */}
-                <div className={`grid grid-cols-3 md:grid-cols-6 gap-2 text-xs ${invertChart ? 'bg-white p-2' : ''}`}>
+                <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 lg:gap-2 text-xs ${invertChart ? 'bg-white p-2' : ''}`}>
                     {plotted.stats.ok ? (
                         <>
                             <StatBox
@@ -587,7 +587,7 @@ const Viewer = forwardRef<ViewerRef, ViewerProps>(function Viewer(
             </div>
 
             {/* 3D Landscape */}
-            <div className="w-[350px] flex flex-col gap-2 shrink-0">
+            <div className="w-full lg:w-[350px] flex flex-col gap-2 shrink-0 min-h-[300px] lg:min-h-0">
                 <div className="text-center text-xs text-gray-400">
                     Activation Landscape
                 </div>
@@ -595,11 +595,11 @@ const Viewer = forwardRef<ViewerRef, ViewerProps>(function Viewer(
                 {/* Dimension Selectors */}
                 <div className="grid grid-cols-3 gap-1 text-xs">
                     <div>
-                        <label className="text-gray-500 block mb-0.5">X axis</label>
+                        <label className="text-gray-500 block mb-0.5 text-[10px] lg:text-xs">X</label>
                         <select
                             value={xDim}
                             onChange={(e) => setXDim(e.target.value as LandscapeDimension)}
-                            className="w-full bg-black border border-gray-700 text-gray-300 px-1 py-0.5 text-xs outline-none"
+                            className="w-full bg-black border border-gray-700 text-gray-300 px-1 py-0.5 text-[10px] lg:text-xs outline-none"
                         >
                             {LANDSCAPE_DIMENSIONS.map((d) => (
                                 <option key={d.value} value={d.value}>
@@ -609,11 +609,11 @@ const Viewer = forwardRef<ViewerRef, ViewerProps>(function Viewer(
                         </select>
                     </div>
                     <div>
-                        <label className="text-gray-500 block mb-0.5">Y axis</label>
+                        <label className="text-gray-500 block mb-0.5 text-[10px] lg:text-xs">Y</label>
                         <select
                             value={yDim}
                             onChange={(e) => setYDim(e.target.value as LandscapeDimension)}
-                            className="w-full bg-black border border-gray-700 text-gray-300 px-1 py-0.5 text-xs outline-none"
+                            className="w-full bg-black border border-gray-700 text-gray-300 px-1 py-0.5 text-[10px] lg:text-xs outline-none"
                         >
                             {LANDSCAPE_DIMENSIONS.map((d) => (
                                 <option key={d.value} value={d.value}>
@@ -623,11 +623,11 @@ const Viewer = forwardRef<ViewerRef, ViewerProps>(function Viewer(
                         </select>
                     </div>
                     <div>
-                        <label className="text-gray-500 block mb-0.5">Z axis</label>
+                        <label className="text-gray-500 block mb-0.5 text-[10px] lg:text-xs">Z</label>
                         <select
                             value={zDim}
                             onChange={(e) => setZDim(e.target.value as LandscapeDimension)}
-                            className="w-full bg-black border border-gray-700 text-gray-300 px-1 py-0.5 text-xs outline-none"
+                            className="w-full bg-black border border-gray-700 text-gray-300 px-1 py-0.5 text-[10px] lg:text-xs outline-none"
                         >
                             {LANDSCAPE_DIMENSIONS.map((d) => (
                                 <option key={d.value} value={d.value}>
@@ -639,7 +639,7 @@ const Viewer = forwardRef<ViewerRef, ViewerProps>(function Viewer(
                 </div>
 
                 {/* 3D Canvas */}
-                <div className="flex-1 min-h-0 border border-gray-700 bg-black relative">
+                <div className="flex-1 min-h-[200px] lg:min-h-0 border border-gray-700 bg-black relative">
                     <canvas
                         ref={canvasRef}
                         className="w-full h-full cursor-grab active:cursor-grabbing"
@@ -669,26 +669,26 @@ const Viewer = forwardRef<ViewerRef, ViewerProps>(function Viewer(
                 </div>
 
                 {/* Legend */}
-                <div className="text-xs space-y-1 max-h-[120px] overflow-y-auto">
+                <div className="text-xs max-h-[80px] lg:max-h-[120px] overflow-y-auto">
                     <div className="flex items-center gap-2 mb-1">
                         <div className="w-3 h-3 bg-lime-500 border-2 border-white" />
                         <span className="text-lime-400">Current</span>
                     </div>
-                    <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
+                    <div className="grid grid-cols-3 lg:grid-cols-2 gap-x-2 gap-y-0.5">
                         {categories.slice(0, 12).map((cat) => (
                             <div key={cat} className="flex items-center gap-1">
                                 <div
-                                    className="w-2 h-2"
+                                    className="w-2 h-2 shrink-0"
                                     style={{ backgroundColor: CATEGORY_COLORS[cat] || '#71717a' }}
                                 />
-                                <span className="text-gray-500 text-[10px]">{cat}</span>
+                                <span className="text-gray-500 text-[10px] truncate">{cat}</span>
                             </div>
                         ))}
                     </div>
                 </div>
 
                 {/* Info */}
-                <div className="text-xs text-gray-600 text-center">
+                <div className="text-xs text-gray-600 text-center hidden lg:block">
                     Drag to rotate • Click to select
                 </div>
 
@@ -701,7 +701,7 @@ const Viewer = forwardRef<ViewerRef, ViewerProps>(function Viewer(
                         }}
                         className="flex-1 text-xs px-2 py-1 border border-gray-600 text-gray-400 hover:bg-gray-800 outline-none"
                     >
-                        Reset view
+                        Reset
                     </button>
                     <button
                         onClick={() => {
@@ -709,7 +709,7 @@ const Viewer = forwardRef<ViewerRef, ViewerProps>(function Viewer(
                         }}
                         className="flex-1 text-xs px-2 py-1 border border-lime-500 text-lime-500 hover:bg-lime-500/20 outline-none"
                     >
-                        Copy Data
+                        Copy
                     </button>
                 </div>
             </div>

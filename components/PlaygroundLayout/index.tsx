@@ -103,7 +103,7 @@ export default function PlaygroundLayout({
     }, [currentSection, sections.length]);
 
     const renderSection = (section: PlaygroundSection, index: number) => {
-        const baseClassName = 'relative w-full min-h-screen flex items-center justify-center';
+        const baseClassName = 'relative w-full min-h-screen flex items-center justify-center overflow-hidden';
         const sectionClassName = `${baseClassName} ${section.className || ''}`;
 
         switch (section.type) {
@@ -191,8 +191,8 @@ export default function PlaygroundLayout({
                         style={{ scrollSnapAlign: 'start' }}
                     >
                         <div className="absolute inset-0 bg-black" />
-                        <div className="relative z-10 px-8 max-w-4xl text-center">
-                            <div className="text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="relative z-10 px-4 sm:px-8 max-w-4xl text-center overflow-hidden w-full">
+                            <div className="text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left overflow-hidden">
                                 {section.content}
                             </div>
                         </div>

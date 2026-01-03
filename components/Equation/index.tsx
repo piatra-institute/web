@@ -22,8 +22,10 @@ const Equation: React.FC<EquationProps> = ({
 }) => {
     if (mode === 'block') {
         return (
-            <div className={`my-4 ${className}`}>
-                <BlockMath math={math} />
+            <div className={`my-4 overflow-x-auto max-w-full ${className}`}>
+                <div className="min-w-fit">
+                    <BlockMath math={math} />
+                </div>
             </div>
         );
     }
