@@ -97,11 +97,11 @@ export default async function Provocation({
             </h2>
 
             <div
-                className="sm:w-full md:w-[700px] -mx-8 md:mx-auto"
+                className="sm:w-full md:w-175 -mx-8 md:mx-auto"
             >
                 {prerequisites && (
                     <div
-                        className="prerequisites m-auto mb-10 w-full md:w-[400px]"
+                        className="prerequisites m-auto mb-10 w-full md:w-100"
                     >
                         <h3
                             className="text-lg text-center font-bold mb-4"

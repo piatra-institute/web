@@ -6,7 +6,8 @@ import { ExternalLink } from 'lucide-react';
 import IndexLayout from '@/components/IndexLayout';
 import { PressItem } from '@/data';
 
-import PressTitle from './PressTitle';
+import PressTitle from '../PressTitle';
+
 
 
 interface OtherPressItem {
