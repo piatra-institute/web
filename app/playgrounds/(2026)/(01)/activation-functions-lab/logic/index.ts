@@ -1289,25 +1289,29 @@ export function prettyFormula(s: Spec): string {
     if (s.kind === 'builtin') {
         const t = s.builtinType ?? 'ReLU';
         const meta = ACTIVATION_META.find((m) => m.name === t);
-        const fullName = meta?.description ?? t;
+        const desc = meta?.description ?? '';
 
-        if (t === 'LeakyReLU') return `${fullName}: max(0,x) + α·min(0,x)   (α=${a})`;
-        if (t === 'PReLU') return `${fullName}: max(0,x) + α·min(0,x)   (α=${a})`;
-        if (t === 'Swish') return `${fullName}: x·σ(β·x)   (β=${beta})`;
-        if (t === 'ELU') return `${fullName}: x if x≥0 else α·(eˣ-1)   (α=${a})`;
-        if (t === 'Snake') return `${fullName}: x + sin²(α·x)/α   (α=${a})`;
-        return `${fullName} — ${t}(x)`;
+        // Parametric activations with visible parameters
+        if (t === 'LeakyReLU') return `${t}(x) = max(0,x) + α·min(0,x)  [α=${a}]`;
+        if (t === 'PReLU') return `${t}(x) = max(0,x) + α·min(0,x)  [α=${a}]`;
+        if (t === 'Swish') return `${t}(x) = x·σ(β·x)  [β=${beta}]`;
+        if (t === 'ELU') return `${t}(x) = x if x≥0, α·(eˣ-1) if x<0  [α=${a}]`;
+        if (t === 'CELU') return `${t}(x) = max(0,x) + min(0,α·(eˣᐟᵅ-1))  [α=${a}]`;
+        if (t === 'SELU') return `${t}(x) = λ·(x if x≥0, α·(eˣ-1) if x<0)`;
+        if (t === 'Snake') return `${t}(x) = x + sin²(α·x)/α  [α=${a}]`;
+
+        // Standard activations - show name = formula
+        return `${t}(x) = ${desc}`;
     }
 
     if (s.kind === 'composer') {
         const base = s.base ?? 'ReLU';
         const gate = s.gate ?? 'none';
         const g = gate === 'none' ? '1' : `${gate}(β·(x-τ)+b)`;
-        const post = `pos=${formatNum(s.posScale)}, neg=${formatNum(s.negScale)}`;
-        return `Composer: ${g} · ${base}(x)   (β=${beta}, τ=${tau}, b=${b}, ${post})`;
+        return `Composer: ${base}(x) · ${g}  [β=${beta}, τ=${tau}, b=${b}]`;
     }
 
-    return `Expression: ${s.expr ?? 'relu(x)'}`;
+    return `Custom: ${s.expr ?? 'relu(x)'}`;
 }
 
 // ============================================================================
