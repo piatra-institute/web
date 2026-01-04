@@ -16,6 +16,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'neural-cellular-automaton · playgrounds · piatra.institute',
         description: 'neural networks evolved through cellular automaton rules',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/neural-cellular-automaton.png',
+            },
+        ],
     },
 };
 

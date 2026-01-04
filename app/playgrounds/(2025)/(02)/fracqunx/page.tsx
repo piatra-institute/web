@@ -16,6 +16,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'fracqunx · playgrounds · piatra.institute',
         description: 'dynamical, fractional quincunx-like board',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/fracqunx.png',
+            },
+        ],
     },
 };
 

@@ -13,6 +13,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'social propagation · playgrounds · piatra.institute',
         description: 'comparing free-for-all vs policy-based social networks to measure political manipulation reduction',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/social-propagation.png',
+            },
+        ],
     },
 };
 

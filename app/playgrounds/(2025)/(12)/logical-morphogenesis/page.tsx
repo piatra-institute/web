@@ -13,6 +13,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'logical morphogenesis · playgrounds · piatra.institute',
         description: 'truth-value rhythms from self-referential sentences',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/logical-morphogenesis.png',
+            },
+        ],
     },
 };
 

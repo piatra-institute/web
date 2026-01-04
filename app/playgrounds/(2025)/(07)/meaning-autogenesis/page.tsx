@@ -13,6 +13,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'meaning autogenesis · playgrounds · piatra.institute',
         description: 'Interactive exploration of how molecules become signs, based on Terrence Deacon\'s biosemiotic theory',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/meaning-autogenesis.png',
+            },
+        ],
     },
 };
 

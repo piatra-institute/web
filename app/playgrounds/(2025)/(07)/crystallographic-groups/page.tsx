@@ -13,6 +13,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'crystallographic groups · playgrounds · piatra.institute',
         description: 'Interactive exploration of 2D wallpaper groups, 3D space groups, and 4D crystallographic symmetries',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/crystallographic-groups.png',
+            },
+        ],
     },
 };
 

@@ -16,6 +16,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'geometry becoming topology · playgrounds · piatra.institute',
         description: 'exploring the transformation from geometric to topological properties',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/geometry-becoming-topology.png',
+            },
+        ],
     },
 };
 

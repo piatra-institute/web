@@ -13,6 +13,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'plr-harmony · playgrounds · piatra.institute',
         description: 'neo-Riemannian PLR transformations and triadic harmony',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/plr-harmony.png',
+            },
+        ],
     },
 };
 

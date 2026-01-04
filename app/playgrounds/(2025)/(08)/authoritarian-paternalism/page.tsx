@@ -13,6 +13,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'authoritarian paternalism · playgrounds · piatra.institute',
         description: 'Paternal signaling, order, and support co-evolution in authoritarian systems',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/authoritarian-paternalism.png',
+            },
+        ],
     },
 };
 

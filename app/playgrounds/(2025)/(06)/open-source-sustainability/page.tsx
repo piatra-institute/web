@@ -10,6 +10,11 @@ export const metadata: Metadata = {
     ...defaultOpenGraph,
     title: 'open source sustainability · playgrounds · piatra.institute',
     description: 'Interactive model of how open source software projects face pressure to change from permissive to restrictive licenses',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/open-source-sustainability.png',
+            },
+        ],
   },
 };
 

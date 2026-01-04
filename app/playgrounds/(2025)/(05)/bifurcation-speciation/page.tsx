@@ -13,6 +13,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'bifurcation speciation · playgrounds · piatra.institute',
         description: '',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/bifurcation-speciation.png',
+            },
+        ],
     },
 };
 

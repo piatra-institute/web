@@ -16,6 +16,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'refractive computation · playgrounds · piatra.institute',
         description: 'computing with light through optical refraction principles',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/refractive-computation.png',
+            },
+        ],
     },
 };
 

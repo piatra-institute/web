@@ -13,6 +13,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'tuition resentment · playgrounds · piatra.institute',
         description: 'Exploring high-tuition psychodynamics and attribution of blame',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/tuition-resentment.png',
+            },
+        ],
     },
 };
 

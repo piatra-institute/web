@@ -16,6 +16,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'metamaterials · playgrounds · piatra.institute',
         description: 'materials engineered to exhibit life-like properties',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/metamaterials.png',
+            },
+        ],
     },
 };
 

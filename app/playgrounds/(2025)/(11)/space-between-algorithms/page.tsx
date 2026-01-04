@@ -13,6 +13,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'space between algorithms · playgrounds · piatra.institute',
         description: 'intra- and inter-algorithm freedom through policy manifolds and goal slack',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/space-between-algorithms.png',
+            },
+        ],
     },
 };
 

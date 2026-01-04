@@ -9,6 +9,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'trauma-eustress dynamics · playgrounds · piatra.institute',
         description: 'Explore how constriction and expansion influence post-trauma trajectories through resilience, recovery, chronic narrowing, and growth pathways.',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/trauma-eustress-dynamics.png',
+            },
+        ],
     },
 };
 

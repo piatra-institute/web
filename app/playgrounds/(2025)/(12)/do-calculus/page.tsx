@@ -13,6 +13,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'do-calculus · playgrounds · piatra.institute',
         description: 'Judea Pearl\'s interventional framework for causal inference on spiking neuron models. Compare do-calculus effects with Transfer Entropy and Granger causality.',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/do-calculus.png',
+            },
+        ],
     },
 };
 

@@ -13,6 +13,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'algorithmic monodominance · playgrounds · piatra.institute',
         description: 'phase transitions from concave to convex returns in algorithmic competition',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/algorithmic-monodominance.png',
+            },
+        ],
     },
 };
 

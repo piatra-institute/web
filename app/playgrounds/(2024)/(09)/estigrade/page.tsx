@@ -16,6 +16,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'estigrade · playgrounds · piatra.institute',
         description: 'enhance grades when students accurately estimate their exam scores',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/estigrade.png',
+            },
+        ],
     },
 };
 

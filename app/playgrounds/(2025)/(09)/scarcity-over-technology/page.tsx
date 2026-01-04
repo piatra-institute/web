@@ -16,6 +16,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'scarcity over technology · playgrounds · piatra.institute',
         description: 'economy as ∂(scarcity)/∂(technology)',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/scarcity-over-technology.png',
+            },
+        ],
     },
 };
 

@@ -10,6 +10,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'Lefebvrian conscience · playgrounds · piatra.institute',
         description: 'agent-based simulation exploring Lefebvre\'s Algebra of Conscience',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/lefebvrian-conscience.png',
+            },
+        ],
     },
 };
 

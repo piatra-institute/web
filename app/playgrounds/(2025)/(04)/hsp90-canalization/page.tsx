@@ -10,6 +10,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'Hsp90 canalization · playgrounds · piatra.institute',
         description: 'chaperone-driven canalization of latent phenotypic variation',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/hsp90-canalization.png',
+            },
+        ],
     },
 };
 

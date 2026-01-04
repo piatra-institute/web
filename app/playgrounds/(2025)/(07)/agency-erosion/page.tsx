@@ -13,6 +13,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'agency erosion · playgrounds · piatra.institute',
         description: 'Interactive exploration of identity substitution dynamics and the erosion of collective agency through amplified signaling',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/agency-erosion.png',
+            },
+        ],
     },
 };
 

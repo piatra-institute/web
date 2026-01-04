@@ -9,6 +9,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'ramsey ports · playgrounds · piatra.institute',
         description: 'Interactive exploration of airport pricing models based on Ramsey pricing principles. Compare economic outcomes between current and privatized airport models.',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/ramsey-ports.png',
+            },
+        ],
     },
 };
 

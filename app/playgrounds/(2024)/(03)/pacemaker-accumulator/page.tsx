@@ -16,6 +16,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'pacemaker-accumulator · playgrounds · piatra.institute',
         description: 'cellular timing through pacemaker–accumulator mechanisms',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/pacemaker-accumulator.png',
+            },
+        ],
     },
 };
 

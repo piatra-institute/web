@@ -16,6 +16,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'entropy café · playgrounds · piatra.institute',
         description: 'entropy and complexity through coffee mixing metaphor',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/entropy-cafe.png',
+            },
+        ],
     },
 };
 

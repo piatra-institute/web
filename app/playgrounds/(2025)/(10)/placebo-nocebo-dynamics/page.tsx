@@ -13,6 +13,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'placebo-nocebo dynamics · playgrounds · piatra.institute',
         description: 'precision-weighted prediction model of placebo analgesia and nocebo hyperalgesia',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/placebo-nocebo-dynamics.png',
+            },
+        ],
     },
 };
 

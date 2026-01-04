@@ -16,6 +16,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'berkshire engine · playgrounds · piatra.institute',
         description: 'insurance float as investment capital',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/berkshire-engine.png',
+            },
+        ],
     },
 };
 

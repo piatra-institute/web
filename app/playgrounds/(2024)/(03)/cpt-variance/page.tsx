@@ -16,6 +16,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'CPT variance · playgrounds · piatra.institute',
         description: 'symmetry exploration of charge, parity, and time reversal',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/cpt-variance.png',
+            },
+        ],
     },
 };
 

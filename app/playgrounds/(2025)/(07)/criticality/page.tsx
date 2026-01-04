@@ -9,6 +9,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'criticality · playgrounds · piatra.institute',
         description: 'Interactive exploration of branching criticality and distance-to-criticality metrics in complex systems.',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/criticality.png',
+            },
+        ],
     },
 };
 

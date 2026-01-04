@@ -13,6 +13,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'Cipolla quadrant · playgrounds · piatra.institute',
         description: 'exploring stupidity, intelligence, helplessness, and banditry through Cipolla\'s framework',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/cipolla-quadrant.png',
+            },
+        ],
     },
 };
 

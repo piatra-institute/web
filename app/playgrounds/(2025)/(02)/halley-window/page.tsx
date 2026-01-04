@@ -10,6 +10,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'Halley window · playgrounds · piatra.institute',
         description: 'Halley\'s method fractal patterns',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/halley-window.png',
+            },
+        ],
     },
 };
 

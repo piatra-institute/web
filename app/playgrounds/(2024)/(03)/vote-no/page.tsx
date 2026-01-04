@@ -16,6 +16,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'vote no · playgrounds · piatra.institute',
         description: 'exploring democratic resistance and the power of rejection',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/vote-no.png',
+            },
+        ],
     },
 };
 

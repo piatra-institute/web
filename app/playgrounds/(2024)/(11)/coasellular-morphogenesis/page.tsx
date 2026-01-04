@@ -16,6 +16,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'coasellular morphogenesis · playgrounds · piatra.institute',
         description: 'bioelectric and cellular agents interactions and negotiations based on Coasean transaction costs',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/coasellular-morphogenesis.png',
+            },
+        ],
     },
 };
 

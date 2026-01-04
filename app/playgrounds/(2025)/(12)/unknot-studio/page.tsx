@@ -13,6 +13,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'unknot studio · playgrounds · piatra.institute',
         description: 'interactive exploration of torus knots, connected sums, and projection invariants',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/unknot-studio.png',
+            },
+        ],
     },
 };
 

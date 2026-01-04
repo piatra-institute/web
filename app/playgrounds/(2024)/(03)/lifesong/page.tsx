@@ -16,6 +16,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'lifesong · playgrounds · piatra.institute',
         description: 'musical patterns that emerge from biological processes',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/lifesong.png',
+            },
+        ],
     },
 };
 

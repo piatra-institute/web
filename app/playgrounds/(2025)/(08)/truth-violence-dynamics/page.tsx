@@ -13,6 +13,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'truth violence dynamics · playgrounds · piatra.institute',
         description: 'Interactive exploration of the coupled ODE model for uncertainty, truth-seeking, and punitive force dynamics',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/truth-violence-dynamics.png',
+            },
+        ],
     },
 };
 

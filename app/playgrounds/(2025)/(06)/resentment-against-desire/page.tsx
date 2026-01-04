@@ -9,6 +9,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'resentment against desire · playgrounds · piatra.institute',
         description: 'An interactive exploration of the Ultimatum Game, modeling the tension between rational self-interest and fairness based on Güth, Schmittberger, and Schwarze\'s groundbreaking 1982 experiment.',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/resentment-against-desire.png',
+            },
+        ],
     },
 };
 

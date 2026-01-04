@@ -13,6 +13,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'Chladni generator · playgrounds · piatra.institute',
         description: 'exploring standing waves, reaction-diffusion, and morphogenesis patterns',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/chladni-generator.png',
+            },
+        ],
     },
 };
 

@@ -16,6 +16,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'eyevolution · playgrounds · piatra.institute',
         description: 'evolutionary development of visual systems across species',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/eyevolution.png',
+            },
+        ],
     },
 };
 

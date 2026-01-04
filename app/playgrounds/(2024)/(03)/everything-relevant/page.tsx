@@ -16,6 +16,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'everything... relevant · playgrounds · piatra.institute',
         description: 'playful take on a theory of everything',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/everything-relevant.png',
+            },
+        ],
     },
 };
 

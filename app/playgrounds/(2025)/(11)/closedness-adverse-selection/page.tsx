@@ -13,6 +13,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'closedness adverse selection · playgrounds · piatra.institute',
         description: 'how no-criticism constraints filter entrants toward lower moral aversion',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/closedness-adverse-selection.png',
+            },
+        ],
     },
 };
 

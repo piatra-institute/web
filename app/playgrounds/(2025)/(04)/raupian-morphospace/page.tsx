@@ -16,6 +16,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'Raupian morphospace · playgrounds · piatra.institute',
         description: '',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/raupian-morphospace.png',
+            },
+        ],
     },
 };
 

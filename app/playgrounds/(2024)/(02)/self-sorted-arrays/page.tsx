@@ -16,6 +16,11 @@ export const metadata: Metadata = {
         ...defaultOpenGraph,
         title: 'self-sorted arrays · playgrounds · piatra.institute',
         description: 'arrays sorted bottom-up with cell-like numbers',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/self-sorted-arrays.png',
+            },
+        ],
     },
 };
 
