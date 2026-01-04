@@ -36,13 +36,13 @@ export const playgrounds = [
         date: 'March 2024',
     },
     {
-        name: 'pacemaker-accumulator',
+        name: 'pacemaker accumulator',
         link: '/playgrounds/pacemaker-accumulator',
         description: 'cellular timing through pacemaker-accumulator mechanisms',
         date: 'March 2024',
     },
     {
-        name: 'cpt-variance',
+        name: 'CPT variance',
         link: '/playgrounds/cpt-variance',
         description: 'symmetry exploration of charge, parity, and time reversal',
         date: 'March 2024',
@@ -210,19 +210,19 @@ export const playgrounds = [
         date: 'August 2025',
     },
     {
-        name: 'neural-cellular-automaton',
+        name: 'neural cellular automaton',
         link: '/playgrounds/neural-cellular-automaton',
         description: 'neural networks evolved through cellular automaton rules',
         date: 'August 2025',
     },
     {
-        name: 'scarcity-over-technology',
+        name: 'scarcity over technology',
         link: '/playgrounds/scarcity-over-technology',
         description: 'economy as the derivative of scarcity with respect to technology',
         date: 'September 2025',
     },
     {
-        name: 'plr-harmony',
+        name: 'PLR harmony',
         link: '/playgrounds/plr-harmony',
         description: 'neo-Riemannian PLR transformations and triadic harmony',
         date: 'September 2025',

@@ -9,12 +9,12 @@ import CptVariancePlayground from './playground';
 
 
 export const metadata: Metadata = {
-    title: 'cpt-variance · playgrounds',
+    title: 'CPT variance · playgrounds',
     description: 'symmetry exploration of charge, parity, and time reversal',
 
     openGraph: {
         ...defaultOpenGraph,
-        title: 'cpt-variance · playgrounds · piatra.institute',
+        title: 'CPT variance · playgrounds · piatra.institute',
         description: 'symmetry exploration of charge, parity, and time reversal',
     },
 };

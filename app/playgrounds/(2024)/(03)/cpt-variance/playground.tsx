@@ -116,7 +116,7 @@ export default function CptVariancePlayground() {
 
     return (
         <PlaygroundLayout
-            title="CPT-Variance"
+            title="CPT Variance"
             subtitle="Discrete Symmetries in Particle Physics"
             sections={sections}
             settings={settings}
