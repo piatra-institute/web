@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { defaultOpenGraph } from '@/data/metadata';
 
 import Link from 'next/link';
 
@@ -14,6 +15,13 @@ import {
 
 export const metadata: Metadata = {
     title: 'provocations',
+    description: 'thought-provoking perspectives and ideas',
+
+    openGraph: {
+        ...defaultOpenGraph,
+        title: 'provocations · piatra.institute',
+        description: 'thought-provoking perspectives and ideas',
+    },
 };
 
 

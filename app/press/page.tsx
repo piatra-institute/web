@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { defaultOpenGraph } from '@/data/metadata';
 
 import { getPressItems } from './logic';
 import PressList from './PressList';
@@ -6,6 +7,13 @@ import PressList from './PressList';
 
 export const metadata: Metadata = {
     title: 'press',
+    description: 'publications and translations',
+
+    openGraph: {
+        ...defaultOpenGraph,
+        title: 'press · piatra.institute',
+        description: 'publications and translations',
+    },
 };
 
 

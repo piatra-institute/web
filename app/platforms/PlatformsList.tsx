@@ -5,19 +5,10 @@ import Link from 'next/link';
 import IndexLayout from '@/components/IndexLayout';
 import { linkAnchorStyle } from '@/data/styles';
 
+import {
+    platforms,
+} from './data';
 
-const platforms = [
-    {
-        name: 'catala . ro',
-        description: 'Romanian implementation of the Catala language for programmatic law',
-        link: 'https://catala.ro',
-    },
-    {
-        name: 'xfactura . ro',
-        description: 'einvoicing and general accounting following the Romanian/EU legislation',
-        link: 'https://xfactura.ro',
-    },
-];
 
 
 export default function PlatformsList() {
