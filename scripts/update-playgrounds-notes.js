@@ -1,12 +1,24 @@
 #!/usr/bin/env node
 
+/**
+ * Script to update PLAYGROUND.md files with complete source code for each playground
+ *
+ * Handles the year-based route group structure:
+ * app/playgrounds/(2024)/(02)/playground-name/
+ * app/playgrounds/(2025)/(07)/playground-name/
+ * etc.
+ *
+ * Usage:
+ *   node scripts/update-playgrounds-notes.js
+ */
+
 const fs = require('fs');
 const path = require('path');
 
 const PLAYGROUNDS_DIR = path.join(__dirname, '..', 'app', 'playgrounds');
 const SOURCE_EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx', '.wgsl'];
-const EXCLUDE_DIRS = ['node_modules', '.next', '__tests__'];
-const EXCLUDE_FILES = ['page.tsx']; // We might want to exclude page.tsx as it's mostly boilerplate
+const EXCLUDE_DIRS = ['node_modules', '.next', '__tests__', 'ideation'];
+const EXCLUDE_FILES = ['page.tsx']; // Exclude page.tsx as it's mostly boilerplate
 
 function getAllFiles(dirPath, arrayOfFiles = []) {
     const files = fs.readdirSync(dirPath);
@@ -41,6 +53,44 @@ function readFileContent(filePath) {
         console.error(`Error reading file ${filePath}:`, error.message);
         return null;
     }
+}
+
+/**
+ * Find all playground directories, handling the year-based route group structure
+ */
+function findPlaygroundDirs(baseDir) {
+    const playgrounds = [];
+
+    function scanDir(dir) {
+        const items = fs.readdirSync(dir, { withFileTypes: true });
+
+        for (const item of items) {
+            if (!item.isDirectory()) continue;
+
+            const fullPath = path.join(dir, item.name);
+
+            // Skip excluded directories
+            if (EXCLUDE_DIRS.includes(item.name)) continue;
+
+            // Check if this is a route group (starts with parentheses)
+            if (item.name.startsWith('(') && item.name.endsWith(')')) {
+                // Recurse into route groups
+                scanDir(fullPath);
+            } else {
+                // Check if this is a playground (has page.tsx or playground.tsx)
+                const hasPageFile = fs.existsSync(path.join(fullPath, 'page.tsx'));
+                const hasPlaygroundFile = fs.existsSync(path.join(fullPath, 'playground.tsx')) ||
+                                          fs.existsSync(path.join(fullPath, 'Playground.tsx'));
+
+                if (hasPageFile || hasPlaygroundFile) {
+                    playgrounds.push(fullPath);
+                }
+            }
+        }
+    }
+
+    scanDir(baseDir);
+    return playgrounds;
 }
 
 function updateReadme(playgroundPath) {
@@ -118,32 +168,35 @@ function updateReadme(playgroundPath) {
 
     // Write the updated PLAYGROUND.md
     fs.writeFileSync(readmePath, newReadmeContent);
-    console.log(`✓ Updated PLAYGROUND.md for ${playgroundName} (${sourceFiles.length} files)`);
+    console.log(`Updated PLAYGROUND.md for ${playgroundName} (${sourceFiles.length} files)`);
 }
 
 function main() {
     console.log('Updating playground PLAYGROUND.md files with complete source code...\n');
 
-    // Get all playground directories
-    const playgrounds = fs.readdirSync(PLAYGROUNDS_DIR)
-        .map(name => path.join(PLAYGROUNDS_DIR, name))
-        .filter(dirPath => {
-            const stat = fs.statSync(dirPath);
-            return stat.isDirectory() && !EXCLUDE_DIRS.includes(path.basename(dirPath));
-        });
+    // Get all playground directories using the new structure
+    const playgrounds = findPlaygroundDirs(PLAYGROUNDS_DIR);
 
     console.log(`Found ${playgrounds.length} playgrounds\n`);
 
     // Update each playground
+    let updated = 0;
+    let errors = 0;
+
     playgrounds.forEach(playgroundPath => {
         try {
             updateReadme(playgroundPath);
+            updated++;
         } catch (error) {
-            console.error(`✗ Error updating ${path.basename(playgroundPath)}:`, error.message);
+            console.error(`Error updating ${path.basename(playgroundPath)}:`, error.message);
+            errors++;
         }
     });
 
-    console.log('\nDone!');
+    console.log('\n' + '='.repeat(50));
+    console.log(`Summary:`);
+    console.log(`  Updated: ${updated} playgrounds`);
+    console.log(`  Errors: ${errors} playgrounds`);
 }
 
 // Run the script
