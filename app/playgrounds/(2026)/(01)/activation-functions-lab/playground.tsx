@@ -166,12 +166,7 @@ export default function Playground() {
                     <div className="border-l-2 border-lime-500/50 pl-4">
                         <h4 className="text-lime-400 font-semibold mb-2">Related Literature</h4>
                         <p className="text-gray-300">
-                            PReLU (He et al. 2015) introduced learnable negative slopes. Swish
-                            (Ramachandran et al. 2017) popularized self-gated activations. GELU
-                            (Hendrycks &amp; Gimpel 2016) is now standard in transformers. Gated
-                            architectures appear in GLU (Dauphin et al. 2017) and SwiGLU (Shazeer 2020).
-                            The expression parser enables exploring the full design space of
-                            differentiable activation functions.
+                            <a href="https://arxiv.org/abs/1502.01852" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">PReLU (He et al. 2015)</a> introduced learnable negative slopes. <a href="https://arxiv.org/abs/1710.05941" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">Swish (Ramachandran et al. 2017)</a> popularized self-gated activations. <a href="https://arxiv.org/abs/1606.08415" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">GELU (Hendrycks &amp; Gimpel 2016)</a> is now standard in transformers. Gated architectures appear in <a href="https://arxiv.org/abs/1612.08083" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">GLU (Dauphin et al. 2017)</a> and <a href="https://arxiv.org/abs/2002.05202" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">SwiGLU (Shazeer 2020)</a>. The expression parser enables exploring the full design space of differentiable activation functions.
                         </p>
                     </div>
                 </div>

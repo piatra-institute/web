@@ -57,9 +57,9 @@ const Viewer = forwardRef<ViewerRef, ViewerProps>(function Viewer(
     ref
 ) {
     const [hoveredPoint, setHoveredPoint] = useState<string | null>(null);
-    const [xDim, setXDim] = useState<LandscapeDimension>('posRegion');
-    const [yDim, setYDim] = useState<LandscapeDimension>('smoothness');
-    const [zDim, setZDim] = useState<LandscapeDimension>('negRegion');
+    const [xDim, setXDim] = useState<LandscapeDimension>('curvature');
+    const [yDim, setYDim] = useState<LandscapeDimension>('symmetry');
+    const [zDim, setZDim] = useState<LandscapeDimension>('boundedness');
     const [rotationX, setRotationX] = useState(DEFAULT_CAMERA.rotationX);
     const [rotationY, setRotationY] = useState(DEFAULT_CAMERA.rotationY);
     const [isDragging, setIsDragging] = useState(false);
@@ -542,8 +542,8 @@ const Viewer = forwardRef<ViewerRef, ViewerProps>(function Viewer(
                     </ResponsiveContainer>
                 </div>
 
-                {/* Stats Panel */}
-                <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 lg:gap-2 text-xs ${invertChart ? 'bg-white p-2' : ''}`}>
+                {/* Stats Panel - hidden on mobile */}
+                <div className={`hidden lg:grid grid-cols-6 gap-2 text-xs ${invertChart ? 'bg-white p-2' : ''}`}>
                     {plotted.stats.ok ? (
                         <>
                             <StatBox
@@ -559,7 +559,6 @@ const Viewer = forwardRef<ViewerRef, ViewerProps>(function Viewer(
                             <StatBox
                                 label="monotone"
                                 value={plotted.stats.monotoneNondecreasing ? 'yes' : 'no'}
-                                highlight={plotted.stats.monotoneNondecreasing}
                                 inverted={invertChart}
                             />
                             <StatBox
@@ -739,7 +738,7 @@ function StatBox({
 
     return (
         <div className={`p-1.5 border ${borderClass}`}>
-            <div className={`text-[10px] ${labelClass}`}>{label}</div>
+            <div className={`text-[10px] mb-1 ${labelClass}`}>{label}</div>
             <div className={`font-mono text-[11px] ${valueClass}`}>{value}</div>
         </div>
     );
