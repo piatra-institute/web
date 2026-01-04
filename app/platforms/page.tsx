@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { defaultOpenGraph } from '@/data/metadata';
 
-import PlatformsList from './PlatformsList';
+import PlatformsList from './components/PlatformsList';
 
 
 

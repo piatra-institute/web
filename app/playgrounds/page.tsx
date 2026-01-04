@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { defaultOpenGraph } from '@/data/metadata';
 
-import PlaygroundsList from './PlaygroundsList';
+import PlaygroundsList from './components/PlaygroundsList';
+
 
 
 export const metadata: Metadata = {

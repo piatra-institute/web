@@ -7,7 +7,7 @@ import { linkAnchorStyle } from '@/data/styles';
 
 import {
     platforms,
-} from './data';
+} from '../data';
 
 
 

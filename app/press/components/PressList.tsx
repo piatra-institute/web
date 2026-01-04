@@ -6,7 +6,7 @@ import { ExternalLink } from 'lucide-react';
 import IndexLayout from '@/components/IndexLayout';
 import { PressItem } from '@/data';
 
-import PressTitle from './components/PressTitle';
+import PressTitle from './PressTitle';
 
 
 interface OtherPressItem {
@@ -41,7 +41,7 @@ export default function PressList({
                         <Link
                             key={title + link}
                             href={link}
-                            className="max-w-[600px] mb-8 block focus:outline-none focus:ring-1 focus:ring-white text-center p-3"
+                            className="max-w-150 mb-8 block focus:outline-none focus:ring-1 focus:ring-white text-center p-3"
                         >
                             <PressTitle {...pressItem.details} />
                         </Link>
@@ -51,7 +51,7 @@ export default function PressList({
                 {otherPress.map((item) => (
                     <div
                         key={item.title + item.link}
-                        className="max-w-[600px] mb-8 block text-center p-3 border border-transparent hover:border-lime transition-colors"
+                        className="max-w-150 mb-8 block text-center p-3 border border-transparent hover:border-lime transition-colors"
                     >
                         {item.year && (
                             <div className="text-white text-sm mb-2">

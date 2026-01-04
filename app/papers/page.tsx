@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { defaultOpenGraph } from '@/data/metadata';
+
 import Link from 'next/link';
 
 import Header from '@/components/Header';
@@ -13,6 +15,13 @@ import {
 
 export const metadata: Metadata = {
     title: 'papers',
+    description: 'research papers and publications',
+
+    openGraph: {
+        ...defaultOpenGraph,
+        title: 'papers · piatra.institute',
+        description: 'research papers and publications',
+    },
 };
 
 

@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { defaultOpenGraph } from '@/data/metadata';
 
 import { getPressItems } from './logic';
-import PressList from './PressList';
+import PressList from './components/PressList';
+
 
 
 export const metadata: Metadata = {

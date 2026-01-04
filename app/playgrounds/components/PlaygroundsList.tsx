@@ -5,7 +5,8 @@ import Link from 'next/link';
 
 import IndexLayout from '@/components/IndexLayout';
 import { linkAnchorStyle } from '@/data/styles';
-import { playgrounds } from './data';
+import { playgrounds } from '../data';
+
 
 
 const STORAGE_KEY = 'playgrounds-filter';
