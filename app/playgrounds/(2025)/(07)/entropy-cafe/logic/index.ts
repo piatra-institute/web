@@ -1,1 +1,0 @@
-export { CoffeeCupFluidSimulation } from './CoffeeCupFluidSimulation';

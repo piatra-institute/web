@@ -4,18 +4,18 @@ import {
     defaultOpenGraph,
 } from '@/data/metadata';
 
-import ClientPlayground from './ClientPlayground';
+import EntropyCafePlayground from './playground';
 
 
 
 export const metadata: Metadata = {
     title: 'entropy café · playgrounds',
-    description: 'entropy and complexity through coffee mixing metaphor',
+    description: 'coffee and cream mixing as a metaphor for entropy',
 
     openGraph: {
         ...defaultOpenGraph,
         title: 'entropy café · playgrounds · piatra.institute',
-        description: 'entropy and complexity through coffee mixing metaphor',
+        description: 'coffee and cream mixing as a metaphor for entropy',
         images: [
             {
                 url: 'https://piatra.institute/assets-playgrounds/og/entropy-cafe.png',
@@ -26,6 +26,6 @@ export const metadata: Metadata = {
 
 export default function EntropyCafe() {
     return (
-        <ClientPlayground />
+        <EntropyCafePlayground />
     );
 }

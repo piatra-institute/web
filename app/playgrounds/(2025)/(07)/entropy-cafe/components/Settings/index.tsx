@@ -1,68 +1,74 @@
 'use client';
 
 import Button from '@/components/Button';
-import SliderInput from '@/components/SliderInput';
+import Toggle from '@/components/Toggle';
+
 
 interface SettingsProps {
-    isPaused: boolean;
     isStirring: boolean;
-    speed: number;
-    onAddCream: () => void;
-    onStir: () => void;
+    entropy: number;
+    mixedness: number;
+    onStirToggle: () => void;
     onReset: () => void;
-    onPause: () => void;
-    onSpeedChange: (speed: number) => void;
+    onStirOnce: () => void;
 }
 
 export default function Settings({
-    isPaused,
     isStirring,
-    speed,
-    onAddCream,
-    onStir,
+    entropy,
+    mixedness,
+    onStirToggle,
     onReset,
-    onPause,
-    onSpeedChange,
+    onStirOnce,
 }: SettingsProps) {
     return (
-        <div className="space-y-3">
-            <Button
-                label="Add Cream"
-                onClick={onAddCream}
-                className="w-full"
-                size="sm"
-            />
+        <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+                <Toggle
+                    text="continuous stirring"
+                    value={isStirring}
+                    toggle={onStirToggle}
+                />
+            </div>
 
-            <Button
-                label={isStirring ? 'Stop Stir' : 'Stir'}
-                onClick={onStir}
-                size="sm"
-                className={isStirring ? 'w-full bg-lime-200' : 'w-full'}
-            />
+            <div className="flex gap-2">
+                <Button
+                    onClick={onStirOnce}
+                    label="stir once"
+                />
+                <Button
+                    onClick={onReset}
+                    label="reset"
+                />
+            </div>
 
-            <Button
-                label="Reset"
-                onClick={onReset}
-                size="sm"
-                className="w-full"
-            />
+            <div className="mt-4 p-3 bg-zinc-900 text-sm">
+                <div className="flex justify-between mb-2">
+                    <span className="text-gray-400">entropy</span>
+                    <span className="text-lime-400 font-mono">{entropy.toFixed(3)}</span>
+                </div>
+                <div className="w-full bg-zinc-800 h-2">
+                    <div
+                        className="bg-lime-500 h-2 transition-all duration-300"
+                        style={{ width: `${Math.min(100, entropy * 100)}%` }}
+                    />
+                </div>
 
-            <Button
-                label={isPaused ? 'Play' : 'Pause'}
-                onClick={onPause}
-                size="sm"
-                className={isPaused ? 'w-full bg-lime-200' : 'w-full'}
-            />
+                <div className="flex justify-between mb-2 mt-4">
+                    <span className="text-gray-400">mixedness</span>
+                    <span className="text-lime-400 font-mono">{(mixedness * 100).toFixed(1)}%</span>
+                </div>
+                <div className="w-full bg-zinc-800 h-2">
+                    <div
+                        className="bg-lime-500 h-2 transition-all duration-300"
+                        style={{ width: `${mixedness * 100}%` }}
+                    />
+                </div>
+            </div>
 
-            <SliderInput
-                label="Speed"
-                value={speed}
-                onChange={onSpeedChange}
-                min={0.1}
-                max={5}
-                step={0.1}
-                showDecimals={true}
-            />
+            <p className="text-xs text-gray-500 mt-2">
+                Drag to rotate the view. Stirring increases entropy as cream and coffee mix together.
+            </p>
         </div>
     );
 }

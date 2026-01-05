@@ -3,80 +3,37 @@
 import { useState, useRef, useCallback } from 'react';
 
 import PlaygroundLayout from '@/components/PlaygroundLayout';
-import PlaygroundViewer from '@/components/PlaygroundViewer';
 import PlaygroundSettings from '@/components/PlaygroundSettings';
 
-import WebGPUCoffeeSimulation from './components/WebGPUCoffeeSimulation';
+import Viewer, { ViewerRef } from './components/Viewer';
 import Settings from './components/Settings';
-import MetricsOverlay from './components/MetricsOverlay';
 
 
-
-interface SimulationState {
-    isPaused: boolean;
-    isStirring: boolean;
-    entropyValue: number;
-    complexityValue: number;
-    entropyHistory: number[];
-    complexityHistory: number[];
-    speed: number;
-}
 
 export default function EntropyCafePlayground() {
-    const simulationRef = useRef<any>(null);
-    const [simulationState, setSimulationState] = useState<SimulationState>({
-        isPaused: false,
-        isStirring: false,
-        entropyValue: 0,
-        complexityValue: 0,
-        entropyHistory: [],
-        complexityHistory: [],
-        speed: 1,
-    });
+    const viewerRef = useRef<ViewerRef>(null);
+    const [isStirring, setIsStirring] = useState(false);
+    const [entropy, setEntropy] = useState(0);
+    const [mixedness, setMixedness] = useState(0);
 
-    const handleAddCream = async () => {
-        await simulationRef.current?.addCream();
+    const handleEntropyChange = useCallback((newEntropy: number, newMixedness: number) => {
+        setEntropy(newEntropy);
+        setMixedness(newMixedness);
+    }, []);
+
+    const handleStirToggle = () => {
+        setIsStirring(prev => !prev);
     };
 
-    const handleStir = () => {
-        const newStirringState = !simulationState.isStirring;
-        setSimulationState(prev => ({ ...prev, isStirring: newStirringState }));
-        simulationRef.current?.setStirring(newStirringState);
+    const handleStirOnce = () => {
+        viewerRef.current?.stir();
     };
 
     const handleReset = () => {
-        simulationRef.current?.reset();
-        setSimulationState({
-            isPaused: false,
-            isStirring: false,
-            entropyValue: 0,
-            complexityValue: 0,
-            entropyHistory: [],
-            complexityHistory: [],
-            speed: 1,
-        });
+        viewerRef.current?.reset();
+        setEntropy(0);
+        setMixedness(0);
     };
-
-    const handlePause = () => {
-        const newPausedState = !simulationState.isPaused;
-        setSimulationState(prev => ({ ...prev, isPaused: newPausedState }));
-        simulationRef.current?.setPaused(newPausedState);
-    };
-
-    const handleSpeedChange = (speed: number) => {
-        setSimulationState(prev => ({ ...prev, speed }));
-        simulationRef.current?.setSpeed(speed);
-    };
-
-    const handleMetricsUpdate = useCallback((entropy: number, complexity: number) => {
-        setSimulationState(prev => ({
-            ...prev,
-            entropyValue: entropy,
-            complexityValue: complexity,
-            entropyHistory: [...prev.entropyHistory.slice(-99), entropy],
-            complexityHistory: [...prev.complexityHistory.slice(-99), complexity],
-        }));
-    }, []);
 
     const sections = [
         {
@@ -87,20 +44,13 @@ export default function EntropyCafePlayground() {
             id: 'canvas',
             type: 'canvas' as const,
             content: (
-                <PlaygroundViewer>
-                    <div className="relative w-full h-full">
-                        <WebGPUCoffeeSimulation
-                            ref={simulationRef}
-                            onMetricsUpdate={handleMetricsUpdate}
-                        />
-                        <MetricsOverlay
-                            entropyValue={simulationState.entropyValue}
-                            complexityValue={simulationState.complexityValue}
-                            entropyHistory={simulationState.entropyHistory}
-                            complexityHistory={simulationState.complexityHistory}
-                        />
-                    </div>
-                </PlaygroundViewer>
+                <div className="absolute inset-0">
+                    <Viewer
+                        ref={viewerRef}
+                        isStirring={isStirring}
+                        onEntropyChange={handleEntropyChange}
+                    />
+                </div>
             ),
         },
         {
@@ -128,14 +78,12 @@ export default function EntropyCafePlayground() {
                 {
                     content: (
                         <Settings
-                            isPaused={simulationState.isPaused}
-                            isStirring={simulationState.isStirring}
-                            speed={simulationState.speed}
-                            onAddCream={handleAddCream}
-                            onStir={handleStir}
+                            isStirring={isStirring}
+                            entropy={entropy}
+                            mixedness={mixedness}
+                            onStirToggle={handleStirToggle}
                             onReset={handleReset}
-                            onPause={handlePause}
-                            onSpeedChange={handleSpeedChange}
+                            onStirOnce={handleStirOnce}
                         />
                     ),
                 },
@@ -145,17 +93,15 @@ export default function EntropyCafePlayground() {
 
     return (
         <PlaygroundLayout
-            title="entropy cafe"
-            subtitle="a 3D particle simulation exploring entropy and complexity"
+            title="entropy café"
+            subtitle="coffee and cream mixing as a metaphor for entropy"
             description={(
                 <>
+                    Based on{' '}
                     <a href="https://www.youtube.com/watch?v=SWP2ktac34k" target="_blank" rel="noopener noreferrer" className="underline">
                         Sean M. Carroll&apos;s coffee mixing metaphor
-                    </a>&nbsp;
-                    and&nbsp;
-                    <a href="https://github.com/matsuoka-601/WebGPU-Ocean" target="_blank" rel="noopener noreferrer" className="underline">
-                        matsuoka-601/WebGPU-Ocean
                     </a>
+                    {' '}for the second law of thermodynamics.
                 </>
             )}
             sections={sections}
