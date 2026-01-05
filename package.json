@@ -9,7 +9,9 @@
         "start": "next start",
         "lint": "eslint app/ components/ --ext .js,.jsx,.ts,.tsx",
         "test": "vitest",
-        "db.push": "drizzle-kit push:sqlite"
+        "db.push": "drizzle-kit push:sqlite",
+        "og": "node scripts/generate-og-images.js",
+        "og:dry": "node scripts/generate-og-images.js --dry-run"
     },
     "dependencies": {
         "@libsql/client": "^0.15.15",
