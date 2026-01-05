@@ -305,4 +305,10 @@ export const playgrounds = [
         description: 'invent, explore, and compare neural network activation functions',
         date: 'January 2026',
     },
+    {
+        name: 'geometry of fragmentation',
+        link: '/playgrounds/geometry-of-fragmentation',
+        description: 'Plato\'s cube and the natural geometry of fracture',
+        date: 'January 2026',
+    },
 ];
