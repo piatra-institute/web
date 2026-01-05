@@ -45,10 +45,11 @@ When an ideation folder exists with demo.tsx and/or info.md:
    - `components/Settings`: Controls using existing UI components (SliderInput, Button, Toggle)
    - `components/Viewer`: Visualization using canvas/recharts/other appropriate libraries
 3. **Follow design patterns**:
-   - Use black (#000000) background and lime (#84cc16) accents
+   - Use the color palette defined below
    - No rounded corners on main containers or buttons
    - Use existing components from `/components` directory
-   - Implement useImperativeHandle pattern for Settings → Viewer communication
+   - Keep all state at the playground.tsx level (Settings and Viewer are controlled components)
+   - Use useImperativeHandle for Viewer methods (e.g., updateMosaic)
    - Use the `Equation` component for mathematical notation instead of plain text
 4. **Register in index**: Add entry to `/app/playgrounds/data.ts`
 5. **Ensure functionality**:
@@ -56,6 +57,51 @@ When an ideation folder exists with demo.tsx and/or info.md:
    - Add proper TypeScript types (avoid `any`)
    - Handle responsive sizing (typically 90% viewport)
    - Format numbers appropriately in visualizations
+
+
+## Color Palette
+
+Use the black and lime color scheme consistently:
+
+**Backgrounds:**
+- Primary background: `#000000` (black)
+- Canvas/chart background: `#0a0a0a` (near-black)
+- Overlay (dimming): `bg-black/50` to `bg-black/80`
+
+**Lime accents (primary brand color):**
+- Primary lime: `#84cc16` / `lime-500` / `rgb(132, 204, 22)`
+- Borders: `border-lime-500`, `border-lime-500/30` (muted), `border-lime-500/20` (subtle)
+- Text highlights: `text-lime-400`, `text-lime-500`
+- Backgrounds: `bg-lime-500/10` (selected states)
+
+**Text colors:**
+- Primary text: `text-lime-100` (whitish-lime, high contrast)
+- Secondary text: `text-lime-200/70` (descriptions, labels)
+- Muted text: `text-lime-200/60` (help text, hints)
+- Highlights: `text-lime-400` (values, emphasis)
+- Body text in outro sections: `text-gray-300`
+
+**Avoid:**
+- Pure gray text in settings panels (use lime-tinted whites instead)
+- Rounded corners on main containers or buttons
+
+## State Management
+
+All simulation/visualization state must be managed at the `playground.tsx` level:
+
+```tsx
+// playground.tsx - owns all state
+const [params, setParams] = useState<SimulationParams>(DEFAULT_PARAMS);
+const [stats, setStats] = useState<Stats | null>(null);
+
+// Settings is a controlled component
+<Settings params={params} onParamsChange={setParams} />
+
+// Viewer receives data, exposes methods via ref
+<Viewer ref={viewerRef} colorMode={params.colorMode} ... />
+```
+
+This pattern prevents state reset when toggling the settings panel open/closed.
 
 
 ## Mathematical Notation
