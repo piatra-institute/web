@@ -5,8 +5,9 @@
  * Uses Libre Baskerville font to match the site's typography
  *
  * Usage:
+ *   node scripts/generate-og-images.js              # Generate missing images only
  *   node scripts/generate-og-images.js --dry-run    # Preview what would be generated
- *   node scripts/generate-og-images.js              # Generate images
+ *   node scripts/generate-og-images.js --force      # Regenerate all images
  */
 
 const fs = require('fs');
@@ -14,12 +15,15 @@ const path = require('path');
 const sharp = require('sharp');
 
 const DRY_RUN = process.argv.includes('--dry-run');
+const FORCE = process.argv.includes('--force');
 
 async function main() {
     if (DRY_RUN) {
         console.log('DRY RUN MODE - No files will be created\n');
+    } else if (FORCE) {
+        console.log('FORCE MODE - All images will be regenerated\n');
     } else {
-        console.log('WRITE MODE - Files will be created\n');
+        console.log('WRITE MODE - Only missing images will be created\n');
     }
 
     // Paths
@@ -75,12 +79,26 @@ async function main() {
         const slug = playground.link.replace('/playgrounds/', '');
         const outputPath = path.join(outputDir, `${slug}.png`);
 
+        // Check if file already exists
+        const fileExists = fs.existsSync(outputPath);
+
         if (DRY_RUN) {
-            console.log(`WOULD CREATE: ${slug}.png`);
-            console.log(`  Name: "${playground.name}"`);
-            console.log(`  Description: "${playground.description}"`);
-            console.log('');
-            generated++;
+            if (fileExists && !FORCE) {
+                console.log(`SKIP (exists): ${slug}.png`);
+                skipped++;
+            } else {
+                console.log(`WOULD CREATE: ${slug}.png`);
+                console.log(`  Name: "${playground.name}"`);
+                console.log(`  Description: "${playground.description}"`);
+                generated++;
+            }
+            continue;
+        }
+
+        // Skip if file exists and not forcing
+        if (fileExists && !FORCE) {
+            console.log(`SKIP (exists): ${slug}.png`);
+            skipped++;
             continue;
         }
 

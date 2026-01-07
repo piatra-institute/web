@@ -11,7 +11,8 @@
         "test": "vitest",
         "db.push": "drizzle-kit push:sqlite",
         "og": "node scripts/generate-og-images.js",
-        "og:dry": "node scripts/generate-og-images.js --dry-run"
+        "og:dry": "node scripts/generate-og-images.js --dry-run",
+        "og:force": "node scripts/generate-og-images.js --force"
     },
     "dependencies": {
         "@libsql/client": "^0.15.15",
