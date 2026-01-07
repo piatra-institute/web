@@ -1,19 +1,76 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 
 import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayout';
 import Equation from '@/components/Equation';
 
-import Settings from './components/Settings';
-import Viewer from './components/Viewer';
+import Settings, { PresetKey } from './components/Settings';
+import Viewer, { PlaybackState } from './components/Viewer';
 import { runSimulation, DEFAULT_PARAMS, SimulationParams } from './logic';
 
 export default function Playground() {
     const [params, setParams] = useState<SimulationParams>(DEFAULT_PARAMS);
     const [settingsOpen, setSettingsOpen] = useState(false);
+    const [playback, setPlayback] = useState<PlaybackState>({
+        isPlaying: false,
+        currentTime: DEFAULT_PARAMS.T,
+        speed: 1,
+    });
+    const [selectedSection, setSelectedSection] = useState(0);
+    const [activePreset, setActivePreset] = useState<PresetKey>(null);
 
     const simulation = useMemo(() => runSimulation(params), [params]);
+
+    // Reset playback when T changes
+    useEffect(() => {
+        setPlayback(prev => ({
+            ...prev,
+            currentTime: params.T,
+            isPlaying: false,
+        }));
+    }, [params.T]);
+
+    // Reset section if it's out of bounds
+    useEffect(() => {
+        if (selectedSection >= simulation.sections.length) {
+            setSelectedSection(0);
+        }
+    }, [simulation.sections.length, selectedSection]);
+
+    // Animation loop
+    useEffect(() => {
+        if (!playback.isPlaying) return;
+
+        const interval = setInterval(() => {
+            setPlayback(prev => {
+                const dt = params.dt * prev.speed * 3; // Speed multiplier
+                const newTime = prev.currentTime + dt;
+                if (newTime >= params.T) {
+                    return { ...prev, currentTime: params.T, isPlaying: false };
+                }
+                return { ...prev, currentTime: newTime };
+            });
+        }, 33); // ~30fps
+
+        return () => clearInterval(interval);
+    }, [playback.isPlaying, params.dt, params.T]);
+
+    const handleParamsChange = useCallback((newParams: SimulationParams) => {
+        setParams(newParams);
+    }, []);
+
+    const handlePlaybackChange = useCallback((newPlayback: PlaybackState) => {
+        setPlayback(newPlayback);
+    }, []);
+
+    const handleSectionChange = useCallback((index: number) => {
+        setSelectedSection(index);
+    }, []);
+
+    const handlePresetChange = useCallback((preset: PresetKey) => {
+        setActivePreset(preset);
+    }, []);
 
     const sections: PlaygroundSection[] = [
         { id: 'intro', type: 'intro' },
@@ -28,10 +85,15 @@ export default function Playground() {
                     <Viewer
                         micro={simulation.micro}
                         sections={simulation.sections}
+                        cover={simulation.cover}
                         glueResult={simulation.glueResult}
                         macro={simulation.macro}
                         reduced={simulation.reduced}
                         overlapStats={simulation.overlapStats}
+                        playback={playback}
+                        onPlaybackChange={handlePlaybackChange}
+                        selectedSection={selectedSection}
+                        maxTime={params.T}
                     />
                 </div>
             ),
@@ -130,7 +192,17 @@ export default function Playground() {
             title="descent & closure"
             subtitle="from local micro-events to autonomous macro-processes"
             sections={sections}
-            settings={<Settings params={params} onParamsChange={setParams} />}
+            settings={
+                <Settings
+                    params={params}
+                    onParamsChange={handleParamsChange}
+                    selectedSection={selectedSection}
+                    onSelectedSectionChange={handleSectionChange}
+                    sectionCount={simulation.sections.length}
+                    activePreset={activePreset}
+                    onPresetChange={handlePresetChange}
+                />
+            }
             onSettingsToggle={setSettingsOpen}
         />
     );
