@@ -1,12 +1,23 @@
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
+import {
+    defaultOpenGraph,
+} from '@/data/metadata';
 
 import Playground from './playground';
 
 export const metadata: Metadata = {
-    title: 'Descent & Closure',
-    description: 'From local micro-events to autonomous macro-processes via sheaf theory',
+    title: 'descent & closure · playgrounds',
+    description: 'from local micro-events to autonomous macro-processes via sheaf theory',
+
     openGraph: {
-        images: ['/assets-playgrounds/og/descent-and-closure.png'],
+        ...defaultOpenGraph,
+        title: 'descent & closure · playgrounds · piatra.institute',
+        description: 'from local micro-events to autonomous macro-processes via sheaf theory',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/descent-and-closure.png',
+            },
+        ],
     },
 };
 

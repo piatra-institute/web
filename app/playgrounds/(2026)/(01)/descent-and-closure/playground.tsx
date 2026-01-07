@@ -127,7 +127,7 @@ export default function Playground() {
 
     return (
         <PlaygroundLayout
-            title="Descent & Closure"
+            title="descent & closure"
             subtitle="from local micro-events to autonomous macro-processes"
             sections={sections}
             settings={<Settings params={params} onParamsChange={setParams} />}
