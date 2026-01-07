@@ -59,6 +59,40 @@ When an ideation folder exists with demo.tsx and/or info.md:
    - Format numbers appropriately in visualizations
 
 
+## Page Metadata
+
+Always use `defaultOpenGraph` from `@/data/metadata` and provide full URLs for OG images:
+
+```tsx
+import { Metadata } from 'next';
+import { defaultOpenGraph } from '@/data/metadata';
+
+import Playground from './playground';
+
+export const metadata: Metadata = {
+    title: 'playground name · playgrounds',
+    description: 'short description',
+
+    openGraph: {
+        ...defaultOpenGraph,
+        title: 'playground name · playgrounds · piatra.institute',
+        description: 'short description',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/playground-name.png',
+            },
+        ],
+    },
+};
+
+export default function Page() {
+    return <Playground />;
+}
+```
+
+Generate OG images with `pnpm og` (only missing) or `pnpm og:force` (all).
+
+
 ## Color Palette
 
 Use the black and lime color scheme consistently:

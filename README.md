@@ -27,8 +27,9 @@ pnpm start
 | `pnpm start` | Start production server |
 | `pnpm lint` | Run ESLint on app and components |
 | `pnpm test` | Run tests with Vitest |
-| `pnpm og` | Generate Open Graph images for playgrounds |
+| `pnpm og` | Generate missing Open Graph images |
 | `pnpm og:dry` | Preview OG image generation (dry run) |
+| `pnpm og:force` | Regenerate all Open Graph images |
 
 ## Project Structure
 

@@ -19,15 +19,27 @@ app/playgrounds/(2026)/my-playground/
 
 ### 2. Create page.tsx
 
+Always use `defaultOpenGraph` and provide full URLs for OG images:
+
 ```tsx
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
+import { defaultOpenGraph } from '@/data/metadata';
+
 import Playground from './playground';
 
 export const metadata: Metadata = {
-    title: 'My Playground',
-    description: 'Brief description of the playground',
+    title: 'my playground · playgrounds',
+    description: 'brief description of the playground',
+
     openGraph: {
-        images: ['/assets-playgrounds/og/my-playground.png'],
+        ...defaultOpenGraph,
+        title: 'my playground · playgrounds · piatra.institute',
+        description: 'brief description of the playground',
+        images: [
+            {
+                url: 'https://piatra.institute/assets-playgrounds/og/my-playground.png',
+            },
+        ],
     },
 };
 
@@ -237,7 +249,9 @@ export const playgrounds = [
 ### 7. Generate OG Image
 
 ```bash
-pnpm og
+pnpm og          # Generate missing images only
+pnpm og:dry      # Preview what would be generated
+pnpm og:force    # Regenerate all images
 ```
 
 ## Color Palette Reference
