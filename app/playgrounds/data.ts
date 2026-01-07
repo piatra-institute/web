@@ -311,4 +311,10 @@ export const playgrounds = [
         description: 'Plato\'s cube and the natural geometry of fracture',
         date: 'January 2026',
     },
+    {
+        name: 'descent & closure',
+        link: '/playgrounds/descent-and-closure',
+        description: 'from local micro-events to autonomous macro-processes via sheaf theory',
+        date: 'January 2026',
+    },
 ];
