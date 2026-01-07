@@ -46,6 +46,28 @@ export const PRESETS = {
             macroWindow: 41,
         },
     },
+    'cech-failure': {
+        label: 'Čech failure',
+        description: 'Triple overlaps break descent; inspect diagnostics',
+        params: {
+            consistent: false,
+            measurementNoise: 0.35,
+            tolerance: 0.05,
+            strictSheaf: false,
+            overlapFrac: 0.5,
+        },
+    },
+    'memory-wall': {
+        label: 'Memory wall',
+        description: 'Long FIR kernel + Ljung–Box rejection',
+        params: {
+            tau: 1.8,
+            useMemory: true,
+            macroWindow: 47,
+            kernelLength: 48,
+            intervalCount: 8,
+        },
+    },
 } as const;
 
 export type PresetKey = keyof typeof PRESETS | null;
@@ -295,6 +317,18 @@ export default function Settings({
                 </label>
                 <p className="text-xs text-lime-200/60 -mt-1 ml-5">
                     Fit dm/dt = a·m + c·(exp-kernel conv) + b. Off: dm/dt = a·m + b (Markov closure)
+                </p>
+
+                <SliderInput
+                    label="Kernel lag count"
+                    min={4}
+                    max={64}
+                    step={1}
+                    value={params.kernelLength}
+                    onChange={(v) => updateParam('kernelLength', Math.round(v))}
+                />
+                <p className="text-xs text-lime-200/60 -mt-1 ml-1">
+                    Controls FIR length of the explicit Mori–Zwanzig kernel estimator
                 </p>
             </div>
         </div>

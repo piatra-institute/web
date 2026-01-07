@@ -20,6 +20,7 @@ export interface LocalSection {
     intervalId: number;
     indices: number[];
     values: number[];
+    weights: number[];
 }
 
 export interface MicroTrajectory {
@@ -33,10 +34,65 @@ export interface GlueResult {
     maxPointSpread: number;
 }
 
+export interface PairOverlapDiagnostic {
+    intervals: [number, number];
+    overlap: [number, number];
+    maxAbs: number;
+    meanAbs: number;
+    sampleCount: number;
+    ok: boolean;
+}
+
+export interface TripleCocycleDiagnostic {
+    intervals: [number, number, number];
+    intersection: [number, number];
+    maxViolation: number;
+    sampleCount: number;
+    ok: boolean;
+}
+
+export interface CommuteDiagnostic {
+    source: number;
+    target: number;
+    meanDiff: number;
+    maxDiff: number;
+    sampleCount: number;
+}
+
 export interface OverlapStats {
     maxAbs: number;
     meanAbs: number;
     count: number;
+    pairwise: PairOverlapDiagnostic[];
+    triple: TripleCocycleDiagnostic[];
+}
+
+export interface MutualInformationDiagnostic {
+    intervals: [number, number];
+    bits: number;
+    sampleCount: number;
+}
+
+export interface MacroStats {
+    mean: number;
+    variance: number;
+    skewness: number;
+    kurtosis: number;
+    autocorrelation: { lag: number; value: number }[];
+    momentMatrix: number[][];
+}
+
+export interface MemoryKernelEstimate {
+    lags: number[];
+    weights: number[];
+    halfLife: number;
+}
+
+export interface MarkovTestResult {
+    statistic: number;
+    df: number;
+    pValue: number;
+    passed: boolean;
 }
 
 export interface ReducedModel {
@@ -45,6 +101,7 @@ export interface ReducedModel {
     c: number;
     pred: number[];
     rmse: number;
+    residuals: number[];
 }
 
 export interface SimulationParams {
@@ -70,6 +127,7 @@ export interface SimulationParams {
     // Closure
     useMemory: boolean;
     tau: number;
+    kernelLength: number;
 }
 
 export const DEFAULT_PARAMS: SimulationParams = {
@@ -88,6 +146,7 @@ export const DEFAULT_PARAMS: SimulationParams = {
     macroWindow: 21,
     useMemory: true,
     tau: 0.25,
+    kernelLength: 32,
 };
 
 // Deterministic PRNG (LCG)
@@ -119,6 +178,228 @@ function rmse(a: number[], b: number[]): number {
         s += d * d;
     }
     return Math.sqrt(s / n);
+}
+
+function weightedMean(values: number[], weights: number[]): number {
+    let num = 0;
+    let den = 0;
+    for (let i = 0; i < values.length; i++) {
+        const w = weights[i] ?? 0;
+        if (!Number.isFinite(values[i]) || !Number.isFinite(w) || w <= 0) continue;
+        num += values[i] * w;
+        den += w;
+    }
+    return den > 0 ? num / den : 0;
+}
+
+function centralMoments(series: number[]): {
+    mean: number;
+    variance: number;
+    skewness: number;
+    kurtosis: number;
+} {
+    const values = series.filter(Number.isFinite);
+    if (values.length === 0) {
+        return { mean: 0, variance: 0, skewness: 0, kurtosis: 0 };
+    }
+    const m = mean(values);
+    let m2 = 0;
+    let m3 = 0;
+    let m4 = 0;
+    for (const v of values) {
+        const d = v - m;
+        const d2 = d * d;
+        m2 += d2;
+        m3 += d2 * d;
+        m4 += d2 * d2;
+    }
+    const n = values.length;
+    const variance = n > 0 ? m2 / n : 0;
+    const skewness = variance > 1e-12 ? (m3 / n) / Math.pow(variance, 1.5) : 0;
+    const kurtosis = variance > 1e-12 ? (m4 / n) / (variance * variance) : 0;
+    return { mean: m, variance, skewness, kurtosis };
+}
+
+function autocorrelation(series: number[], maxLag: number): { lag: number; value: number }[] {
+    const values = series.filter(Number.isFinite);
+    if (values.length === 0) return [];
+    const m = mean(values);
+    const denom = values.reduce((acc, v) => acc + (v - m) * (v - m), 0);
+    if (denom === 0) {
+        return Array.from({ length: maxLag }, (_, i) => ({ lag: i + 1, value: 0 }));
+    }
+    const ac: { lag: number; value: number }[] = [];
+    for (let lag = 1; lag <= maxLag; lag++) {
+        let num = 0;
+        for (let i = 0; i < values.length - lag; i++) {
+            num += (values[i] - m) * (values[i + lag] - m);
+        }
+        ac.push({ lag, value: num / denom });
+    }
+    return ac;
+}
+
+function quantize(series: number[], bins: number): { values: number[]; min: number; max: number } {
+    const filtered = series.filter(Number.isFinite);
+    if (filtered.length === 0) {
+        return { values: [], min: 0, max: 0 };
+    }
+    const lo = Math.min(...filtered);
+    const hi = Math.max(...filtered);
+    const span = hi - lo + 1e-9;
+    const quantized = series.map((v) => {
+        if (!Number.isFinite(v)) return -1;
+        const n = Math.floor(((v - lo) / span) * bins);
+        return Math.max(0, Math.min(bins - 1, n));
+    });
+    return { values: quantized, min: lo, max: hi };
+}
+
+function mutualInformation(a: number[], b: number[], bins = 12): number {
+    if (a.length !== b.length || a.length === 0) return 0;
+    const qa = quantize(a, bins);
+    const qb = quantize(b, bins);
+    const valuesA = qa.values;
+    const valuesB = qb.values;
+    const joint = Array.from({ length: bins }, () => Array(bins).fill(0));
+    const marginalA = Array(bins).fill(0);
+    const marginalB = Array(bins).fill(0);
+    let n = 0;
+    for (let i = 0; i < valuesA.length; i++) {
+        const ia = valuesA[i];
+        const ib = valuesB[i];
+        if (ia < 0 || ib < 0) continue;
+        joint[ia][ib] += 1;
+        marginalA[ia] += 1;
+        marginalB[ib] += 1;
+        n++;
+    }
+    if (n === 0) return 0;
+
+    let mi = 0;
+    for (let i = 0; i < bins; i++) {
+        for (let j = 0; j < bins; j++) {
+            const pij = joint[i][j] / n;
+            if (pij <= 0) continue;
+            const pi = marginalA[i] / n;
+            const pj = marginalB[j] / n;
+            if (pi <= 0 || pj <= 0) continue;
+            mi += pij * Math.log2(pij / (pi * pj));
+        }
+    }
+    return mi;
+}
+
+// Regularized upper incomplete gamma (Γ(a, x) / Γ(a)) using series/continued fraction
+function logGamma(z: number): number {
+    const g = 7;
+    const p = [
+        0.99999999999980993,
+        676.5203681218851,
+        -1259.1392167224028,
+        771.32342877765313,
+        -176.61502916214059,
+        12.507343278686905,
+        -0.13857109526572012,
+        9.9843695780195716e-6,
+        1.5056327351493116e-7,
+    ];
+    if (z < 0.5) {
+        return Math.log(Math.PI) - Math.log(Math.sin(Math.PI * z)) - logGamma(1 - z);
+    }
+    z -= 1;
+    let x = p[0];
+    for (let i = 1; i < g + 2; i++) {
+        x += p[i] / (z + i);
+    }
+    const t = z + g + 0.5;
+    return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(x);
+}
+
+function gammaSeries(a: number, x: number): { value: number; lnGammaA: number } {
+    const lnGammaA = logGamma(a);
+    if (x === 0) {
+        return { value: 0, lnGammaA };
+    }
+    let sum = 1 / a;
+    let term = sum;
+    for (let n = 1; n < 1000; n++) {
+        term *= x / (a + n);
+        sum += term;
+        if (Math.abs(term) < Math.abs(sum) * 1e-12) break;
+    }
+    return { value: sum * Math.exp(-x + a * Math.log(x) - lnGammaA), lnGammaA };
+}
+
+function gammaContinuedFraction(a: number, x: number): { value: number; lnGammaA: number } {
+    const lnGammaA = logGamma(a);
+    let b = x + 1 - a;
+    let c = 1 / 1e-30;
+    let d = 1 / b;
+    let h = d;
+    for (let i = 1; i < 1000; i++) {
+        const an = -i * (i - a);
+        b += 2;
+        d = an * d + b;
+        if (Math.abs(d) < 1e-30) d = 1e-30;
+        c = b + an / c;
+        if (Math.abs(c) < 1e-30) c = 1e-30;
+        d = 1 / d;
+        const delta = d * c;
+        h *= delta;
+        if (Math.abs(delta - 1) < 1e-12) break;
+    }
+    return { value: h * Math.exp(-x + a * Math.log(x) - lnGammaA), lnGammaA };
+}
+
+function regularizedGammaQ(a: number, x: number): number {
+    if (x < 0 || a <= 0) return NaN;
+    if (x === 0) return 1;
+    if (x < a + 1) {
+        const { value } = gammaSeries(a, x);
+        return 1 - value;
+    }
+    const { value } = gammaContinuedFraction(a, x);
+    return value;
+}
+
+function chiSquareSurvival(x: number, df: number): number {
+    if (df <= 0) return 1;
+    return regularizedGammaQ(df / 2, x / 2);
+}
+
+function ljungBox(residuals: number[], maxLag: number): MarkovTestResult {
+    const series = residuals.filter(Number.isFinite);
+    const n = series.length;
+    if (n === 0) {
+        return { statistic: 0, df: maxLag, pValue: 1, passed: true };
+    }
+    const ac = autocorrelation(series, maxLag);
+    const Q =
+        n * (n + 2) *
+        ac.reduce((acc, { lag, value }) => {
+            return acc + (value * value) / (n - lag);
+        }, 0);
+    const pValue = chiSquareSurvival(Q, maxLag);
+    return {
+        statistic: Q,
+        df: maxLag,
+        pValue,
+        passed: pValue > 0.05,
+    };
+}
+
+function approxHalfLife(weights: number[], dt: number): number {
+    if (weights.length === 0) return 0;
+    const positive = weights.map(Math.abs);
+    const max = Math.max(...positive);
+    if (max === 0) return 0;
+    for (let i = 0; i < positive.length; i++) {
+        if (positive[i] <= max / 2) {
+            return i * dt;
+        }
+    }
+    return positive.length * dt;
 }
 
 // Least squares solver for small systems
@@ -235,13 +516,16 @@ export function makeLocalSections(params: {
     const { micro, cover, consistent, measurementNoise, lambda, stepSigma, drift, dt, seed } = params;
     const rng = mulberry32(seed ^ 0x9e3779b9);
     const sections: LocalSection[] = [];
+    const measurementVar = Math.max(1e-4, measurementNoise * measurementNoise);
+    const baseWeight = measurementVar > 0 ? 1 / measurementVar : 1e6;
 
     for (const interval of cover) {
         const indices = restrictSeries(micro.t, interval);
         const values: number[] = [];
+        const weights: number[] = [];
 
         if (indices.length === 0) {
-            sections.push({ intervalId: interval.id, indices, values });
+            sections.push({ intervalId: interval.id, indices, values, weights });
             continue;
         }
 
@@ -250,20 +534,23 @@ export function makeLocalSections(params: {
             for (const gi of indices) {
                 const noisy = micro.x[gi] + measurementNoise * randn(rng);
                 values.push(noisy);
+                weights.push(baseWeight);
             }
         } else {
             // Independent local micro-history
             let x0 = micro.x[indices[0]] + measurementNoise * randn(rng);
             values.push(x0);
+            weights.push(baseWeight);
             for (let j = 1; j < indices.length; j++) {
                 const event = rng() < lambda * dt;
                 const jump = event ? stepSigma * randn(rng) : 0;
                 x0 = x0 + drift * dt + jump;
                 values.push(x0);
+                weights.push(baseWeight);
             }
         }
 
-        sections.push({ intervalId: interval.id, indices, values });
+        sections.push({ intervalId: interval.id, indices, values, weights });
     }
 
     return sections;
@@ -275,14 +562,25 @@ export function makeLocalSections(params: {
 export function computeOverlapStats(
     t: number[],
     cover: Interval[],
-    sections: LocalSection[]
+    sections: LocalSection[],
+    tolerance: number
 ): OverlapStats {
     let maxAbs = 0;
     let sumAbs = 0;
     let count = 0;
+    const pairwise: PairOverlapDiagnostic[] = [];
+    const tripleDiagnostics: TripleCocycleDiagnostic[] = [];
 
     const sectionMap = new Map<number, LocalSection>();
-    for (const s of sections) sectionMap.set(s.intervalId, s);
+    const sectionValueMaps = new Map<number, Map<number, number>>();
+    for (const s of sections) {
+        sectionMap.set(s.intervalId, s);
+        const valueMap = new Map<number, number>();
+        for (let j = 0; j < s.indices.length; j++) {
+            valueMap.set(s.indices[j], s.values[j]);
+        }
+        sectionValueMaps.set(s.intervalId, valueMap);
+    }
 
     for (let a = 0; a < cover.length; a++) {
         for (let b = a + 1; b < cover.length; b++) {
@@ -292,29 +590,92 @@ export function computeOverlapStats(
             const hi = Math.min(Ia.b, Ib.b);
             if (hi <= lo) continue;
 
-            const A = sectionMap.get(Ia.id);
-            const B = sectionMap.get(Ib.id);
-            if (!A || !B) continue;
+            const mapA = sectionValueMaps.get(Ia.id);
+            const mapB = sectionValueMaps.get(Ib.id);
+            if (!mapA || !mapB) continue;
 
-            const mapA = new Map<number, number>();
-            for (let j = 0; j < A.indices.length; j++) {
-                mapA.set(A.indices[j], A.values[j]);
-            }
+            let localMax = 0;
+            let localSum = 0;
+            let localCount = 0;
 
-            for (let j = 0; j < B.indices.length; j++) {
-                const gi = B.indices[j];
+            for (const [gi, valA] of mapA.entries()) {
                 const tt = t[gi];
                 if (tt < lo - 1e-12 || tt > hi + 1e-12) continue;
-                if (!mapA.has(gi)) continue;
-                const d = Math.abs(mapA.get(gi)! - B.values[j]);
-                maxAbs = Math.max(maxAbs, d);
-                sumAbs += d;
-                count++;
+                if (!mapB.has(gi)) continue;
+                const diff = Math.abs(valA - mapB.get(gi)!);
+                localMax = Math.max(localMax, diff);
+                localSum += diff;
+                localCount++;
+            }
+
+            if (localCount > 0) {
+                maxAbs = Math.max(maxAbs, localMax);
+                sumAbs += localSum;
+                count += localCount;
+                pairwise.push({
+                    intervals: [Ia.id, Ib.id],
+                    overlap: [lo, hi],
+                    maxAbs: localMax,
+                    meanAbs: localSum / localCount,
+                    sampleCount: localCount,
+                    ok: localMax <= tolerance,
+                });
             }
         }
     }
 
-    return { maxAbs, meanAbs: count ? sumAbs / count : 0, count };
+    // Triple overlaps for Čech cocycle diagnostics
+    for (let a = 0; a < cover.length; a++) {
+        for (let b = a + 1; b < cover.length; b++) {
+            for (let c = b + 1; c < cover.length; c++) {
+                const Ia = cover[a];
+                const Ib = cover[b];
+                const Ic = cover[c];
+                const lo = Math.max(Ia.a, Ib.a, Ic.a);
+                const hi = Math.min(Ia.b, Ib.b, Ic.b);
+                if (hi <= lo) continue;
+
+                const mapA = sectionValueMaps.get(Ia.id);
+                const mapB = sectionValueMaps.get(Ib.id);
+                const mapC = sectionValueMaps.get(Ic.id);
+                if (!mapA || !mapB || !mapC) continue;
+
+                let localMax = 0;
+                let localCount = 0;
+
+                for (const [gi, valA] of mapA.entries()) {
+                    const tt = t[gi];
+                    if (tt < lo - 1e-12 || tt > hi + 1e-12) continue;
+                    if (!mapB.has(gi) || !mapC.has(gi)) continue;
+                    const valB = mapB.get(gi)!;
+                    const valC = mapC.get(gi)!;
+                    const hiLocal = Math.max(valA, valB, valC);
+                    const loLocal = Math.min(valA, valB, valC);
+                    const spread = hiLocal - loLocal;
+                    localMax = Math.max(localMax, spread);
+                    localCount++;
+                }
+
+                if (localCount > 0) {
+                    tripleDiagnostics.push({
+                        intervals: [Ia.id, Ib.id, Ic.id],
+                        intersection: [lo, hi],
+                        maxViolation: localMax,
+                        sampleCount: localCount,
+                        ok: localMax <= tolerance,
+                    });
+                }
+            }
+        }
+    }
+
+    return {
+        maxAbs,
+        meanAbs: count ? sumAbs / count : 0,
+        count,
+        pairwise,
+        triple: tripleDiagnostics,
+    };
 }
 
 /**
@@ -330,12 +691,15 @@ export function glueSections(params: {
     const { t, cover, sections, tolerance, strict } = params;
 
     // Collect all values at each global index
-    const buckets: Map<number, number[]> = new Map();
+    const buckets: Map<number, { value: number; weight: number }[]> = new Map();
     for (let i = 0; i < t.length; i++) buckets.set(i, []);
 
     for (const section of sections) {
         for (let j = 0; j < section.indices.length; j++) {
-            buckets.get(section.indices[j])!.push(section.values[j]);
+            buckets.get(section.indices[j])!.push({
+                value: section.values[j],
+                weight: section.weights[j] ?? 1,
+            });
         }
     }
 
@@ -346,8 +710,9 @@ export function glueSections(params: {
     for (let i = 0; i < t.length; i++) {
         const vals = buckets.get(i)!;
         if (vals.length <= 1) continue;
-        const lo = Math.min(...vals);
-        const hi = Math.max(...vals);
+        const numbers = vals.map((v) => v.value);
+        const lo = Math.min(...numbers);
+        const hi = Math.max(...numbers);
         maxPointSpread = Math.max(maxPointSpread, hi - lo);
         if (strict && hi - lo > tolerance) ok = false;
     }
@@ -360,9 +725,11 @@ export function glueSections(params: {
 
     // Sheafification: average where multiple locals exist
     for (let i = 0; i < t.length; i++) {
-        const vals = buckets.get(i)!;
-        if (vals.length === 0) continue;
-        glued[i] = mean(vals);
+        const samples = buckets.get(i)!;
+        if (samples.length === 0) continue;
+        const values = samples.map((s) => s.value);
+        const weights = samples.map((s) => (s.weight > 0 ? s.weight : 1));
+        glued[i] = weightedMean(values, weights);
     }
 
     return { ok: true, glued, maxPointSpread };
@@ -392,6 +759,123 @@ export function movingAverage(x: number[], w: number): number[] {
     return y;
 }
 
+function movingAverageMap(section: LocalSection, window: number): Map<number, number> {
+    const smoothed = movingAverage(section.values, window);
+    const map = new Map<number, number>();
+    for (let i = 0; i < section.indices.length; i++) {
+        if (!Number.isFinite(smoothed[i])) continue;
+        map.set(section.indices[i], smoothed[i]);
+    }
+    return map;
+}
+
+function computeCommuteDiagnostics(params: {
+    cover: Interval[];
+    sections: LocalSection[];
+    macroWindow: number;
+}): CommuteDiagnostic[] {
+    const { cover, sections, macroWindow } = params;
+    const macroMap = new Map<number, Map<number, number>>();
+    const sectionMap = new Map<number, LocalSection>();
+    for (const section of sections) {
+        macroMap.set(section.intervalId, movingAverageMap(section, macroWindow));
+        sectionMap.set(section.intervalId, section);
+    }
+
+    const diagnostics: CommuteDiagnostic[] = [];
+
+    for (let i = 0; i < cover.length; i++) {
+        for (let j = 0; j < cover.length; j++) {
+            if (i === j) continue;
+            const source = cover[i];
+            const target = cover[j];
+            if (source.a - 1e-9 > target.a || source.b + 1e-9 < target.b) {
+                continue; // target not contained in source
+            }
+            const sourceMacro = macroMap.get(source.id);
+            const targetMacro = macroMap.get(target.id);
+            const targetSection = sectionMap.get(target.id);
+            if (!sourceMacro || !targetMacro || !targetSection) continue;
+
+            let sum = 0;
+            let max = 0;
+            let samples = 0;
+
+            for (const gi of targetSection.indices) {
+                if (!sourceMacro.has(gi) || !targetMacro.has(gi)) continue;
+                const diff = Math.abs(sourceMacro.get(gi)! - targetMacro.get(gi)!);
+                sum += diff;
+                max = Math.max(max, diff);
+                samples++;
+            }
+
+            if (samples > 0) {
+                diagnostics.push({
+                    source: source.id,
+                    target: target.id,
+                    meanDiff: sum / samples,
+                    maxDiff: max,
+                    sampleCount: samples,
+                });
+            }
+        }
+    }
+
+    return diagnostics;
+}
+
+function computeMutualInformationDiagnostics(params: {
+    t: number[];
+    cover: Interval[];
+    sections: LocalSection[];
+}): MutualInformationDiagnostic[] {
+    const { t, cover, sections } = params;
+    const diag: MutualInformationDiagnostic[] = [];
+    const sectionValueMaps = new Map<number, Map<number, number>>();
+    for (const section of sections) {
+        const map = new Map<number, number>();
+        for (let i = 0; i < section.indices.length; i++) {
+            map.set(section.indices[i], section.values[i]);
+        }
+        sectionValueMaps.set(section.intervalId, map);
+    }
+
+    for (let a = 0; a < cover.length; a++) {
+        for (let b = a + 1; b < cover.length; b++) {
+            const Ia = cover[a];
+            const Ib = cover[b];
+            const lo = Math.max(Ia.a, Ib.a);
+            const hi = Math.min(Ia.b, Ib.b);
+            if (hi <= lo) continue;
+
+            const mapA = sectionValueMaps.get(Ia.id);
+            const mapB = sectionValueMaps.get(Ib.id);
+            if (!mapA || !mapB) continue;
+
+            const seriesA: number[] = [];
+            const seriesB: number[] = [];
+
+            for (const [gi, valA] of mapA.entries()) {
+                const tt = t[gi];
+                if (tt < lo - 1e-12 || tt > hi + 1e-12) continue;
+                if (!mapB.has(gi)) continue;
+                seriesA.push(valA);
+                seriesB.push(mapB.get(gi)!);
+            }
+
+            if (seriesA.length > 5) {
+                diag.push({
+                    intervals: [Ia.id, Ib.id],
+                    bits: mutualInformation(seriesA, seriesB),
+                    sampleCount: seriesA.length,
+                });
+            }
+        }
+    }
+
+    return diag;
+}
+
 /**
  * Fit and predict reduced macro dynamics (Markov vs memory kernel)
  */
@@ -405,7 +889,7 @@ export function fitReducedModel(params: {
     const n = macro.length;
 
     if (n < 5) {
-        return { a: 0, b: 0, c: 0, pred: macro.slice(), rmse: 0 };
+        return { a: 0, b: 0, c: 0, pred: macro.slice(), rmse: 0, residuals: [] };
     }
 
     const dm: number[] = [];
@@ -433,7 +917,7 @@ export function fitReducedModel(params: {
         }
     }
 
-    const beta = solveLeastSquares(feats, dm);
+    const beta = feats.length > 0 ? solveLeastSquares(feats, dm) : [];
 
     let a = 0, b = 0, c = 0;
     if (useMemory) {
@@ -450,6 +934,8 @@ export function fitReducedModel(params: {
     pred[0] = macro[0];
     conv = 0;
 
+    const residuals: number[] = [];
+
     for (let i = 0; i < n - 1; i++) {
         const m = pred[i];
         if (!Number.isFinite(m)) {
@@ -464,11 +950,99 @@ export function fitReducedModel(params: {
         }
     }
 
+    for (let i = 0; i < dm.length; i++) {
+        const phi = feats[i];
+        let predicted = 0;
+        for (let j = 0; j < phi.length; j++) {
+            predicted += (beta[j] ?? 0) * phi[j];
+        }
+        residuals.push(dm[i] - predicted);
+    }
+
     const validMacro = macro.filter(Number.isFinite);
     const validPred = pred.filter(Number.isFinite);
     const rm = rmse(validMacro, validPred);
 
-    return { a, b, c, pred, rmse: rm };
+    return { a, b, c, pred, rmse: rm, residuals };
+}
+
+export function estimateMemoryKernel(params: {
+    macro: number[];
+    dt: number;
+    length: number;
+}): { estimate: MemoryKernelEstimate; residuals: number[] } {
+    const { macro, dt, length } = params;
+    const L = Math.max(1, Math.min(length, 128));
+    if (macro.length <= L + 2) {
+        return { estimate: { lags: [], weights: [], halfLife: 0 }, residuals: [] };
+    }
+
+    const feats: number[][] = [];
+    const targets: number[] = [];
+
+    for (let i = L; i < macro.length - 1; i++) {
+        const current = macro[i];
+        const next = macro[i + 1];
+        if (!Number.isFinite(current) || !Number.isFinite(next)) continue;
+        const row: number[] = [current];
+        let valid = true;
+        for (let k = 1; k <= L; k++) {
+            const past = macro[i - k];
+            if (!Number.isFinite(past)) {
+                valid = false;
+                break;
+            }
+            row.push(past);
+        }
+        if (!valid) continue;
+        feats.push(row);
+        targets.push((next - current) / dt);
+    }
+
+    if (targets.length === 0) {
+        return { estimate: { lags: [], weights: [], halfLife: 0 }, residuals: [] };
+    }
+
+    const beta = solveLeastSquares(feats, targets);
+    const kernelWeights = beta.slice(1).map((w) => w);
+    const lags = Array.from({ length: kernelWeights.length }, (_, i) => (i + 1) * dt);
+
+    const residuals: number[] = [];
+    for (let i = 0; i < targets.length; i++) {
+        const phi = feats[i];
+        let predicted = 0;
+        for (let j = 0; j < phi.length; j++) {
+            predicted += (beta[j] ?? 0) * phi[j];
+        }
+        residuals.push(targets[i] - predicted);
+    }
+
+    return {
+        estimate: {
+            lags,
+            weights: kernelWeights,
+            halfLife: approxHalfLife(kernelWeights, dt),
+        },
+        residuals,
+    };
+}
+
+function computeMacroStatistics(series: number[], dt: number): MacroStats {
+    const { mean: m, variance, skewness, kurtosis } = centralMoments(series);
+    const autocorr = autocorrelation(series, 10);
+    const powered = series.filter(Number.isFinite);
+    const momentMatrix: number[][] = [
+        [m, powered.length ? mean(powered.map((v) => v * v)) : 0],
+        [powered.length ? mean(powered.map((v) => v * v * v)) : 0, powered.length ? mean(powered.map((v) => v ** 4)) : 0],
+    ];
+    return {
+        mean: m,
+        variance,
+        skewness,
+        kurtosis,
+        autocorrelation: autocorr,
+        momentMatrix,
+    };
 }
 
 /**
@@ -498,7 +1072,8 @@ export function runSimulation(params: SimulationParams) {
         seed: params.seed,
     });
 
-    const overlapStats = computeOverlapStats(micro.t, cover, sections);
+    const overlapStats = computeOverlapStats(micro.t, cover, sections, params.tolerance);
+    const mutualInfo = computeMutualInformationDiagnostics({ t: micro.t, cover, sections });
 
     const glueResult = glueSections({
         t: micro.t,
@@ -512,6 +1087,7 @@ export function runSimulation(params: SimulationParams) {
     const base = glueResult.ok ? glueResult.glued : micro.x;
     const w = Math.max(3, Math.floor(params.macroWindow) | 1);
     const macro = movingAverage(base, w);
+    const macroStats = computeMacroStatistics(macro, params.dt);
 
     const reduced = fitReducedModel({
         dt: params.dt,
@@ -520,13 +1096,34 @@ export function runSimulation(params: SimulationParams) {
         useMemory: params.useMemory,
     });
 
+    const kernelResult = estimateMemoryKernel({
+        macro,
+        dt: params.dt,
+        length: params.kernelLength,
+    });
+
+    const commuteDiagnostics = computeCommuteDiagnostics({
+        cover,
+        sections,
+        macroWindow: w,
+    });
+
+    const residualsForTest = kernelResult.residuals.length ? kernelResult.residuals : reduced.residuals;
+    const maxLag = Math.max(1, Math.min(12, Math.floor(residualsForTest.length / 5)));
+    const markovTest = ljungBox(residualsForTest, maxLag);
+
     return {
         cover,
         micro,
         sections,
         overlapStats,
+        mutualInfo,
+        commuteDiagnostics,
         glueResult,
         macro,
+        macroStats,
         reduced,
+        memoryKernel: kernelResult.estimate,
+        markovTest,
     };
 }

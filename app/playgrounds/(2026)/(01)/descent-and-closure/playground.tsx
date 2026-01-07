@@ -90,6 +90,11 @@ export default function Playground() {
                         macro={simulation.macro}
                         reduced={simulation.reduced}
                         overlapStats={simulation.overlapStats}
+                        mutualInfo={simulation.mutualInfo}
+                        commuteDiagnostics={simulation.commuteDiagnostics}
+                        macroStats={simulation.macroStats}
+                        memoryKernel={simulation.memoryKernel}
+                        markovTest={simulation.markovTest}
                         playback={playback}
                         onPlaybackChange={handlePlaybackChange}
                         selectedSection={selectedSection}
@@ -130,6 +135,12 @@ export default function Playground() {
                             <Equation math="x_i \in \mathcal{X}(I_i)" /> agree on overlaps, they glue to a unique
                             global section <Equation math="x \in \mathcal{X}(\bigcup I_i)" />.
                         </p>
+                        <p className="text-gray-300">
+                            The viewer now surfaces <strong>pairwise</strong> and <strong>triple</strong> Čech diagnostics:
+                            each overlap reports <Equation math="\max |x_i - x_j|" /> while triple overlaps verify the
+                            cocycle condition <Equation math="x_i - x_j + x_j - x_k + x_k - x_i = 0" />. Failures are
+                            highlighted when exceeding the glue tolerance ε.
+                        </p>
                     </div>
 
                     <div className="border-l-2 border-lime-500/50 pl-4">
@@ -142,6 +153,11 @@ export default function Playground() {
                         <p className="text-gray-300 mt-3">
                             Naturality ensures <Equation math="q_J \circ \rho^{\mathcal{X}}_{IJ} = \rho^{\mathcal{M}}_{IJ} \circ q_I" />:
                             the macro of a restriction equals the restriction of the macro.
+                        </p>
+                        <p className="text-gray-300">
+                            We compute a <strong>commutativity matrix</strong>: each entry records the mean and max deviation
+                            between both sides of the square above, so you can see which inclusions are closest to a true
+                            natural transformation.
                         </p>
                     </div>
 
@@ -159,6 +175,20 @@ export default function Playground() {
                             with drift <Equation math="R" />, memory kernel <Equation math="K" />, and noise <Equation math="\eta" />.
                             When the kernel decays rapidly (timescale separation), the memory term vanishes and you get
                             <strong> Markovian closure</strong>: the macro is a self-contained dynamical system.
+                        </p>
+                        <p className="text-gray-300">
+                            The playground now fits a finite impulse-response kernel <Equation math="K(\tau_i)" /> with
+                            adjustable lag count, plots its shape, and runs a Ljung–Box test on the residuals to quantify
+                            whether the Markov model is statistically adequate.
+                        </p>
+                    </div>
+
+                    <div className="border-l-2 border-lime-500/50 pl-4">
+                        <h4 className="text-lime-400 font-semibold mb-2">Statistical diagnostics</h4>
+                        <p className="text-gray-300">
+                            Macro observables now expose higher moments, autocorrelation, and mutual information between
+                            overlapping intervals. These summaries help you identify when the sheafified process carries
+                            long memory, heavy tails, or strongly coupled overlaps.
                         </p>
                     </div>
 
@@ -179,6 +209,10 @@ export default function Playground() {
                             </li>
                             <li>
                                 Compare Markov vs memory models. Vary τ and watch the closure RMSE change.
+                            </li>
+                            <li>
+                                Watch the new multi-track panels: micro vs glued trajectory, macro vs reduced model,
+                                memory kernel bars, and autocorrelation all update live with the playback scrubber.
                             </li>
                         </ol>
                     </div>
