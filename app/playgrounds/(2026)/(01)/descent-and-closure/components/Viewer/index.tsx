@@ -104,32 +104,49 @@ export default function Viewer({
         onPlaybackChange({ ...playback, speed: newSpeed });
     };
 
-    // Compute chart data directly (no memoization) to ensure updates during animation
-    const chartData: ChartPoint[] = [];
-    for (let i = 0; i <= currentIndex; i++) {
-        chartData.push({
-            t: micro.t[i],
-            micro: micro.x[i],
-            glued: Number.isFinite(glueResult.glued[i]) ? glueResult.glued[i] : undefined,
-            macro: Number.isFinite(macro[i]) ? macro[i] : undefined,
-            pred: Number.isFinite(reduced.pred[i]) ? reduced.pred[i] : undefined,
-        });
-    }
+    const chartData: ChartPoint[] = useMemo(() => {
+        const data: ChartPoint[] = [];
+        for (let i = 0; i < micro.t.length; i++) {
+            const withinWindow = i <= currentIndex;
+            data.push({
+                t: micro.t[i],
+                micro: withinWindow ? micro.x[i] : undefined,
+                glued:
+                    withinWindow && Number.isFinite(glueResult.glued[i])
+                        ? glueResult.glued[i]
+                        : undefined,
+                macro:
+                    withinWindow && Number.isFinite(macro[i]) ? macro[i] : undefined,
+                pred:
+                    withinWindow && Number.isFinite(reduced.pred[i])
+                        ? reduced.pred[i]
+                        : undefined,
+            });
+        }
+        return data;
+    }, [micro, glueResult.glued, macro, reduced.pred, currentIndex]);
 
     const section = sections[selectedSection];
-    const localOverlay: ChartPoint[] = [];
-    if (section) {
-        for (let i = 0; i <= currentIndex; i++) {
-            localOverlay.push({ t: micro.t[i] });
+    const localOverlay: ChartPoint[] = useMemo(() => {
+        const data: ChartPoint[] = micro.t.map((tVal, i) => ({
+            t: tVal,
+            micro: i <= currentIndex ? micro.x[i] : undefined,
+        }));
+
+        if (!section) {
+            return data;
         }
+
         for (let j = 0; j < section.indices.length; j++) {
             const gi = section.indices[j];
-            if (gi <= currentIndex && localOverlay[gi]) {
-                localOverlay[gi].local = section.values[j];
-                localOverlay[gi].micro = micro.x[gi];
+            if (gi <= currentIndex && Number.isFinite(section.values[j])) {
+                data[gi].local = section.values[j];
+                data[gi].micro = micro.x[gi];
             }
         }
-    }
+
+        return data;
+    }, [micro, section, currentIndex]);
 
     const selectedInterval = cover[selectedSection];
 
@@ -145,7 +162,7 @@ export default function Viewer({
             {/* Main chart */}
             <div className="flex-[3] min-h-0 outline-none" tabIndex={-1}>
                 <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
-                    <LineChart key={`main-${currentIndex}`} data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 10 }}>
+                    <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 10 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#333" />
                         <XAxis
                             dataKey="t"
@@ -168,6 +185,7 @@ export default function Viewer({
                             stroke="#666"
                             dot={false}
                             strokeWidth={1}
+                            isAnimationActive={false}
                         />
                         <Line
                             type="monotone"
@@ -176,6 +194,7 @@ export default function Viewer({
                             stroke="#84cc16"
                             dot={false}
                             strokeWidth={2}
+                            isAnimationActive={false}
                         />
                         <Line
                             type="monotone"
@@ -184,6 +203,7 @@ export default function Viewer({
                             stroke="#22d3ee"
                             dot={false}
                             strokeWidth={2}
+                            isAnimationActive={false}
                         />
                         <Line
                             type="monotone"
@@ -193,6 +213,7 @@ export default function Viewer({
                             dot={false}
                             strokeWidth={1.5}
                             strokeDasharray="4 2"
+                            isAnimationActive={false}
                         />
                     </LineChart>
                 </ResponsiveContainer>
@@ -210,7 +231,7 @@ export default function Viewer({
                 </div>
                 <div className="flex-1 min-h-0 outline-none" tabIndex={-1}>
                     <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
-                    <LineChart key={`local-${currentIndex}-${selectedSection}`} data={localOverlay} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
+                    <LineChart data={localOverlay} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#333" />
                         <XAxis
                             dataKey="t"
@@ -233,6 +254,7 @@ export default function Viewer({
                             stroke="#666"
                             dot={false}
                             strokeWidth={1}
+                            isAnimationActive={false}
                         />
                         <Line
                             type="monotone"
@@ -241,6 +263,7 @@ export default function Viewer({
                             stroke="#a3e635"
                             dot={false}
                             strokeWidth={2}
+                            isAnimationActive={false}
                         />
                     </LineChart>
                     </ResponsiveContainer>
