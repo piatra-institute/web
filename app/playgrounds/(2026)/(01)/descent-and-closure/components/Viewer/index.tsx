@@ -255,8 +255,8 @@ export default function Viewer({
                             <Tooltip
                                 contentStyle={{ backgroundColor: '#050505', border: '1px solid #262626' }}
                                 labelStyle={{ color: '#ccc' }}
-                                formatter={(value: number) => value?.toFixed(4)}
-                                labelFormatter={(label: number) => `t = ${label?.toFixed(2)}`}
+                                formatter={(value) => typeof value === 'number' ? value.toFixed(4) : value}
+                                labelFormatter={(label) => `t = ${typeof label === 'number' ? label.toFixed(2) : label}`}
                             />
                             <Legend wrapperStyle={{ fontSize: 9 }} />
                             <Line type="monotone" dataKey="micro" name="micro X(t)" stroke="#737373" dot={false} strokeWidth={1} isAnimationActive={false} />
@@ -274,8 +274,8 @@ export default function Viewer({
                             <Tooltip
                                 contentStyle={{ backgroundColor: '#050505', border: '1px solid #262626' }}
                                 labelStyle={{ color: '#ccc' }}
-                                formatter={(value: number) => value?.toFixed(4)}
-                                labelFormatter={(label: number) => `t = ${label?.toFixed(2)}`}
+                                formatter={(value) => typeof value === 'number' ? value.toFixed(4) : value}
+                                labelFormatter={(label) => `t = ${typeof label === 'number' ? label.toFixed(2) : label}`}
                             />
                             <Legend wrapperStyle={{ fontSize: 9 }} />
                             <Line type="monotone" dataKey="macro" name="macro M(t)" stroke="#22d3ee" dot={false} strokeWidth={2} isAnimationActive={false} />
@@ -299,8 +299,8 @@ export default function Viewer({
                             <Tooltip
                                 contentStyle={{ backgroundColor: '#050505', border: '1px solid #262626' }}
                                 labelStyle={{ color: '#ccc' }}
-                                formatter={(value: number) => value?.toFixed(4)}
-                                labelFormatter={(label: number) => `t = ${label?.toFixed(2)}`}
+                                formatter={(value) => typeof value === 'number' ? value.toFixed(4) : value}
+                                labelFormatter={(label) => `t = ${typeof label === 'number' ? label.toFixed(2) : label}`}
                             />
                             <Legend wrapperStyle={{ fontSize: 9 }} />
                             <Line type="monotone" dataKey="micro" name="micro" stroke="#737373" dot={false} strokeWidth={1} isAnimationActive={false} />
@@ -318,8 +318,8 @@ export default function Viewer({
                                 <YAxis stroke="#555" tick={{ fill: '#999', fontSize: 8 }} width={30} />
                                 <Tooltip
                                     contentStyle={{ backgroundColor: '#050505', border: '1px solid #262626' }}
-                                    labelFormatter={(label: number) => `lag ${label.toFixed(2)}s`}
-                                    formatter={(value: number) => value?.toFixed(4)}
+                                    labelFormatter={(label) => `lag ${typeof label === 'number' ? label.toFixed(2) : label}s`}
+                                    formatter={(value) => typeof value === 'number' ? value.toFixed(4) : value}
                                 />
                                 <Bar dataKey="weight" fill="#84cc16" />
                             </BarChart>
@@ -338,8 +338,8 @@ export default function Viewer({
                                 <YAxis domain={[-1, 1]} stroke="#555" tick={{ fill: '#999', fontSize: 8 }} width={25} />
                                 <Tooltip
                                     contentStyle={{ backgroundColor: '#050505', border: '1px solid #262626' }}
-                                    labelFormatter={(label: number) => `lag ${label}`}
-                                    formatter={(value: number) => value?.toFixed(3)}
+                                    labelFormatter={(label) => `lag ${label}`}
+                                    formatter={(value) => typeof value === 'number' ? value.toFixed(3) : value}
                                 />
                                 <Line type="monotone" dataKey="value" stroke="#fbbf24" strokeWidth={1.5} dot={{ r: 1.5 }} isAnimationActive={false} />
                             </LineChart>

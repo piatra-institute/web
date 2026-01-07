@@ -211,7 +211,7 @@ export default function Playground() {
                                 Compare Markov vs memory models. Vary τ and watch the closure RMSE change.
                             </li>
                             <li>
-                                Watch the new multi-track panels: micro vs glued trajectory, macro vs reduced model,
+                                Watch the multi-track panels: micro vs glued trajectory, macro vs reduced model,
                                 memory kernel bars, and autocorrelation all update live with the playback scrubber.
                             </li>
                         </ol>
