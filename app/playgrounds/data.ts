@@ -317,4 +317,10 @@ export const playgrounds = [
         description: 'from local micro-events to autonomous macro-processes via sheaf theory',
         date: 'January 2026',
     },
+    {
+        name: 'kernel smoothing',
+        link: '/playgrounds/kernel-smoothing',
+        description: 'attention as kernel smoothing: similarity-to-weight mapping',
+        date: 'January 2026',
+    },
 ];
