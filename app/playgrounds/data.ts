@@ -323,4 +323,10 @@ export const playgrounds = [
         description: 'attention as kernel smoothing: similarity-to-weight mapping',
         date: 'January 2026',
     },
+    {
+        name: 'nested observer windows',
+        link: '/playgrounds/nested-observer-windows',
+        description: 'multi-scale oscillator coupling for hierarchical consciousness',
+        date: 'January 2026',
+    },
 ];
