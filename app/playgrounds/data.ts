@@ -1,5 +1,11 @@
 export const playgrounds = [
     {
+        name: 'gait gambit',
+        link: '/playgrounds/gait-gambit',
+        description: 'a computational model of gait selection',
+        date: 'February 2026',
+    },
+    {
         name: 'self-sorted arrays',
         link: '/playgrounds/self-sorted-arrays',
         description: 'cell-based sorting algorithms',
