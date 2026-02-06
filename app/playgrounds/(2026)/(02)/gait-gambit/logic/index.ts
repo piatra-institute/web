@@ -83,7 +83,21 @@ export const DEFAULT_WEIGHTS: Weights = {
 
 const clamp = (x: number, min = 0, max = 1) => Math.max(min, Math.min(max, x));
 
-const POLICY_SPECS: Record<PolicyType, {
+export const POLICY_COLORS: Record<PolicyType, string> = {
+  walk: '#22c55e',   // green
+  skip: '#facc15',   // yellow
+  run: '#f97316',    // orange
+  stroll: '#6b7280', // gray
+};
+
+export const POLICY_LABELS: Record<PolicyType, string> = {
+  walk: 'Walk',
+  skip: 'Skip',
+  run: 'Run',
+  stroll: 'Stroll',
+};
+
+export const POLICY_SPECS: Record<PolicyType, {
   impact: number;
   signalAmp: number;
   energyPerDist: number;
@@ -124,6 +138,45 @@ const POLICY_SPECS: Record<PolicyType, {
     speed: 0.2,
   },
 };
+
+export const CONTEXT_GROUPS: Array<{
+  label: string;
+  keys: Array<{ key: keyof Context; label: string; hint: string }>;
+}> = [
+  {
+    label: 'Environment',
+    keys: [
+      { key: 'crowd', label: 'Crowd / obstacles', hint: 'Collision risk & social salience' },
+      { key: 'distance', label: 'Distance', hint: 'Trip length (affects energy)' },
+      { key: 'surfaceHard', label: 'Surface hardness', hint: 'Impact cost on joints' },
+    ],
+  },
+  {
+    label: 'Agent',
+    keys: [
+      { key: 'mastery', label: 'Skill mastery', hint: 'How well you can skip' },
+      { key: 'currentArousal', label: 'Current arousal', hint: 'How energised right now' },
+      { key: 'desiredArousal', label: 'Desired arousal', hint: 'Target energy level' },
+    ],
+  },
+  {
+    label: 'Social & Task',
+    keys: [
+      { key: 'normPressure', label: 'Norm pressure', hint: 'Social expectation weight' },
+      { key: 'carryingLoad', label: 'Carrying load', hint: 'Objects in hands' },
+      { key: 'hurry', label: 'Hurry / schedule pressure', hint: 'Speed preference' },
+    ],
+  },
+  {
+    label: 'Exploration',
+    keys: [
+      { key: 'novelty', label: 'Novelty / learning', hint: 'New skills available' },
+    ],
+  },
+];
+
+export const CONTEXT_KEYS: Array<{ key: keyof Context; label: string }> =
+  CONTEXT_GROUPS.flatMap((g) => g.keys.map((k) => ({ key: k.key, label: k.label })));
 
 export function computePolicy(
   policy: PolicyType,
@@ -180,7 +233,7 @@ export function computePolicy(
   );
 
   // EFE computation
-  const parts = {
+  const parts: Record<string, number> = {
     'Risk': w.risk * risk,
     'Ambiguity': w.amb * ambiguity,
     '-InfoGain': -w.info * infoGain,
@@ -218,10 +271,10 @@ export function computeAllPolicies(
   w: Weights,
 ): Record<PolicyType, PolicyResult> {
   const policies: PolicyType[] = ['walk', 'skip', 'run', 'stroll'];
-  const results: Record<PolicyType, PolicyResult> = {} as any;
+  const results = {} as Record<PolicyType, PolicyResult>;
 
   const computed = policies.map((p) => computePolicy(p, ctx, w));
-  const sorted = computed.sort((a, b) => a.G - b.G);
+  const sorted = [...computed].sort((a, b) => a.G - b.G);
 
   sorted.forEach((result, idx) => {
     result.rank = idx + 1;
@@ -240,6 +293,7 @@ export interface HeatmapPoint {
   runG: number;
   strollG: number;
   winner: PolicyType;
+  margin: number; // how dominant the winner is
 }
 
 export function generateHeatmap(
@@ -247,7 +301,7 @@ export function generateHeatmap(
   yAxis: keyof Context,
   ctx: Context,
   w: Weights,
-  resolution = 20,
+  resolution = 25,
 ): HeatmapPoint[] {
   const points: HeatmapPoint[] = [];
 
@@ -266,6 +320,9 @@ export function generateHeatmap(
 
       const Gs = [walkG, skipG, runG, strollG];
       const minG = Math.min(...Gs);
+      const sortedGs = [...Gs].sort((a, b) => a - b);
+      const margin = sortedGs[1] - sortedGs[0]; // gap between winner and runner-up
+
       const winner = (
         minG === walkG ? 'walk' :
         minG === skipG ? 'skip' :
@@ -280,11 +337,177 @@ export function generateHeatmap(
         runG,
         strollG,
         winner,
+        margin,
       });
     }
   }
 
   return points;
+}
+
+// Sensitivity analysis: perturb each context param, measure G delta and winner flip
+export interface SensitivityEntry {
+  param: keyof Context;
+  label: string;
+  delta: number; // absolute change in winning G
+  flips: boolean; // does winner change?
+}
+
+export function computeSensitivity(ctx: Context, w: Weights): SensitivityEntry[] {
+  const eps = 0.05;
+  const base = computeAllPolicies(ctx, w);
+  const baseWinner = (['walk', 'skip', 'run', 'stroll'] as PolicyType[]).reduce(
+    (best, p) => (base[p].G < base[best].G ? p : best),
+    'walk' as PolicyType,
+  );
+  const baseG = base[baseWinner].G;
+
+  const entries: SensitivityEntry[] = [];
+  for (const group of CONTEXT_GROUPS) {
+    for (const { key, label } of group.keys) {
+      let maxDelta = 0;
+      let flips = false;
+
+      for (const dir of [-1, 1]) {
+        const val = clamp(ctx[key] + dir * eps);
+        const ctx2 = { ...ctx, [key]: val };
+        const res = computeAllPolicies(ctx2, w);
+        const newWinner = (['walk', 'skip', 'run', 'stroll'] as PolicyType[]).reduce(
+          (best, p) => (res[p].G < res[best].G ? p : best),
+          'walk' as PolicyType,
+        );
+        const newG = res[newWinner].G;
+        const d = Math.abs(newG - baseG);
+        if (d > maxDelta) maxDelta = d;
+        if (newWinner !== baseWinner) flips = true;
+      }
+
+      entries.push({ param: key, label, delta: maxDelta, flips });
+    }
+  }
+
+  return entries.sort((a, b) => {
+    if (a.flips !== b.flips) return a.flips ? -1 : 1;
+    return b.delta - a.delta;
+  });
+}
+
+// Find all crossover points when sweeping one axis 0→1
+export interface CrossoverPoint {
+  x: number;
+  policy1: PolicyType;
+  policy2: PolicyType;
+}
+
+export function findAllCrossoverPoints(
+  axis: keyof Context,
+  ctx: Context,
+  w: Weights,
+  resolution = 200,
+): CrossoverPoint[] {
+  const policies: PolicyType[] = ['walk', 'skip', 'run', 'stroll'];
+  const crossovers: CrossoverPoint[] = [];
+
+  // Compute G for each policy at each x
+  const prevGs: Record<PolicyType, number> = {} as Record<PolicyType, number>;
+  {
+    const ctx0 = { ...ctx, [axis]: 0 };
+    for (const p of policies) {
+      prevGs[p] = computePolicy(p, ctx0, w).G;
+    }
+  }
+
+  for (let i = 1; i <= resolution; i++) {
+    const x = i / resolution;
+    const ctx2 = { ...ctx, [axis]: x };
+    const curGs: Record<PolicyType, number> = {} as Record<PolicyType, number>;
+    for (const p of policies) {
+      curGs[p] = computePolicy(p, ctx2, w).G;
+    }
+
+    // Check all pairs for crossover
+    for (let a = 0; a < policies.length; a++) {
+      for (let b = a + 1; b < policies.length; b++) {
+        const p1 = policies[a];
+        const p2 = policies[b];
+        const prevDiff = prevGs[p1] - prevGs[p2];
+        const curDiff = curGs[p1] - curGs[p2];
+
+        if ((prevDiff <= 0 && curDiff > 0) || (prevDiff >= 0 && curDiff < 0)) {
+          // Interpolate
+          const t = Math.abs(prevDiff) / (Math.abs(prevDiff) + Math.abs(curDiff) + 1e-9);
+          const crossX = (i - 1 + t) / resolution;
+          crossovers.push({ x: crossX, policy1: p1, policy2: p2 });
+        }
+      }
+    }
+
+    for (const p of policies) {
+      prevGs[p] = curGs[p];
+    }
+  }
+
+  return crossovers;
+}
+
+// Radar profile: 7 EFE components for all 4 policies
+export interface RadarDataPoint {
+  component: string;
+  walk: number;
+  skip: number;
+  run: number;
+  stroll: number;
+}
+
+export function computeRadarProfile(ctx: Context, w: Weights): RadarDataPoint[] {
+  const results = computeAllPolicies(ctx, w);
+  const components: Array<{ key: keyof PolicyComponents; label: string }> = [
+    { key: 'risk', label: 'Risk' },
+    { key: 'ambiguity', label: 'Ambiguity' },
+    { key: 'infoGain', label: 'InfoGain' },
+    { key: 'energyCost', label: 'Energy' },
+    { key: 'socialPenalty', label: 'Social' },
+    { key: 'injuryProb', label: 'Injury' },
+    { key: 'arousalMismatch', label: 'Arousal' },
+  ];
+
+  return components.map(({ key, label }) => ({
+    component: label,
+    walk: results.walk.components[key],
+    skip: results.skip.components[key],
+    run: results.run.components[key],
+    stroll: results.stroll.components[key],
+  }));
+}
+
+// Waterfall data: weighted EFE parts for the winning policy
+export interface WaterfallEntry {
+  name: string;
+  value: number; // signed: positive = cost, negative = benefit
+}
+
+export function computeWaterfallData(ctx: Context, w: Weights): { entries: WaterfallEntry[]; winner: PolicyType; totalG: number } {
+  const results = computeAllPolicies(ctx, w);
+  const policies: PolicyType[] = ['walk', 'skip', 'run', 'stroll'];
+  const winner = policies.reduce(
+    (best, p) => (results[p].G < results[best].G ? p : best),
+    'walk' as PolicyType,
+  );
+
+  const parts = results[winner].parts;
+  const entries: WaterfallEntry[] = Object.entries(parts).map(([name, value]) => ({
+    name,
+    value,
+  }));
+
+  // Sort: negative first (benefits), then positive by magnitude
+  entries.sort((a, b) => {
+    if (a.value < 0 && b.value >= 0) return -1;
+    if (a.value >= 0 && b.value < 0) return 1;
+    return Math.abs(b.value) - Math.abs(a.value);
+  });
+
+  return { entries, winner, totalG: results[winner].G };
 }
 
 // Time-based simulation
@@ -297,29 +520,24 @@ export function stepSimulation(
 ): SimulationState {
   const spec = POLICY_SPECS[policy];
 
-  // Progress along distance
   const progress = state.position + spec.speed * dt;
 
-  // Arousal updates
   const arousalInput = 0.45 * spec.signalAmp + 0.25 * spec.impact - 0.1 * ctx.distance;
   const newArousal = clamp(state.arousal + arousalInput * dt * 0.2 - 0.05 * dt);
 
-  // Mastery improvements (learning)
   const learningRate = (1 - state.mastery) * ctx.novelty * spec.complexity * 0.001;
   const newMastery = clamp(state.mastery + learningRate * dt);
 
-  // Fatigue accumulation
   const fatigueAccum = spec.energyPerDist * spec.impact * 0.01 * dt;
-  const fatigueRecovery = 0.002 * dt * (1 - state.arousal) / 2; // recover when calm
+  const fatigueRecovery = 0.002 * dt * (1 - state.arousal) / 2;
   const newFatigue = clamp(state.fatigue + fatigueAccum - fatigueRecovery);
 
-  // Novelty decay
   const noveltyDecay = 0.001 * dt;
   const newNovelty = Math.max(0, state.noveltyRemaining - noveltyDecay);
 
   return {
     t: state.t + dt,
-    position: Math.min(1, progress), // clamp to [0, 1]
+    position: Math.min(1, progress),
     arousal: newArousal,
     mastery: newMastery,
     fatigue: newFatigue,
@@ -336,39 +554,4 @@ export function createInitialState(): SimulationState {
     fatigue: 0,
     noveltyRemaining: 0.3,
   };
-}
-
-// Helper: Find crossover point between two policies when sweeping a parameter
-export function findCrossover(
-  policy1: PolicyType,
-  policy2: PolicyType,
-  axis: keyof Context,
-  ctx: Context,
-  w: Weights,
-  resolution = 100,
-): number | null {
-  let prev = computePolicy(policy1, ctx, w);
-  let prevOther = computePolicy(policy2, ctx, w);
-  let prevDiff = prev.G - prevOther.G;
-
-  for (let i = 1; i < resolution; i++) {
-    const x = i / (resolution - 1);
-    const ctx2 = { ...ctx, [axis]: x };
-
-    const cur = computePolicy(policy1, ctx2, w);
-    const curOther = computePolicy(policy2, ctx2, w);
-    const curDiff = cur.G - curOther.G;
-
-    if ((prevDiff <= 0 && curDiff > 0) || (prevDiff >= 0 && curDiff < 0)) {
-      // Crossover found, interpolate
-      const t = Math.abs(prevDiff) / (Math.abs(prevDiff) + Math.abs(curDiff) + 1e-9);
-      return prev.G + t * (cur.G - prev.G);
-    }
-
-    prev = cur;
-    prevOther = curOther;
-    prevDiff = curDiff;
-  }
-
-  return null;
 }

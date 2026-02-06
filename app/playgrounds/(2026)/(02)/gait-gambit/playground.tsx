@@ -1,23 +1,27 @@
 'use client';
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import Equation from '@/components/Equation';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
-import { Context, Weights, DEFAULT_CONTEXT, DEFAULT_WEIGHTS } from './logic';
+import { Context, Weights, DEFAULT_CONTEXT, DEFAULT_WEIGHTS, POLICY_SPECS } from './logic';
 
 export default function GaitGambitPlayground() {
   const [context, setContext] = useState<Context>(DEFAULT_CONTEXT);
   const [weights, setWeights] = useState<Weights>(DEFAULT_WEIGHTS);
   const [axisX, setAxisX] = useState<keyof Context>('crowd');
   const [axisY, setAxisY] = useState<keyof Context>('normPressure');
+  const [crossoverAxis, setCrossoverAxis] = useState<keyof Context>('mastery');
+  const [showAllPolicies, setShowAllPolicies] = useState(true);
 
   const handleReset = useCallback(() => {
-    setContext(DEFAULT_CONTEXT);
-    setWeights(DEFAULT_WEIGHTS);
+    setContext({ ...DEFAULT_CONTEXT });
+    setWeights({ ...DEFAULT_WEIGHTS });
     setAxisX('crowd');
     setAxisY('normPressure');
+    setCrossoverAxis('mastery');
+    setShowAllPolicies(true);
   }, []);
 
   const sections = [
@@ -28,68 +32,85 @@ export default function GaitGambitPlayground() {
     {
       id: 'canvas',
       type: 'canvas' as const,
-      content: <Viewer context={context} weights={weights} axisX={axisX} axisY={axisY} />,
+      content: (
+        <Viewer
+          context={context}
+          weights={weights}
+          axisX={axisX}
+          axisY={axisY}
+          crossoverAxis={crossoverAxis}
+          showAllPolicies={showAllPolicies}
+        />
+      ),
     },
     {
       id: 'outro',
       type: 'outro' as const,
       content: (
-        <div className="space-y-6 text-gray-300">
-          <div>
-            <h3 className="text-lime-400 font-semibold mb-2">How it works</h3>
-            <p className="leading-relaxed text-sm">
-              The model computes expected free energy (EFE) for each policy—walk, skip, run, or stroll. Whichever has the lowest EFE is chosen. The EFE combines:
+        <div className="space-y-8 text-gray-300">
+          <div className="border-l-2 border-lime-500/50 pl-4">
+            <h3 className="text-lime-400 font-semibold mb-3">Expected Free Energy Model</h3>
+            <p className="leading-relaxed text-sm mb-3">
+              Each policy <Equation math="\pi" /> (walk, skip, run, stroll) is scored by its expected free energy:
             </p>
-            <ul className="list-disc pl-5 mt-3 space-y-1 text-sm">
-              <li><strong>Preference satisfaction</strong> – does this movement match how you want to feel?</li>
-              <li><strong>Learning value</strong> – does it teach you something about your body or world?</li>
-              <li><strong>Costs</strong> – energy, injury risk, social judgment, unclear sensory feedback</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-lime-400 font-semibold mb-2">Why the crossover happens</h3>
-            <p className="leading-relaxed text-sm">
-              Children weight novelty and learning heavily, but don't care much about efficiency or social judgment. So skipping wins—it's complex to learn, gives strong sensory feedback, and feels fun. Adults flip the weights: they prioritize energy cost and not standing out, so walking wins. The same decision logic; different priorities.
-            </p>
-          </div>
-
-          <div>
-            <h3 className="text-lime-400 font-semibold mb-2">Reading the visualizations</h3>
-            <p className="leading-relaxed text-sm">
-              <strong>Policy ranking:</strong> Bar chart showing G (expected free energy) for each option. Lower is better.
-            </p>
-            <p className="leading-relaxed text-sm mt-2">
-              <strong>Crossover plot:</strong> How each policy's EFE changes as you sweep one variable. Crossing lines show where the winner flips.
-            </p>
-            <p className="leading-relaxed text-sm mt-2">
-              <strong>Heatmap:</strong> A 2D map of policy preference. Lime=good (low EFE), dark=bad (high EFE). Pick any two variables to explore.
-            </p>
-          </div>
-
-          <div>
-            <h3 className="text-lime-400 font-semibold mb-2">The equation</h3>
             <Equation
               mode="block"
-              math="G(\pi) = w_{\text{risk}} \cdot \text{Risk} + w_{\text{amb}} \cdot \text{Ambiguity} - w_{\text{info}} \cdot \text{InfoGain} + w_{\text{energy}} \cdot \text{Energy} + w_{\text{social}} \cdot \text{Social} + w_{\text{injury}} \cdot \text{Injury} + w_{\text{arousal}} \cdot \text{ArousalMismatch}"
+              math="G(\pi) = w_r \cdot \text{Risk} + w_a \cdot \text{Ambiguity} - w_i \cdot \text{InfoGain} + w_e \cdot \text{Energy} + w_s \cdot \text{Social} + w_j \cdot \text{Injury} + w_\alpha \cdot |\text{Arousal}_\text{desired} - \text{Arousal}_\text{predicted}|"
             />
             <p className="leading-relaxed text-sm mt-3">
-              Each <span className="text-lime-100">w</span> is a weight that says "how much do I care about this factor?" Increase a weight, and that cost/benefit matters more. The minus sign on InfoGain means learning reduces EFE—you pay less for policies that teach.
+              The policy with the lowest <Equation math="G" /> is selected. Costs (risk, energy, social penalty, injury, ambiguity, arousal mismatch) increase <Equation math="G" />; information gain decreases it, rewarding exploratory behaviour.
             </p>
           </div>
 
-          <div>
-            <h3 className="text-lime-400 font-semibold mb-2">Presets in settings</h3>
-            <p className="leading-relaxed text-sm">
-              Use the preset buttons to jump between scenarios: <strong>Child mode</strong> (curious, low social weight), <strong>Adult mode</strong> (efficient, high social weight), <strong>Arousal bump</strong> (wants to feel more energized), and <strong>Long distance</strong> (energy matters more). Watch the winner change.
+          <div className="border-l-2 border-lime-500/50 pl-4">
+            <h3 className="text-lime-400 font-semibold mb-3">Policy Specifications</h3>
+            <p className="leading-relaxed text-sm mb-3">
+              Each gait is parametrised by six numbers that feed into the EFE terms:
+            </p>
+            <div className="overflow-x-auto">
+              <table className="text-xs text-lime-200/70 w-full">
+                <thead>
+                  <tr className="text-lime-400 border-b border-lime-500/20">
+                    <th className="text-left pr-4 py-1">Spec</th>
+                    <th className="text-right px-2 py-1">Walk</th>
+                    <th className="text-right px-2 py-1">Skip</th>
+                    <th className="text-right px-2 py-1">Run</th>
+                    <th className="text-right px-2 py-1">Stroll</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(['impact', 'signalAmp', 'energyPerDist', 'conspicuous', 'complexity', 'speed'] as const).map((key) => (
+                    <tr key={key} className="border-b border-lime-500/10">
+                      <td className="pr-4 py-1 text-lime-200/80">{key}</td>
+                      <td className="text-right px-2 py-1 tabular-nums font-mono">{POLICY_SPECS.walk[key].toFixed(2)}</td>
+                      <td className="text-right px-2 py-1 tabular-nums font-mono">{POLICY_SPECS.skip[key].toFixed(2)}</td>
+                      <td className="text-right px-2 py-1 tabular-nums font-mono">{POLICY_SPECS.run[key].toFixed(2)}</td>
+                      <td className="text-right px-2 py-1 tabular-nums font-mono">{POLICY_SPECS.stroll[key].toFixed(2)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="leading-relaxed text-sm mt-3">
+              <span className="text-lime-100">impact</span> drives injury probability; <span className="text-lime-100">signalAmp</span> is proprioceptive richness (high for skip); <span className="text-lime-100">conspicuous</span> feeds the social penalty; <span className="text-lime-100">complexity</span> determines how much there is to learn.
             </p>
           </div>
 
-          <div>
-            <h3 className="text-lime-400 font-semibold mb-2">Experiment</h3>
+          <div className="border-l-2 border-lime-500/50 pl-4">
+            <h3 className="text-lime-400 font-semibold mb-3">The Child-Adult Crossover</h3>
             <p className="leading-relaxed text-sm">
-              Start with a preset. Then gradually change one slider—say, raise <span className="text-lime-100 font-mono">crowd</span> or increase <span className="text-lime-100 font-mono">wSocial</span>. See when the policy preference flips. The crossover plot shows exactly where it happens.
+              Both a child and an adult share the same EFE equation and the same four policies. The difference is the weight vector <Equation math="\mathbf{w}" />. A child operates with high <Equation math="w_i" /> (curiosity) and low <Equation math="w_s" /> (social cost), so skipping wins: it is complex, proprioceptively rich, and novel. An adult raises <Equation math="w_s" />, <Equation math="w_e" />, and <Equation math="w_j" />, which penalises skipping enough that walking takes over. Try the Child and Adult presets and sweep mastery or normPressure to watch the crossover happen.
             </p>
+          </div>
+
+          <div className="border-l-2 border-lime-500/50 pl-4">
+            <h3 className="text-lime-400 font-semibold mb-3">Notes</h3>
+            <ul className="list-disc pl-5 space-y-1 text-sm">
+              <li>This is a toy model. The policy specs are hand-tuned, not fitted to biomechanical or behavioural data.</li>
+              <li>All context variables and weights are normalised to [0, 1] or [0, 2]. Absolute G values are arbitrary; only the ranking matters.</li>
+              <li>The radar chart shows raw component values (before weighting). The waterfall shows weighted contributions to G.</li>
+              <li>Sensitivity is measured by perturbing each context parameter by ±0.05 and checking whether the winner changes.</li>
+            </ul>
           </div>
         </div>
       ),
@@ -111,6 +132,10 @@ export default function GaitGambitPlayground() {
           onAxisXChange={setAxisX}
           axisY={axisY}
           onAxisYChange={setAxisY}
+          crossoverAxis={crossoverAxis}
+          onCrossoverAxisChange={setCrossoverAxis}
+          showAllPolicies={showAllPolicies}
+          onShowAllPoliciesToggle={() => setShowAllPolicies((v) => !v)}
           onReset={handleReset}
         />
       }
