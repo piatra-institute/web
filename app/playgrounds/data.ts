@@ -1,11 +1,5 @@
 export const playgrounds = [
     {
-        name: 'gait gambit',
-        link: '/playgrounds/gait-gambit',
-        description: 'a computational model of gait selection',
-        date: 'February 2026',
-    },
-    {
         name: 'self-sorted arrays',
         link: '/playgrounds/self-sorted-arrays',
         description: 'cell-based sorting algorithms',
@@ -334,5 +328,17 @@ export const playgrounds = [
         link: '/playgrounds/nested-observer-windows',
         description: 'multi-scale oscillator coupling for hierarchical consciousness',
         date: 'January 2026',
+    },
+    {
+        name: 'gait gambit',
+        link: '/playgrounds/gait-gambit',
+        description: 'a computational model of gait selection',
+        date: 'February 2026',
+    },
+    {
+        name: 'polity coalition attractors',
+        link: '/playgrounds/polity-coalition-attractors',
+        description: 'basins of inclusion versus exclusion under stress, norms, and contact',
+        date: 'February 2026',
     },
 ];
