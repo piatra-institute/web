@@ -55,8 +55,11 @@ export default function GaitGambitPlayground() {
             </p>
             <Equation
               mode="block"
-              math="G(\pi) = w_r \cdot \text{Risk} + w_a \cdot \text{Ambiguity} - w_i \cdot \text{InfoGain} + w_e \cdot \text{Energy} + w_s \cdot \text{Social} + w_j \cdot \text{Injury} + w_\alpha \cdot |\text{Arousal}_\text{desired} - \text{Arousal}_\text{predicted}|"
+              math="G(\pi) = \sum_k w_k \cdot C_k(\pi) \;-\; w_i \cdot \text{InfoGain}(\pi)"
             />
+            <p className="leading-relaxed text-sm mt-2 mb-2">
+              where the cost terms <Equation math="C_k" /> are Risk, Ambiguity, Energy, Social, Injury, and <Equation math="|\text{Arousal}_\text{desired} - \text{Arousal}_\text{predicted}|" />.
+            </p>
             <p className="leading-relaxed text-sm mt-3">
               The policy with the lowest <Equation math="G" /> is selected. Costs (risk, energy, social penalty, injury, ambiguity, arousal mismatch) increase <Equation math="G" />; information gain decreases it, rewarding exploratory behaviour.
             </p>

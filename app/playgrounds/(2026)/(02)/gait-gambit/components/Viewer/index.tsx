@@ -157,7 +157,7 @@ function CanvasHeatmap({
     const ro = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const w = entry.contentRect.width;
-        setCanvasSize(Math.min(w, 500));
+        setCanvasSize(Math.min(w, 700));
       }
     });
     ro.observe(container);
@@ -294,7 +294,7 @@ function CanvasHeatmap({
   );
 
   return (
-    <div ref={containerRef} className="relative w-full">
+    <div ref={containerRef} className="relative w-full flex flex-col items-center">
       <canvas
         ref={canvasRef}
         onMouseMove={handleMouseMove}
@@ -352,8 +352,9 @@ function PolicyRadar({
             dataKey={p}
             stroke={POLICY_COLORS[p]}
             fill={POLICY_COLORS[p]}
-            fillOpacity={0.15}
+            fillOpacity={0.25}
             strokeWidth={1.5}
+            isAnimationActive={false}
           />
         ))}
         <Legend
@@ -508,8 +509,8 @@ export default function Viewer({
         </h3>
         <CanvasHeatmap
           data={heatmapData}
-          xAxis={axisX}
-          yAxis={axisY}
+          xAxis={CONTEXT_KEYS.find((k) => k.key === axisX)?.label ?? axisX}
+          yAxis={CONTEXT_KEYS.find((k) => k.key === axisY)?.label ?? axisY}
           currentX={context[axisX]}
           currentY={context[axisY]}
           resolution={heatmapResolution}
@@ -561,6 +562,7 @@ export default function Viewer({
                       stroke={POLICY_COLORS[p]}
                       dot={false}
                       strokeWidth={2}
+                      isAnimationActive={false}
                     />
                   );
                 })}
@@ -639,7 +641,7 @@ export default function Viewer({
                 formatter={(value) => typeof value === 'number' ? value.toFixed(3) : value}
               />
               <ReferenceLine x={0} stroke="#84cc16" strokeWidth={1} />
-              <Bar dataKey="value" radius={[0, 0, 0, 0]}>
+              <Bar dataKey="value" radius={[0, 0, 0, 0]} isAnimationActive={false}>
                 {waterfallResult.entries.map((entry, idx) => (
                   <Cell
                     key={idx}
