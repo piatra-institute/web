@@ -3,6 +3,7 @@
 import depthMapShader from './shaders/depthMap.wgsl';
 import colorMapShader from './shaders/colorMap.wgsl';
 import bilateralShader from './shaders/bilateral.wgsl';
+import colorBlurShader from './shaders/colorBlur.wgsl';
 import fluidShader from './shaders/fluid.wgsl';
 import glassShader from './shaders/glass.wgsl';
 
@@ -16,6 +17,7 @@ export class FluidRenderer {
     depthMapPipeline: GPURenderPipeline;
     colorMapPipeline: GPURenderPipeline;
     depthFilterPipeline: GPURenderPipeline;
+    colorBlurPipeline: GPURenderPipeline;
     fluidPipeline: GPURenderPipeline;
     glassPipeline: GPURenderPipeline;
 
@@ -23,12 +25,15 @@ export class FluidRenderer {
     depthMapTextureView: GPUTextureView;
     tmpDepthMapTextureView: GPUTextureView;
     colorMapTextureView: GPUTextureView;
+    tmpColorBlurTextureView: GPUTextureView;
+    colorBlurTextureView: GPUTextureView;
     depthTestTextureView: GPUTextureView;
 
     // Bind groups
     depthMapBindGroup: GPUBindGroup;
     colorMapBindGroup: GPUBindGroup;
     depthFilterBindGroups: GPUBindGroup[];
+    colorBlurBindGroups: GPUBindGroup[];
     fluidBindGroup: GPUBindGroup;
     glassBindGroup: GPUBindGroup;
 
@@ -55,8 +60,8 @@ export class FluidRenderer {
         };
 
         const filterConstants = {
-            depth_threshold: PARTICLE_RADIUS * 10,
-            max_filter_size: 30,
+            depth_threshold: PARTICLE_RADIUS * 6,
+            max_filter_size: 45,
             projected_particle_constant: (10 * PARTICLE_RADIUS * 2 * 0.05 * (canvas.height / 2)) / Math.tan(Math.PI / 8),
         };
 
@@ -64,11 +69,11 @@ export class FluidRenderer {
         const depthMapModule = device.createShaderModule({ code: depthMapShader });
         const colorMapModule = device.createShaderModule({ code: colorMapShader });
         const bilateralModule = device.createShaderModule({ code: bilateralShader });
+        const colorBlurModule = device.createShaderModule({ code: colorBlurShader });
         const fluidModule = device.createShaderModule({ code: fluidShader });
         const glassModule = device.createShaderModule({ code: glassShader });
 
-        // Create samplers
-        const sampler = device.createSampler({
+        const colorBlurSampler = device.createSampler({
             magFilter: 'linear',
             minFilter: 'linear',
         });
@@ -127,6 +132,22 @@ export class FluidRenderer {
                 module: bilateralModule,
                 constants: { ...filterConstants, ...screenConstants },
                 targets: [{ format: 'r32float' }],
+            },
+            primitive: { topology: 'triangle-list' },
+        });
+
+        // Color blur pipeline
+        this.colorBlurPipeline = device.createRenderPipeline({
+            label: 'color blur pipeline',
+            layout: 'auto',
+            vertex: {
+                module: colorBlurModule,
+                constants: screenConstants,
+            },
+            fragment: {
+                module: colorBlurModule,
+                constants: screenConstants,
+                targets: [{ format: 'rgba8unorm' }],
             },
             primitive: { topology: 'triangle-list' },
         });
@@ -196,6 +217,20 @@ export class FluidRenderer {
             format: 'rgba8unorm',
         });
 
+        const tmpColorBlurTexture = device.createTexture({
+            label: 'tmp color blur texture',
+            size: [canvas.width, canvas.height, 1],
+            usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
+            format: 'rgba8unorm',
+        });
+
+        const colorBlurTexture = device.createTexture({
+            label: 'color blur texture',
+            size: [canvas.width, canvas.height, 1],
+            usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
+            format: 'rgba8unorm',
+        });
+
         const depthTestTexture = device.createTexture({
             size: [canvas.width, canvas.height, 1],
             format: 'depth32float',
@@ -205,6 +240,8 @@ export class FluidRenderer {
         this.depthMapTextureView = depthMapTexture.createView();
         this.tmpDepthMapTextureView = tmpDepthMapTexture.createView();
         this.colorMapTextureView = colorMapTexture.createView();
+        this.tmpColorBlurTextureView = tmpColorBlurTexture.createView();
+        this.colorBlurTextureView = colorBlurTexture.createView();
         this.depthTestTextureView = depthTestTexture.createView();
 
         // === BUFFERS ===
@@ -268,13 +305,31 @@ export class FluidRenderer {
             }),
         ];
 
+        this.colorBlurBindGroups = [
+            device.createBindGroup({
+                layout: this.colorBlurPipeline.getBindGroupLayout(0),
+                entries: [
+                    { binding: 0, resource: this.colorMapTextureView },
+                    { binding: 1, resource: colorBlurSampler },
+                    { binding: 2, resource: { buffer: this.filterXUniformBuffer } },
+                ],
+            }),
+            device.createBindGroup({
+                layout: this.colorBlurPipeline.getBindGroupLayout(0),
+                entries: [
+                    { binding: 0, resource: this.tmpColorBlurTextureView },
+                    { binding: 1, resource: colorBlurSampler },
+                    { binding: 2, resource: { buffer: this.filterYUniformBuffer } },
+                ],
+            }),
+        ];
+
         this.fluidBindGroup = device.createBindGroup({
             layout: this.fluidPipeline.getBindGroupLayout(0),
             entries: [
-                { binding: 0, resource: sampler },
-                { binding: 1, resource: this.depthMapTextureView },
-                { binding: 2, resource: { buffer: renderUniformBuffer } },
-                { binding: 3, resource: this.colorMapTextureView },
+                { binding: 0, resource: this.depthMapTextureView },
+                { binding: 1, resource: { buffer: renderUniformBuffer } },
+                { binding: 2, resource: this.colorBlurTextureView },
             ],
         });
 
@@ -292,6 +347,7 @@ export class FluidRenderer {
         commandEncoder: GPUCommandEncoder,
         numParticles: number
     ) {
+        const currentTextureView = context.getCurrentTexture().createView();
         // 1. Render depth map
         const depthMapPassDescriptor: GPURenderPassDescriptor = {
             colorAttachments: [{
@@ -336,8 +392,35 @@ export class FluidRenderer {
         colorMapPass.draw(6, numParticles);
         colorMapPass.end();
 
-        // 3. Bilateral filter passes (smooth depth)
-        for (let iter = 0; iter < 3; iter++) {
+        // 3. Blur color map for smoother shading
+        const colorBlurXPass = commandEncoder.beginRenderPass({
+            colorAttachments: [{
+                view: this.tmpColorBlurTextureView,
+                clearValue: { r: 0, g: 0, b: 0, a: 0 },
+                loadOp: 'clear',
+                storeOp: 'store',
+            }],
+        });
+        colorBlurXPass.setPipeline(this.colorBlurPipeline);
+        colorBlurXPass.setBindGroup(0, this.colorBlurBindGroups[0]);
+        colorBlurXPass.draw(6);
+        colorBlurXPass.end();
+
+        const colorBlurYPass = commandEncoder.beginRenderPass({
+            colorAttachments: [{
+                view: this.colorBlurTextureView,
+                clearValue: { r: 0, g: 0, b: 0, a: 0 },
+                loadOp: 'clear',
+                storeOp: 'store',
+            }],
+        });
+        colorBlurYPass.setPipeline(this.colorBlurPipeline);
+        colorBlurYPass.setBindGroup(0, this.colorBlurBindGroups[1]);
+        colorBlurYPass.draw(6);
+        colorBlurYPass.end();
+
+        // 4. Bilateral filter passes (smooth depth)
+        for (let iter = 0; iter < 4; iter++) {
             // X pass
             const filterXPassDescriptor: GPURenderPassDescriptor = {
                 colorAttachments: [{
@@ -369,10 +452,10 @@ export class FluidRenderer {
             filterYPass.end();
         }
 
-        // 4. Final fluid rendering
+        // 5. Final fluid rendering
         const fluidPassDescriptor: GPURenderPassDescriptor = {
             colorAttachments: [{
-                view: context.getCurrentTexture().createView(),
+                view: currentTextureView,
                 clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
                 loadOp: 'clear',
                 storeOp: 'store',
@@ -385,10 +468,10 @@ export class FluidRenderer {
         fluidPass.draw(6);
         fluidPass.end();
 
-        // 5. Glass overlay
+        // 6. Glass overlay
         const glassPassDescriptor: GPURenderPassDescriptor = {
             colorAttachments: [{
-                view: context.getCurrentTexture().createView(),
+                view: currentTextureView,
                 loadOp: 'load',
                 storeOp: 'store',
             }],

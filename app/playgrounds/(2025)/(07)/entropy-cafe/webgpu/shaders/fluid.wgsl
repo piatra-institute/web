@@ -1,9 +1,8 @@
 // Final fluid rendering shader with coffee/cream coloring
 
-@group(0) @binding(0) var texture_sampler: sampler;
-@group(0) @binding(1) var depth_texture: texture_2d<f32>;
-@group(0) @binding(2) var<uniform> uniforms: RenderUniforms;
-@group(0) @binding(3) var color_texture: texture_2d<f32>;
+@group(0) @binding(0) var depth_texture: texture_2d<f32>;
+@group(0) @binding(1) var<uniform> uniforms: RenderUniforms;
+@group(0) @binding(2) var color_texture: texture_2d<f32>;
 
 struct RenderUniforms {
     texel_size: vec2f,
@@ -79,7 +78,8 @@ fn fs(input: VertexOutput) -> @location(0) vec4f {
 
     // Get particle type (coffee vs cream blend)
     let color_sample = textureLoad(color_texture, vec2u(input.iuv), 0);
-    let cream_amount = color_sample.r;  // 0 = coffee, 1 = cream
+    var cream_amount = select(0.0, color_sample.r / max(color_sample.a, 0.0001), color_sample.a > 0.0);
+    cream_amount = clamp(cream_amount, 0.0, 1.0);
 
     // Interpolate between coffee and cream colors
     let base_color = mix(COFFEE_COLOR, CREAM_COLOR, cream_amount);

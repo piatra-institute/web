@@ -1,38 +1,82 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundSettings from '@/components/PlaygroundSettings';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
+import Equation from '@/components/Equation';
 
 import Viewer, { ViewerRef } from './components/Viewer';
 import Settings from './components/Settings';
+import MetricsOverlay from './components/MetricsOverlay';
+
+import type { SimulationMetrics, SimulationParams } from './types';
 
 
+
+const DEFAULT_PARAMS: SimulationParams = {
+    isPaused: false,
+    isStirring: false,
+    stirStrength: 9.5,
+    pourRate: 650,
+    viscosity: 0.42,
+    diffusion: 0.28,
+    buoyancy: 0.7,
+    speed: 1,
+};
+
+const DEFAULT_METRICS: SimulationMetrics = {
+    entropy: 0,
+    mixedness: 0,
+    complexity: 0,
+    kinetic: 0,
+};
+
+const HISTORY_LENGTH = 120;
 
 export default function EntropyCafePlayground() {
     const viewerRef = useRef<ViewerRef>(null);
-    const [isStirring, setIsStirring] = useState(false);
-    const [entropy, setEntropy] = useState(0);
-    const [mixedness, setMixedness] = useState(0);
+    const [params, setParams] = useState<SimulationParams>(DEFAULT_PARAMS);
+    const [metrics, setMetrics] = useState<SimulationMetrics>(DEFAULT_METRICS);
+    const [history, setHistory] = useState<SimulationMetrics[]>([]);
 
-    const handleEntropyChange = useCallback((newEntropy: number, newMixedness: number) => {
-        setEntropy(newEntropy);
-        setMixedness(newMixedness);
+    const handleMetricsUpdate = useCallback((sample: SimulationMetrics) => {
+        const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
+        const amplify = (value: number, gain: number, power: number) => (
+            clamp01(Math.pow(clamp01(value * gain), power))
+        );
+
+        const sanitized = {
+            entropy: Number.isFinite(sample.entropy) ? sample.entropy : 0,
+            mixedness: Number.isFinite(sample.mixedness) ? sample.mixedness : 0,
+            complexity: Number.isFinite(sample.complexity) ? sample.complexity : 0,
+            kinetic: Number.isFinite(sample.kinetic) ? sample.kinetic : 0,
+        };
+
+        const scaled = {
+            entropy: amplify(sanitized.entropy, 1.15, 0.9),
+            mixedness: amplify(sanitized.mixedness, 1.15, 0.9),
+            complexity: amplify(sanitized.complexity, 2.2, 0.85),
+            kinetic: amplify(sanitized.kinetic, 3.2, 0.7),
+        };
+
+        setMetrics(scaled);
+        setHistory((prev) => [...prev.slice(-HISTORY_LENGTH + 1), scaled]);
     }, []);
-
-    const handleStirToggle = () => {
-        setIsStirring(prev => !prev);
-    };
-
-    const handleStirOnce = () => {
-        viewerRef.current?.stir();
-    };
 
     const handleReset = () => {
         viewerRef.current?.reset();
-        setEntropy(0);
-        setMixedness(0);
+        setMetrics(DEFAULT_METRICS);
+        setHistory([]);
+    };
+
+    const handleStirOnce = () => {
+        viewerRef.current?.stirOnce();
+    };
+
+    const handleAddCream = () => {
+        viewerRef.current?.addCream();
     };
 
     const sections = [
@@ -44,13 +88,16 @@ export default function EntropyCafePlayground() {
             id: 'canvas',
             type: 'canvas' as const,
             content: (
-                <div className="absolute inset-0">
-                    <Viewer
-                        ref={viewerRef}
-                        isStirring={isStirring}
-                        onEntropyChange={handleEntropyChange}
-                    />
-                </div>
+                <PlaygroundViewer>
+                    <div className="relative w-full h-full">
+                        <Viewer
+                            ref={viewerRef}
+                            params={params}
+                            onMetricsUpdate={handleMetricsUpdate}
+                        />
+                        <MetricsOverlay metrics={metrics} history={history} />
+                    </div>
+                </PlaygroundViewer>
             ),
         },
         {
@@ -58,14 +105,36 @@ export default function EntropyCafePlayground() {
             type: 'outro' as const,
             content: (
                 <>
-                    <p>
-                        Sean M. Carroll uses coffee and cream mixing as a metaphor for entropy in the universe. The unmixed state has low entropy: ordered and simple. When the fluids mix, entropy increases and creates swirls of intermediate complexity. The final state is uniformly mixed with high entropy but simple structure again.
+                    <p className="text-gray-300">
+                        Sean M. Carroll uses coffee and cream mixing as a metaphor for entropy in the universe. The
+                        unmixed state is ordered and simple. Stirring drives the system toward many possible
+                        microstates, raising entropy while the visible complexity of swirls rises and then fades.
                     </p>
-                    <p>
-                        This parallels the universe&apos;s evolution from a simple, low-entropy beginning through the complex present, toward a simple, high-entropy future. The apparent contradiction between increasing entropy and emerging complexity is resolved by recognizing that Earth is not a closed system. It receives low-entropy energy from the sun and radiates high-entropy heat to space.
+                    <p className="text-gray-300">
+                        We approximate the system by binning cream concentration <Equation math="c" /> into voxels.
+                        Mixedness captures how close each voxel is to a 50/50 mix, and entropy follows the classic
+                        binary form.
                     </p>
-                    <p>
-                        Organizing a room decreases local entropy while increasing universal entropy through the work performed. Similarly, life creates local order by accelerating the universe&apos;s overall entropy increase. Complexity emerges not despite the second law of thermodynamics, but because of it. Systems ride the gradient from order to disorder.
+                    <Equation
+                        mode="block"
+                        math="H(c) = -\left[c \log_2 c + (1-c) \log_2 (1-c)\right]"
+                    />
+                    <Equation
+                        mode="block"
+                        math="\text{mixedness} = 1 - |2c - 1|"
+                    />
+                    <p className="text-gray-300">
+                        Complexity tracks structure by combining mixedness with the local concentration gradient.
+                        It peaks during filament formation, then drops as the mixture becomes uniform.
+                    </p>
+                    <Equation
+                        mode="block"
+                        math="\text{complexity} \propto \overline{|\nabla c|} \times \text{mixedness}"
+                    />
+                    <p className="text-gray-300">
+                        Entropy keeps increasing even as visible structure disappears: the high-entropy end state is
+                        visually simple. Life and local order can still exist because Earth is not a closed system; it
+                        exports entropy to its surroundings.
                     </p>
                 </>
             ),
@@ -78,12 +147,12 @@ export default function EntropyCafePlayground() {
                 {
                     content: (
                         <Settings
-                            isStirring={isStirring}
-                            entropy={entropy}
-                            mixedness={mixedness}
-                            onStirToggle={handleStirToggle}
+                            params={params}
+                            metrics={metrics}
+                            onParamsChange={setParams}
                             onReset={handleReset}
                             onStirOnce={handleStirOnce}
+                            onAddCream={handleAddCream}
                         />
                     ),
                 },
@@ -93,8 +162,8 @@ export default function EntropyCafePlayground() {
 
     return (
         <PlaygroundLayout
-            title="entropy café"
-            subtitle="coffee and cream mixing as a metaphor for entropy"
+            title="entropy cafe"
+            subtitle="a WebGPU fluid simulation of mixing, entropy, and complexity"
             description={(
                 <>
                     Based on{' '}

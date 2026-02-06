@@ -74,7 +74,7 @@ fn fs(input: VertexOutput) -> FragmentOutput {
 
     // Calculate soft edge falloff
     let edge = 1.0 - sqrt(dist_sq);
-    let alpha = smoothstep(0.0, 0.3, edge);
+    let alpha = smoothstep(0.0, 0.6, edge);
 
     var output: FragmentOutput;
     // Store particle type in red channel, alpha for blending weight
