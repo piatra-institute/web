@@ -341,4 +341,10 @@ export const playgrounds = [
         description: 'basins of inclusion versus exclusion under stress, norms, and contact',
         date: 'February 2026',
     },
+    {
+        name: 'bordism to action',
+        link: '/playgrounds/bordism-to-action',
+        description: 'comparing classical mechanics with fully local TQFT',
+        date: 'February 2026',
+    },
 ];
