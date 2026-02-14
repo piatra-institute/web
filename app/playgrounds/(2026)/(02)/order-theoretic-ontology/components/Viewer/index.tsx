@@ -4,15 +4,22 @@ import React, { useMemo } from 'react';
 import {
     EDGE_TYPES,
     RELATION_COLORS,
-    SelectionKind,
-    ViewFilters,
+    LayoutMode,
     OntologyDataset,
+    OntologyMode,
     Relation,
-    MetaRelation,
+    RepairSuggestion,
+    RuleCheckResult,
+    SelectionKind,
+    SnapshotDiff,
+    ViewFilters,
+    buildForceLayout,
     buildGraphLayout,
     computeEnvelopMaps,
     computeEnvelopeTightness,
     computePosetDiagnostics,
+    computeTransitiveClosurePairs,
+    computeTransitiveReductionEdges,
     edgeLabel,
     filterVisibleEdges,
     formatPercent,
@@ -28,6 +35,16 @@ interface ViewerProps {
     selectedKind: SelectionKind | null;
     selectedId: string | null;
     onSelect: (kind: SelectionKind, id: string) => void;
+    mode: OntologyMode;
+    ruleCheck: RuleCheckResult;
+    layoutMode: LayoutMode;
+    showClosureEdges: boolean;
+    showReduction: boolean;
+    repairSuggestions: RepairSuggestion[];
+    onApplyRepair: (repairId: string) => void;
+    snapshotDiff: SnapshotDiff;
+    leftSnapshotLabel: string;
+    rightSnapshotLabel: string;
 }
 
 const PANEL_CLASS = 'bg-black/35 border border-lime-500/25 p-3';
@@ -73,41 +90,78 @@ function relationText(edge: Relation, nodeLabels: Map<string, string>): string {
     return `${from} ${edgeLabel(edge.type)} ${to}`;
 }
 
-function metaText(meta: MetaRelation, edgeIndex: Map<string, Relation>, nodeLabels: Map<string, string>): string {
-    const from = edgeIndex.get(meta.fromEdgeId);
-    const to = edgeIndex.get(meta.toEdgeId);
-
-    const fromText = from ? relationText(from, nodeLabels) : meta.fromEdgeId;
-    const toText = to ? relationText(to, nodeLabels) : meta.toEdgeId;
-
-    return `${metaEdgeLabel(meta.type)}: ${fromText} -> ${toText}`;
-}
-
 export default function Viewer({
     dataset,
     filters,
     selectedKind,
     selectedId,
     onSelect,
+    mode,
+    ruleCheck,
+    layoutMode,
+    showClosureEdges,
+    showReduction,
+    repairSuggestions,
+    onApplyRepair,
+    snapshotDiff,
+    leftSnapshotLabel,
+    rightSnapshotLabel,
 }: ViewerProps) {
     const nodeIndex = useMemo(() => indexNodes(dataset.nodes), [dataset.nodes]);
     const edgeIndex = useMemo(() => indexEdges(dataset.edges), [dataset.edges]);
-    const layout = useMemo(() => buildGraphLayout(dataset), [dataset]);
-    const visibleEdges = useMemo(
+
+    const baseVisibleEdges = useMemo(
         () => filterVisibleEdges(dataset.edges, filters),
         [dataset.edges, filters],
     );
+
+    const reductionEdges = useMemo(
+        () => computeTransitiveReductionEdges(dataset),
+        [dataset],
+    );
+
+    const reductionEdgeIds = useMemo(
+        () => new Set(reductionEdges.map((edge) => edge.id)),
+        [reductionEdges],
+    );
+
+    const visibleEdges = useMemo(
+        () => baseVisibleEdges.filter((edge) => (
+            !showReduction || edge.type !== 'envelops' || reductionEdgeIds.has(edge.id)
+        )),
+        [baseVisibleEdges, reductionEdgeIds, showReduction],
+    );
+
+    const removedByReductionCount = useMemo(
+        () => baseVisibleEdges.filter((edge) => edge.type === 'envelops' && !reductionEdgeIds.has(edge.id)).length,
+        [baseVisibleEdges, reductionEdgeIds],
+    );
+
+    const closureEdges = useMemo(
+        () => showClosureEdges ? computeTransitiveClosurePairs(dataset) : [],
+        [dataset, showClosureEdges],
+    );
+
     const diagnostics = useMemo(
         () => computePosetDiagnostics(dataset),
         [dataset],
     );
+
     const tightness = useMemo(
         () => computeEnvelopeTightness(dataset),
         [dataset],
     );
+
     const { parents, children } = useMemo(
         () => computeEnvelopMaps(dataset.nodes, dataset.edges),
         [dataset.nodes, dataset.edges],
+    );
+
+    const layout = useMemo(
+        () => (layoutMode === 'force'
+            ? buildForceLayout(dataset, visibleEdges)
+            : buildGraphLayout(dataset)),
+        [dataset, layoutMode, visibleEdges],
     );
 
     const orderedNodeIds = useMemo(
@@ -174,10 +228,15 @@ export default function Viewer({
             return null;
         }
 
+        const fromEdge = edgeIndex.get(meta.fromEdgeId);
+        const toEdge = edgeIndex.get(meta.toEdgeId);
+        const fromText = fromEdge ? relationText(fromEdge, nodeLabels) : meta.fromEdgeId;
+        const toText = toEdge ? relationText(toEdge, nodeLabels) : meta.toEdgeId;
+
         return {
             title: `${metaEdgeLabel(meta.type)} (${formatPercent(meta.strength)})`,
             kind: 'Meta-relation',
-            lines: [metaText(meta, edgeIndex, nodeLabels)],
+            lines: [`${fromText} -> ${toText}`],
         };
     }, [
         selectedKind,
@@ -192,13 +251,16 @@ export default function Viewer({
     ]);
 
     return (
-        <div className="w-[92vw] max-w-[1420px] h-[86vh] grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px] gap-4">
+        <div className="w-[92vw] max-w-[1460px] h-[86vh] grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_390px] gap-4">
             <div className={`${PANEL_CLASS} flex flex-col min-h-0`}>
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
                     <div>
                         <div className="text-lime-100 text-sm font-semibold">Ontology Graph</div>
                         <div className="text-xs text-lime-200/70">
                             {dataset.nodes.length} entities, {dataset.edges.length} relations, {dataset.metaEdges.length} meta-relations
+                        </div>
+                        <div className="text-[11px] text-lime-300/80 mt-1">
+                            mode: {mode.replace('_', ' ')} | layout: {layoutMode}
                         </div>
                     </div>
                     <div className="flex flex-wrap gap-3 text-xs text-lime-200/80">
@@ -212,6 +274,12 @@ export default function Viewer({
                             </div>
                         ))}
                     </div>
+                </div>
+
+                <div className="text-xs text-lime-200/70 mb-2 flex flex-wrap gap-4">
+                    <span>visible edges: {visibleEdges.length}</span>
+                    <span>closure overlays: {closureEdges.length}</span>
+                    <span>reduction removed: {showReduction ? removedByReductionCount : 0}</span>
                 </div>
 
                 <div className="border border-lime-500/20 bg-[#0a0a0a] flex-1 min-h-0 overflow-auto">
@@ -232,6 +300,28 @@ export default function Viewer({
                                 </marker>
                             ))}
                         </defs>
+
+                        {closureEdges.map((edge) => {
+                            const fromPos = layout.positions.get(edge.from);
+                            const toPos = layout.positions.get(edge.to);
+                            if (!fromPos || !toPos) {
+                                return null;
+                            }
+                            const points = edgeGeometry(fromPos, toPos, layout.nodeWidth, layout.nodeHeight);
+                            return (
+                                <line
+                                    key={edge.id}
+                                    x1={points.x1}
+                                    y1={points.y1}
+                                    x2={points.x2}
+                                    y2={points.y2}
+                                    stroke="#bef264"
+                                    strokeOpacity={0.55}
+                                    strokeWidth={1.2}
+                                    strokeDasharray="4 6"
+                                />
+                            );
+                        })}
 
                         {visibleEdges.map((edge) => {
                             const fromPos = layout.positions.get(edge.from);
@@ -328,7 +418,7 @@ export default function Viewer({
                 </div>
 
                 <div className="mt-3 text-xs text-lime-200/70">
-                    Tip: click a node or relation to edit it from the settings panel.
+                    Tip: closure overlay edges are dashed and reduction keeps only essential envelop arrows.
                 </div>
             </div>
 
@@ -344,6 +434,28 @@ export default function Viewer({
                             <div className="text-lime-100">{selectionSummary.title}</div>
                             {selectionSummary.lines.map((line) => (
                                 <div key={line} className="text-lime-200/75">{line}</div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <div className={PANEL_CLASS}>
+                    <div className="text-lime-100 text-sm font-semibold mb-2">Rule Checks</div>
+                    <div className="space-y-1 text-xs text-lime-200/75">
+                        {ruleCheck.checks.map((check) => (
+                            <div key={check.id} className="flex items-center justify-between gap-3">
+                                <span>{check.label}</span>
+                                <span className={check.ok ? 'text-lime-300' : (mode === 'free_graph' ? 'text-yellow-300' : 'text-red-300')}>
+                                    {check.ok ? 'ok' : 'issue'}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+
+                    {mode === 'strict_poset' && !ruleCheck.isValid && (
+                        <div className="mt-2 border-t border-red-500/30 pt-2 text-xs text-red-200/90 space-y-1">
+                            {ruleCheck.blockingIssues.map((issue) => (
+                                <div key={issue}>{issue}</div>
                             ))}
                         </div>
                     )}
@@ -380,13 +492,58 @@ export default function Viewer({
                 </div>
 
                 <div className={PANEL_CLASS}>
+                    <div className="text-lime-100 text-sm font-semibold mb-2">Repair Panel</div>
+                    {repairSuggestions.length === 0 && (
+                        <p className="text-xs text-lime-200/70">No repair needed.</p>
+                    )}
+                    {repairSuggestions.length > 0 && (
+                        <div className="space-y-2">
+                            {repairSuggestions.slice(0, 4).map((suggestion) => (
+                                <div key={suggestion.id} className="border border-lime-500/20 bg-black/30 px-2 py-1">
+                                    <div className="text-xs text-lime-100 font-semibold">{suggestion.title}</div>
+                                    <div className="text-[11px] text-lime-200/70">{suggestion.reason}</div>
+                                    <button
+                                        onClick={() => onApplyRepair(suggestion.id)}
+                                        className="mt-1 px-2 py-1 border border-lime-500/40 bg-lime-500/10 text-lime-100 text-[11px] hover:bg-lime-500/20"
+                                    >
+                                        Apply
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <div className={PANEL_CLASS}>
+                    <div className="text-lime-100 text-sm font-semibold mb-2">Snapshot Diff</div>
+                    <div className="text-xs text-lime-200/75">
+                        <div>{leftSnapshotLabel} &rarr; {rightSnapshotLabel}</div>
+                        <div className="mt-1">Nodes +{snapshotDiff.addedNodes.length} / -{snapshotDiff.removedNodes.length} / ~{snapshotDiff.changedNodes.length}</div>
+                        <div>Relations +{snapshotDiff.addedEdges.length} / -{snapshotDiff.removedEdges.length} / ~{snapshotDiff.changedEdges.length}</div>
+                        <div>Meta +{snapshotDiff.addedMetaEdges.length} / -{snapshotDiff.removedMetaEdges.length} / ~{snapshotDiff.changedMetaEdges.length}</div>
+                        <div className="mt-1">
+                            Env delta: {snapshotDiff.diagnosticsDelta.envCount >= 0 ? '+' : ''}{snapshotDiff.diagnosticsDelta.envCount}
+                        </div>
+                        <div>
+                            Multi-parent delta: {snapshotDiff.diagnosticsDelta.multiParentCount >= 0 ? '+' : ''}{snapshotDiff.diagnosticsDelta.multiParentCount}
+                        </div>
+                        <div>
+                            Antisym delta: {snapshotDiff.diagnosticsDelta.antisymCount >= 0 ? '+' : ''}{snapshotDiff.diagnosticsDelta.antisymCount}
+                        </div>
+                        <div>
+                            Cycle changed: {snapshotDiff.diagnosticsDelta.cycleChanged ? 'yes' : 'no'}
+                        </div>
+                    </div>
+                </div>
+
+                <div className={PANEL_CLASS}>
                     <div className="text-lime-100 text-sm font-semibold mb-2">Envelope Tightness</div>
                     {tightness.length === 0 && (
                         <p className="text-xs text-lime-200/70">No envelop relations yet.</p>
                     )}
                     {tightness.length > 0 && (
                         <div className="space-y-1">
-                            {tightness.slice(0, 10).map((entry) => {
+                            {tightness.slice(0, 8).map((entry) => {
                                 const isSelected = selectedKind === 'edge' && selectedId === entry.envId;
                                 return (
                                     <button
@@ -418,6 +575,11 @@ export default function Viewer({
                         <div className="space-y-1">
                             {dataset.metaEdges.map((meta) => {
                                 const selected = selectedKind === 'meta' && selectedId === meta.id;
+                                const fromEdge = edgeIndex.get(meta.fromEdgeId);
+                                const toEdge = edgeIndex.get(meta.toEdgeId);
+                                const fromText = fromEdge ? relationText(fromEdge, nodeLabels) : meta.fromEdgeId;
+                                const toText = toEdge ? relationText(toEdge, nodeLabels) : meta.toEdgeId;
+
                                 return (
                                     <button
                                         key={meta.id}
@@ -432,7 +594,7 @@ export default function Viewer({
                                             {metaEdgeLabel(meta.type)} ({formatPercent(meta.strength)})
                                         </div>
                                         <div className="text-[11px] text-lime-200/70 truncate">
-                                            {metaText(meta, edgeIndex, nodeLabels)}
+                                            {fromText} &rarr; {toText}
                                         </div>
                                     </button>
                                 );
