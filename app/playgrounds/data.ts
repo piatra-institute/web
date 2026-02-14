@@ -347,4 +347,10 @@ export const playgrounds = [
         description: 'comparing classical mechanics with fully local TQFT',
         date: 'February 2026',
     },
+    {
+        name: 'order-theoretic ontology',
+        link: '/playgrounds/order-theoretic-ontology',
+        description: 'build ontologies as posets and detect structural leaks',
+        date: 'February 2026',
+    },
 ];
