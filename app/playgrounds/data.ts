@@ -353,4 +353,10 @@ export const playgrounds = [
         description: 'build ontologies as posets and detect structural leaks',
         date: 'February 2026',
     },
+    {
+        name: 'hydride anomaly',
+        link: '/playgrounds/hydride-anomaly',
+        description: 'hydrogen bonding and the anomalous thermodynamics of water',
+        date: 'February 2026',
+    },
 ];
