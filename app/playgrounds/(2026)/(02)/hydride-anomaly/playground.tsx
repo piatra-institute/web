@@ -218,7 +218,7 @@ export default function HydrideAnomalyPlayground() {
     return (
         <PlaygroundLayout
             title="Hydride Anomaly"
-            subtitle="Hydrogen bonding and the anomalous thermodynamics of water"
+            subtitle="hydrogen bonding and the anomalous thermodynamics of water"
             sections={sections}
             settings={settings}
         />
