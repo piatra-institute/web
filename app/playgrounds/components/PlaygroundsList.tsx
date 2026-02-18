@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
 
 import IndexLayout from '@/components/IndexLayout';
@@ -44,7 +44,7 @@ function parseDateString(dateStr: string): { year: string; month: string } | nul
 export default function PlaygroundsList() {
     const [selectedYear, setSelectedYear] = useState<string | null>(null);
     const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
-    const [initialized, setInitialized] = useState(false);
+    const mounted = useRef(false);
 
     // Load from localStorage on mount
     useEffect(() => {
@@ -58,12 +58,12 @@ export default function PlaygroundsList() {
         } catch {
             // Ignore errors
         }
-        setInitialized(true);
+        mounted.current = true;
     }, []);
 
     // Save to localStorage when selection changes
     useEffect(() => {
-        if (!initialized) return;
+        if (!mounted.current) return;
         try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify({
                 year: selectedYear,
@@ -72,7 +72,7 @@ export default function PlaygroundsList() {
         } catch {
             // Ignore errors
         }
-    }, [selectedYear, selectedMonth, initialized]);
+    }, [selectedYear, selectedMonth]);
 
     // Get available months for selected year
     const availableMonths = useMemo(() => {
@@ -118,11 +118,6 @@ export default function PlaygroundsList() {
             setSelectedMonth(month);
         }
     };
-
-    // Don't render until localStorage is loaded to prevent flicker
-    if (!initialized) {
-        return <div className="min-h-screen" />;
-    }
 
     return (
         <IndexLayout

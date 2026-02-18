@@ -141,6 +141,7 @@ function Navigation() {
                         href={href}
                         className={linkButtonStyle}
                         draggable={false}
+                        prefetch={true}
                     >
                         {label}
                     </Link>

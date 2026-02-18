@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, ReactNode } from 'react';
 
+
 import Header from '@/components/Header';
 import Title from '@/components/Title';
 import ScrollArrow from '@/components/ScrollArrow';
@@ -22,12 +23,6 @@ export default function IndexLayout({
 }: IndexLayoutProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [currentSection, setCurrentSection] = useState(0);
-    const [initialized, setInitialized] = useState(false);
-
-    useEffect(() => {
-        setInitialized(true);
-    }, []);
-
     // Track current section on scroll
     useEffect(() => {
         const handleScroll = () => {
@@ -48,11 +43,6 @@ export default function IndexLayout({
         const sectionId = SECTIONS[index];
         document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
     };
-
-    // Prevent flicker during hydration
-    if (!initialized) {
-        return <div className="min-h-screen" />;
-    }
 
     return (
         <div
