@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, ReactNode } from 'react';
 
 import Header from '@/components/Header';
 import Title from '@/components/Title';
+import ScrollArrow from '@/components/ScrollArrow';
 
 
 const SECTIONS = ['intro', 'content'] as const;
@@ -79,23 +80,10 @@ export default function IndexLayout({
                         )}
                     </div>
                 </div>
-                <button
-                    className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce hover:text-white transition-colors cursor-pointer"
+                <ScrollArrow
                     onClick={() => scrollToSection(1)}
-                    aria-label={`Go to ${title}`}
-                >
-                    <svg
-                        className="w-4 h-4 text-gray-500"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                    </svg>
-                </button>
+                    label={`Go to ${title}`}
+                />
             </section>
 
             {/* Section 2: Content */}

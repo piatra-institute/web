@@ -21,6 +21,7 @@ import {
 } from '@/logic/utilities';
 
 import Header from '@/components/Header';
+import ScrollArrow from '@/components/ScrollArrow';
 
 
 export interface PlaygroundSection {
@@ -136,28 +137,10 @@ export default function PlaygroundLayout({
                                 )}
                             </div>
                         </div>
-                        <button
-                            className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce hover:text-white transition-colors cursor-pointer"
-                            onClick={() => {
-                                const canvasSection = sections.find(s => s.type === 'canvas');
-                                if (canvasSection) {
-                                    document.getElementById(canvasSection.id)?.scrollIntoView({ behavior: 'smooth' });
-                                }
-                            }}
-                            aria-label="Go to playground"
-                        >
-                            <svg
-                                className="w-4 h-4 text-gray-500"
-                                fill="none"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                            </svg>
-                        </button>
+                        <ScrollArrow
+                            targetId={sections.find(s => s.type === 'canvas')?.id}
+                            label="Go to playground"
+                        />
                     </section>
                 );
 
