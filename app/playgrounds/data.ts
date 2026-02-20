@@ -359,4 +359,10 @@ export const playgrounds = [
         description: 'hydrogen bonding and the anomalous thermodynamics of water',
         date: 'February 2026',
     },
+    {
+        name: 'trust-transaction spectrum',
+        link: '/playgrounds/trust-transaction-spectrum',
+        description: 'strategic posture optimization for small states under geopolitical constraints',
+        date: 'February 2026',
+    },
 ];
