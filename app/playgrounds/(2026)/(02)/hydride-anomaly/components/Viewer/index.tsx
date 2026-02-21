@@ -301,7 +301,7 @@ export default function Viewer({
                                 const clean = String(name).replace('_trend', ' (trend)');
                                 return [fmt(Number(value), 2), clean];
                             }}
-                            labelFormatter={(label: number) => `${xLabel}: ${xAxis === 'period' ? label : fmt(label, 1)}`}
+                            labelFormatter={(label) => `${xLabel}: ${xAxis === 'period' ? label : fmt(Number(label), 1)}`}
                         />
                         <Legend wrapperStyle={{ fontSize: 11, color: '#84cc16' }} />
 
