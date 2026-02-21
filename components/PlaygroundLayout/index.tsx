@@ -38,6 +38,7 @@ export interface PlaygroundLayoutProps {
     sections: PlaygroundSection[];
     settings?: ReactNode;
     onSettingsToggle?: (isOpen: boolean) => void;
+    researchUrl?: string;
     className?: string;
 }
 
@@ -48,6 +49,7 @@ export default function PlaygroundLayout({
     sections,
     settings,
     onSettingsToggle,
+    researchUrl,
     className = '',
 }: PlaygroundLayoutProps) {
     const [showSettings, setShowSettings] = useState(false);
@@ -177,6 +179,16 @@ export default function PlaygroundLayout({
                         <div className="relative z-10 px-4 sm:px-8 max-w-4xl text-center overflow-hidden w-full">
                             <div className="text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left overflow-hidden">
                                 {section.content}
+                                {researchUrl && (
+                                    <div className="border-t border-lime-500/20 pt-8 pb-8 text-right">
+                                        <a
+                                            href={researchUrl}
+                                            className="text-lime-400 hover:text-lime-300 text-sm transition-colors"
+                                        >
+                                            read the research companion &rarr;
+                                        </a>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </section>

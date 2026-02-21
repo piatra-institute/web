@@ -166,6 +166,7 @@ export default function Playground() {
             subtitle="strategic posture optimisation for small states under geopolitical constraints"
             description="small-state diplomacy, institutional shelter theory, and hedging in international relations"
             sections={sections}
+            researchUrl="/playgrounds/trust-transaction-spectrum/research"
             settings={
                 <Settings
                     inputs={inputs}
