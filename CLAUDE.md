@@ -2,20 +2,23 @@
 
 The playground must use the playground layout like the other playgrounds and must have a similar file structure, it must use the black and lime color palette like the rest of the app, if a ui component is needed check if it doesn't exist in ./components, make sure the playground is registered in the index, app/playgrounds/page.tsx
 
-Playgrounds are organized into year-based route groups:
+Playgrounds are organized into year- and month-based route groups:
 ```
 app/playgrounds/
-├── (2024)/             # Route group for 2024 playgrounds
-│   └── [playground-name]/
-├── (2025)/             # Route group for 2025 playgrounds
-│   └── [playground-name]/
-├── (2026)/             # Route group for 2026 playgrounds
-│   └── [playground-name]/
+├── (2024)/
+│   └── (MM)/
+│       └── [playground-name]/
+├── (2025)/
+│   └── (MM)/
+│       └── [playground-name]/
+├── (2026)/
+│   └── (MM)/
+│       └── [playground-name]/
 ├── data.ts             # Playground registry
 └── page.tsx            # Playgrounds index page
 ```
 
-Note: The parentheses `(year)` create Next.js route groups that organize files without affecting URLs. A playground at `app/playgrounds/(2025)/my-playground/` is accessed at `/playgrounds/my-playground`.
+Note: The parenthesized directories `(YYYY)` and `(MM)` are Next.js route groups that organize files without affecting URLs. A playground at `app/playgrounds/(2025)/(07)/entropy-cafe/` is accessed at `/playgrounds/entropy-cafe`.
 
 Each playground follows this structure:
 ```
@@ -51,12 +54,44 @@ When an ideation folder exists with demo.tsx and/or info.md:
    - Keep all state at the playground.tsx level (Settings and Viewer are controlled components)
    - Use useImperativeHandle for Viewer methods (e.g., updateMosaic)
    - Use the `Equation` component for mathematical notation instead of plain text
-4. **Register in index**: Add entry to `/app/playgrounds/data.ts`
+4. **Register in index**: Add entry to `/app/playgrounds/data.ts` with name, link, description, date, topics, and operations (see Playground Classification below)
 5. **Ensure functionality**:
    - Convert ideation algorithms to React hooks
    - Add proper TypeScript types (avoid `any`)
    - Handle responsive sizing (typically 90% viewport)
    - Format numbers appropriately in visualizations
+
+
+## Playground Classification
+
+When registering a playground in `app/playgrounds/data.ts`, assign three classification dimensions:
+
+### Date
+- Format: `"Month YYYY"` (e.g., `"February 2026"`)
+- Use the current month at the time of creation
+- The directory path must match: `app/playgrounds/(YYYY)/(MM)/playground-name/`
+
+### Topics (1-3)
+Choose from: mathematics, physics, chemistry, biology, neuroscience, computer-science, economics, political-science, psychology, sociology, philosophy, aesthetics
+
+- Pick the most specific disciplines, not the broadest
+- Cross-disciplinary work gets 2-3 topics (e.g., biology + economics for Coase theorem applied to cells)
+- Never more than 3 topics
+
+### Operations (1-2)
+Choose from: landscape, threshold, symmetry, morphogenesis, anatomy, tension
+
+- **landscape**: maps a possibility/state/configuration space — "what does the terrain look like?"
+- **threshold**: finds where a system changes regime — "when does it flip?"
+- **symmetry**: identifies invariance under transformation — "what is preserved?"
+- **morphogenesis**: shows macro pattern arising from micro process — "how does form arise?"
+- **anatomy**: reveals internal structure by decomposition — "what's inside?"
+- **tension**: shows opposing forces acting on a system — "what pulls against what?"
+
+Ask: "what intellectual move does this playground make?" — not "what field is it in?"
+Most playgrounds get 1-2 operations. Primary operation listed first.
+
+See `docs/PLAYGROUND_CLASSIFICATION.md` for the full rationale and mapping of all playgrounds.
 
 
 ## Page Metadata
