@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import {
     ResponsiveContainer,
     BarChart,
@@ -48,6 +49,9 @@ function pct(n: number): string {
 
 
 export default function Viewer({ model, compare, crisis }: ViewerProps) {
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => { setMounted(true); }, []);
+
     const tier =
         model.score < 25 ? 'Rules-based posture'
         : model.score < 45 ? 'Moderate realism'
@@ -136,7 +140,7 @@ export default function Viewer({ model, compare, crisis }: ViewerProps) {
                     </span>
                 </div>
                 <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
+                    {mounted && <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
                         <BarChart
                             layout="vertical"
                             data={model.chart}
@@ -168,7 +172,7 @@ export default function Viewer({ model, compare, crisis }: ViewerProps) {
                                 radius={0}
                             />
                         </BarChart>
-                    </ResponsiveContainer>
+                    </ResponsiveContainer>}
                 </div>
             </div>
 
