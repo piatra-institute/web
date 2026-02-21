@@ -540,4 +540,12 @@ export const playgrounds: {
         topics: ['political-science', 'economics'],
         operations: ['landscape', 'threshold'],
     },
+    {
+        name: 'author-function atlas',
+        link: '/playgrounds/author-function-atlas',
+        description: 'how quotes become clichés through circulation, context collapse, and attribution drift',
+        date: 'February 2026',
+        topics: ['philosophy', 'sociology'],
+        operations: ['landscape', 'morphogenesis'],
+    },
 ];

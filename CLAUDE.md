@@ -173,6 +173,28 @@ const [stats, setStats] = useState<Stats | null>(null);
 This pattern prevents state reset when toggling the settings panel open/closed.
 
 
+## Viewer / Recharts Patterns
+
+### ResponsiveContainer sizing
+
+`ResponsiveContainer` measures its parent to determine width/height. If the parent has no explicit dimensions it returns -1, causing `width(-1) and height(-1)` console errors.
+
+Fix:
+- Outer Viewer `<div>` must have explicit dimensions: `className="w-[90vw] h-[90vh] overflow-y-auto"`
+- The wrapper `<div>` around `ResponsiveContainer` needs an explicit pixel height: `style={{ width: '100%', height: 460 }}`
+- `ResponsiveContainer` needs `minWidth={0}` to prevent negative-width edge cases: `<ResponsiveContainer width="100%" height={460} minWidth={0}>`
+
+### Focus outlines on canvas/SVG elements
+
+Recharts SVG elements and canvas containers receive browser focus outlines on click. Suppress with `outline-none [&_*]:outline-none` on the outer Viewer div.
+
+### Settings input styling
+
+Global CSS (`globals.css`) overrides `input::placeholder` with `background-color` and `color: black !important`. For dark-themed settings inputs, override with:
+- `[&::placeholder]:!bg-transparent [&::placeholder]:!text-lime-200/40` on the input element
+- `style={{ backgroundColor: '#000' }}` and `appearance-none` for fully dark inputs
+
+
 ## Mathematical Notation
 
 When displaying mathematical equations in playgrounds, use the `Equation` component from `/components/Equation`:
