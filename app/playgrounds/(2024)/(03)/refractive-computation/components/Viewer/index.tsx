@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle, useCallback } from 'react';
 
 interface ViewerProps {
     grainCount: number;
@@ -46,29 +46,39 @@ interface VibrationMode {
     energy: number;
 }
 
-// Utility functions
-const clamp = (x: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, x));
-const distance = (a: {x: number, y: number}, b: {x: number, y: number}) => 
-    Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
-
-function randn() {
-    let u = 0, v = 0;
-    while (u === 0) u = Math.random();
-    while (v === 0) v = Math.random();
-    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+interface DisplayState {
+    time: number;
+    grainCount: number;
+    contacts: number;
+    energy: number;
 }
+
+const distance = (a: {x: number, y: number}, b: {x: number, y: number}) =>
+    Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
 
 const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [currentTime, setCurrentTime] = useState(0);
+    const grainsRef = useRef<Grain[]>([]);
+    const vibrationModesRef = useRef<VibrationMode[]>([]);
+    const currentTimeRef = useRef(0);
+    const isRunningRef = useRef(false);
+    const rafRef = useRef<number | null>(null);
+    const propsRef = useRef(props);
+    const frameCountRef = useRef(0);
+
     const [isRunning, setIsRunning] = useState(false);
-    const [grains, setGrains] = useState<Grain[]>([]);
-    const [vibrationModes, setVibrationModes] = useState<VibrationMode[]>([]);
-    const [evolutionGeneration, setEvolutionGeneration] = useState(0);
-    const [fitnessHistory, setFitnessHistory] = useState<number[]>([]);
-    
+    const [displayState, setDisplayState] = useState<DisplayState>({
+        time: 0,
+        grainCount: 0,
+        contacts: 0,
+        energy: 0,
+    });
+
     const width = 800;
     const height = 600;
+
+    // Keep propsRef in sync
+    useEffect(() => { propsRef.current = props; });
 
     useImperativeHandle(ref, () => ({
         exportCanvas: () => {
@@ -89,30 +99,29 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
     }));
 
     // Initialize grain assembly
-    const initializeGrains = () => {
+    const initializeGrains = useCallback(() => {
+        const p = propsRef.current;
         const newGrains: Grain[] = [];
         const containerWidth = width * 0.8;
         const containerHeight = height * 0.8;
         const startX = (width - containerWidth) / 2;
         const startY = (height - containerHeight) / 2;
 
-        // Calculate grain radius from packing fraction
         const totalArea = containerWidth * containerHeight;
-        const grainArea = (props.packingFraction * totalArea) / props.grainCount;
+        const grainArea = (p.packingFraction * totalArea) / p.grainCount;
         const baseRadius = Math.sqrt(grainArea / Math.PI);
 
-        for (let i = 0; i < props.grainCount; i++) {
-            let x, y, attempts = 0;
+        for (let i = 0; i < p.grainCount; i++) {
+            let x: number = 0, y: number = 0, attempts = 0;
             let validPosition = false;
 
-            // Find non-overlapping position
             while (!validPosition && attempts < 100) {
                 x = startX + Math.random() * containerWidth;
                 y = startY + Math.random() * containerHeight;
-                
+
                 validPosition = true;
                 for (const grain of newGrains) {
-                    if (distance({ x: x!, y: y! }, grain) < (baseRadius + grain.radius) * 1.1) {
+                    if (distance({ x, y }, grain) < (baseRadius + grain.radius) * 1.1) {
                         validPosition = false;
                         break;
                     }
@@ -120,21 +129,20 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
                 attempts++;
             }
 
-            // Add some size variation
             const radius = baseRadius * (0.8 + 0.4 * Math.random());
-            
+
             const grain: Grain = {
                 id: i,
-                x: x!,
-                y: y!,
+                x,
+                y,
                 radius,
-                stiffness: props.grainStiffness * (0.8 + 0.4 * Math.random()),
-                mass: Math.PI * radius * radius, // Area-based mass
+                stiffness: p.grainStiffness * (0.8 + 0.4 * Math.random()),
+                mass: Math.PI * radius * radius,
                 velocity: { x: 0, y: 0 },
                 displacement: { x: 0, y: 0 },
                 contacts: [],
-                isInput: i < 4, // First 4 grains are inputs
-                isOutput: i === props.grainCount - 1, // Last grain is output
+                isInput: i < 4,
+                isOutput: i === p.grainCount - 1,
                 logicValue: 0
             };
 
@@ -168,8 +176,8 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
                 .map(other => other.id);
         });
 
-        setGrains(newGrains);
-    };
+        grainsRef.current = newGrains;
+    }, []);
 
     // Calculate NAND logic for given inputs
     const calculateNAND = (inputA: boolean, inputB: boolean) => {
@@ -178,16 +186,19 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
 
     // Simulate granular mechanics with frequency-dependent response
     const simulateGranularMechanics = (frequency: number, amplitude: number, inputValues: boolean[]) => {
+        const grains = grainsRef.current;
+        const time = currentTimeRef.current;
         if (grains.length === 0) return { forces: [], displacements: [] };
 
         const forces: { x: number; y: number }[] = grains.map(() => ({ x: 0, y: 0 }));
         const displacements: { x: number; y: number }[] = [];
+        const p = propsRef.current;
 
         // Apply input forces based on logic values and frequency
         grains.forEach((grain, i) => {
             if (grain.isInput && i < inputValues.length) {
                 const inputForce = inputValues[i] ? amplitude : 0;
-                const phaseShift = frequency * currentTime * 2 * Math.PI;
+                const phaseShift = frequency * time * 2 * Math.PI;
                 forces[i].x += inputForce * Math.cos(phaseShift);
                 forces[i].y += inputForce * Math.sin(phaseShift);
             }
@@ -205,13 +216,11 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
                 const overlap = (grain.radius + other.radius) - dist;
 
                 if (overlap > 0) {
-                    // Normal force (Hertzian contact)
                     const normalForce = Math.sqrt(overlap) * grain.stiffness;
                     const nx = dx / dist;
                     const ny = dy / dist;
 
-                    // Frequency-dependent stiffness
-                    const frequencyFactor = 1 + 0.5 * Math.sin(frequency * currentTime * 2 * Math.PI);
+                    const frequencyFactor = 1 + 0.5 * Math.sin(frequency * time * 2 * Math.PI);
                     const effectiveForce = normalForce * frequencyFactor;
 
                     forces[i].x += effectiveForce * nx;
@@ -229,9 +238,8 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
                 y: forces[i].y / grain.mass
             };
 
-            // Simple integration with damping
-            grain.velocity.x = grain.velocity.x * (1 - props.damping) + acceleration.x * 0.01;
-            grain.velocity.y = grain.velocity.y * (1 - props.damping) + acceleration.y * 0.01;
+            grain.velocity.x = grain.velocity.x * (1 - p.damping) + acceleration.x * 0.01;
+            grain.velocity.y = grain.velocity.y * (1 - p.damping) + acceleration.y * 0.01;
 
             const displacement = {
                 x: grain.displacement.x + grain.velocity.x * 0.01,
@@ -244,64 +252,56 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
         return { forces, displacements };
     };
 
-    // Update simulation
+    // Update simulation - reads/writes refs only
     const updateSimulation = () => {
+        const grains = grainsRef.current;
+        const p = propsRef.current;
         if (grains.length === 0) return;
 
-        const inputs1 = [props.input1A, props.input1B, false, false];
-        const inputs2 = [props.input2A, props.input2B, false, false];
+        const inputs1 = [p.input1A, p.input1B, false, false];
+        const inputs2 = [p.input2A, p.input2B, false, false];
 
-        // Simulate both frequencies
-        const sim1 = simulateGranularMechanics(props.frequency1, props.amplitude1, inputs1);
-        const sim2 = simulateGranularMechanics(props.frequency2, props.amplitude2, inputs2);
+        const sim1 = simulateGranularMechanics(p.frequency1, p.amplitude1, inputs1);
+        const sim2 = simulateGranularMechanics(p.frequency2, p.amplitude2, inputs2);
 
-        // Update grain positions and logic values
-        const updatedGrains = grains.map((grain, i) => {
-            const newGrain = { ...grain };
-
+        // Update grain positions and logic values (mutate in place)
+        grains.forEach((grain, i) => {
             if (sim1.displacements[i] && sim2.displacements[i]) {
-                newGrain.displacement = {
+                grain.displacement = {
                     x: sim1.displacements[i].x + sim2.displacements[i].x,
                     y: sim1.displacements[i].y + sim2.displacements[i].y
                 };
             }
 
-            // Calculate logic values for output grain
             if (grain.isOutput) {
-                const response1 = Math.abs(newGrain.displacement.x) > 0.1 ? 1 : 0;
-                const response2 = Math.abs(newGrain.displacement.y) > 0.1 ? 1 : 0;
-                
-                const nand1 = calculateNAND(props.input1A, props.input1B) ? 1 : 0;
-                const nand2 = calculateNAND(props.input2A, props.input2B) ? 1 : 0;
-                
-                newGrain.logicValue = (response1 === nand1 && response2 === nand2) ? 1 : 0;
-            }
+                const response1 = Math.abs(grain.displacement.x) > 0.1 ? 1 : 0;
+                const response2 = Math.abs(grain.displacement.y) > 0.1 ? 1 : 0;
 
-            return newGrain;
+                const nand1 = calculateNAND(p.input1A, p.input1B) ? 1 : 0;
+                const nand2 = calculateNAND(p.input2A, p.input2B) ? 1 : 0;
+
+                grain.logicValue = (response1 === nand1 && response2 === nand2) ? 1 : 0;
+            }
         });
 
-        setGrains(updatedGrains);
-
         // Update vibration modes
-        const modes: VibrationMode[] = [
+        vibrationModesRef.current = [
             {
-                frequency: props.frequency1,
-                amplitude: props.amplitude1,
-                phase: currentTime * props.frequency1 * 2 * Math.PI,
+                frequency: p.frequency1,
+                amplitude: p.amplitude1,
+                phase: currentTimeRef.current * p.frequency1 * 2 * Math.PI,
                 energy: sim1.forces.reduce((sum, f) => sum + Math.sqrt(f.x * f.x + f.y * f.y), 0)
             },
             {
-                frequency: props.frequency2,
-                amplitude: props.amplitude2,
-                phase: currentTime * props.frequency2 * 2 * Math.PI,
+                frequency: p.frequency2,
+                amplitude: p.amplitude2,
+                phase: currentTimeRef.current * p.frequency2 * 2 * Math.PI,
                 energy: sim2.forces.reduce((sum, f) => sum + Math.sqrt(f.x * f.x + f.y * f.y), 0)
             }
         ];
-
-        setVibrationModes(modes);
     };
 
-    // Render visualization
+    // Render visualization - reads refs only
     const render = () => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -309,23 +309,26 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
+        const grains = grainsRef.current;
+        const vibrationModes = vibrationModesRef.current;
+        const p = propsRef.current;
+
         // Clear canvas
         ctx.fillStyle = '#000000';
         ctx.fillRect(0, 0, width, height);
 
         // Draw container
-        ctx.strokeStyle = '#374151';
+        ctx.strokeStyle = 'rgba(132, 204, 22, 0.2)';
         ctx.lineWidth = 2;
         ctx.strokeRect(width * 0.1, height * 0.1, width * 0.8, height * 0.8);
 
         // Draw vibration modes if enabled
-        if (props.showVibrationModes && vibrationModes.length > 0) {
+        if (p.showVibrationModes && vibrationModes.length > 0) {
             vibrationModes.forEach((mode, i) => {
                 const alpha = mode.energy / 100;
                 ctx.globalAlpha = Math.min(alpha, 0.3);
                 ctx.fillStyle = i === 0 ? '#84cc16' : '#22c55e';
-                
-                // Draw wave pattern
+
                 for (let x = 0; x < width; x += 10) {
                     const waveY = height / 2 + mode.amplitude * 20 * Math.sin(
                         (x / width) * 2 * Math.PI + mode.phase
@@ -341,23 +344,21 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
             const x = grain.x + grain.displacement.x * 10;
             const y = grain.y + grain.displacement.y * 10;
 
-            // Grain color based on type
-            let fillColor = '#9CA3AF'; // Default grain color
-            let strokeColor = '#6B7280';
+            let fillColor = '#4d7c0f';
+            let strokeColor = 'rgba(132, 204, 22, 0.5)';
 
             if (grain.isInput) {
-                const isActive = (i === 0 && props.input1A) || 
-                               (i === 1 && props.input1B) ||
-                               (i === 2 && props.input2A) || 
-                               (i === 3 && props.input2B);
-                fillColor = isActive ? '#84cc16' : '#4B5563';
+                const isActive = (i === 0 && p.input1A) ||
+                               (i === 1 && p.input1B) ||
+                               (i === 2 && p.input2A) ||
+                               (i === 3 && p.input2B);
+                fillColor = isActive ? '#84cc16' : '#365314';
                 strokeColor = '#84cc16';
             } else if (grain.isOutput) {
                 fillColor = grain.logicValue > 0.5 ? '#84cc16' : '#DC2626';
                 strokeColor = '#84cc16';
             }
 
-            // Draw grain
             ctx.beginPath();
             ctx.arc(x, y, grain.radius, 0, 2 * Math.PI);
             ctx.fillStyle = fillColor;
@@ -366,9 +367,8 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
             ctx.lineWidth = 1;
             ctx.stroke();
 
-            // Draw grain ID for debugging
             if (grain.isInput || grain.isOutput) {
-                ctx.fillStyle = '#FFFFFF';
+                ctx.fillStyle = '#ecfccb';
                 ctx.font = '12px monospace';
                 ctx.textAlign = 'center';
                 ctx.fillText(
@@ -380,11 +380,11 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
         });
 
         // Draw force chains if logic flow is enabled
-        if (props.showLogicFlow) {
+        if (p.showLogicFlow) {
             grains.forEach((grain, i) => {
                 grain.contacts.forEach(contactId => {
                     const other = grains[contactId];
-                    if (!other || contactId <= i) return; // Avoid duplicate lines
+                    if (!other || contactId <= i) return;
 
                     const x1 = grain.x + grain.displacement.x * 10;
                     const y1 = grain.y + grain.displacement.y * 10;
@@ -409,7 +409,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
         }
 
         // Draw frequency spectrum
-        if (props.showFrequencySpectrum && vibrationModes.length > 0) {
+        if (p.showFrequencySpectrum && vibrationModes.length > 0) {
             const spectrumX = width - 200;
             const spectrumY = 50;
             const spectrumWidth = 150;
@@ -417,10 +417,10 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
 
             ctx.fillStyle = '#000000';
             ctx.fillRect(spectrumX, spectrumY, spectrumWidth, spectrumHeight);
-            ctx.strokeStyle = '#374151';
+            ctx.strokeStyle = 'rgba(132, 204, 22, 0.2)';
             ctx.strokeRect(spectrumX, spectrumY, spectrumWidth, spectrumHeight);
 
-            ctx.fillStyle = '#FFFFFF';
+            ctx.fillStyle = '#ecfccb';
             ctx.font = '12px monospace';
             ctx.textAlign = 'left';
             ctx.fillText('Frequency Spectrum', spectrumX + 5, spectrumY - 5);
@@ -433,7 +433,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
                 ctx.fillStyle = i === 0 ? '#84cc16' : '#22c55e';
                 ctx.fillRect(barX, barY, 30, barHeight);
 
-                ctx.fillStyle = '#FFFFFF';
+                ctx.fillStyle = '#ecfccb';
                 ctx.font = '10px monospace';
                 ctx.textAlign = 'center';
                 ctx.fillText(`${mode.frequency}Hz`, barX + 15, spectrumY + spectrumHeight + 15);
@@ -445,20 +445,20 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
         const tableY = height - 120;
         ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
         ctx.fillRect(tableX, tableY, 300, 100);
-        ctx.strokeStyle = '#374151';
+        ctx.strokeStyle = 'rgba(132, 204, 22, 0.2)';
         ctx.strokeRect(tableX, tableY, 300, 100);
 
-        ctx.fillStyle = '#FFFFFF';
+        ctx.fillStyle = '#ecfccb';
         ctx.font = '12px monospace';
         ctx.textAlign = 'left';
         ctx.fillText('Logic Operations', tableX + 10, tableY + 20);
 
-        const nand1Result = calculateNAND(props.input1A, props.input1B);
-        const nand2Result = calculateNAND(props.input2A, props.input2B);
+        const nand1Result = calculateNAND(p.input1A, p.input1B);
+        const nand2Result = calculateNAND(p.input2A, p.input2B);
 
         ctx.font = '10px monospace';
-        ctx.fillText(`Freq1 (${props.frequency1}Hz): ${props.input1A ? 1 : 0} NAND ${props.input1B ? 1 : 0} = ${nand1Result ? 1 : 0}`, tableX + 10, tableY + 40);
-        ctx.fillText(`Freq2 (${props.frequency2}Hz): ${props.input2A ? 1 : 0} NAND ${props.input2B ? 1 : 0} = ${nand2Result ? 1 : 0}`, tableX + 10, tableY + 55);
+        ctx.fillText(`Freq1 (${p.frequency1}Hz): ${p.input1A ? 1 : 0} NAND ${p.input1B ? 1 : 0} = ${nand1Result ? 1 : 0}`, tableX + 10, tableY + 40);
+        ctx.fillText(`Freq2 (${p.frequency2}Hz): ${p.input2A ? 1 : 0} NAND ${p.input2B ? 1 : 0} = ${nand2Result ? 1 : 0}`, tableX + 10, tableY + 55);
 
         if (grains.length > 0) {
             const outputGrain = grains[grains.length - 1];
@@ -467,42 +467,57 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
         }
     };
 
-    // Animation loop
+    // Animation loop - empty deps, self-scheduling via rAF
     useEffect(() => {
-        let animationId: number;
-        
-        const animate = () => {
-            if (isRunning) {
+        const tick = () => {
+            if (isRunningRef.current) {
                 updateSimulation();
-                setCurrentTime(prev => prev + props.speedMs / 1000);
+                currentTimeRef.current += propsRef.current.speedMs / 1000;
             }
             render();
-            animationId = requestAnimationFrame(animate);
-        };
 
-        animate();
-        return () => cancelAnimationFrame(animationId);
+            // Throttle display state updates to every 10 frames
+            frameCountRef.current++;
+            if (frameCountRef.current % 10 === 0) {
+                const grains = grainsRef.current;
+                const modes = vibrationModesRef.current;
+                setDisplayState({
+                    time: currentTimeRef.current,
+                    grainCount: grains.length,
+                    contacts: grains.reduce((sum, g) => sum + g.contacts.length, 0) / 2,
+                    energy: modes.reduce((sum, m) => sum + m.energy, 0),
+                });
+            }
+
+            rafRef.current = requestAnimationFrame(tick);
+        };
+        rafRef.current = requestAnimationFrame(tick);
+        return () => {
+            if (rafRef.current) cancelAnimationFrame(rafRef.current);
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isRunning, props, grains, vibrationModes, currentTime]);
+    }, []);
 
     // Initialize grains when parameters change
     useEffect(() => {
         initializeGrains();
-        setCurrentTime(0);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.grainCount, props.packingFraction, props.grainStiffness]);
+        currentTimeRef.current = 0;
+    }, [props.grainCount, props.packingFraction, props.grainStiffness, initializeGrains]);
 
-    // Control functions
+    // Mirror isRunning state to ref
+    useEffect(() => {
+        isRunningRef.current = isRunning;
+    }, [isRunning]);
+
     const toggleSimulation = () => {
-        setIsRunning(!isRunning);
+        setIsRunning(prev => !prev);
     };
 
     const resetSimulation = () => {
         setIsRunning(false);
-        setCurrentTime(0);
+        isRunningRef.current = false;
+        currentTimeRef.current = 0;
         initializeGrains();
-        setEvolutionGeneration(0);
-        setFitnessHistory([]);
     };
 
     return (
@@ -511,36 +526,36 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
             <div className="flex justify-center gap-4 mb-4">
                 <button
                     onClick={toggleSimulation}
-                    className="px-6 py-2 bg-lime-600 hover:bg-lime-500 text-black font-semibold rounded transition-colors"
+                    className="px-6 py-2 bg-lime-600 hover:bg-lime-500 text-black font-semibold transition-colors"
                 >
                     {isRunning ? 'Pause' : 'Start'} Simulation
                 </button>
                 <button
                     onClick={resetSimulation}
-                    className="px-6 py-2 bg-gray-600 hover:bg-gray-500 text-white font-semibold rounded transition-colors"
+                    className="px-6 py-2 border border-lime-500/30 hover:bg-lime-500/10 text-lime-100 font-semibold transition-colors"
                 >
                     Reset
                 </button>
             </div>
 
             {/* Status Display */}
-            <div className="bg-black border border-gray-800 p-4 text-center">
+            <div className="bg-black border border-lime-500/20 p-4 text-center">
                 <div className="grid grid-cols-4 gap-4 text-sm">
                     <div>
                         <div className="text-lime-400 font-semibold">Time</div>
-                        <div className="text-white">{currentTime.toFixed(2)}s</div>
+                        <div className="text-white">{displayState.time.toFixed(2)}s</div>
                     </div>
                     <div>
                         <div className="text-lime-400 font-semibold">Grains</div>
-                        <div className="text-white">{grains.length}</div>
+                        <div className="text-white">{displayState.grainCount}</div>
                     </div>
                     <div>
                         <div className="text-lime-400 font-semibold">Contacts</div>
-                        <div className="text-white">{grains.reduce((sum, g) => sum + g.contacts.length, 0) / 2}</div>
+                        <div className="text-white">{displayState.contacts}</div>
                     </div>
                     <div>
                         <div className="text-lime-400 font-semibold">Energy</div>
-                        <div className="text-white">{vibrationModes.reduce((sum, m) => sum + m.energy, 0).toFixed(1)}</div>
+                        <div className="text-white">{displayState.energy.toFixed(1)}</div>
                     </div>
                 </div>
             </div>
@@ -551,30 +566,30 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
                     ref={canvasRef}
                     width={width}
                     height={height}
-                    className="border border-gray-800 bg-black"
+                    className="border border-lime-500/20 bg-black"
                 />
             </div>
 
             {/* Information Panel */}
-            <div className="bg-black border border-gray-800 p-4 text-gray-300 font-serif text-sm leading-relaxed">
+            <div className="bg-black border border-lime-500/20 p-4 text-gray-300 font-serif text-sm leading-relaxed">
                 <h3 className="text-lg font-semibold text-lime-400 mb-3">Granular Polycomputation</h3>
                 <p className="mb-3">
-                    This visualization shows how granular materials can perform multiple logical operations 
-                    simultaneously at different frequencies. The system demonstrates frequency-multiplexed 
-                    computation where the same physical medium processes different logic gates based on 
+                    This visualization shows how granular materials can perform multiple logical operations
+                    simultaneously at different frequencies. The system demonstrates frequency-multiplexed
+                    computation where the same physical medium processes different logic gates based on
                     vibration frequency.
                 </p>
                 <div className="grid grid-cols-3 gap-4 text-xs">
                     <div>
-                        <strong className="text-lime-400">Input Grains:</strong> Green grains represent logical inputs, 
+                        <strong className="text-lime-400">Input Grains:</strong> Green grains represent logical inputs,
                         with brightness indicating the input state (bright = 1, dim = 0).
                     </div>
                     <div>
-                        <strong className="text-lime-400">Force Chains:</strong> Green lines show force transmission 
+                        <strong className="text-lime-400">Force Chains:</strong> Green lines show force transmission
                         paths that carry computational information through the material.
                     </div>
                     <div>
-                        <strong className="text-lime-400">Output Grain:</strong> The rightmost grain shows the computational 
+                        <strong className="text-lime-400">Output Grain:</strong> The rightmost grain shows the computational
                         result (green = correct logic output, red = incorrect).
                     </div>
                 </div>

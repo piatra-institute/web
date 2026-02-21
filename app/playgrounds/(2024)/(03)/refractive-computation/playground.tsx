@@ -70,7 +70,7 @@ export default function RefractiveComputationPlayground() {
     
     return (
         <PlaygroundLayout
-            title="polycomputation"
+            title="refractive computation"
             subtitle="multiple logical operations simultaneously at different frequencies"
             sections={[
                 {
@@ -90,7 +90,7 @@ export default function RefractiveComputationPlayground() {
                                 toward <strong className="font-semibold text-lime-400">general-purpose mechanical computers</strong> with 
                                 computational density that could rival traditional electronics.
                             </p>
-                            <div className="bg-black border border-gray-800 p-4 mt-4">
+                            <div className="bg-black border border-lime-500/20 p-4 mt-4">
                                 <h3 className="text-sm font-semibold text-lime-400 mb-2">Key Concepts:</h3>
                                 <ul className="space-y-1 text-sm">
                                     <li><strong className="text-white">Polycomputation:</strong> Multiple logic operations at different frequencies</li>
@@ -142,7 +142,7 @@ export default function RefractiveComputationPlayground() {
                             <h2 className="text-2xl font-bold text-white mb-6">Understanding Polycomputation</h2>
                             
                             <div className="space-y-6">
-                                <div className="bg-black border border-gray-800 p-6">
+                                <div className="bg-black border border-lime-500/20 p-6">
                                     <h3 className="text-lg font-semibold text-lime-400 mb-3">How It Works</h3>
                                     <p className="mb-3">
                                         Vibrations at different frequencies propagate through the granular material differently, 
@@ -156,15 +156,15 @@ export default function RefractiveComputationPlayground() {
                                     </ul>
                                 </div>
                                 
-                                <div className="bg-black border border-gray-800 p-6">
+                                <div className="bg-black border border-lime-500/20 p-6">
                                     <h3 className="text-lg font-semibold text-lime-400 mb-3">NAND Gate Universality</h3>
                                     <p className="mb-3">
                                         NAND gates are functionally complete - any logical circuit can be built using only NAND gates:
                                     </p>
-                                    <div className="bg-black border border-gray-800 p-3 font-mono text-sm">
+                                    <div className="bg-black border border-lime-500/20 p-3 font-mono text-sm">
                                         <table className="w-full">
                                             <thead>
-                                                <tr className="border-b border-gray-700">
+                                                <tr className="border-b border-lime-500/20">
                                                     <th className="text-left p-2">A</th>
                                                     <th className="text-left p-2">B</th>
                                                     <th className="text-left p-2">NAND(A,B)</th>
@@ -180,7 +180,7 @@ export default function RefractiveComputationPlayground() {
                                     </div>
                                 </div>
                                 
-                                <div className="bg-black border border-gray-800 p-6">
+                                <div className="bg-black border border-lime-500/20 p-6">
                                     <h3 className="text-lg font-semibold text-lime-400 mb-3">Material Evolution</h3>
                                     <div className="space-y-3">
                                         <p>
@@ -198,7 +198,7 @@ export default function RefractiveComputationPlayground() {
                                     </div>
                                 </div>
                                 
-                                <div className="bg-black border border-gray-800 p-6">
+                                <div className="bg-black border border-lime-500/20 p-6">
                                     <h3 className="text-lg font-semibold text-lime-400 mb-3">Applications & Implications</h3>
                                     <ul className="space-y-2 text-sm">
                                         <li>• <strong>Harsh Environments:</strong> Mechanical computers for extreme conditions</li>
@@ -209,9 +209,9 @@ export default function RefractiveComputationPlayground() {
                                     </ul>
                                 </div>
                                 
-                                <div className="mt-8 p-6 border border-gray-800">
+                                <div className="mt-8 p-6 border border-lime-500/20">
                                     <h3 className="text-lg font-semibold text-white mb-3">References</h3>
-                                    <ul className="space-y-1 text-sm text-gray-400">
+                                    <ul className="space-y-1 text-sm text-lime-200/60">
                                         <li>• Parsa et al. - &quot;Universal Mechanical Polycomputation in Granular Matter&quot;</li>
                                         <li>• Bongard & Levin - &quot;Living Things Are Not (20th Century) Machines&quot;</li>
                                         <li>• Wright & Flecker - &quot;Mechanical Computing: The Computational Complexity of Physical Devices&quot;</li>
