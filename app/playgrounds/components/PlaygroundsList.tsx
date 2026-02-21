@@ -5,7 +5,13 @@ import Link from 'next/link';
 
 import IndexLayout from '@/components/IndexLayout';
 import { linkAnchorStyle } from '@/data/styles';
-import { playgrounds } from '../data';
+import {
+    playgrounds,
+    TOPICS,
+    OPERATIONS,
+    type Topic,
+    type Operation,
+} from '../data';
 
 
 
@@ -41,9 +47,14 @@ function parseDateString(dateStr: string): { year: string; month: string } | nul
     return { year, month };
 }
 
+const selectedStyle = 'border-lime-500 text-lime-400 bg-lime-500/10 cursor-pointer';
+const unselectedStyle = 'border-lime-500/30 text-gray-400 hover:border-lime-500/50 hover:text-gray-300 cursor-pointer';
+
 export default function PlaygroundsList() {
     const [selectedYear, setSelectedYear] = useState<string | null>(null);
     const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
+    const [selectedTopics, setSelectedTopics] = useState<Set<Topic>>(new Set());
+    const [selectedOperations, setSelectedOperations] = useState<Set<Operation>>(new Set());
     const mounted = useRef(false);
 
     // Load from localStorage on mount
@@ -51,9 +62,11 @@ export default function PlaygroundsList() {
         try {
             const stored = localStorage.getItem(STORAGE_KEY);
             if (stored) {
-                const { year, month } = JSON.parse(stored);
+                const { year, month, topics, operations } = JSON.parse(stored);
                 if (year) setSelectedYear(year);
                 if (month) setSelectedMonth(month);
+                if (topics && Array.isArray(topics)) setSelectedTopics(new Set(topics));
+                if (operations && Array.isArray(operations)) setSelectedOperations(new Set(operations));
             }
         } catch {
             // Ignore errors
@@ -68,11 +81,13 @@ export default function PlaygroundsList() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify({
                 year: selectedYear,
                 month: selectedMonth,
+                topics: Array.from(selectedTopics),
+                operations: Array.from(selectedOperations),
             }));
         } catch {
             // Ignore errors
         }
-    }, [selectedYear, selectedMonth]);
+    }, [selectedYear, selectedMonth, selectedTopics, selectedOperations]);
 
     // Get available months for selected year
     const availableMonths = useMemo(() => {
@@ -91,18 +106,48 @@ export default function PlaygroundsList() {
     const filteredPlaygrounds = useMemo(() => {
         return playgrounds.filter((p) => {
             const parsed = parseDateString(p.date);
-            if (!parsed) return true; // Show items with unparseable dates
+            if (!parsed) return true;
 
             if (selectedYear && parsed.year !== selectedYear) return false;
             if (selectedMonth && parsed.month !== selectedMonth) return false;
 
+            if (selectedTopics.size > 0 && !p.topics.some(t => selectedTopics.has(t))) return false;
+            if (selectedOperations.size > 0 && !p.operations.some(o => selectedOperations.has(o))) return false;
+
             return true;
         });
-    }, [selectedYear, selectedMonth]);
+    }, [selectedYear, selectedMonth, selectedTopics, selectedOperations]);
+
+    // Available topics given current date + operation filters
+    const availableTopics = useMemo(() => {
+        const topics = new Set<Topic>();
+        playgrounds.forEach((p) => {
+            const parsed = parseDateString(p.date);
+            if (!parsed) return;
+            if (selectedYear && parsed.year !== selectedYear) return;
+            if (selectedMonth && parsed.month !== selectedMonth) return;
+            if (selectedOperations.size > 0 && !p.operations.some(o => selectedOperations.has(o))) return;
+            p.topics.forEach(t => topics.add(t));
+        });
+        return topics;
+    }, [selectedYear, selectedMonth, selectedOperations]);
+
+    // Available operations given current date + topic filters
+    const availableOperations = useMemo(() => {
+        const operations = new Set<Operation>();
+        playgrounds.forEach((p) => {
+            const parsed = parseDateString(p.date);
+            if (!parsed) return;
+            if (selectedYear && parsed.year !== selectedYear) return;
+            if (selectedMonth && parsed.month !== selectedMonth) return;
+            if (selectedTopics.size > 0 && !p.topics.some(t => selectedTopics.has(t))) return;
+            p.operations.forEach(o => operations.add(o));
+        });
+        return operations;
+    }, [selectedYear, selectedMonth, selectedTopics]);
 
     const handleYearClick = (year: string | null) => {
         if (year === selectedYear) {
-            // Clicking same year again deselects it
             setSelectedYear(null);
             setSelectedMonth(null);
         } else {
@@ -119,6 +164,41 @@ export default function PlaygroundsList() {
         }
     };
 
+    const toggleTopic = (t: Topic) => {
+        setSelectedTopics(prev => {
+            const next = new Set(prev);
+            if (next.has(t)) next.delete(t); else next.add(t);
+            return next;
+        });
+    };
+
+    const toggleOperation = (o: Operation) => {
+        setSelectedOperations(prev => {
+            const next = new Set(prev);
+            if (next.has(o)) next.delete(o); else next.add(o);
+            return next;
+        });
+    };
+
+    // Build results count description
+    const filterDescription = useMemo(() => {
+        const parts: string[] = [];
+        if (selectedYear) parts.push(selectedYear);
+        if (selectedMonth) parts.push(selectedMonth);
+        selectedTopics.forEach(t => {
+            const found = TOPICS.find(topic => topic.key === t);
+            if (found) parts.push(found.label);
+        });
+        selectedOperations.forEach(o => {
+            const found = OPERATIONS.find(op => op.key === o);
+            if (found) parts.push(found.label);
+        });
+
+        const count = `${filteredPlaygrounds.length} playground${filteredPlaygrounds.length !== 1 ? 's' : ''}`;
+        if (parts.length === 0) return count;
+        return `${count} \u00b7 ${parts.join(' \u00b7 ')}`;
+    }, [filteredPlaygrounds.length, selectedYear, selectedMonth, selectedTopics, selectedOperations]);
+
     return (
         <IndexLayout
             title="playgrounds"
@@ -134,10 +214,8 @@ export default function PlaygroundsList() {
             <div className="flex flex-wrap justify-center gap-2 mb-4">
                 <button
                     onClick={() => handleYearClick(null)}
-                    className={`px-4 py-1.5 text-sm border transition-colors focus:outline-none focus:ring-1 focus:ring-white ${
-                        selectedYear === null
-                            ? 'border-lime-500 text-lime-400 bg-lime-500/10'
-                            : 'border-lime-500/30 text-gray-400 hover:border-lime-500/50 hover:text-gray-300'
+                    className={`px-4 py-1.5 text-sm border transition-colors focus:outline-none ${
+                        selectedYear === null ? selectedStyle : unselectedStyle
                     }`}
                 >
                     ALL
@@ -146,10 +224,8 @@ export default function PlaygroundsList() {
                     <button
                         key={year}
                         onClick={() => handleYearClick(year)}
-                        className={`px-4 py-1.5 text-sm border transition-colors focus:outline-none focus:ring-1 focus:ring-white ${
-                            selectedYear === year
-                                ? 'border-lime-500 text-lime-400 bg-lime-500/10'
-                                : 'border-lime-500/30 text-gray-400 hover:border-lime-500/50 hover:text-gray-300'
+                        className={`px-4 py-1.5 text-sm border transition-colors focus:outline-none ${
+                            selectedYear === year ? selectedStyle : unselectedStyle
                         }`}
                     >
                         {year}
@@ -163,10 +239,8 @@ export default function PlaygroundsList() {
                     <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-1.5">
                         <button
                             onClick={() => setSelectedMonth(null)}
-                            className={`px-2 py-1 text-xs border transition-colors focus:outline-none focus:ring-1 focus:ring-white ${
-                                selectedMonth === null
-                                    ? 'border-lime-500 text-lime-400 bg-lime-500/10'
-                                    : 'border-lime-500/30 text-gray-400 hover:border-lime-500/50 hover:text-gray-300'
+                            className={`px-2 py-1 text-xs border transition-colors focus:outline-none ${
+                                selectedMonth === null ? selectedStyle : unselectedStyle
                             }`}
                         >
                             YEAR
@@ -181,11 +255,11 @@ export default function PlaygroundsList() {
                                         key={month}
                                         onClick={() => isAvailable && handleMonthClick(month)}
                                         disabled={!isAvailable}
-                                        className={`w-10 py-1 text-xs border transition-colors focus:outline-none focus:ring-1 focus:ring-white ${
+                                        className={`w-10 py-1 text-xs border transition-colors focus:outline-none ${
                                             isSelected
-                                                ? 'border-lime-500 text-lime-400 bg-lime-500/10'
+                                                ? selectedStyle
                                                 : isAvailable
-                                                  ? 'border-lime-500/30 text-gray-400 hover:border-lime-500/50 hover:text-gray-300'
+                                                  ? unselectedStyle
                                                   : 'border-gray-800 text-gray-700 cursor-not-allowed'
                                         }`}
                                     >
@@ -204,11 +278,11 @@ export default function PlaygroundsList() {
                                         key={month}
                                         onClick={() => isAvailable && handleMonthClick(month)}
                                         disabled={!isAvailable}
-                                        className={`w-10 py-1 text-xs border transition-colors focus:outline-none focus:ring-1 focus:ring-white ${
+                                        className={`w-10 py-1 text-xs border transition-colors focus:outline-none ${
                                             isSelected
-                                                ? 'border-lime-500 text-lime-400 bg-lime-500/10'
+                                                ? selectedStyle
                                                 : isAvailable
-                                                  ? 'border-lime-500/30 text-gray-400 hover:border-lime-500/50 hover:text-gray-300'
+                                                  ? unselectedStyle
                                                   : 'border-gray-800 text-gray-700 cursor-not-allowed'
                                         }`}
                                     >
@@ -221,11 +295,79 @@ export default function PlaygroundsList() {
                 )}
             </div>
 
+            {/* Topic & Operation Filters */}
+            <div className="flex justify-center mb-8">
+                <div className="flex flex-col gap-6">
+                    {/* Topic Filter */}
+                    <div className="flex flex-col gap-1.5">
+                        <span className="text-xs text-gray-500 text-center">topic</span>
+                        <div className="grid grid-cols-3 gap-2">
+                            {TOPICS.map(({ key, label, description }) => {
+                                const isAvailable = availableTopics.has(key);
+                                const isSelected = selectedTopics.has(key);
+
+                                return (
+                                    <div key={key} className="relative group">
+                                        <button
+                                            onClick={() => isAvailable && toggleTopic(key)}
+                                            disabled={!isAvailable}
+                                            className={`w-full px-3 py-1 text-xs text-center border transition-colors focus:outline-none ${
+                                                isSelected
+                                                    ? selectedStyle
+                                                    : isAvailable
+                                                      ? unselectedStyle
+                                                      : 'border-gray-800 text-gray-700 cursor-not-allowed'
+                                            }`}
+                                        >
+                                            {label}
+                                        </button>
+                                        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1.5 px-2.5 py-1.5 text-xs text-lime-200/80 bg-black border border-lime-500/30 whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10">
+                                            {description}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Operation Filter */}
+                    <div className="flex flex-col gap-1.5">
+                        <span className="text-xs text-gray-500 text-center">operation</span>
+                        <div className="grid grid-cols-3 gap-2">
+                            {OPERATIONS.map(({ key, label, description, question }) => {
+                                const isAvailable = availableOperations.has(key);
+                                const isSelected = selectedOperations.has(key);
+
+                                return (
+                                    <div key={key} className="relative group">
+                                        <button
+                                            onClick={() => isAvailable && toggleOperation(key)}
+                                            disabled={!isAvailable}
+                                            className={`w-full px-3 py-1 text-xs text-center border transition-colors focus:outline-none ${
+                                                isSelected
+                                                    ? selectedStyle
+                                                    : isAvailable
+                                                      ? unselectedStyle
+                                                      : 'border-gray-800 text-gray-700 cursor-not-allowed'
+                                            }`}
+                                        >
+                                            {label}
+                                        </button>
+                                        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1.5 px-2.5 py-1.5 text-xs bg-black border border-lime-500/30 whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-10">
+                                            <div className="text-lime-200/80">{description}</div>
+                                            <div className="text-lime-200/50 italic">{question}</div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Results count */}
-            <div className="text-center text-sm text-gray-500 mb-4">
-                {filteredPlaygrounds.length} playground{filteredPlaygrounds.length !== 1 ? 's' : ''}
-                {selectedYear && ` in ${selectedYear}`}
-                {selectedMonth && ` / ${selectedMonth}`}
+            <div className="text-center text-sm text-gray-500 mb-6">
+                {filterDescription}
             </div>
 
             {/* Playgrounds List */}
@@ -242,7 +384,7 @@ export default function PlaygroundsList() {
                             <Link
                                 key={name + link}
                                 href={link}
-                                className="mb-8 block focus:outline-none focus:ring-1 focus:ring-white text-center"
+                                className="mb-8 block focus:outline-none text-center"
                                 draggable={false}
                             >
                                 <div className={linkAnchorStyle}>
