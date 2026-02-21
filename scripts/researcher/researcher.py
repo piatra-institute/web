@@ -73,6 +73,11 @@ def parse_args() -> argparse.Namespace:
         help="List all available playgrounds and exit",
     )
     parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Overwrite existing research files without confirmation",
+    )
+    parser.add_argument(
         "--project-root",
         type=Path,
         help="Project root directory (default: auto-detect)",
@@ -299,6 +304,23 @@ def main() -> None:
             border_style="#84cc16",
         )
     )
+
+    # Check for existing research files
+    research_dir = playground_dir / "research"
+    existing_files = [
+        f for f in ["content.md", "suggestions.md", "page.tsx"]
+        if (research_dir / f).exists()
+    ]
+
+    if existing_files and not args.force:
+        console.print(
+            f"\n[bold yellow]Warning:[/bold yellow] Research files already exist:\n"
+            + "\n".join(f"  {research_dir / f}" for f in existing_files)
+        )
+        answer = console.input("\nOverwrite? [y/N] ")
+        if answer.strip().lower() not in ("y", "yes"):
+            console.print("[dim]Aborted.[/dim]")
+            sys.exit(0)
 
     provider_names = [p.strip() for p in args.providers.split(",")]
 
