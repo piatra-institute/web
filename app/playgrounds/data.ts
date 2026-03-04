@@ -548,4 +548,12 @@ export const playgrounds: {
         topics: ['philosophy', 'sociology'],
         operations: ['landscape', 'morphogenesis'],
     },
+    {
+        name: 'Greimas square dynamics',
+        link: '/playgrounds/greimas-square-dynamics',
+        description: 'the semiotic square as typed opposition structure and Klein four-group',
+        date: 'March 2026',
+        topics: ['philosophy', 'mathematics'],
+        operations: ['symmetry', 'anatomy'],
+    },
 ];
