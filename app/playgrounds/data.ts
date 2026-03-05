@@ -556,4 +556,12 @@ export const playgrounds: {
         topics: ['philosophy', 'mathematics'],
         operations: ['symmetry', 'anatomy'],
     },
+    {
+        name: 'north-south divergence',
+        link: '/playgrounds/north-south-divergence',
+        description: 'accelerants, aggregation models, and Shapley attribution across historical time bins',
+        date: 'March 2026',
+        topics: ['economics', 'political-science'],
+        operations: ['anatomy', 'landscape'],
+    },
 ];
