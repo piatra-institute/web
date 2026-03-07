@@ -128,12 +128,12 @@ export default function PlaygroundLayout({
                                     {title}
                                 </h1>
                                 {subtitle && (
-                                    <div className="font-serif max-w-[600px] text-base leading-relaxed mb-6">
+                                    <div className="font-serif max-w-[650px] mx-auto text-base leading-relaxed mb-6">
                                         {subtitle}
                                     </div>
                                 )}
                                 {description && (
-                                    <div className="font-serif text-sm leading-relaxed">
+                                    <div className="font-serif text-sm leading-relaxed max-w-[650px] mx-auto">
                                         based on {description}
                                     </div>
                                 )}

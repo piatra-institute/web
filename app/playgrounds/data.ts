@@ -564,4 +564,12 @@ export const playgrounds: {
         topics: ['economics', 'political-science'],
         operations: ['anatomy', 'landscape'],
     },
+    {
+        name: 'trainable gene circuits',
+        link: '/playgrounds/trainable-gene-circuits',
+        description: 'associative memory, bistable commitment, and oscillatory state in gene regulatory networks',
+        date: 'March 2026',
+        topics: ['biology', 'neuroscience'],
+        operations: ['landscape', 'threshold'],
+    },
 ];
