@@ -580,4 +580,12 @@ export const playgrounds: {
         topics: ['mathematics'],
         operations: ['threshold', 'landscape'],
     },
+    {
+        name: 'co₂-metabolism hypothesis',
+        link: '/playgrounds/co2-metabolism-hypothesis',
+        description: 'proto-metabolic threshold behavior in alkaline hydrothermal vent chemistry',
+        date: 'March 2026',
+        topics: ['biology', 'chemistry'],
+        operations: ['threshold', 'landscape'],
+    },
 ];
