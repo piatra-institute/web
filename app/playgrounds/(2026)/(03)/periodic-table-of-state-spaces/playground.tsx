@@ -35,8 +35,8 @@ export default function PeriodicTableOfStateSpacesPlayground() {
             id: 'outro',
             type: 'outro' as const,
             content: (
-                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
-                    <h3 className="text-lime-100 font-sans text-lg">What Is a State Space?</h3>
+                <div className="space-y-8 text-gray-300">
+                    <h3 className="text-lime-400 font-semibold mb-3">What Is a State Space?</h3>
                     <p>
                         A state space <Equation math="X" /> equipped with a transition structure{' '}
                         <Equation math="T: X \to X" /> captures the complete information needed to determine
@@ -51,7 +51,7 @@ export default function PeriodicTableOfStateSpacesPlayground() {
                         accessibility of <Equation math="\theta" /> and <Equation math="\varepsilon_t" />.
                     </p>
 
-                    <h3 className="text-lime-100 font-sans text-lg">The Classification Axes</h3>
+                    <h3 className="text-lime-400 font-semibold mb-3">The Classification Axes</h3>
                     <p>
                         Ten orthogonal dimensions characterize any state space. Geometry gives
                         dimensionality. Dynamics gives stochasticity, nonlinearity, and predictability.
@@ -61,7 +61,7 @@ export default function PeriodicTableOfStateSpacesPlayground() {
                         combination that matters.
                     </p>
 
-                    <h3 className="text-lime-100 font-sans text-lg">The Developmental Ladder</h3>
+                    <h3 className="text-lime-400 font-semibold mb-3">The Developmental Ladder</h3>
                     <p>
                         Fixed → Adaptive → Endogenous → Reflexive. Chemistry occupies mostly-fixed
                         state spaces: the laws of thermodynamics and kinetics are exogenous to the
@@ -75,7 +75,7 @@ export default function PeriodicTableOfStateSpacesPlayground() {
                         can discover and the style of explanation that works.
                     </p>
 
-                    <h3 className="text-lime-100 font-sans text-lg">Why Contingency Doesn&apos;t Disqualify a Science</h3>
+                    <h3 className="text-lime-400 font-semibold mb-3">Why Contingency Doesn&apos;t Disqualify a Science</h3>
                     <p>
                         The boundary conditions of chemistry are contingent on planetary history.
                         The rules of economics are contingent on institutions. Both are still sciences
@@ -84,7 +84,7 @@ export default function PeriodicTableOfStateSpacesPlayground() {
                         constraints, do disciplined regularities emerge?&quot;
                     </p>
 
-                    <h3 className="text-lime-100 font-sans text-lg">Prediction, Explanation, Intervention</h3>
+                    <h3 className="text-lime-400 font-semibold mb-3">Prediction, Explanation, Intervention</h3>
                     <p>
                         Pure prediction is too weak a criterion for science. A black-box correlation
                         may predict without explaining. Science requires robustness under perturbation —
@@ -93,7 +93,7 @@ export default function PeriodicTableOfStateSpacesPlayground() {
                         neither admits only observation and narrative.
                     </p>
 
-                    <h3 className="text-lime-100 font-sans text-lg">This Table Is a Synthesis</h3>
+                    <h3 className="text-lime-400 font-semibold mb-3">This Table Is a Synthesis</h3>
                     <p>
                         No single canonical &quot;periodic table of state spaces&quot; exists in the
                         literature. This playground merges ideas from: Poincaré and Gibbs (phase spaces),

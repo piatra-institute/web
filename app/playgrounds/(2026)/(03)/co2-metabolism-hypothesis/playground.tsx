@@ -106,7 +106,7 @@ export default function CO2MetabolismPlayground() {
             id: 'outro',
             type: 'outro' as const,
             content: (
-                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                <div className="space-y-8 text-gray-300">
                     <p>
                         Nick Lane&apos;s hypothesis proposes that life originated not from a prebiotic soup
                         but from the geochemistry of alkaline hydrothermal vents. Where hydrogen-rich

@@ -168,6 +168,28 @@ Props:
 - `onSettingsToggle`: (isOpen: boolean) => void - callback when settings open/close
 - `researchUrl`: string - adds "read the research companion" link at the bottom of the outro section
 
+### Outro Section Styling
+
+The outro section wrapper and headers follow a specific pattern — do not use `font-serif` or `font-sans`:
+
+```tsx
+// Wrapper div:
+<div className="space-y-8 text-gray-300">
+
+// Section headers:
+<h3 className="text-lime-400 font-semibold mb-3">Section Title</h3>
+
+// Body text:
+<p className="leading-relaxed text-sm">Content here</p>
+
+// Highlighted blocks (equations, callouts):
+<div className="border-l-2 border-lime-500/40 pl-4">
+    <p className="text-lime-200/80 mb-2">Callout text</p>
+</div>
+```
+
+**Do not** use `font-serif`, `font-sans`, `text-lime-100`, or `text-lg` on outro elements. Headers are `text-lime-400 font-semibold mb-3`. Body text inherits from the wrapper's `text-gray-300`.
+
 ### PlaygroundViewer
 
 Wrapper for the canvas/visualization section. Centers children and optionally adds controls below.

@@ -98,8 +98,8 @@ export default function LithicGrammarPlayground() {
             id: 'outro',
             type: 'outro' as const,
             content: (
-                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
-                    <h3 className="text-lime-100 font-sans text-lg">The Grammar of Rocks</h3>
+                <div className="space-y-8 text-gray-300">
+                    <h3 className="text-lime-400 font-semibold mb-3">The Grammar of Rocks</h3>
                     <p>
                         Rock names are discrete labels imposed on continuous geological manifolds.
                         The mineral composition, grain size, temperature, pressure, and formation
@@ -109,7 +109,7 @@ export default function LithicGrammarPlayground() {
                         different decision logic.
                     </p>
 
-                    <h3 className="text-lime-100 font-sans text-lg">Igneous Classification</h3>
+                    <h3 className="text-lime-400 font-semibold mb-3">Igneous Classification</h3>
                     <p>
                         The primary axis is silica content. SiO₂ percentage partitions the space into
                         ultramafic ({'<'}45%), mafic (45–52%), intermediate (52–63%), and felsic ({'>'}63%).
@@ -132,7 +132,7 @@ export default function LithicGrammarPlayground() {
                         </p>
                     </div>
 
-                    <h3 className="text-lime-100 font-sans text-lg">Sedimentary Classification</h3>
+                    <h3 className="text-lime-400 font-semibold mb-3">Sedimentary Classification</h3>
                     <p>
                         Clastic sedimentary rocks are classified by grain size following the Wentworth scale:
                         clay ({'<'}0.004 mm), silt (0.004–0.063 mm), sand (0.063–2 mm), gravel ({'>'}2 mm).
@@ -146,7 +146,7 @@ export default function LithicGrammarPlayground() {
                         shell → coquina, diatom → diatomite).
                     </p>
 
-                    <h3 className="text-lime-100 font-sans text-lg">Metamorphic Classification</h3>
+                    <h3 className="text-lime-400 font-semibold mb-3">Metamorphic Classification</h3>
                     <p>
                         Metamorphic classification depends on three variables: protolith (what the rock
                         was before), grade (how much temperature and pressure it experienced), and the
@@ -157,7 +157,7 @@ export default function LithicGrammarPlayground() {
                         at normal pressure, but blueschist → eclogite under high pressure.
                     </p>
 
-                    <h3 className="text-lime-100 font-sans text-lg">The Rock Cycle</h3>
+                    <h3 className="text-lime-400 font-semibold mb-3">The Rock Cycle</h3>
                     <p>
                         All three domains connect through geological processes — weathering breaks down
                         igneous and metamorphic rocks into sediment, lithification compresses sediment
@@ -166,7 +166,7 @@ export default function LithicGrammarPlayground() {
                         given enough time and the right conditions. The cycle has no beginning and no end.
                     </p>
 
-                    <h3 className="text-lime-100 font-sans text-lg">Boundaries</h3>
+                    <h3 className="text-lime-400 font-semibold mb-3">Boundaries</h3>
                     <p>
                         Some classification boundaries are sharp: dunite requires {'>'}90% olivine.
                         Others are fuzzy: the granite–granodiorite boundary depends on the ratio
