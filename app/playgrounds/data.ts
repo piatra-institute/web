@@ -588,4 +588,12 @@ export const playgrounds: {
         topics: ['biology', 'chemistry'],
         operations: ['threshold', 'landscape'],
     },
+    {
+        name: 'lithic grammar',
+        link: '/playgrounds/lithic-grammar',
+        description: 'the classification rules that partition continuous geological space into discrete rock names',
+        date: 'March 2026',
+        topics: ['chemistry', 'philosophy'],
+        operations: ['landscape', 'anatomy'],
+    },
 ];
