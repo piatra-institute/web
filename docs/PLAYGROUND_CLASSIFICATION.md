@@ -60,7 +60,7 @@ The question is not "what field is this playground in?" but "what kind of intell
 
 ### The Six Operations
 
-Across all 60 playgrounds, six fundamental intellectual operations recur. Each playground performs one or two of these.
+Across all 64 playgrounds, six fundamental intellectual operations recur. Each playground performs one or two of these.
 
 
 #### 1. Landscape
@@ -184,18 +184,22 @@ Each playground is assigned 1-2 operations. The primary operation is listed firs
 | order-theoretic ontology | anatomy, symmetry | structural leak detection in poset-based ontologies |
 | hydride anomaly | anatomy, threshold | hydrogen bonding mechanism producing anomalous thermodynamic thresholds |
 | trust-transaction spectrum | landscape, threshold | posture spectrum with regime thresholds |
+| author-function atlas | landscape, morphogenesis | circulation space; cliche emergence from attribution drift |
+| Greimas square dynamics | symmetry, anatomy | semiotic square as typed opposition structure and Klein four-group |
+| north-south divergence | anatomy, landscape | accelerant decomposition across historical time bins |
+| trainable gene circuits | landscape, threshold | attractor basins and regime thresholds in gene regulatory networks |
 
 
 ### Distribution
 
 | Operation | Count | Percentage |
 |---|---|---|
-| Anatomy | 30 | 50% |
-| Tension | 18 | 30% |
-| Landscape | 18 | 30% |
-| Morphogenesis | 15 | 25% |
-| Symmetry | 16 | 27% |
-| Threshold | 16 | 27% |
+| Anatomy | 32 | 50% |
+| Landscape | 21 | 33% |
+| Tension | 18 | 28% |
+| Symmetry | 17 | 27% |
+| Threshold | 17 | 27% |
+| Morphogenesis | 16 | 25% |
 
 Anatomy is the most common operation because explanation-through-decomposition is the default intellectual gesture of a playground — you build a model to show how something works. The others are more distinctive and revealing.
 

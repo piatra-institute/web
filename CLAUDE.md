@@ -128,6 +128,251 @@ export default function Page() {
 Generate OG images with `pnpm og` (only missing) or `pnpm og:force` (all).
 
 
+## Playground Components
+
+All playground-related UI components live in `/components`. Always check here before creating new ones.
+
+### PlaygroundLayout
+
+The top-level layout for every playground. Manages intro/canvas/outro sections, settings panel (toggled with `s` key or gear icon), and section navigation dots.
+
+```tsx
+import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayout';
+
+const sections: PlaygroundSection[] = [
+    { id: 'intro', type: 'intro' },
+    { id: 'canvas', type: 'canvas', content: (<PlaygroundViewer>...</PlaygroundViewer>) },
+    { id: 'outro', type: 'outro', content: (<div className="space-y-8 text-gray-300">...</div>) },
+];
+
+<PlaygroundLayout
+    title="playground name"
+    subtitle="short description of the concept"
+    description={
+        <a href="https://doi.org/..." className="underline" target="_blank" rel="noopener noreferrer">
+            2022, Author et al., Paper Title
+        </a>
+    }
+    sections={sections}
+    settings={<Settings params={params} onParamsChange={setParams} />}
+    researchUrl="/playgrounds/playground-name/research"  // optional link to research companion
+/>
+```
+
+Props:
+- `title`: string - displayed as uppercase heading on intro screen
+- `subtitle`: string - centered description below title (max-w-[650px])
+- `description`: ReactNode - "based on {description}" text below subtitle (max-w-[650px]), typically an `<a>` linking to the source paper
+- `sections`: PlaygroundSection[] - array of `{ id, type: 'intro'|'canvas'|'outro', content?, className? }`
+- `settings`: ReactNode - settings panel content, rendered in a slide-in overlay from the left
+- `onSettingsToggle`: (isOpen: boolean) => void - callback when settings open/close
+- `researchUrl`: string - adds "read the research companion" link at the bottom of the outro section
+
+### PlaygroundViewer
+
+Wrapper for the canvas/visualization section. Centers children and optionally adds controls below.
+
+```tsx
+import PlaygroundViewer from '@/components/PlaygroundViewer';
+
+<PlaygroundViewer>
+    <Viewer ref={viewerRef} ... />
+</PlaygroundViewer>
+
+// With controls below the viewer:
+<PlaygroundViewer controls={<Button label="Reset" onClick={reset} />}>
+    <Viewer ref={viewerRef} ... />
+</PlaygroundViewer>
+```
+
+Props:
+- `children`: ReactNode - the visualization component
+- `controls`: ReactNode - optional controls rendered below the viewer with `mt-12 mb-8` spacing
+
+### PlaygroundSettings
+
+Structured settings panel with titled sections.
+
+```tsx
+import PlaygroundSettings from '@/components/PlaygroundSettings';
+
+<PlaygroundSettings
+    title="Settings"
+    sections={[
+        { title: 'Parameters', content: (<>..sliders, toggles..</>) },
+        { title: 'Display', content: (<>..toggles..</>) },
+    ]}
+/>
+```
+
+Props:
+- `title`: string (default: "Settings")
+- `sections`: `{ title?: string, content: ReactNode }[]`
+
+### SliderInput
+
+Labeled range slider with value display.
+
+```tsx
+import SliderInput from '@/components/SliderInput';
+
+<SliderInput
+    label="decay rate"
+    value={params.decay}
+    onChange={(v) => setParams({ ...params, decay: v })}
+    min={0} max={1} step={0.01}
+    showDecimals
+/>
+```
+
+Props:
+- `label`: string (supports HTML via dangerouslySetInnerHTML)
+- `value`: number
+- `onChange`: (value: number) => void
+- `min`, `max`, `step`: number (defaults: 0, 100, 1)
+- `disabled`: boolean
+- `colorClass`: string (default: "text-lime-200") - color for the value display
+- `showDecimals`: boolean - show decimal places based on step size
+
+### Button
+
+Lime-on-black action button with size variants.
+
+```tsx
+import Button from '@/components/Button';
+
+<Button label="Run" onClick={handleRun} size="sm" />
+```
+
+Props:
+- `label`: string
+- `onClick`: () => void
+- `disabled`: boolean
+- `size`: 'xs' | 'sm' | 'md' | 'lg' (default: 'md')
+- `className`: string
+- `style`: CSSProperties
+
+### Toggle
+
+Boolean toggle switch with optional tooltip.
+
+```tsx
+import Toggle from '@/components/Toggle';
+
+<Toggle
+    text="show grid"
+    value={params.showGrid}
+    toggle={() => setParams({ ...params, showGrid: !params.showGrid })}
+    tooltip="Display background grid lines"
+/>
+```
+
+Props:
+- `text`: string
+- `value`: boolean
+- `toggle`: () => void
+- `tooltip`: ReactNode - shows a "?" icon that reveals the tooltip on hover
+
+### Input
+
+Text/number/range input with layout options.
+
+```tsx
+import Input from '@/components/Input';
+
+<Input value={name} onChange={setName} placeholder="enter value" compact />
+<Input type="number" value={count} onChange={(v) => setCount(+v)} min={0} max={100} compact />
+```
+
+Props:
+- `value`: string | number
+- `onChange`: (value: string) => void
+- `type`: 'text' | 'number' | 'range' (default: 'text')
+- `placeholder`, `label`: string
+- `compact`: boolean - inline layout with smaller width
+- `fullWidth`: boolean - takes full container width
+- `centered`: boolean - center-align text
+- `min`, `max`, `step`: number (for number/range types)
+- `disabled`: boolean
+
+### Dropdown
+
+Select from a list of string options with a dark-themed dropdown.
+
+```tsx
+import Dropdown from '@/components/Dropdown';
+
+<Dropdown
+    name="preset"
+    selected={params.preset}
+    selectables={['option1', 'option2', 'option3']}
+    atSelect={(v) => setParams({ ...params, preset: v })}
+    tooltip="Choose a preset configuration"
+/>
+```
+
+Props:
+- `name`: string - label shown to the left
+- `selected`: string - currently selected value
+- `selectables`: string[] - available options
+- `atSelect`: (selected: string) => void
+- `tooltip`: ReactNode
+
+### Tooltip
+
+Hover tooltip wrapper using flowbite-react.
+
+```tsx
+import Tooltip from '@/components/Tooltip';
+
+<Tooltip content={<div className="max-w-[250px] p-2">Help text here</div>}>
+    <span className="text-gray-400 cursor-pointer">?</span>
+</Tooltip>
+```
+
+### ScrollArrow
+
+Animated bouncing arrow at the bottom of a section, scrolls to a target element.
+
+```tsx
+import ScrollArrow from '@/components/ScrollArrow';
+
+<ScrollArrow targetId="canvas" label="Go to playground" />
+```
+
+Props:
+- `targetId`: string - id of the element to scroll to
+- `onClick`: () => void - alternative to targetId
+- `label`: string (default: "Scroll down") - aria-label
+
+### Equation
+
+LaTeX math rendering using react-katex. See [Mathematical Notation](#mathematical-notation) below for usage.
+
+### SettingsContainer
+
+Legacy fixed-position settings box (top-right corner). Prefer `PlaygroundLayout`'s built-in settings panel for new playgrounds.
+
+```tsx
+import SettingsContainer from '@/components/SettingsContainer';
+
+<SettingsContainer>
+    <SliderInput ... />
+    <Toggle ... />
+</SettingsContainer>
+```
+
+### LinkButton
+
+Button styled as a link, with optional icon (string URL or ReactNode).
+
+```tsx
+import LinkButton from '@/components/LinkButton';
+
+<LinkButton text="view source" icon={githubIcon} onClick={handleClick} centered />
+```
+
+
 ## Color Palette
 
 Use the black and lime color scheme consistently:
