@@ -572,4 +572,12 @@ export const playgrounds: {
         topics: ['biology', 'neuroscience'],
         operations: ['landscape', 'threshold'],
     },
+    {
+        name: 'cost of chaos',
+        link: '/playgrounds/cost-of-chaos',
+        description: 'the combinatorial inevitability of structure and the cost of maintaining disorder',
+        date: 'March 2026',
+        topics: ['mathematics'],
+        operations: ['threshold', 'landscape'],
+    },
 ];
