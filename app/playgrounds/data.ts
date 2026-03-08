@@ -596,4 +596,12 @@ export const playgrounds: {
         topics: ['chemistry', 'philosophy'],
         operations: ['landscape', 'anatomy'],
     },
+    {
+        name: 'periodic table of state spaces',
+        link: '/playgrounds/periodic-table-of-state-spaces',
+        description: 'a synthetic taxonomy of what kind of space a science studies',
+        date: 'March 2026',
+        topics: ['philosophy', 'mathematics'],
+        operations: ['landscape', 'anatomy'],
+    },
 ];
