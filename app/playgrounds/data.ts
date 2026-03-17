@@ -604,4 +604,12 @@ export const playgrounds: {
         topics: ['philosophy', 'mathematics'],
         operations: ['landscape', 'anatomy'],
     },
+    {
+        name: 'pettini tensor networks',
+        link: '/playgrounds/pettini-tensor-networks',
+        description: 'tensor network compression of biological search with optional long-range electrodynamic recruitment',
+        date: 'March 2026',
+        topics: ['physics', 'biology'],
+        operations: ['anatomy', 'landscape'],
+    },
 ];
