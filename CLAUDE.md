@@ -31,6 +31,9 @@ app/playgrounds/(year)/[playground-name]/
 │   │   └── index.tsx
 │   └── Viewer/        # Visualization component
 │       └── index.tsx
+├── research/          # Optional: deep research companion page
+│   ├── page.tsx       # Server component reading content.md at build time
+│   └── content.md     # Long-form research article in Markdown
 ├── logic/             # Optional: Complex logic/algorithms
 │   └── [logic].ts
 ├── assumptions.ts     # Optional: Modeling assumptions with citations and confidence levels
@@ -39,6 +42,8 @@ app/playgrounds/(year)/[playground-name]/
 ├── page.tsx           # Next.js page with metadata
 └── playground.tsx     # Main playground component
 ```
+
+**Reference implementation:** `app/playgrounds/(2026)/(03)/pettini-tensor-networks/` implements every pattern documented below — presets, animation, snapshot comparison, parameter sweep, sensitivity analysis, narrative generation, all scientific panels, a custom domain-specific visualization, and a research companion page. Use it as the concrete model for how these pieces fit together.
 
 ## Creating a New Playground from Ideation
 
@@ -57,12 +62,16 @@ When an ideation folder exists with demo.tsx and/or info.md:
    - Keep all state at the playground.tsx level (Settings and Viewer are controlled components)
    - Use useImperativeHandle for Viewer methods (e.g., updateMosaic)
    - Use the `Equation` component for mathematical notation instead of plain text
+   - Derive all computed values via `useMemo` from params — never store derived state (metrics, distributions, sweeps) in `useState`
 4. **Register in index**: Add entry to `/app/playgrounds/data.ts` with name, link, description, date, topics, and operations (see Playground Classification below)
 5. **Add scientific infrastructure** (optional but recommended):
    - `assumptions.ts`: List modeling assumptions with citations, confidence levels (established/contested/speculative), and falsifiability conditions. Render via `AssumptionPanel` in Viewer.
    - `calibration.ts`: Known empirical cases with expected outputs. Render via `CalibrationPanel` in Viewer.
    - `versions.ts`: LLM version metadata and model changelog. Render `VersionSelector` in Viewer and `ModelChangelog` in outro.
    - Add `computeSensitivity` to `logic/` to generate tornado chart data. Render via `SensitivityAnalysis` in Viewer.
+   - `research/`: Optional deep research companion page. See [Research Companion Page](#research-companion-page).
+   - Custom domain-specific visualization components go in `components/` alongside Settings and Viewer (e.g., `MPSDiagram/index.tsx`).
+   - See [Advanced Playground Patterns](#advanced-playground-patterns) for presets, animation, snapshots, sweep, and narrative generation.
 6. **Ensure functionality**:
    - Convert ideation algorithms to React hooks
    - Add proper TypeScript types (avoid `any`)
@@ -566,6 +575,252 @@ const [stats, setStats] = useState<Stats | null>(null);
 ```
 
 This pattern prevents state reset when toggling the settings panel open/closed.
+
+
+## Advanced Playground Patterns
+
+These patterns are optional but recommended for feature-rich playgrounds. All are demonstrated in the reference implementation (`pettini-tensor-networks`).
+
+### Preset System
+
+Define a `PresetKey` union type and a `PRESET_DESCRIPTIONS` record in `logic/`. A `presetParams()` function returns a full `Params` object for each key.
+
+```tsx
+// logic/index.ts
+export type PresetKey = 'baseline' | 'enhanced' | 'extreme';
+
+export const PRESET_DESCRIPTIONS: Record<PresetKey, { label: string; question: string; expectation: string }> = {
+    'baseline': {
+        label: 'baseline',
+        question: 'What happens with default parameters?',
+        expectation: 'Standard behavior with no special effects.',
+    },
+    // ...
+};
+
+export function presetParams(key: PresetKey): Params {
+    switch (key) {
+        case 'baseline': return { ...DEFAULT_PARAMS, preset: 'baseline' };
+        // ...
+    }
+}
+```
+
+Render preset buttons in Settings as a grid. Active preset: `border-lime-500 bg-lime-500/10 text-lime-400`. Inactive: `border-lime-500/20 text-lime-200/60`. Display the selected preset's `question` and `expectation` in a bordered box below the buttons.
+
+### Animation / Interpolation
+
+Animate transitions between initial and steady-state distributions when parameters change.
+
+```tsx
+// playground.tsx
+const [animPlaying, setAnimPlaying] = useState(false);
+const [animTime, setAnimTime] = useState(1); // 1 = steady state shown on load
+const animFrameRef = useRef<number | null>(null);
+
+// Auto-play on param change (skip first render)
+const isFirstRender = useRef(true);
+useEffect(() => {
+    if (isFirstRender.current) { isFirstRender.current = false; return; }
+    setAnimTime(0);
+    setAnimPlaying(true);
+}, [params]);
+
+// Animation loop
+useEffect(() => {
+    if (!animPlaying) { /* cancel frame, return */ }
+    const step = () => {
+        setAnimTime(prev => {
+            const next = prev + 1 / ANIMATION_TOTAL_FRAMES;
+            if (next >= 1) { setAnimPlaying(false); return 1; }
+            return next;
+        });
+        animFrameRef.current = requestAnimationFrame(step);
+    };
+    animFrameRef.current = requestAnimationFrame(step);
+    return () => { if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current); };
+}, [animPlaying]);
+
+// Interpolated display data
+const displayDistribution = useMemo(
+    () => interpolateDistribution(initialDist, steadyStateDist, easeInOutCubic(animTime)),
+    [initialDist, steadyStateDist, animTime],
+);
+```
+
+Put `interpolateDistribution`, `easeInOutCubic`, and `ANIMATION_TOTAL_FRAMES` (typically 70) in `logic/`. Render play/pause/replay buttons and a scrub slider via PlaygroundViewer's `controls` prop.
+
+### Snapshot Comparison
+
+Allow users to save current state and compare against it after changing parameters.
+
+```tsx
+// logic/index.ts
+export interface Snapshot {
+    params: Params;
+    metrics: Metrics;
+    distribution: SiteDatum[];
+    label: string;
+}
+
+// playground.tsx
+const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
+
+const saveSnapshot = useCallback(() => {
+    setSnapshot({ params, metrics, distribution, label: params.preset });
+}, [params, metrics, distribution]);
+```
+
+In Settings, show a `MetricDelta` component when a snapshot exists — displays current vs. saved values with delta arrows. Color-code: lime for improvements, orange for regressions, muted for unchanged.
+
+```tsx
+function MetricDelta({ label, current, saved }: { label: string; current: number; saved: number }) {
+    const delta = current - saved;
+    const arrow = delta > 0.005 ? '↑' : delta < -0.005 ? '↓' : '=';
+    // Color logic depends on whether higher is better for this metric
+    return (
+        <div className="text-lime-200/60 text-xs font-mono">
+            {label}: <span className="text-lime-400">{(current * 100).toFixed(1)}%</span>
+            {' '}<span className={color}>{arrow} {Math.abs(delta * 100).toFixed(1)}%</span>
+        </div>
+    );
+}
+```
+
+In Viewer, overlay the snapshot distribution as a dashed orange line (`stroke="#f97316"`, `strokeDasharray="6 3"`, `fill="none"`).
+
+### Parameter Sweep
+
+Sweep one parameter across its range while holding others constant, showing how output metrics respond.
+
+```tsx
+// logic/index.ts
+export type SweepableParam = keyof Omit<Params, 'preset'>;
+
+export const PARAM_SPECS: { key: SweepableParam; label: string; min: number; max: number }[] = [
+    { key: 'paramA', label: 'param A', min: 0, max: 100 },
+    // ...
+];
+
+export function computeSweep(params: Params, sweepKey: SweepableParam): SweepDatum[] {
+    const spec = PARAM_SPECS.find(s => s.key === sweepKey)!;
+    const data: SweepDatum[] = [];
+    for (let i = 0; i < 51; i++) {
+        const v = spec.min + (spec.max - spec.min) * (i / 50);
+        const m = computeMetrics({ ...params, [sweepKey]: v });
+        data.push({ sweepValue: v, ...m });
+    }
+    return data;
+}
+
+// playground.tsx
+const [sweepParam, setSweepParam] = useState<SweepableParam>('paramA');
+const sweep = useMemo(() => computeSweep(params, sweepParam), [params, sweepParam]);
+```
+
+In Viewer, render param-selector buttons above a `LineChart` with one line per output metric.
+
+### Narrative Generation
+
+Generate a plain-language interpretation of the current state by comparing metrics against a baseline.
+
+```tsx
+// logic/index.ts
+export function computeNarrative(metrics: Metrics, params: Params): string {
+    const baseline = computeMetrics({ ...params, /* disable special effects */ });
+    const speedup = baseline.primaryMetric / metrics.primaryMetric;
+
+    if (metrics.effectStrength < THRESHOLD_LOW) {
+        return `No significant effect. ...`;
+    }
+    const parts: string[] = [];
+    parts.push(`The system is ${speedup.toFixed(1)}× faster than baseline.`);
+    // Add conditional clauses based on parameter regimes
+    return parts.join(' ');
+}
+
+// playground.tsx
+const narrative = useMemo(() => computeNarrative(metrics, params), [metrics, params]);
+```
+
+Display the narrative in Settings inside a bordered box: `border border-lime-500/20 p-3` with `text-xs text-lime-200/70 leading-relaxed`.
+
+### Custom Domain-Specific Visualizations
+
+Place custom SVG or canvas components in `components/` alongside Settings and Viewer (e.g., `MPSDiagram/index.tsx`). These should:
+
+- Accept computed data as props (no internal state)
+- Use lime palette with varying opacity for data encoding
+- Be responsive via SVG `viewBox` (no fixed pixel dimensions)
+- Highlight special elements (targets, start positions) with distinct styling
+
+
+## Research Companion Page
+
+A playground can include a long-form research companion accessible at `/playgrounds/playground-name/research`.
+
+### File structure
+
+```
+research/
+├── page.tsx       # Server component
+└── content.md     # Markdown research article
+```
+
+### page.tsx template
+
+```tsx
+import fs from 'fs';
+import path from 'path';
+import { Metadata } from 'next';
+import { defaultOpenGraph } from '@/data/metadata';
+
+import ResearchRenderer from '@/components/ResearchRenderer';
+
+const content = fs.readFileSync(
+    path.join(process.cwd(), 'app/playgrounds/(YYYY)/(MM)/playground-name/research/content.md'),
+    'utf-8',
+);
+
+export const metadata: Metadata = {
+    title: 'playground name · research · playgrounds',
+    description: 'research companion for playground name',
+    openGraph: {
+        ...defaultOpenGraph,
+        title: 'playground name · research · playgrounds · piatra.institute',
+        description: 'research companion for playground name',
+    },
+};
+
+export default function ResearchPage() {
+    return (
+        <div className="min-h-screen bg-black">
+            <div className="max-w-3xl mx-auto px-4 sm:px-8 py-16">
+                <ResearchRenderer content={content} title="playground name" />
+            </div>
+        </div>
+    );
+}
+```
+
+### content.md guidelines
+
+- Standard Markdown with GFM (tables, task lists, footnotes)
+- Structure as a research document: abstract, background, model description, results, limitations, references
+- Keep inline with the playground's assumptions and calibration data
+
+### Linking from the playground
+
+Pass the `researchUrl` prop to `PlaygroundLayout`:
+
+```tsx
+<PlaygroundLayout
+    researchUrl="/playgrounds/playground-name/research"
+    ...
+/>
+```
+
+This adds a "read the research companion" link at the bottom of the outro section.
 
 
 ## Viewer / Recharts Patterns

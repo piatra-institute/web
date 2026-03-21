@@ -48,6 +48,9 @@ playground-name/
 │   │   └── index.tsx
 │   └── Viewer/         # Visualization (refs for methods)
 │       └── index.tsx
+├── research/          # Deep research companion page (optional)
+│   ├── page.tsx
+│   └── content.md
 ├── logic/              # Simulation algorithms (optional)
 │   └── index.ts
 ├── assumptions.ts      # Modeling assumptions with citations (optional)
@@ -56,6 +59,8 @@ playground-name/
 ├── page.tsx            # Next.js page with metadata
 └── playground.tsx      # Main component (owns all state)
 ```
+
+See `app/playgrounds/(2026)/(03)/pettini-tensor-networks/` for a reference implementation with all optional features.
 
 ### State Management Pattern
 
@@ -102,6 +107,7 @@ Features:
 | `VersionSelector` | LLM version info display / selector for parallel implementations |
 | `ModelChangelog` | Versioned list of structural model changes |
 | `ResearchRenderer` | Markdown renderer for research companion documents |
+| `ResearchPromptButton` | Expandable deep research prompt generator for outro sections |
 
 ## Data Flow
 
@@ -123,6 +129,7 @@ Features:
 1. **Prebuild** (`prebuild.js`): Fetches external data (provocations, papers, press)
 2. **Next.js Build**: Static generation with ISR for dynamic routes
 3. **OG Generation** (`scripts/generate-og-images.js`): Creates social images
+4. **Source Context** (`readPlaygroundSource()`): At build time, server components read playground source files to bundle as context for `ResearchPromptButton`
 
 ## Database
 

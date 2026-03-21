@@ -16,6 +16,9 @@ app/playgrounds/(2026)/my-playground/
 ├── assumptions.ts      # Optional: modeling assumptions with citations
 ├── calibration.ts      # Optional: empirical validation cases
 ├── versions.ts         # Optional: LLM version metadata and model changelog
+├── research/          # Optional: deep research companion page
+│   ├── page.tsx
+│   └── content.md
 ├── page.tsx
 └── playground.tsx
 ```
@@ -244,7 +247,9 @@ export const playgrounds = [
         name: 'my playground',
         link: '/playgrounds/my-playground',
         description: 'brief description of the concept',
-        date: 'January 2026',
+        date: 'March 2026',
+        topics: ['physics', 'mathematics'],
+        operations: ['landscape'],
     },
 ];
 ```
@@ -255,6 +260,55 @@ export const playgrounds = [
 pnpm og          # Generate missing images only
 pnpm og:dry      # Preview what would be generated
 pnpm og:force    # Regenerate all images
+```
+
+## Scientific Infrastructure Files
+
+Optional files that add research rigor to a playground:
+
+### assumptions.ts
+
+Export an `Assumption[]` array. Each entry needs: `id`, `statement`, `citation`, `confidence` (`'established' | 'contested' | 'speculative'`), and `falsifiability`. Render with `<AssumptionPanel assumptions={assumptions} />`.
+
+### calibration.ts
+
+Export a `CalibrationCase[]` array with known empirical cases. Each entry needs: `name`, `description`, `params` (input parameters), `expected` (expected output values), and `source` (citation). Use `computeMetrics(case.params)` to generate predictions, then render with `<CalibrationPanel results={results} outputLabel="metric name" />`.
+
+### versions.ts
+
+Export a `ModelVersion[]` array (`{ id, llm, date, description }`) and a `ChangelogEntry[]` array (`{ version, date, changes: string[] }`). Render with `<VersionSelector>` in Viewer and `<ModelChangelog>` in outro.
+
+### computeSensitivity (in logic/index.ts)
+
+Sweep each parameter min→max while holding others at baseline. Return `SensitivityBar[]` (`{ label, low, high }`) sorted by range. Render with `<SensitivityAnalysis bars={bars} baseline={value} outputLabel="metric" />`.
+
+See CLAUDE.md for full component API details.
+
+## Research Companion Page
+
+A playground can include a long-form research companion at `/playgrounds/playground-name/research`.
+
+### Directory structure
+
+```
+research/
+├── page.tsx       # Server component using fs.readFileSync + ResearchRenderer
+└── content.md     # Markdown research article (abstract, background, model, results, limitations, references)
+```
+
+### page.tsx
+
+The server component reads `content.md` at build time and passes it to `ResearchRenderer`. Use `defaultOpenGraph` for metadata. See CLAUDE.md for the full template.
+
+### Linking from the playground
+
+Pass the `researchUrl` prop to `PlaygroundLayout`:
+
+```tsx
+<PlaygroundLayout
+    researchUrl="/playgrounds/playground-name/research"
+    ...
+/>
 ```
 
 ## Color Palette Reference
@@ -295,26 +349,36 @@ const offsetY = (h - size) / 2;
 
 ## Animation Pattern
 
+Use `requestAnimationFrame` with interpolation for smooth transitions between states:
+
 ```typescript
-const [isPlaying, setIsPlaying] = useState(false);
-const [frame, setFrame] = useState(0);
+const [animPlaying, setAnimPlaying] = useState(false);
+const [animTime, setAnimTime] = useState(1);
+const animFrameRef = useRef<number | null>(null);
 
 useEffect(() => {
-    if (!isPlaying) return;
-
-    const interval = setInterval(() => {
-        setFrame(prev => {
-            if (prev >= maxFrames - 1) {
-                setIsPlaying(false);
-                return prev;
-            }
-            return prev + 1;
+    if (!animPlaying) {
+        if (animFrameRef.current !== null) cancelAnimationFrame(animFrameRef.current);
+        return;
+    }
+    const step = () => {
+        setAnimTime(prev => {
+            const next = prev + 1 / TOTAL_FRAMES;
+            if (next >= 1) { setAnimPlaying(false); return 1; }
+            return next;
         });
-    }, 100); // ms per frame
-
-    return () => clearInterval(interval);
-}, [isPlaying, maxFrames]);
+        animFrameRef.current = requestAnimationFrame(step);
+    };
+    animFrameRef.current = requestAnimationFrame(step);
+    return () => { if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current); };
+}, [animPlaying]);
 ```
+
+Put `interpolateDistribution`, `easeInOutCubic`, and `TOTAL_FRAMES` (typically 70) in `logic/`. Render play/pause/replay buttons and a scrub slider via PlaygroundViewer's `controls` prop.
+
+## Advanced Patterns
+
+For presets, snapshot comparison, parameter sweep, and narrative generation patterns, see the "Advanced Playground Patterns" section in CLAUDE.md. The reference implementation at `app/playgrounds/(2026)/(03)/pettini-tensor-networks/` demonstrates all of these.
 
 ## Mathematical Notation
 

@@ -78,6 +78,8 @@ piatra-institute-web/
 
 - [Architecture](docs/ARCHITECTURE.md) - System design and patterns
 - [Implementation](docs/IMPLEMENTATION.md) - Development guide
+- [Playground Classification](docs/PLAYGROUND_CLASSIFICATION.md) - Topic and operation taxonomy
+- [Scientific Playgrounds](docs/SCIENTIFIC_PLAYGROUNDS.md) - Research infrastructure and validation
 
 ## Design System
 
