@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 
 import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import Button from '@/components/Button';
 import Equation from '@/components/Equation';
 import ModelChangelog from '@/components/ModelChangelog';
 import ResearchPromptButton from '@/components/ResearchPromptButton';
@@ -14,12 +15,17 @@ import Viewer from './components/Viewer';
 import {
     Params,
     Snapshot,
+    SweepableParam,
     presetParams,
     computeMetrics,
     computeNarrative,
     computeDistribution,
     computeSweep,
     computeSensitivity,
+    computeInitialDistribution,
+    interpolateDistribution,
+    easeInOutCubic,
+    ANIMATION_TOTAL_FRAMES,
 } from './logic';
 import { assumptions } from './assumptions';
 import { calibrationCases } from './calibration';
@@ -33,18 +39,75 @@ interface Props {
 export default function PettiniTensorNetworksPlayground({ sourceContext }: Props) {
     const [params, setParams] = useState<Params>(() => presetParams('classical-search'));
     const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
+    const [sweepParam, setSweepParam] = useState<SweepableParam>('coupling');
+
+    // Animation state
+    const [animPlaying, setAnimPlaying] = useState(false);
+    const [animTime, setAnimTime] = useState(1); // start at 1 = steady state shown on load
+    const animFrameRef = useRef<number | null>(null);
+    const paramsRef = useRef(params);
+    paramsRef.current = params;
 
     const metrics = useMemo(() => computeMetrics(params), [params]);
     const narrative = useMemo(() => computeNarrative(metrics, params), [metrics, params]);
     const distribution = useMemo(() => computeDistribution(params), [params]);
-    const sweep = useMemo(() => computeSweep(params), [params]);
+    const sweep = useMemo(() => computeSweep(params, sweepParam), [params, sweepParam]);
     const sensitivityBars = useMemo(() => computeSensitivity(params), [params]);
+
+    const initialDistribution = useMemo(() => computeInitialDistribution(), []);
+    const displayDistribution = useMemo(
+        () => interpolateDistribution(initialDistribution, distribution, easeInOutCubic(animTime)),
+        [initialDistribution, distribution, animTime],
+    );
+
+    // Auto-play animation on param change
+    const isFirstRender = useRef(true);
+    useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+        setAnimTime(0);
+        setAnimPlaying(true);
+    }, [params]);
+
+    // Animation loop
+    useEffect(() => {
+        if (!animPlaying) {
+            if (animFrameRef.current !== null) {
+                cancelAnimationFrame(animFrameRef.current);
+                animFrameRef.current = null;
+            }
+            return;
+        }
+
+        const step = () => {
+            setAnimTime(prev => {
+                const next = prev + 1 / ANIMATION_TOTAL_FRAMES;
+                if (next >= 1) {
+                    setAnimPlaying(false);
+                    return 1;
+                }
+                return next;
+            });
+            animFrameRef.current = requestAnimationFrame(step);
+        };
+
+        animFrameRef.current = requestAnimationFrame(step);
+
+        return () => {
+            if (animFrameRef.current !== null) {
+                cancelAnimationFrame(animFrameRef.current);
+                animFrameRef.current = null;
+            }
+        };
+    }, [animPlaying]);
 
     const saveSnapshot = useCallback(() => {
         setSnapshot({
             params,
             metrics,
-            distribution,
+            distribution, // always steady state
             label: params.preset,
         });
     }, [params, metrics, distribution]);
@@ -52,6 +115,13 @@ export default function PettiniTensorNetworksPlayground({ sourceContext }: Props
     const clearSnapshot = useCallback(() => {
         setSnapshot(null);
     }, []);
+
+    const loadCalibrationCase = useCallback((name: string) => {
+        const found = calibrationCases.find(c => c.name === name);
+        if (found) {
+            setParams({ ...found.params, preset: params.preset });
+        }
+    }, [params.preset]);
 
     const calibrationResults = useMemo(() => calibrationCases.map(c => ({
         name: c.name,
@@ -61,15 +131,49 @@ export default function PettiniTensorNetworksPlayground({ sourceContext }: Props
         source: c.source,
     })), []);
 
+    const toggleAnim = useCallback(() => {
+        if (animTime >= 1) {
+            setAnimTime(0);
+            setAnimPlaying(true);
+        } else {
+            setAnimPlaying(p => !p);
+        }
+    }, [animTime]);
+
+    const animControls = (
+        <div className="flex items-center gap-4">
+            <Button
+                label={animPlaying ? 'pause' : animTime >= 1 ? 'replay' : 'play'}
+                onClick={toggleAnim}
+                size="xs"
+            />
+            <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.01}
+                value={animTime}
+                onChange={(e) => {
+                    setAnimPlaying(false);
+                    setAnimTime(parseFloat(e.target.value));
+                }}
+                className="w-40 h-1 accent-lime-500 cursor-pointer"
+            />
+            <span className="text-xs font-mono text-lime-200/60">
+                t = {(animTime * 100).toFixed(0)}%
+            </span>
+        </div>
+    );
+
     const sections: PlaygroundSection[] = [
         { id: 'intro', type: 'intro' },
         {
             id: 'canvas',
             type: 'canvas',
             content: (
-                <PlaygroundViewer>
+                <PlaygroundViewer controls={animControls}>
                     <Viewer
-                        distribution={distribution}
+                        distribution={displayDistribution}
                         sweep={sweep}
                         metrics={metrics}
                         sensitivityBars={sensitivityBars}
@@ -77,6 +181,10 @@ export default function PettiniTensorNetworksPlayground({ sourceContext }: Props
                         calibrationResults={calibrationResults}
                         versions={versions}
                         snapshot={snapshot}
+                        sweepParam={sweepParam}
+                        onSweepParamChange={setSweepParam}
+                        onLoadCalibrationCase={loadCalibrationCase}
+                        animTime={animTime}
                     />
                 </PlaygroundViewer>
             ),

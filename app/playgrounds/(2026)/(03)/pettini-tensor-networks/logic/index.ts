@@ -212,7 +212,7 @@ export function computeDistribution(params: Params): SiteDatum[] {
 
 
 export interface SweepDatum {
-    coupling: number;
+    sweepValue: number;
     searchTime: number;
     compressibility: number;
     targetBias: number;
@@ -224,7 +224,9 @@ export interface SensitivityBar {
     high: number;
 }
 
-const PARAM_SPECS: { key: keyof Omit<Params, 'preset'>; label: string; min: number; max: number }[] = [
+export type SweepableParam = keyof Omit<Params, 'preset'>;
+
+export const PARAM_SPECS: { key: SweepableParam; label: string; min: number; max: number }[] = [
     { key: 'diffusion3D', label: '3D diffusion', min: 0, max: 100 },
     { key: 'sliding1D', label: '1D sliding', min: 0, max: 100 },
     { key: 'resonanceMatch', label: 'resonance match', min: 0, max: 100 },
@@ -246,13 +248,16 @@ export function computeSensitivity(params: Params): SensitivityBar[] {
 }
 
 
-export function computeSweep(params: Params): SweepDatum[] {
+export function computeSweep(params: Params, sweepKey: SweepableParam = 'coupling'): SweepDatum[] {
+    const spec = PARAM_SPECS.find(s => s.key === sweepKey)!;
     const data: SweepDatum[] = [];
+    const steps = 51;
 
-    for (let g = 0; g <= 100; g += 2) {
-        const m = computeMetrics({ ...params, coupling: g });
+    for (let i = 0; i < steps; i++) {
+        const v = spec.min + (spec.max - spec.min) * (i / (steps - 1));
+        const m = computeMetrics({ ...params, [sweepKey]: v });
         data.push({
-            coupling: g,
+            sweepValue: v,
             searchTime: m.searchTime,
             compressibility: m.compressibility,
             targetBias: m.targetBias,
@@ -261,3 +266,54 @@ export function computeSweep(params: Params): SweepDatum[] {
 
     return data;
 }
+
+
+export function computeInitialDistribution(): SiteDatum[] {
+    const sigma = 4;
+    const raw: { w: number; wo: number }[] = [];
+    let sum = 0;
+
+    for (let i = 0; i < N_SITES; i++) {
+        const v = Math.exp(-((i - PROTEIN_START) ** 2) / (2 * sigma ** 2));
+        raw.push({ w: v, wo: v });
+        sum += v;
+    }
+
+    return raw.map((r, i) => ({
+        site: i,
+        withResonance: r.w / sum,
+        withoutResonance: r.wo / sum,
+        resonanceEffect: 0,
+        isTarget: i === TARGET_SITE,
+    }));
+}
+
+
+export function interpolateDistribution(
+    initial: SiteDatum[],
+    steadyState: SiteDatum[],
+    alpha: number,
+): SiteDatum[] {
+    return initial.map((init, i) => {
+        const ss = steadyState[i];
+        const wr = init.withResonance + alpha * (ss.withResonance - init.withResonance);
+        const wo = init.withoutResonance + alpha * (ss.withoutResonance - init.withoutResonance);
+        return {
+            site: init.site,
+            withResonance: wr,
+            withoutResonance: wo,
+            resonanceEffect: init.resonanceEffect + alpha * (ss.resonanceEffect - init.resonanceEffect),
+            isTarget: init.isTarget,
+        };
+    });
+}
+
+
+export function easeInOutCubic(t: number): number {
+    return t < 0.5
+        ? 4 * t * t * t
+        : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+
+export const ANIMATION_TOTAL_FRAMES = 70;

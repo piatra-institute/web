@@ -24,7 +24,10 @@ import {
     Snapshot,
     SiteDatum,
     SweepDatum,
+    SweepableParam,
+    PARAM_SPECS,
 } from '../../logic';
+import MPSDiagram from '../MPSDiagram';
 
 
 interface ViewerProps {
@@ -36,6 +39,10 @@ interface ViewerProps {
     calibrationResults: CalibrationResult[];
     versions: ModelVersion[];
     snapshot: Snapshot | null;
+    sweepParam: SweepableParam;
+    onSweepParamChange: (p: SweepableParam) => void;
+    onLoadCalibrationCase?: (name: string) => void;
+    animTime?: number;
 }
 
 function ChartTooltip({ active, payload, label }: {
@@ -75,6 +82,10 @@ export default function Viewer({
     calibrationResults,
     versions,
     snapshot,
+    sweepParam,
+    onSweepParamChange,
+    onLoadCalibrationCase,
+    animTime,
 }: ViewerProps) {
     const chartData = useMemo(() => {
         if (!snapshot) return distribution;
@@ -84,6 +95,8 @@ export default function Viewer({
         }));
     }, [distribution, snapshot]);
 
+    const sweepParamLabel = PARAM_SPECS.find(s => s.key === sweepParam)?.label ?? sweepParam;
+
     const metricsEntries: [string, number][] = [
         ['resonance gain', metrics.resonanceGain],
         ['baseline mobility', metrics.baselineMobility],
@@ -91,6 +104,10 @@ export default function Viewer({
         ['compressibility', metrics.compressibility],
         ['search time', metrics.searchTime],
     ];
+
+    const animSuffix = animTime !== undefined && animTime < 1
+        ? ` · t = ${(animTime * 100).toFixed(0)}%`
+        : '';
 
     return (
         <div className="w-[90vw] h-[90vh] max-w-[1000px] overflow-y-auto space-y-6 outline-none [&_*]:outline-none text-lime-100">
@@ -117,9 +134,11 @@ export default function Viewer({
                 </div>
             </div>
 
+            <MPSDiagram distribution={distribution} compressibility={metrics.compressibility} />
+
             <div>
                 <div className="text-xs text-lime-200/60 mb-2 font-mono">
-                    probability distribution over DNA sites &middot; protein starts at site 20 &middot; target at site 60
+                    probability distribution over DNA sites &middot; protein starts at site 20 &middot; target at site 60{animSuffix}
                     {snapshot && <span className="text-orange-400/60"> &middot; dashed = saved ({snapshot.label})</span>}
                 </div>
                 <div style={{ width: '100%', height: 320 }}>
@@ -193,19 +212,37 @@ export default function Viewer({
             </div>
 
             <div>
+                <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xs text-lime-200/60 font-mono">sweep</span>
+                    <div className="flex gap-1 flex-wrap">
+                        {PARAM_SPECS.map(spec => (
+                            <button
+                                key={spec.key}
+                                onClick={() => onSweepParamChange(spec.key)}
+                                className={`px-2 py-0.5 text-[10px] font-mono border transition-colors cursor-pointer ${
+                                    sweepParam === spec.key
+                                        ? 'border-lime-500 bg-lime-500/10 text-lime-400'
+                                        : 'border-lime-500/20 text-lime-200/50 hover:border-lime-500/40'
+                                }`}
+                            >
+                                {spec.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
                 <div className="text-xs text-lime-200/60 mb-2 font-mono">
-                    coupling sweep &middot; search time and compressibility vs ED coupling strength
+                    {sweepParamLabel} sweep &middot; search time and compressibility vs {sweepParamLabel}
                 </div>
                 <div style={{ width: '100%', height: 260 }}>
                     <ResponsiveContainer width="100%" height={260} minWidth={0}>
                         <LineChart data={sweep} margin={{ top: 10, right: 20, bottom: 10, left: 10 }}>
                             <CartesianGrid stroke="#333" strokeDasharray="3 3" />
                             <XAxis
-                                dataKey="coupling"
+                                dataKey="sweepValue"
                                 tick={{ fill: '#a3e635', fontSize: 10 }}
                                 tickLine={false}
                                 axisLine={false}
-                                label={{ value: 'coupling %', position: 'insideBottom', offset: -5, fill: '#a3e635', fontSize: 10 }}
+                                label={{ value: `${sweepParamLabel} %`, position: 'insideBottom', offset: -5, fill: '#a3e635', fontSize: 10 }}
                             />
                             <YAxis
                                 tick={{ fill: '#a3e635', fontSize: 10 }}
@@ -266,7 +303,7 @@ export default function Viewer({
 
             <AssumptionPanel assumptions={assumptions} />
 
-            <CalibrationPanel results={calibrationResults} outputLabel="search time" />
+            <CalibrationPanel results={calibrationResults} outputLabel="search time" onLoadCase={onLoadCalibrationCase} />
             <div className="text-xs text-lime-200/30 -mt-4 px-1">
                 Qualitative toy model — calibration error reflects intentional simplifications (no crowding, no DNA packaging, no conformational states).
             </div>

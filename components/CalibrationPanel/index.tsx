@@ -14,9 +14,10 @@ export interface CalibrationResult {
 interface CalibrationPanelProps {
     results: CalibrationResult[];
     outputLabel: string;
+    onLoadCase?: (name: string) => void;
 }
 
-export default function CalibrationPanel({ results, outputLabel }: CalibrationPanelProps) {
+export default function CalibrationPanel({ results, outputLabel, onLoadCase }: CalibrationPanelProps) {
     const [expanded, setExpanded] = useState(false);
 
     const avgError = results.length
@@ -50,6 +51,7 @@ export default function CalibrationPanel({ results, outputLabel }: CalibrationPa
                                     <th className="text-right p-1.5">expected</th>
                                     <th className="text-right p-1.5">error</th>
                                     <th className="text-left p-1.5 pl-3">source</th>
+                                    {onLoadCase && <th className="p-1.5"></th>}
                                 </tr>
                             </thead>
                             <tbody>
@@ -76,6 +78,16 @@ export default function CalibrationPanel({ results, outputLabel }: CalibrationPa
                                             <td className="p-1.5 pl-3 text-[10px] text-lime-200/30">
                                                 {r.source}
                                             </td>
+                                            {onLoadCase && (
+                                                <td className="p-1.5">
+                                                    <button
+                                                        onClick={(e) => { e.stopPropagation(); onLoadCase(r.name); }}
+                                                        className="text-[10px] font-mono text-lime-400/60 hover:text-lime-400 border border-lime-500/20 hover:border-lime-500/40 px-2 py-0.5 transition-colors cursor-pointer"
+                                                    >
+                                                        load
+                                                    </button>
+                                                </td>
+                                            )}
                                         </tr>
                                     );
                                 })}
