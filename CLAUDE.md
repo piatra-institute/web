@@ -33,6 +33,9 @@ app/playgrounds/(year)/[playground-name]/
 │       └── index.tsx
 ├── logic/             # Optional: Complex logic/algorithms
 │   └── [logic].ts
+├── assumptions.ts     # Optional: Modeling assumptions with citations and confidence levels
+├── calibration.ts     # Optional: Known empirical cases for model validation
+├── versions.ts        # Optional: LLM version metadata and model changelog
 ├── page.tsx           # Next.js page with metadata
 └── playground.tsx     # Main playground component
 ```
@@ -55,7 +58,12 @@ When an ideation folder exists with demo.tsx and/or info.md:
    - Use useImperativeHandle for Viewer methods (e.g., updateMosaic)
    - Use the `Equation` component for mathematical notation instead of plain text
 4. **Register in index**: Add entry to `/app/playgrounds/data.ts` with name, link, description, date, topics, and operations (see Playground Classification below)
-5. **Ensure functionality**:
+5. **Add scientific infrastructure** (optional but recommended):
+   - `assumptions.ts`: List modeling assumptions with citations, confidence levels (established/contested/speculative), and falsifiability conditions. Render via `AssumptionPanel` in Viewer.
+   - `calibration.ts`: Known empirical cases with expected outputs. Render via `CalibrationPanel` in Viewer.
+   - `versions.ts`: LLM version metadata and model changelog. Render `VersionSelector` in Viewer and `ModelChangelog` in outro.
+   - Add `computeSensitivity` to `logic/` to generate tornado chart data. Render via `SensitivityAnalysis` in Viewer.
+6. **Ensure functionality**:
    - Convert ideation algorithms to React hooks
    - Add proper TypeScript types (avoid `any`)
    - Handle responsive sizing (typically 90% viewport)
@@ -393,6 +401,126 @@ import LinkButton from '@/components/LinkButton';
 
 <LinkButton text="view source" icon={githubIcon} onClick={handleClick} centered />
 ```
+
+
+### AssumptionPanel
+
+Expandable panel listing modeling assumptions with confidence levels and falsifiability conditions. Color-coded: lime for established, yellow for contested, orange for speculative. Each playground provides assumptions via an `assumptions.ts` file.
+
+```tsx
+import AssumptionPanel, { Assumption } from '@/components/AssumptionPanel';
+
+const assumptions: Assumption[] = [
+    {
+        id: 'unique-id',
+        statement: 'The assumption in plain language.',
+        citation: 'Author, Year — supporting evidence',
+        confidence: 'established',  // | 'contested' | 'speculative'
+        falsifiability: 'What observation would invalidate this.',
+    },
+];
+
+<AssumptionPanel assumptions={assumptions} />
+```
+
+Props:
+- `assumptions`: `Assumption[]` - array of `{ id, statement, citation, confidence, falsifiability }`
+
+### SensitivityAnalysis
+
+Tornado chart showing how an output metric changes when each input parameter is swept min→max while others are held constant. Bars sorted by range (most sensitive at top). Pre-computed bars are passed as props.
+
+```tsx
+import SensitivityAnalysis, { SensitivityBar } from '@/components/SensitivityAnalysis';
+
+<SensitivityAnalysis
+    bars={sensitivityBars}
+    baseline={metrics.searchTime}
+    outputLabel="search time"
+/>
+```
+
+Props:
+- `bars`: `SensitivityBar[]` - array of `{ label, low, high }` sorted by range
+- `baseline`: number - current output value (shown as vertical line)
+- `outputLabel`: string - label for the output metric
+
+### CalibrationPanel
+
+Expandable table comparing model predictions against known empirical cases. Shows predicted vs. expected values with error percentages. Color-coded: lime for <15% error, yellow for <35%, orange for larger.
+
+```tsx
+import CalibrationPanel, { CalibrationResult } from '@/components/CalibrationPanel';
+
+<CalibrationPanel results={calibrationResults} outputLabel="search time" />
+```
+
+Props:
+- `results`: `CalibrationResult[]` - array of `{ name, description, predicted, expected, source }`
+- `outputLabel`: string - label for the output metric
+
+### VersionSelector
+
+Shows which LLM generated the current playground implementation. Compact info label for single version; clickable tabs for multiple versions.
+
+```tsx
+import VersionSelector, { ModelVersion } from '@/components/VersionSelector';
+
+<VersionSelector versions={versions} active="claude-v1" onSelect={setActiveVersion} />
+```
+
+Props:
+- `versions`: `ModelVersion[]` - array of `{ id, llm, date, description }`
+- `active`: string - id of the active version
+- `onSelect`: `(id: string) => void` - optional callback when version changes
+
+### ModelChangelog
+
+Renders structural model changes (not code changes) as a versioned list. Typically placed in the outro section.
+
+```tsx
+import ModelChangelog, { ChangelogEntry } from '@/components/ModelChangelog';
+
+<ModelChangelog entries={changelog} />
+```
+
+Props:
+- `entries`: `ChangelogEntry[]` - array of `{ version, date, changes: string[] }`
+
+### ResearchPromptButton
+
+Expandable section in the outro that generates structured deep research prompts. Each prompt includes the full playground source code as context. 6 steps: historical context, scientific accuracy, related concepts, pedagogical framing, assumption validation, synthesis. Optional focus field lets users steer the research angle. No API keys needed — user copies prompts into ChatGPT Deep Research / Gemini manually.
+
+Requires `sourceContext` from `readPlaygroundSource()` (server-side utility that reads source files at build time).
+
+```tsx
+// In page.tsx (server component):
+import { readPlaygroundSource } from '@/lib/readPlaygroundSource';
+
+const sourceContext = readPlaygroundSource(
+    'app/playgrounds/(2026)/(03)/playground-name',
+    { name: 'playground-name', title: 'Title', description: '...', topics: [...], operations: [...] },
+);
+
+export default function Page() {
+    return <Playground sourceContext={sourceContext} />;
+}
+```
+
+```tsx
+// In playground.tsx outro section:
+import ResearchPromptButton from '@/components/ResearchPromptButton';
+import { PlaygroundSourceContext } from '@/lib/readPlaygroundSource';
+
+{sourceContext && (
+    <div className="border-t border-lime-500/20 pt-8">
+        <ResearchPromptButton context={sourceContext} />
+    </div>
+)}
+```
+
+Props:
+- `context`: `PlaygroundSourceContext` - bundled source code and metadata from `readPlaygroundSource()`
 
 
 ## Color Palette

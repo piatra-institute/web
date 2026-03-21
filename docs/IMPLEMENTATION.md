@@ -13,6 +13,9 @@ app/playgrounds/(2026)/my-playground/
 │       └── index.tsx
 ├── logic/
 │   └── index.ts        # Optional: complex algorithms
+├── assumptions.ts      # Optional: modeling assumptions with citations
+├── calibration.ts      # Optional: empirical validation cases
+├── versions.ts         # Optional: LLM version metadata and model changelog
 ├── page.tsx
 └── playground.tsx
 ```

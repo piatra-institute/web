@@ -50,6 +50,9 @@ playground-name/
 │       └── index.tsx
 ├── logic/              # Simulation algorithms (optional)
 │   └── index.ts
+├── assumptions.ts      # Modeling assumptions with citations (optional)
+├── calibration.ts      # Empirical validation cases (optional)
+├── versions.ts         # LLM version metadata and model changelog (optional)
 ├── page.tsx            # Next.js page with metadata
 └── playground.tsx      # Main component (owns all state)
 ```
@@ -93,6 +96,12 @@ Features:
 | `Toggle` | Boolean toggle switch |
 | `Equation` | KaTeX-rendered mathematical notation |
 | `Header` | Site header with logo |
+| `AssumptionPanel` | Expandable panel listing modeling assumptions with confidence levels |
+| `SensitivityAnalysis` | Tornado chart showing parameter sensitivity on output metrics |
+| `CalibrationPanel` | Expandable table comparing model predictions to empirical cases |
+| `VersionSelector` | LLM version info display / selector for parallel implementations |
+| `ModelChangelog` | Versioned list of structural model changes |
+| `ResearchRenderer` | Markdown renderer for research companion documents |
 
 ## Data Flow
 

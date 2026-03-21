@@ -605,7 +605,7 @@ export const playgrounds: {
         operations: ['landscape', 'anatomy'],
     },
     {
-        name: 'pettini tensor networks',
+        name: 'Pettini tensor networks',
         link: '/playgrounds/pettini-tensor-networks',
         description: 'tensor network compression of biological search with optional long-range electrodynamic recruitment',
         date: 'March 2026',

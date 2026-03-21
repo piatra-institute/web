@@ -89,9 +89,36 @@ The second output is a markdown file at `playground-name/research/suggestions.md
 Each suggestion has a confidence level (high/medium/speculative) and a citation. The human decides what to act on.
 
 
+### Manual Research via ResearchPromptButton
+
+For users without API keys or who want more control over the research process, each playground can include a `ResearchPromptButton` in its outro section. This generates structured deep research prompts that include the full playground source code as context. The user copies each prompt into ChatGPT Deep Research, Gemini Deep Research, or any capable AI manually.
+
+The button produces 6 research steps (matching the same intellectual categories as the automated script):
+
+1. **Historical context & intellectual lineage** — origins, key figures, foundational papers
+2. **Scientific accuracy & empirical evidence** — claims vs published evidence, parameter validation
+3. **Related concepts & cross-disciplinary connections** — adjacent fields, structural analogies
+4. **Pedagogical framing & learning design** — teaching effectiveness, misconceptions, improvements
+5. **Assumption validation & sensitivity** — scrutinize each assumption's confidence and falsifiability
+6. **Synthesis & suggested improvements** — produce a research companion document + improvement list
+
+Each prompt includes: playground metadata, full logic/index.ts, assumptions.ts, calibration.ts, versions.ts, and playground.tsx source code. An optional focus field lets users steer the research angle (analogous to `--focus` in the CLI).
+
+**Implementation**: The `readPlaygroundSource()` utility in `lib/readPlaygroundSource.ts` reads source files at build time (server component). The source context is passed as a prop through `page.tsx` → `playground.tsx` → `ResearchPromptButton` (client component). Prompt templates live in `components/ResearchPromptButton/prompts.ts`.
+
+| Aspect | researcher.py (CLI) | ResearchPromptButton (browser) |
+|--------|---------------------|-------------------------------|
+| Runs | Developer machine | Any user in browser |
+| API keys | Required | None needed |
+| Research | Automated multi-provider | User copies to AI manually |
+| Output | Writes content.md + page.tsx | User gets raw markdown back |
+| Queries | LLM-generated, interactive | Fixed 6-step structure |
+| Focus | `--focus` CLI flag | Text field in UI |
+
+
 ## Supporting Infrastructure
 
-The researcher is the core tool. The following complement it by adding scientific rigor to the playground itself, not just the companion document.
+The researcher is the core tool. The following complement it by adding scientific rigor to the playground itself, not just the companion document. All three are implemented as shared components in `/components/` and integrated per-playground via data files.
 
 
 ### Explicit Assumption Registry
@@ -102,48 +129,136 @@ Each playground exports a structured `assumptions.ts` file listing every modelin
 - A confidence level (established, contested, speculative)
 - A falsifiability condition (what empirical observation would invalidate this assumption)
 
-The Viewer renders these as an expandable "Assumptions" panel. This forces rigor at authoring time — no weight ships without documented justification. The researcher's suggestions can feed directly into this registry.
+The `AssumptionPanel` component (`/components/AssumptionPanel`) renders these as an expandable panel in the Viewer. Confidence levels are color-coded: lime for established, yellow for contested, orange for speculative. This forces rigor at authoring time — no assumption ships without documented justification. The researcher's suggestions can feed directly into this registry.
+
+```tsx
+// assumptions.ts
+import { Assumption } from '@/components/AssumptionPanel';
+
+export const assumptions: Assumption[] = [
+    {
+        id: 'unique-id',
+        statement: 'The modeling assumption in plain language.',
+        citation: 'Author, Year — brief description of supporting evidence',
+        confidence: 'established',  // | 'contested' | 'speculative'
+        falsifiability: 'What observation would invalidate this assumption.',
+    },
+];
+```
+
+```tsx
+// In Viewer:
+import AssumptionPanel from '@/components/AssumptionPanel';
+<AssumptionPanel assumptions={assumptions} />
+```
 
 
 ### Sensitivity Analysis Panel
 
-A standard component that automatically sweeps each input variable +/-2 while holding others constant and shows how the output changes. Standard practice in computational social science.
+The `SensitivityAnalysis` component (`/components/SensitivityAnalysis`) renders a tornado chart showing how a chosen output metric changes when each input parameter is swept from min to max while all others are held constant. Bars are sorted by range (most sensitive parameter at top).
 
-Reveals which parameters the model is most sensitive to, and whether the sensitivity matches what the literature predicts. If the model is most sensitive to a parameter the literature considers secondary, that signals a calibration problem.
+Standard practice in computational social science. Reveals which parameters the model is most sensitive to, and whether the sensitivity matches what the literature predicts. If the model is most sensitive to a parameter the literature considers secondary, that signals a calibration problem.
 
-**Implementation:** a `SensitivityAnalysis` component that takes the model's compute function, current inputs, and parameter metadata; renders a tornado chart (horizontal bars showing output range per parameter).
+The playground's `logic/` file exports a `computeSensitivity` function that sweeps parameters and returns pre-computed bars. The component receives these bars plus the baseline value.
+
+```tsx
+// logic/index.ts
+export function computeSensitivity(params: Params): SensitivityBar[] {
+    return PARAM_SPECS.map(spec => {
+        const atMin = computeMetrics({ ...params, [spec.key]: spec.min }).searchTime;
+        const atMax = computeMetrics({ ...params, [spec.key]: spec.max }).searchTime;
+        return { label: spec.label, low: Math.min(atMin, atMax), high: Math.max(atMin, atMax) };
+    }).sort((a, b) => (b.high - b.low) - (a.high - a.low));
+}
+```
+
+```tsx
+// In Viewer:
+import SensitivityAnalysis from '@/components/SensitivityAnalysis';
+<SensitivityAnalysis bars={sensitivityBars} baseline={metrics.searchTime} outputLabel="search time" />
+```
 
 
 ### Calibration Against Empirical Cases
 
-For playgrounds with real-world referents, add a dataset of known cases with expert-consensus inputs and expected outputs. Show where the model places them vs. where experts would place them.
+For playgrounds with real-world referents, a `calibration.ts` file exports known cases with expert-consensus parameter inputs and expected output values. The `CalibrationPanel` component (`/components/CalibrationPanel`) renders an expandable table showing predicted vs. expected values with error percentages. Color-coded: lime for <15% error, yellow for <35%, orange for larger deviations.
 
-For example, the trust-transaction spectrum could include Estonia, Singapore, Qatar, Iceland with known geopolitical parameters. The gap between model prediction and expert consensus is the model's calibration error.
+The `playground.tsx` maps calibration cases to results by running each case's parameters through the compute function:
 
-**Implementation:** a `calibration.ts` file per playground with case data; a "Calibration" panel in the Viewer showing predicted vs. expected with error magnitude.
+```tsx
+// calibration.ts
+export interface CalibrationCase {
+    name: string;
+    description: string;
+    params: { /* playground-specific parameter values */ };
+    expected: number;
+    source: string;
+}
+export const calibrationCases: CalibrationCase[] = [ /* ... */ ];
+```
 
+```tsx
+// In playground.tsx:
+const calibrationResults = useMemo(() => calibrationCases.map(c => ({
+    name: c.name,
+    description: c.description,
+    predicted: computeMetrics({ ...c.params, preset: 'default' }).outputMetric,
+    expected: c.expected,
+    source: c.source,
+})), []);
+```
 
-## Deferred
-
-The following ideas are valid but not the current priority.
+```tsx
+// In Viewer:
+import CalibrationPanel from '@/components/CalibrationPanel';
+<CalibrationPanel results={calibrationResults} outputLabel="search time" />
+```
 
 
 ### LLM Version Selector
 
-A top-bar toggle that switches between implementations of the same playground produced by different LLMs (Claude, ChatGPT, Gemini).
+The `VersionSelector` component (`/components/VersionSelector`) shows which LLM generated the current playground implementation. When multiple versions exist, it renders clickable tabs to switch between them. When only one version exists (the common case), it displays version info as a compact label.
 
-Each playground would have parallel implementations — e.g. `components/Viewer.claude.tsx` and `components/Viewer.chatgpt.tsx` — and the selector swaps them at runtime. The value is not attribution but surfacing divergent modeling choices: different weight structures, interaction terms, posture thresholds. A diff panel could highlight where the models disagree on structure.
+Each playground exports a `versions.ts` file with version metadata. The full swapping mechanism — where different LLMs produce parallel implementations (e.g. `Viewer.claude.tsx`, `Viewer.chatgpt.tsx`) behind a shared `logic/` interface — is ready for use when parallel implementations exist.
 
-**Implementation:** shared `logic/` interface with multiple implementations behind it; a `VersionSelector` component in the playground layout; playground-level state controlling which implementation is active.
+```tsx
+// versions.ts
+import { ModelVersion } from '@/components/VersionSelector';
+
+export const versions: ModelVersion[] = [
+    { id: 'claude-v1', llm: 'Claude', date: 'March 2026', description: 'initial implementation' },
+];
+```
+
+```tsx
+// In Viewer:
+import VersionSelector from '@/components/VersionSelector';
+<VersionSelector versions={versions} active={versions[0]?.id ?? ''} onSelect={setActiveVersion} />
+```
 
 
 ### Versioned Model Changelog
 
-Each playground maintains a changelog tracking structural changes to the model (not code changes — model changes).
+The `ModelChangelog` component (`/components/ModelChangelog`) renders a list of structural model changes (not code changes — model changes). Each entry has a version tag, date, and list of changes. Rendered in the playground's outro section.
 
-Example entries:
-- v2: added interaction terms per Walt's balance-of-threat theory
-- v2: corrected crisis regime to align with Thorhallsson (shelter weight increases during crisis)
-- v2: elevated domestic cohesion weight 0.08 to 0.12 per Kuik's hedging framework
+```tsx
+// versions.ts
+import { ChangelogEntry } from '@/components/ModelChangelog';
 
-**Implementation:** a `CHANGELOG.md` per playground or a structured `versions.ts` with entries rendered in the playground outro.
+export const changelog: ChangelogEntry[] = [
+    {
+        version: 'v1',
+        date: 'March 2026',
+        changes: [
+            'Initial 6-parameter toy model with diffusion, sliding, and resonance terms',
+            'Probability distribution visualization over 80 DNA sites',
+        ],
+    },
+];
+```
+
+```tsx
+// In outro section:
+import ModelChangelog from '@/components/ModelChangelog';
+<ModelChangelog entries={changelog} />
+```

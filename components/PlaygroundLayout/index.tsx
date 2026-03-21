@@ -176,7 +176,7 @@ export default function PlaygroundLayout({
                         style={{ scrollSnapAlign: 'start' }}
                     >
                         <div className="absolute inset-0 bg-black" />
-                        <div className="relative z-10 px-4 sm:px-8 max-w-4xl text-center overflow-hidden w-full">
+                        <div className="relative z-10 px-4 sm:px-8 max-w-4xl text-center overflow-hidden w-full py-16">
                             <div className="text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left overflow-hidden">
                                 {section.content}
                                 {researchUrl && (

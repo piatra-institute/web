@@ -1,28 +1,65 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 
 import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
+import ModelChangelog from '@/components/ModelChangelog';
+import ResearchPromptButton from '@/components/ResearchPromptButton';
+import { PlaygroundSourceContext } from '@/lib/readPlaygroundSource';
 
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import {
     Params,
+    Snapshot,
     presetParams,
     computeMetrics,
+    computeNarrative,
     computeDistribution,
     computeSweep,
+    computeSensitivity,
 } from './logic';
+import { assumptions } from './assumptions';
+import { calibrationCases } from './calibration';
+import { versions, changelog } from './versions';
 
 
-export default function PettiniTensorNetworksPlayground() {
-    const [params, setParams] = useState<Params>(() => presetParams('diffusion-dominated'));
+interface Props {
+    sourceContext?: PlaygroundSourceContext;
+}
+
+export default function PettiniTensorNetworksPlayground({ sourceContext }: Props) {
+    const [params, setParams] = useState<Params>(() => presetParams('classical-search'));
+    const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
 
     const metrics = useMemo(() => computeMetrics(params), [params]);
+    const narrative = useMemo(() => computeNarrative(metrics, params), [metrics, params]);
     const distribution = useMemo(() => computeDistribution(params), [params]);
     const sweep = useMemo(() => computeSweep(params), [params]);
+    const sensitivityBars = useMemo(() => computeSensitivity(params), [params]);
+
+    const saveSnapshot = useCallback(() => {
+        setSnapshot({
+            params,
+            metrics,
+            distribution,
+            label: params.preset,
+        });
+    }, [params, metrics, distribution]);
+
+    const clearSnapshot = useCallback(() => {
+        setSnapshot(null);
+    }, []);
+
+    const calibrationResults = useMemo(() => calibrationCases.map(c => ({
+        name: c.name,
+        description: c.description,
+        predicted: computeMetrics({ ...c.params, preset: 'classical-search' }).searchTime,
+        expected: c.expected,
+        source: c.source,
+    })), []);
 
     const sections: PlaygroundSection[] = [
         { id: 'intro', type: 'intro' },
@@ -35,6 +72,11 @@ export default function PettiniTensorNetworksPlayground() {
                         distribution={distribution}
                         sweep={sweep}
                         metrics={metrics}
+                        sensitivityBars={sensitivityBars}
+                        assumptions={assumptions}
+                        calibrationResults={calibrationResults}
+                        versions={versions}
+                        snapshot={snapshot}
                     />
                 </PlaygroundViewer>
             ),
@@ -141,6 +183,17 @@ export default function PettiniTensorNetworksPlayground() {
                             thermal noise present significant challenges.
                         </p>
                     </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
+
+                    {sourceContext && (
+                        <div className="border-t border-lime-500/20 pt-8">
+                            <ResearchPromptButton context={sourceContext} />
+                        </div>
+                    )}
                 </div>
             ),
         },
@@ -148,7 +201,7 @@ export default function PettiniTensorNetworksPlayground() {
 
     return (
         <PlaygroundLayout
-            title="pettini tensor networks"
+            title="Pettini tensor networks"
             subtitle="tensor network compression of biological search processes with optional long-range electrodynamic recruitment"
             description={
                 <>
@@ -158,7 +211,17 @@ export default function PettiniTensorNetworksPlayground() {
                 </>
             }
             sections={sections}
-            settings={<Settings params={params} onParamsChange={setParams} metrics={metrics} />}
+            settings={
+                <Settings
+                    params={params}
+                    onParamsChange={setParams}
+                    metrics={metrics}
+                    narrative={narrative}
+                    snapshot={snapshot}
+                    onSaveSnapshot={saveSnapshot}
+                    onClearSnapshot={clearSnapshot}
+                />
+            }
         />
     );
 }

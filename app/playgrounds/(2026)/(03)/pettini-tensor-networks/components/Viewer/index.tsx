@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
     AreaChart,
     Area,
@@ -14,8 +14,14 @@ import {
     ReferenceLine,
 } from 'recharts';
 
+import AssumptionPanel, { Assumption } from '@/components/AssumptionPanel';
+import SensitivityAnalysis, { SensitivityBar } from '@/components/SensitivityAnalysis';
+import CalibrationPanel, { CalibrationResult } from '@/components/CalibrationPanel';
+import VersionSelector, { ModelVersion } from '@/components/VersionSelector';
+
 import {
     Metrics,
+    Snapshot,
     SiteDatum,
     SweepDatum,
 } from '../../logic';
@@ -25,6 +31,11 @@ interface ViewerProps {
     distribution: SiteDatum[];
     sweep: SweepDatum[];
     metrics: Metrics;
+    sensitivityBars: SensitivityBar[];
+    assumptions: Assumption[];
+    calibrationResults: CalibrationResult[];
+    versions: ModelVersion[];
+    snapshot: Snapshot | null;
 }
 
 function ChartTooltip({ active, payload, label }: {
@@ -59,9 +70,34 @@ export default function Viewer({
     distribution,
     sweep,
     metrics,
+    sensitivityBars,
+    assumptions,
+    calibrationResults,
+    versions,
+    snapshot,
 }: ViewerProps) {
+    const chartData = useMemo(() => {
+        if (!snapshot) return distribution;
+        return distribution.map((d, i) => ({
+            ...d,
+            snapshotWithResonance: snapshot.distribution[i]?.withResonance ?? 0,
+        }));
+    }, [distribution, snapshot]);
+
+    const metricsEntries: [string, number][] = [
+        ['resonance gain', metrics.resonanceGain],
+        ['baseline mobility', metrics.baselineMobility],
+        ['target bias', metrics.targetBias],
+        ['compressibility', metrics.compressibility],
+        ['search time', metrics.searchTime],
+    ];
+
     return (
         <div className="w-[90vw] h-[90vh] max-w-[1000px] overflow-y-auto space-y-6 outline-none [&_*]:outline-none text-lime-100">
+            <div className="flex items-center justify-between gap-4">
+                <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+            </div>
+
             <div className="border border-lime-500/30 p-4">
                 <div className="flex items-center justify-between gap-4 flex-wrap">
                     <div>
@@ -84,10 +120,11 @@ export default function Viewer({
             <div>
                 <div className="text-xs text-lime-200/60 mb-2 font-mono">
                     probability distribution over DNA sites &middot; protein starts at site 20 &middot; target at site 60
+                    {snapshot && <span className="text-orange-400/60"> &middot; dashed = saved ({snapshot.label})</span>}
                 </div>
                 <div style={{ width: '100%', height: 320 }}>
                     <ResponsiveContainer width="100%" height={320} minWidth={0}>
-                        <AreaChart data={distribution} margin={{ top: 10, right: 20, bottom: 10, left: 10 }}>
+                        <AreaChart data={chartData} margin={{ top: 10, right: 20, bottom: 10, left: 10 }}>
                             <CartesianGrid stroke="#333" strokeDasharray="3 3" />
                             <XAxis
                                 dataKey="site"
@@ -118,14 +155,38 @@ export default function Viewer({
                             />
                             <Area
                                 type="monotone"
+                                dataKey="resonanceEffect"
+                                stroke="none"
+                                fill="#84cc16"
+                                fillOpacity={0.35}
+                                strokeWidth={0}
+                                name="resonance effect"
+                                dot={false}
+                                stackId="resonance"
+                            />
+                            <Area
+                                type="monotone"
                                 dataKey="withResonance"
                                 stroke="#84cc16"
-                                fill="#84cc16"
-                                fillOpacity={0.2}
+                                fill="none"
+                                fillOpacity={0}
                                 strokeWidth={2}
                                 name="with resonance"
                                 dot={false}
                             />
+                            {snapshot && (
+                                <Area
+                                    type="monotone"
+                                    dataKey="snapshotWithResonance"
+                                    stroke="#f97316"
+                                    fill="none"
+                                    fillOpacity={0}
+                                    strokeWidth={1.5}
+                                    strokeDasharray="6 3"
+                                    name={`saved (${snapshot.label})`}
+                                    dot={false}
+                                />
+                            )}
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
@@ -162,19 +223,52 @@ export default function Viewer({
                 </div>
             </div>
 
-            <div className="grid grid-cols-5 gap-3">
-                {([
-                    ['resonance gain', metrics.resonanceGain],
-                    ['baseline mobility', metrics.baselineMobility],
-                    ['target bias', metrics.targetBias],
-                    ['compressibility', metrics.compressibility],
-                    ['search time', metrics.searchTime],
-                ] as [string, number][]).map(([label, val]) => (
-                    <div key={label} className="border border-lime-500/20 p-3">
-                        <div className="text-xs text-lime-200/40 uppercase tracking-wide">{label}</div>
-                        <div className="text-lg font-mono text-lime-400 mt-1">{(val * 100).toFixed(1)}%</div>
-                    </div>
-                ))}
+            {snapshot ? (
+                <div className="grid grid-cols-5 gap-3">
+                    {metricsEntries.map(([label, val]) => {
+                        const savedVal = ({
+                            'resonance gain': snapshot.metrics.resonanceGain,
+                            'baseline mobility': snapshot.metrics.baselineMobility,
+                            'target bias': snapshot.metrics.targetBias,
+                            'compressibility': snapshot.metrics.compressibility,
+                            'search time': snapshot.metrics.searchTime,
+                        } as Record<string, number>)[label] ?? 0;
+                        const delta = val - savedVal;
+                        const isImproved = label === 'search time' ? delta < -0.005 : delta > 0.005;
+                        const isWorse = label === 'search time' ? delta > 0.005 : delta < -0.005;
+                        return (
+                            <div key={label} className="border border-lime-500/20 p-3">
+                                <div className="text-xs text-lime-200/40 uppercase tracking-wide">{label}</div>
+                                <div className="text-lg font-mono text-lime-400 mt-1">{(val * 100).toFixed(1)}%</div>
+                                <div className={`text-xs font-mono mt-0.5 ${isImproved ? 'text-lime-400' : isWorse ? 'text-orange-400' : 'text-lime-200/30'}`}>
+                                    {delta > 0.005 ? '↑' : delta < -0.005 ? '↓' : '='} {(savedVal * 100).toFixed(1)}%
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            ) : (
+                <div className="grid grid-cols-5 gap-3">
+                    {metricsEntries.map(([label, val]) => (
+                        <div key={label} className="border border-lime-500/20 p-3">
+                            <div className="text-xs text-lime-200/40 uppercase tracking-wide">{label}</div>
+                            <div className="text-lg font-mono text-lime-400 mt-1">{(val * 100).toFixed(1)}%</div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            <SensitivityAnalysis
+                bars={sensitivityBars}
+                baseline={metrics.searchTime}
+                outputLabel="search time"
+            />
+
+            <AssumptionPanel assumptions={assumptions} />
+
+            <CalibrationPanel results={calibrationResults} outputLabel="search time" />
+            <div className="text-xs text-lime-200/30 -mt-4 px-1">
+                Qualitative toy model — calibration error reflects intentional simplifications (no crowding, no DNA packaging, no conformational states).
             </div>
         </div>
     );

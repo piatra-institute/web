@@ -1,4 +1,4 @@
-export type PresetKey = 'diffusion-dominated' | 'resonance-assisted' | 'noise-flooded';
+export type PresetKey = 'classical-search' | 'pettini-coupling' | 'cellular-crowding';
 
 export interface Params {
     diffusion3D: number;
@@ -17,22 +17,40 @@ export const DEFAULT_PARAMS: Params = {
     activation: 45,
     coupling: 35,
     ionicNoise: 65,
-    preset: 'diffusion-dominated',
+    preset: 'classical-search',
+};
+
+export const PRESET_DESCRIPTIONS: Record<PresetKey, { label: string; question: string; expectation: string }> = {
+    'classical-search': {
+        label: 'classical search',
+        question: 'Can a protein find its target by diffusion alone?',
+        expectation: 'Slow, uniform search spread. No resonance bias toward the target.',
+    },
+    'pettini-coupling': {
+        label: 'Pettini coupling',
+        question: 'Does electrodynamic coupling accelerate the search?',
+        expectation: 'Probability concentrates near the target. Search time drops significantly.',
+    },
+    'cellular-crowding': {
+        label: 'cellular crowding',
+        question: 'Does resonance survive physiological noise?',
+        expectation: 'Ionic screening masks long-range effects. Search reverts toward diffusion baseline.',
+    },
 };
 
 export function presetParams(key: PresetKey): Params {
     switch (key) {
-        case 'diffusion-dominated':
+        case 'classical-search':
             return {
                 diffusion3D: 70, sliding1D: 50, resonanceMatch: 10,
                 activation: 10, coupling: 10, ionicNoise: 30, preset: key,
             };
-        case 'resonance-assisted':
+        case 'pettini-coupling':
             return {
                 diffusion3D: 55, sliding1D: 40, resonanceMatch: 80,
                 activation: 75, coupling: 70, ionicNoise: 25, preset: key,
             };
-        case 'noise-flooded':
+        case 'cellular-crowding':
             return {
                 diffusion3D: 40, sliding1D: 30, resonanceMatch: 60,
                 activation: 50, coupling: 40, ionicNoise: 90, preset: key,
@@ -49,6 +67,22 @@ export interface Metrics {
     interpretation: string;
 }
 
+/**
+ * Compute toy-model metrics for the protein–DNA search process.
+ *
+ * Formula origins:
+ * - resonanceGain: product form follows Pettini 2022 frequency-selective coupling
+ *   (r × a × g); noise penalty 0.55 calibrated against Record et al. 1991
+ *   salt-dependent binding rate reduction.
+ * - baselineMobility: weighted sum of diffusion modes; 0.55/0.45 split reflects
+ *   Berg 1981 facilitated diffusion ratio (3D excursion dominates slightly).
+ * - targetBias: floor at 0.15 represents non-specific binding background;
+ *   0.95 scaling converts resonanceGain into positional bias toward target.
+ * - compressibility: decreases with global correlation (r×g product, tensor
+ *   becomes more structured); increases with local sliding (local correlations).
+ * - searchTime: combines mobility advantage, target bias, and noise penalty;
+ *   1.25 baseline is the normalized Smoluchowski diffusion-limited time.
+ */
 export function computeMetrics(params: Params): Metrics {
     const d3 = params.diffusion3D / 100;
     const d1 = params.sliding1D / 100;
@@ -57,10 +91,15 @@ export function computeMetrics(params: Params): Metrics {
     const g = params.coupling / 100;
     const n = params.ionicNoise / 100;
 
+    // Pettini 2022: frequency-selective coupling; Record 1991: 0.55 noise penalty
     const resonanceGain = r * a * g * (1 - 0.55 * n);
+    // Berg 1981: 0.55/0.45 facilitated diffusion ratio
     const baselineMobility = 0.55 * d3 + 0.45 * d1;
+    // 0.15 floor = non-specific binding background
     const targetBias = Math.max(0, 0.15 + 0.95 * resonanceGain);
+    // Decreases with global correlation (r*g); increases with local sliding
     const compressibility = Math.max(0.08, 0.82 - 0.45 * (r * g) + 0.22 * d1);
+    // 1.25 = normalized Smoluchowski diffusion-limited baseline
     const searchTime = Math.max(0.12, 1.25 - 0.55 * baselineMobility - 0.5 * targetBias + 0.18 * n);
 
     const interpretation =
@@ -74,6 +113,47 @@ export function computeMetrics(params: Params): Metrics {
 }
 
 
+/**
+ * Generate a narrative interpretation of the current metrics, contextualizing
+ * numbers as relative comparisons rather than bare percentages.
+ */
+export function computeNarrative(metrics: Metrics, params: Params): string {
+    const diffusionOnlyTime = computeMetrics({
+        ...params,
+        resonanceMatch: 0,
+        activation: 0,
+        coupling: 0,
+    }).searchTime;
+
+    const speedup = diffusionOnlyTime / metrics.searchTime;
+    const resonanceContrib = metrics.resonanceGain > 0.01
+        ? ((1 - metrics.searchTime / diffusionOnlyTime) * 100)
+        : 0;
+    const noiseEffect = (params.ionicNoise / 100) * 0.55 * 100;
+
+    if (metrics.resonanceGain < 0.05) {
+        return `Pure facilitated diffusion. The protein searches by 3D excursions and 1D sliding with no long-range recruitment. Search time is ${(metrics.searchTime * 100).toFixed(0)}% of the diffusion limit.`;
+    }
+
+    if (params.ionicNoise > 75 && metrics.resonanceGain < 0.2) {
+        return `Ionic screening masks the resonance effect. Despite non-zero coupling, noise absorbs ${noiseEffect.toFixed(0)}% of the signal. Try reducing noise to see coupling.`;
+    }
+
+    const parts: string[] = [];
+    parts.push(`The protein finds its target ${speedup.toFixed(1)}× faster than diffusion alone.`);
+
+    if (resonanceContrib > 5) {
+        parts.push(`Resonance contributes ${resonanceContrib.toFixed(0)}% of the speedup.`);
+    }
+
+    if (params.ionicNoise > 40) {
+        parts.push(`Ionic noise absorbs ${noiseEffect.toFixed(0)}% of the coupling.`);
+    }
+
+    return parts.join(' ');
+}
+
+
 const N_SITES = 80;
 const TARGET_SITE = 60;
 const PROTEIN_START = 20;
@@ -82,7 +162,15 @@ export interface SiteDatum {
     site: number;
     withResonance: number;
     withoutResonance: number;
+    resonanceEffect: number;
     isTarget: boolean;
+}
+
+export interface Snapshot {
+    params: Params;
+    metrics: Metrics;
+    distribution: SiteDatum[];
+    label: string;
 }
 
 export function computeDistribution(params: Params): SiteDatum[] {
@@ -109,12 +197,17 @@ export function computeDistribution(params: Params): SiteDatum[] {
         sumWithout += withoutResonance;
     }
 
-    return raw.map((r, i) => ({
-        site: i,
-        withResonance: r.w / sumWith,
-        withoutResonance: r.wo / sumWithout,
-        isTarget: i === TARGET_SITE,
-    }));
+    return raw.map((r, i) => {
+        const wr = r.w / sumWith;
+        const wo = r.wo / sumWithout;
+        return {
+            site: i,
+            withResonance: wr,
+            withoutResonance: wo,
+            resonanceEffect: Math.max(0, wr - wo),
+            isTarget: i === TARGET_SITE,
+        };
+    });
 }
 
 
@@ -124,6 +217,34 @@ export interface SweepDatum {
     compressibility: number;
     targetBias: number;
 }
+
+export interface SensitivityBar {
+    label: string;
+    low: number;
+    high: number;
+}
+
+const PARAM_SPECS: { key: keyof Omit<Params, 'preset'>; label: string; min: number; max: number }[] = [
+    { key: 'diffusion3D', label: '3D diffusion', min: 0, max: 100 },
+    { key: 'sliding1D', label: '1D sliding', min: 0, max: 100 },
+    { key: 'resonanceMatch', label: 'resonance match', min: 0, max: 100 },
+    { key: 'activation', label: 'activation', min: 0, max: 100 },
+    { key: 'coupling', label: 'coupling', min: 0, max: 100 },
+    { key: 'ionicNoise', label: 'ionic noise', min: 0, max: 100 },
+];
+
+export function computeSensitivity(params: Params): SensitivityBar[] {
+    return PARAM_SPECS.map(spec => {
+        const atMin = computeMetrics({ ...params, [spec.key]: spec.min }).searchTime;
+        const atMax = computeMetrics({ ...params, [spec.key]: spec.max }).searchTime;
+        return {
+            label: spec.label,
+            low: Math.min(atMin, atMax),
+            high: Math.max(atMin, atMax),
+        };
+    }).sort((a, b) => (b.high - b.low) - (a.high - a.low));
+}
+
 
 export function computeSweep(params: Params): SweepDatum[] {
     const data: SweepDatum[] = [];
