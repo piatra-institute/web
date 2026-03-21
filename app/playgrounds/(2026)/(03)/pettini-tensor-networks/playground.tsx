@@ -330,6 +330,7 @@ export default function PettiniTensorNetworksPlayground({ sourceContext }: Props
                     onClearSnapshot={clearSnapshot}
                 />
             }
+            researchUrl="/playgrounds/pettini-tensor-networks/research"
         />
     );
 }

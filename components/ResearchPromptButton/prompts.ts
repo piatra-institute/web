@@ -207,7 +207,20 @@ List 10-20 specific, actionable improvements organized by category:
 
 **Interesting additions**: extensions that would make the playground more complete
 
-Each suggestion should include a confidence level (high / medium / speculative) and cite relevant literature.`,
+Each suggestion should include a confidence level (high / medium / speculative) and cite relevant literature.
+
+### CRITICAL: Output Format Requirements
+
+Your response will be saved directly as a .md file and rendered by a standard markdown-to-HTML pipeline. You MUST produce **clean, portable markdown only**. Specifically:
+
+- **No internal citation tokens.** Do not output \`citeturn0search0\`, \`turn3search5\`, or any similar citation/search reference markup. Instead, cite as plain text: "Author, Year" or "(Author et al., Year)" in the prose, and list full references with URLs at the end.
+- **No entity markup.** Do not output \`entity["people","Name","desc"]\` or \`entity["organization","Name","desc"]\` or any similar structured markup. Use plain text names: "Otto G. Berg", "Frank Verstraete", etc.
+- **No image generation commands.** Do not output \`image_group{...}\` or any image/media generation directives.
+- **No meta-commentary about the task.** Do not open with "You want two deliverables..." or "Here is what I will produce..." — write the document directly, starting with the ## Introduction header.
+- **Standard markdown only.** Use only: headings (## ###), bold (**text**), italic (*text*), links ([text](url)), lists (- or 1.), blockquotes (>), code (\`code\`), and horizontal rules (---). No LaTeX, no HTML tags, no custom syntax.
+- **Researcher names in plain text.** When mentioning researchers, just use their name naturally in the sentence. Do not wrap names in any special formatting or tagging.
+
+If you are uncertain whether a syntax element is standard markdown, leave it out. The output must render correctly with a basic markdown parser (react-markdown with remark-gfm).`,
 };
 
 
@@ -232,6 +245,8 @@ export function buildAllPrompts(ctx: PlaygroundSourceContext, focus: string): st
 ---
 
 The following ${total} research questions should be answered in sequence within a single response. Produce a clearly labeled section for each step.
+
+CRITICAL FORMAT RULE FOR ALL STEPS (especially step ${total}): Your output will be saved directly as a .md file and rendered by a standard markdown-to-HTML pipeline. You MUST produce clean, portable markdown only. Do NOT output internal citation tokens (citeturn0search0, turn3search5, etc.), entity markup (entity["people","Name","desc"]), image generation commands (image_group{...}), or any non-standard syntax. Cite as plain text "Author, Year" in prose and list full references at the end. Use only standard markdown: headings, bold, italic, links, lists, blockquotes, code, and horizontal rules.
 
 ---
 
