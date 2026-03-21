@@ -44,10 +44,11 @@ export default function ResearchPromptButton({ context }: ResearchPromptButtonPr
             {expanded && (
                 <div className="border-t border-lime-500/10 p-4 space-y-4">
                     <p className="text-xs text-gray-400 leading-relaxed">
-                        Paste these prompts into ChatGPT Deep Research, Gemini Deep Research,
-                        or any capable AI. Each prompt includes the full playground source code
-                        as context. Work through the steps in order — the final step produces
-                        the research companion document.
+                        Open a single conversation in ChatGPT Deep Research, Gemini Deep Research,
+                        or any capable AI. Copy each prompt in order, paste it, and wait for the
+                        response before moving to the next step. Each prompt includes the full
+                        playground source code. The AI builds on its prior answers — step 6
+                        synthesizes everything into a research companion document.
                     </p>
 
                     <div>
@@ -77,6 +78,7 @@ export default function ResearchPromptButton({ context }: ResearchPromptButtonPr
                                     <div className="min-w-0">
                                         <div className="text-xs text-lime-100">{step.label}</div>
                                         <div className="text-[10px] text-lime-200/40 mt-0.5">{step.description}</div>
+                                        <div className="text-[10px] text-lime-200/25 mt-0.5 italic">{step.hint}</div>
                                     </div>
                                 </div>
                                 <button

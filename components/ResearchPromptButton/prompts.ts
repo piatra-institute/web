@@ -5,6 +5,7 @@ export interface ResearchStep {
     id: string;
     label: string;
     description: string;
+    hint: string;
 }
 
 export const RESEARCH_STEPS: ResearchStep[] = [
@@ -12,31 +13,37 @@ export const RESEARCH_STEPS: ResearchStep[] = [
         id: 'historical-context',
         label: 'Historical context & intellectual lineage',
         description: 'Trace the origins and development of the core concepts',
+        hint: 'paste into a new conversation — this sets the context',
     },
     {
         id: 'scientific-accuracy',
         label: 'Scientific accuracy & empirical evidence',
         description: 'Evaluate the model\'s claims against published evidence',
+        hint: 'paste in the same conversation',
     },
     {
         id: 'related-concepts',
         label: 'Related concepts & cross-disciplinary connections',
         description: 'Identify connections to adjacent fields and frameworks',
+        hint: 'paste in the same conversation',
     },
     {
         id: 'pedagogical-framing',
         label: 'Pedagogical framing & learning design',
         description: 'Assess how well the playground teaches the concepts',
+        hint: 'paste in the same conversation',
     },
     {
         id: 'assumption-validation',
         label: 'Assumption validation & sensitivity',
         description: 'Scrutinize each explicit assumption and its confidence level',
+        hint: 'paste in the same conversation',
     },
     {
         id: 'synthesis',
         label: 'Synthesis & suggested improvements',
         description: 'Produce a research companion document and improvement suggestions',
+        hint: 'paste in the same conversation — this produces the final document',
     },
 ];
 
