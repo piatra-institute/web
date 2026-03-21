@@ -11,13 +11,13 @@ const content = fs.readFileSync(
 );
 
 export const metadata: Metadata = {
-    title: 'pettini tensor networks · research · playgrounds',
-    description: 'research companion for pettini tensor networks',
+    title: 'Pettini tensor networks · research · playgrounds',
+    description: 'research companion for Pettini tensor networks',
 
     openGraph: {
         ...defaultOpenGraph,
-        title: 'pettini tensor networks · research · playgrounds · piatra.institute',
-        description: 'research companion for pettini tensor networks',
+        title: 'Pettini tensor networks · research · playgrounds · piatra.institute',
+        description: 'research companion for Pettini tensor networks',
     },
 };
 
