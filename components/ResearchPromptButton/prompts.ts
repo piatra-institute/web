@@ -43,7 +43,7 @@ export const RESEARCH_STEPS: ResearchStep[] = [
         id: 'synthesis',
         label: 'Synthesis & suggested improvements',
         description: 'Produce a research companion document and improvement suggestions',
-        hint: 'paste in the same conversation — this produces the final document',
+        hint: 'paste in the same conversation — save the response as your research companion',
     },
 ];
 
@@ -211,8 +211,29 @@ Each suggestion should include a confidence level (high / medium / speculative) 
 };
 
 
-export function buildPrompt(step: ResearchStep, ctx: PlaygroundSourceContext, focus: string): string {
+export function buildPrompt(step: ResearchStep, ctx: PlaygroundSourceContext, focus: string, stepIndex: number): string {
     const preamble = buildPreamble(ctx, focus);
     const question = STEP_QUESTIONS[step.id] ?? '';
-    return `${preamble}\n---\n\n${question}`;
+    const stepLabel = `[Step ${stepIndex} of ${RESEARCH_STEPS.length}]\n\n`;
+    return `${preamble}\n---\n\n${stepLabel}${question}`;
+}
+
+
+export function buildAllPrompts(ctx: PlaygroundSourceContext, focus: string): string {
+    const preamble = buildPreamble(ctx, focus);
+    const total = RESEARCH_STEPS.length;
+
+    const allQuestions = RESEARCH_STEPS.map((step, i) => {
+        const question = STEP_QUESTIONS[step.id] ?? '';
+        return `[Step ${i + 1} of ${total}]\n\n${question}`;
+    }).join('\n\n---\n\n');
+
+    return `${preamble}
+---
+
+The following ${total} research questions should be answered in sequence within a single response. Produce a clearly labeled section for each step.
+
+---
+
+${allQuestions}`;
 }
