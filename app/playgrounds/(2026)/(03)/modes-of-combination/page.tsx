@@ -16,12 +16,12 @@ const sourceContext = readPlaygroundSource(
 );
 
 export const metadata: Metadata = {
-    title: 'modes of combination \u00b7 playgrounds',
-    description: 'Atlas of product constructions \u2014 explore how mathematical objects combine across algebra, category theory, and topology',
+    title: 'modes of combination · playgrounds',
+    description: 'Atlas of product constructions — explore how mathematical objects combine across algebra, category theory, and topology',
 
     openGraph: {
         ...defaultOpenGraph,
-        title: 'modes of combination \u00b7 playgrounds \u00b7 piatra.institute',
+        title: 'modes of combination · playgrounds · piatra.institute',
         description: 'Atlas of product constructions across group theory, ring theory, category theory, and topology',
         images: [
             {

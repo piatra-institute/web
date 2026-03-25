@@ -80,7 +80,7 @@ export default function Viewer({
 
                 {/* Field x Mode matrix */}
                 <div>
-                    <h3 className="text-sm font-semibold text-lime-400 uppercase tracking-wider mb-2">Field \u00d7 mode matrix</h3>
+                    <h3 className="text-sm font-semibold text-lime-400 uppercase tracking-wider mb-2">Field × mode matrix</h3>
                     <p className="text-xs text-lime-200/50 mb-4">Where each style of combination is most visible.</p>
                     <div className="overflow-x-auto">
                         <table className="min-w-full border-separate border-spacing-1">

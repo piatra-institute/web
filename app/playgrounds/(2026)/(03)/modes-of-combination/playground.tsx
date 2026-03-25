@@ -43,6 +43,14 @@ export default function Playground({ sourceContext }: { sourceContext?: Playgrou
         setParams(p => ({ ...p, selectedMode: mode }));
     }, []);
 
+    const handleSelectConstruction = useCallback((id: string) => {
+        setSelectedId(id);
+        const inFiltered = filtered.some(p => p.id === id);
+        if (!inFiltered) {
+            setParams(p => ({ ...p, selectedField: 'All', selectedMode: 'all', search: '' }));
+        }
+    }, [filtered]);
+
     const sections: PlaygroundSection[] = [
         { id: 'intro', type: 'intro' },
         {
@@ -57,7 +65,7 @@ export default function Playground({ sourceContext }: { sourceContext?: Playgrou
                         selectedMode={params.selectedMode}
                         assumptions={assumptions}
                         versions={versions}
-                        onSelectConstruction={setSelectedId}
+                        onSelectConstruction={handleSelectConstruction}
                         onModeSelect={handleModeSelect}
                     />
                 </PlaygroundViewer>

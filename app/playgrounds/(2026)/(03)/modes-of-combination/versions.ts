@@ -17,7 +17,7 @@ export const changelog: ChangelogEntry[] = [
         changes: [
             '25 product constructions across group theory, ring/algebra, category theory, and topology',
             '11 modes of combination as the primary taxonomy axis',
-            'Field \u00d7 mode matrix visualization',
+            'Field × mode matrix visualization',
             'Interactive filtering by field, mode, search, and sort order',
             'Four curated presets: full atlas, universal templates, action hierarchy, topological surgery',
             'Detail panel with intuition, use-when conditions, comparison, and nearby constructions',

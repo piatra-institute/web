@@ -49,11 +49,11 @@ export const PRESET_DESCRIPTIONS: Record<PresetKey, { label: string; question: s
     'universal-templates': {
         label: 'Universal templates',
         question: 'What are the four fundamental categorical shapes?',
-        expectation: 'Product, coproduct, pullback, and pushout \u2014 the master patterns most constructions specialize.',
+        expectation: 'Product, coproduct, pullback, and pushout — the master patterns most constructions specialize.',
     },
     'action-hierarchy': {
         label: 'Action hierarchy',
-        question: 'How does control complexity increase from semidirect to wreath to Zappa\u2013Sz\u00e9p?',
+        question: 'How does control complexity increase from semidirect to wreath to Zappa–Szép?',
         expectation: 'Three levels: one-sided control, distributed repetition, and mutual reshaping.',
     },
     'topology-surgery': {
@@ -96,7 +96,7 @@ export const products: Product[] = [
     {
         id: 'direct-product',
         name: 'Direct product',
-        notation: 'G \u00d7 H / R \u00d7 S / X \u00d7 Y',
+        notation: 'G × H / R × S / X × Y',
         field: ['Group theory', 'Ring / algebra', 'Category theory', 'Topology'],
         mode: ['juxtaposition'],
         difficulty: 'Foundational',
@@ -105,12 +105,12 @@ export const products: Product[] = [
         intuition: 'You keep both objects at once, coordinate by coordinate, without forcing them to interact in any deeper way.',
         useWhen: ['The factors are genuinely independent', 'You want parallel symmetries or parallel state spaces', 'You want a baseline construction before adding interaction or gluing'],
         compareTo: 'Contrast with the free product, which maximizes freedom rather than independence.',
-        example: 'In groups, (g\u2081, h\u2081)(g\u2082, h\u2082) = (g\u2081g\u2082, h\u2081h\u2082).',
+        example: 'In groups, (g₁, h₁)(g₂, h₂) = (g₁g₂, h₁h₂).',
     },
     {
         id: 'restricted-direct-product',
         name: 'Restricted direct product',
-        notation: '\u220f\u2032 G\u1d62',
+        notation: '∏′ Gᵢ',
         field: ['Group theory'],
         mode: ['juxtaposition'],
         difficulty: 'Intermediate',
@@ -119,12 +119,12 @@ export const products: Product[] = [
         intuition: 'Like an infinite direct product, but with a finiteness discipline so the construction stays tractable.',
         useWhen: ['You need infinitely many factors but want control over almost all coordinates', 'Arithmetic or adelic-style settings'],
         compareTo: 'More disciplined than a raw infinite product.',
-        example: 'Ad\u00e8lic constructions are built from restricted products.',
+        example: 'Adèlic constructions are built from restricted products.',
     },
     {
         id: 'semidirect-product',
         name: 'Semidirect product',
-        notation: 'N \u22ca H',
+        notation: 'N ⋊ H',
         field: ['Group theory'],
         mode: ['action'],
         difficulty: 'Core',
@@ -138,7 +138,7 @@ export const products: Product[] = [
     {
         id: 'wreath-product',
         name: 'Wreath product',
-        notation: 'G \u2240 H \u2245 G\u207d\u1d61\u207e \u22ca H',
+        notation: 'G ≀ H ≅ G⁽ˣ⁾ ⋊ H',
         field: ['Group theory'],
         mode: ['action', 'hierarchical-repetition'],
         difficulty: 'Advanced',
@@ -151,8 +151,8 @@ export const products: Product[] = [
     },
     {
         id: 'zappa-szep',
-        name: 'Zappa\u2013Sz\u00e9p product',
-        notation: 'G \u22c8 H',
+        name: 'Zappa–Szép product',
+        notation: 'G ⋈ H',
         field: ['Group theory'],
         mode: ['mutual-action'],
         difficulty: 'Advanced',
@@ -180,7 +180,7 @@ export const products: Product[] = [
     {
         id: 'graph-product',
         name: 'Graph product',
-        notation: '\u03a0\u0393 G\u1d65',
+        notation: 'ΠΓ Gᵥ',
         field: ['Group theory'],
         mode: ['partial-commutativity'],
         difficulty: 'Intermediate',
@@ -203,12 +203,12 @@ export const products: Product[] = [
         intuition: 'Take a free merger, then identify a common overlap so the two sides share a spine.',
         useWhen: ['Two structures share a meaningful common part', 'You want to encode gluing rather than independent coexistence'],
         compareTo: 'Free product plus an overlap constraint.',
-        example: 'A basic construction in Bass\u2013Serre theory.',
+        example: 'A basic construction in Bass–Serre theory.',
     },
     {
         id: 'hnn-extension',
         name: 'HNN extension',
-        notation: '\u27e8G, t | t\u207b\u00b9At = B\u27e9',
+        notation: '⟨G, t | t⁻¹At = B⟩',
         field: ['Group theory'],
         mode: ['gluing'],
         difficulty: 'Advanced',
@@ -217,12 +217,12 @@ export const products: Product[] = [
         intuition: 'Instead of gluing two different groups together, you build a bridge inside a single group between two matching regions.',
         useWhen: ['One structure must be glued to itself internally', 'Recursive or self-similar structure appears'],
         compareTo: 'The self-gluing analogue of amalgamated free products.',
-        example: 'Baumslag\u2013Solitar groups arise this way.',
+        example: 'Baumslag–Solitar groups arise this way.',
     },
     {
         id: 'central-product',
         name: 'Central product',
-        notation: '(G \u00d7 H)/\u0394Z',
+        notation: '(G × H)/ΔZ',
         field: ['Group theory'],
         mode: ['quotient-collapse', 'gluing'],
         difficulty: 'Intermediate',
@@ -236,7 +236,7 @@ export const products: Product[] = [
     {
         id: 'fiber-product-group',
         name: 'Fiber product',
-        notation: 'G \u00d7_Q H',
+        notation: 'G ×_Q H',
         field: ['Group theory', 'Ring / algebra', 'Category theory', 'Topology'],
         mode: ['compatibility'],
         difficulty: 'Core',
@@ -245,12 +245,12 @@ export const products: Product[] = [
         intuition: 'Not all pairs are allowed; only those that agree when viewed through a shared observable.',
         useWhen: ['Two objects must agree over common data', 'You care about matched states rather than all pairs'],
         compareTo: 'A filtered version of the direct product.',
-        example: '{(g, h) : \u03c6(g) = \u03c8(h)}.',
+        example: '{(g, h) : φ(g) = ψ(h)}.',
     },
     {
         id: 'tensor-product',
         name: 'Tensor product',
-        notation: 'R \u2297\u2096 S / V \u2297 W',
+        notation: 'R ⊗ₖ S / V ⊗ W',
         field: ['Ring / algebra', 'Category theory'],
         mode: ['interaction'],
         difficulty: 'Core',
@@ -264,7 +264,7 @@ export const products: Product[] = [
     {
         id: 'crossed-product',
         name: 'Crossed product',
-        notation: 'A \u22ca_\u03b1 G',
+        notation: 'A ⋊_α G',
         field: ['Ring / algebra'],
         mode: ['action', 'quotient-collapse'],
         difficulty: 'Advanced',
@@ -278,7 +278,7 @@ export const products: Product[] = [
     {
         id: 'smash-product',
         name: 'Smash product',
-        notation: 'A # H / X \u2227 Y',
+        notation: 'A # H / X ∧ Y',
         field: ['Ring / algebra', 'Topology', 'Category theory'],
         mode: ['interaction', 'quotient-collapse'],
         difficulty: 'Advanced',
@@ -287,7 +287,7 @@ export const products: Product[] = [
         intuition: 'You first combine two structures, then identify a distinguished subpiece so the result behaves like a pointed or action-sensitive interaction space.',
         useWhen: ['You need a pointed or quotient-enhanced notion of interaction', 'Hopf algebra or based-space contexts are central'],
         compareTo: 'A more aggressive interaction than direct products, with collapsing built in.',
-        example: 'In topology, X \u2227 Y = (X \u00d7 Y)/(X \u2228 Y).',
+        example: 'In topology, X ∧ Y = (X × Y)/(X ∨ Y).',
     },
     {
         id: 'bicrossed-product',
@@ -296,7 +296,7 @@ export const products: Product[] = [
         field: ['Ring / algebra'],
         mode: ['mutual-action'],
         difficulty: 'Advanced',
-        summary: 'A Hopf-algebraic mutual-action construction analogous to Zappa\u2013Sz\u00e9p products.',
+        summary: 'A Hopf-algebraic mutual-action construction analogous to Zappa–Szép products.',
         oneLiner: 'Mutual deformation in Hopf form.',
         intuition: 'Each side acts on the other, and the combined object encodes that reciprocal structure.',
         useWhen: ['A one-sided action is too weak', 'Hopf-algebraic symmetry must be treated on both sides'],
@@ -306,7 +306,7 @@ export const products: Product[] = [
     {
         id: 'categorical-product',
         name: 'Categorical product',
-        notation: 'A \u00d7 B',
+        notation: 'A × B',
         field: ['Category theory'],
         mode: ['juxtaposition'],
         difficulty: 'Foundational',
@@ -320,7 +320,7 @@ export const products: Product[] = [
     {
         id: 'coproduct',
         name: 'Coproduct',
-        notation: 'A \u2a3f B',
+        notation: 'A ⨿ B',
         field: ['Category theory', 'Group theory'],
         mode: ['freedom'],
         difficulty: 'Foundational',
@@ -334,7 +334,7 @@ export const products: Product[] = [
     {
         id: 'pullback',
         name: 'Pullback',
-        notation: 'A \u00d7_C B',
+        notation: 'A ×_C B',
         field: ['Category theory', 'Topology', 'Group theory', 'Ring / algebra'],
         mode: ['compatibility'],
         difficulty: 'Core',
@@ -343,12 +343,12 @@ export const products: Product[] = [
         intuition: 'A pullback is the cleanest abstract version of matching over shared data.',
         useWhen: ['Compatibility over a common target is the real issue', 'You want an abstract version of fiber products'],
         compareTo: 'The categorical master form of fiber products.',
-        example: 'Given A \u2192 C \u2190 B, the pullback captures compatible pairs.',
+        example: 'Given A → C ← B, the pullback captures compatible pairs.',
     },
     {
         id: 'pushout',
         name: 'Pushout',
-        notation: 'A \u2a3f_C B',
+        notation: 'A ⨿_C B',
         field: ['Category theory', 'Group theory', 'Topology'],
         mode: ['gluing'],
         difficulty: 'Core',
@@ -362,7 +362,7 @@ export const products: Product[] = [
     {
         id: 'monoidal-product',
         name: 'Monoidal product',
-        notation: 'A \u2297 B',
+        notation: 'A ⊗ B',
         field: ['Category theory'],
         mode: ['interaction'],
         difficulty: 'Intermediate',
@@ -376,7 +376,7 @@ export const products: Product[] = [
     {
         id: 'cartesian-product-space',
         name: 'Cartesian product',
-        notation: 'X \u00d7 Y',
+        notation: 'X × Y',
         field: ['Topology'],
         mode: ['juxtaposition'],
         difficulty: 'Foundational',
@@ -385,12 +385,12 @@ export const products: Product[] = [
         intuition: 'The topological version of side-by-side coexistence.',
         useWhen: ['You want independent coordinates on spaces', 'You want the baseline combination before quotienting or gluing'],
         compareTo: 'Foundation for smash products, bundles, and many quotient constructions.',
-        example: 'A cylinder is S\u00b9 \u00d7 I.',
+        example: 'A cylinder is S¹ × I.',
     },
     {
         id: 'wedge-sum',
         name: 'Wedge sum',
-        notation: 'X \u2228 Y',
+        notation: 'X ∨ Y',
         field: ['Topology'],
         mode: ['gluing'],
         difficulty: 'Intermediate',
@@ -432,7 +432,7 @@ export const products: Product[] = [
     {
         id: 'fiber-bundle',
         name: 'Fiber bundle / twisted product',
-        notation: 'F \u21aa E \u2192 B',
+        notation: 'F ↪ E → B',
         field: ['Topology'],
         mode: ['twisting'],
         difficulty: 'Advanced',
@@ -441,7 +441,7 @@ export const products: Product[] = [
         intuition: 'Every small patch looks like a plain product, but globally the pieces may be stitched with twists that prevent a global factorization.',
         useWhen: ['Local product structure exists without global triviality', 'Geometry or topology carries hidden twist information'],
         compareTo: 'Semidirect-like in spirit, but geometric rather than purely algebraic.',
-        example: 'The M\u00f6bius band is locally an interval bundle over a circle but globally twisted.',
+        example: 'The Möbius band is locally an interval bundle over a circle but globally twisted.',
     },
 ];
 
@@ -520,10 +520,10 @@ export function computeNarrative(params: Params, filtered: Product[]): string {
     }
     if (params.selectedMode !== 'all') {
         const m = modes.find(m => m.key === params.selectedMode);
-        if (m) parts.push(`Mode: ${m.label} \u2014 ${m.summary.toLowerCase()}`);
+        if (m) parts.push(`Mode: ${m.label} — ${m.summary.toLowerCase()}`);
     }
     if (params.search) {
-        parts.push(`Search: \u201c${params.search}\u201d.`);
+        parts.push(`Search: “${params.search}”.`);
     }
     return parts.join(' ');
 }
