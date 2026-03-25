@@ -620,4 +620,12 @@ export const playgrounds: {
         topics: ['neuroscience', 'mathematics'],
         operations: ['landscape', 'anatomy'],
     },
+    {
+        name: 'modes of combination',
+        link: '/playgrounds/modes-of-combination',
+        description: 'atlas of product constructions across group theory, ring theory, category theory, and topology',
+        date: 'March 2026',
+        topics: ['mathematics', 'philosophy'],
+        operations: ['landscape', 'anatomy'],
+    },
 ];
