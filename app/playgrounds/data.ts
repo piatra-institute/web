@@ -612,4 +612,12 @@ export const playgrounds: {
         topics: ['physics', 'biology'],
         operations: ['anatomy', 'landscape'],
     },
+    {
+        name: 'geometries of action',
+        link: '/playgrounds/geometries-of-action',
+        description: 'neural manifolds as geometry, dynamics, cross-subject alignment, and clinical decoding',
+        date: 'March 2026',
+        topics: ['neuroscience', 'mathematics'],
+        operations: ['landscape', 'anatomy'],
+    },
 ];
