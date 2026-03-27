@@ -628,4 +628,12 @@ export const playgrounds: {
         topics: ['mathematics', 'philosophy'],
         operations: ['landscape', 'anatomy'],
     },
+    {
+        name: 'frontier governance',
+        link: '/playgrounds/frontier-governance',
+        description: 'when state control of profits helps vs. harms innovation across frontier sectors',
+        date: 'March 2026',
+        topics: ['economics', 'political-science'],
+        operations: ['landscape', 'tension'],
+    },
 ];
