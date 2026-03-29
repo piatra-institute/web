@@ -7,10 +7,10 @@ export const links = [
     //     href: '/provocations',
     //     label: 'provocations',
     // },
-    // {
-    //     href: '/papers',
-    //     label: 'papers',
-    // },
+    {
+        href: '/papers',
+        label: 'papers',
+    },
     {
         href: '/playgrounds',
         label: 'playgrounds',

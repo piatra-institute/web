@@ -1,11 +1,7 @@
 import type { Metadata } from 'next';
 import { defaultOpenGraph } from '@/data/metadata';
 
-import Link from 'next/link';
-
-import Header from '@/components/Header';
-import Title from '@/components/Title';
-import SubtitleDateable from '@/components/SubtitleDateable';
+import PapersList from './components/PapersList';
 
 import {
     getPapers,
@@ -25,51 +21,31 @@ export const metadata: Metadata = {
 };
 
 
+const ownPapers = [
+    {
+        title: 'On Faultization: Pigeonhole Principle. Morphogenetic Competencies Under Irreducible Constraint',
+        date: 'March 2026',
+        abstract: 'We apply the morphogenetic perturbation methodology to the pigeonhole principle, a classical impossibility theorem reinterpreted as a distributed multi-agent system. We find that local policies converge to the theoretical minimum overload in six of eight experiments, that misleading holes are far more damaging than frozen holes, and that no delayed gratification is observed in any condition.',
+        pdf: '/papers/on-faultization-pigeonhole.pdf',
+        github: 'https://github.com/piatra-institute/on-faultization-pigeonhole',
+    },
+    {
+        title: 'On Faultization: Generative Pre-Trained Transformer. Morphogenetic Competencies of a Minimal Transformer',
+        date: 'March 2026',
+        abstract: 'We apply morphogenetic perturbation methodology to a minimal transformer (4-layer, 16-dimensional, 4-head character-level GPT) through twelve experiments spanning perturbation-during-training and multi-phase morphogenetic interventions. We identify four emergent behaviors not directly prescribed by SGD (stress inoculation, complete recovery, complete regeneration, and head-freezing trajectory improvement), three that reflect basin geometry, and three that demonstrate tolerance.',
+        pdf: '/papers/on-faultization-gpt.pdf',
+        github: 'https://github.com/piatra-institute/on-faultization-gpt',
+    },
+];
+
+
 export default function Papers() {
     const papers = getPapers();
 
     return (
-        <div
-            className="flex flex-col items-center justify-center w-full min-h-full select-none"
-        >
-            <Header />
-
-            <Title
-                text="papers"
-            />
-
-            <div
-                className="p-6 w-full max-w-lg"
-            >
-                {papers.map((paper) => {
-                    const {
-                        id,
-                        path,
-                        title,
-                        abstract,
-                        date,
-                    } = paper;
-
-                    return (
-                        <Link
-                            key={id}
-                            href={`/papers/${path}`}
-                            className="mb-8 block focus:outline-none focus:ring-1 focus:ring-white"
-                        >
-                            <SubtitleDateable
-                                text={title}
-                                date={date}
-                            />
-
-                            <div
-                                className="text-sm p-2 pt-1"
-                            >
-                                {abstract}
-                            </div>
-                        </Link>
-                    );
-                })}
-            </div>
-        </div>
+        <PapersList
+            papers={papers}
+            ownPapers={ownPapers}
+        />
     );
 }
