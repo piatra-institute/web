@@ -25,7 +25,7 @@ const ownPapers = [
     {
         title: 'On Faultization: Pigeonhole Principle. Morphogenetic Competencies Under Irreducible Constraint',
         date: 'March 2026',
-        abstract: 'We apply the morphogenetic perturbation methodology to the pigeonhole principle, a classical impossibility theorem reinterpreted as a distributed multi-agent system. We find that local policies converge to the theoretical minimum overload in six of eight experiments, that misleading holes are far more damaging than frozen holes, and that no delayed gratification is observed in any condition.',
+        abstract: 'We apply the morphogenetic perturbation methodology to the pigeonhole principle, a classical impossibility theorem reinterpreted as a distributed multi-agent system. We find that local policies converge to the theoretical minimum overload in six of eight experiments, that policy differences appear mainly in failure persistence rather than endpoint quality, and that misleading holes induce strong attraction bias by capturing disproportionate occupancy and overload.',
         pdf: '/papers/on-faultization-pigeonhole.pdf',
         github: 'https://github.com/piatra-institute/on-faultization-pigeonhole',
     },
