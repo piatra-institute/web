@@ -23,16 +23,16 @@ export const metadata: Metadata = {
 
 const ownPapers = [
     {
-        title: 'On Faultization: Pigeonhole Principle. Morphogenetic Competencies Under Irreducible Constraint',
+        title: 'On Faultization: Pigeonhole Principle. What Perturbation Reveals About Pattern Access Under Irreducible Constraint',
         date: 'March 2026',
-        abstract: 'We apply the morphogenetic perturbation methodology to the pigeonhole principle, a classical impossibility theorem reinterpreted as a distributed multi-agent system. We find that local policies converge to the theoretical minimum overload in six of eight experiments, that policy differences appear mainly in failure persistence rather than endpoint quality, and that misleading holes induce strong attraction bias by capturing disproportionate occupancy and overload.',
+        abstract: 'We apply faultization — systematic morphogenetic perturbation — to the pigeonhole principle, reinterpreted as a distributed multi-agent system, to probe what patterns from the latent space (Levin, 2026) the system accesses under irreducible constraint. The theoretical minimum overload O_min = m − n is a mathematical truth that the system channels without computing. In six of eight experiments, every run converges to O_min exactly (zero variance) — the strongest evidence for pattern-driven dynamics. Perceptual noise causes immediate degradation with no tolerance threshold, misleading holes invert the pattern-seeking mechanism, and all four local policies reach identical endpoints despite 5x differences in process cost.',
         pdf: '/papers/on-faultization-pigeonhole.pdf',
         github: 'https://github.com/piatra-institute/on-faultization-pigeonhole',
     },
     {
-        title: 'On Faultization: Generative Pre-Trained Transformer. Morphogenetic Competencies of a Minimal Transformer',
+        title: 'On Faultization: Generative Pre-Trained Transformer. What Perturbation Reveals About Pattern Access in a Minimal Transformer',
         date: 'March 2026',
-        abstract: 'We apply morphogenetic perturbation methodology to a minimal transformer (4-layer, 16-dimensional, 4-head character-level GPT) through twelve experiments spanning perturbation-during-training and multi-phase morphogenetic interventions. We identify four emergent behaviors not directly prescribed by SGD (stress inoculation, complete recovery, complete regeneration, and head-freezing trajectory improvement), three that reflect basin geometry, and three that demonstrate tolerance.',
+        abstract: 'We apply faultization — systematic morphogenetic perturbation — to a minimal transformer (4-layer, 16-dimensional, 4-head character-level GPT) to probe what patterns from the latent space (Levin, 2026) the system accesses. Twelve experiments reveal that the optimization pattern is accessible through radically different interfaces (local loss, partial communication, chimeric assembly), that absent interface components are tolerated while corrupted ones are catastrophic (+0.2% vs +24.8%), and that gradual noise exposure unlocks a stress-tolerance pattern that sudden exposure does not (p = 0.0001, d = −0.227) — a free lunch the system receives without the optimizer paying for it.',
         pdf: '/papers/on-faultization-gpt.pdf',
         github: 'https://github.com/piatra-institute/on-faultization-gpt',
     },
