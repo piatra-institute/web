@@ -20,6 +20,14 @@ export const metadata: Metadata = {
 
 const otherPress = [
     {
+        link: 'https://github.com/piatra-institute/introduction-to-doxonomics',
+        title: 'Introduction to Doxonomics',
+        subtitle: 'Toward a Science of How Power Shapes Belief',
+        authors: 'Piatra Institute',
+        year: '2026',
+        pdf: '/press/introduction-to-doxonomics.pdf',
+    },
+    {
         link: 'https://github.com/piatra-institute/deep-representation-learning-book',
         title: 'Învățarea Reprezentărilor Profunde ale Distribuțiilor de Date',
         originalTitle: 'Learning Deep Representations of Data Distributions',

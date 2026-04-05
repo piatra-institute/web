@@ -13,10 +13,12 @@ import PressTitle from '../PressTitle';
 interface OtherPressItem {
     link: string;
     title: string;
+    subtitle?: string;
     originalTitle?: string;
     authors?: string;
     year?: string;
     doi?: string;
+    pdf?: string;
 }
 
 interface PressListProps {
@@ -64,6 +66,12 @@ export default function PressList({
                             {item.title}
                         </div>
 
+                        {item.subtitle && (
+                            <div className="text-white text-sm mb-2">
+                                {item.subtitle}
+                            </div>
+                        )}
+
                         {item.authors && (
                             <div className="text-white text-sm my-2">
                                 {item.authors}
@@ -86,6 +94,18 @@ export default function PressList({
                                 <span>GitHub</span>
                                 <ExternalLink className="w-3 h-3" />
                             </a>
+
+                            {item.pdf && (
+                                <a
+                                    href={item.pdf}
+                                    className="inline-flex items-center gap-1 text-lime hover:underline text-sm"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <span>PDF</span>
+                                    <ExternalLink className="w-3 h-3" />
+                                </a>
+                            )}
 
                             {item.doi && (
                                 <a
