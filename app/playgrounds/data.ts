@@ -636,4 +636,12 @@ export const playgrounds: {
         topics: ['economics', 'political-science'],
         operations: ['landscape', 'tension'],
     },
+    {
+        name: 'societal harm topology',
+        link: '/playgrounds/societal-harm-topology',
+        description: 'counterfactual, distributed, multi-domain harm from concentrated private power',
+        date: 'April 2026',
+        topics: ['political-science', 'economics', 'philosophy'],
+        operations: ['anatomy', 'tension'],
+    },
 ];
