@@ -60,7 +60,7 @@ The question is not "what field is this playground in?" but "what kind of intell
 
 ### The Six Operations
 
-Across all 65 playgrounds, six fundamental intellectual operations recur. Each playground performs one or two of these.
+Across all 66 playgrounds, six fundamental intellectual operations recur. Each playground performs one or two of these.
 
 
 #### 1. Landscape
@@ -189,18 +189,19 @@ Each playground is assigned 1-2 operations. The primary operation is listed firs
 | north-south divergence | anatomy, landscape | accelerant decomposition across historical time bins |
 | trainable gene circuits | landscape, threshold | attractor basins and regime thresholds in gene regulatory networks |
 | pettini tensor networks | anatomy, landscape | search mechanism decomposed into operator terms; probability distribution mapped over DNA sites |
+| societal harm topology | anatomy, tension | counterfactual harm decomposed across 8 dimensions and 6 sectors; opposing forces of actor power vs. repair capacity and moral weight tensions |
 
 
 ### Distribution
 
 | Operation | Count | Percentage |
 |---|---|---|
-| Anatomy | 33 | 51% |
-| Landscape | 22 | 34% |
-| Tension | 18 | 28% |
+| Anatomy | 34 | 52% |
+| Landscape | 22 | 33% |
+| Tension | 19 | 29% |
 | Symmetry | 17 | 26% |
 | Threshold | 17 | 26% |
-| Morphogenesis | 16 | 25% |
+| Morphogenesis | 16 | 24% |
 
 Anatomy is the most common operation because explanation-through-decomposition is the default intellectual gesture of a playground — you build a model to show how something works. The others are more distinctive and revealing.
 
