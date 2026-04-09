@@ -644,4 +644,12 @@ export const playgrounds: {
         topics: ['political-science', 'economics', 'philosophy'],
         operations: ['anatomy', 'tension'],
     },
+    {
+        name: 'morphologies of stability',
+        link: '/playgrounds/morphologies-of-stability',
+        description: 'canonical patterns by which dynamical systems hold form',
+        date: 'April 2026',
+        topics: ['mathematics', 'physics', 'philosophy'],
+        operations: ['landscape', 'threshold'],
+    },
 ];
