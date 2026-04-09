@@ -60,7 +60,7 @@ The question is not "what field is this playground in?" but "what kind of intell
 
 ### The Six Operations
 
-Across all 67 playgrounds, six fundamental intellectual operations recur. Each playground performs one or two of these.
+Across all 68 playgrounds, six fundamental intellectual operations recur. Each playground performs one or two of these.
 
 
 #### 1. Landscape
@@ -191,16 +191,17 @@ Each playground is assigned 1-2 operations. The primary operation is listed firs
 | pettini tensor networks | anatomy, landscape | search mechanism decomposed into operator terms; probability distribution mapped over DNA sites |
 | societal harm topology | anatomy, tension | counterfactual harm decomposed across 8 dimensions and 6 sectors; opposing forces of actor power vs. repair capacity and moral weight tensions |
 | morphologies of stability | landscape, threshold | four stability regimes (point attractor, bistable wells, limit cycle, consensus) mapped as a space; Hopf bifurcation as regime threshold |
+| ontogenic engine | landscape, anatomy | individuation regime space (becoming, dissolution, rigid closure, chaotic drift); entityhood decomposed into self-production, coupling, plasticity, and boundary loops |
 
 
 ### Distribution
 
 | Operation | Count | Percentage |
 |---|---|---|
-| Anatomy | 34 | 51% |
-| Landscape | 23 | 34% |
+| Anatomy | 35 | 51% |
+| Landscape | 24 | 35% |
 | Tension | 19 | 28% |
-| Threshold | 18 | 27% |
+| Threshold | 18 | 26% |
 | Symmetry | 17 | 25% |
 | Morphogenesis | 16 | 24% |
 

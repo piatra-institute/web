@@ -652,4 +652,12 @@ export const playgrounds: {
         topics: ['mathematics', 'physics', 'philosophy'],
         operations: ['landscape', 'threshold'],
     },
+    {
+        name: 'ontogenic engine',
+        link: '/playgrounds/ontogenic-engine',
+        description: 'individuation, learning, and self-maintaining entityhood',
+        date: 'April 2026',
+        topics: ['philosophy', 'biology', 'neuroscience'],
+        operations: ['landscape', 'anatomy'],
+    },
 ];
