@@ -60,7 +60,7 @@ The question is not "what field is this playground in?" but "what kind of intell
 
 ### The Six Operations
 
-Across all 68 playgrounds, six fundamental intellectual operations recur. Each playground performs one or two of these.
+Across all 69 playgrounds, six fundamental intellectual operations recur. Each playground performs one or two of these.
 
 
 #### 1. Landscape
@@ -192,18 +192,19 @@ Each playground is assigned 1-2 operations. The primary operation is listed firs
 | societal harm topology | anatomy, tension | counterfactual harm decomposed across 8 dimensions and 6 sectors; opposing forces of actor power vs. repair capacity and moral weight tensions |
 | morphologies of stability | landscape, threshold | four stability regimes (point attractor, bistable wells, limit cycle, consensus) mapped as a space; Hopf bifurcation as regime threshold |
 | ontogenic engine | landscape, anatomy | individuation regime space (becoming, dissolution, rigid closure, chaotic drift); entityhood decomposed into self-production, coupling, plasticity, and boundary loops |
+| photosynthetic state space | landscape, anatomy | light-response landscape across species strategies; Z-scheme decomposed into energy, protection, repair, and carbon-supply control mechanisms |
 
 
 ### Distribution
 
 | Operation | Count | Percentage |
 |---|---|---|
-| Anatomy | 35 | 51% |
-| Landscape | 24 | 35% |
+| Anatomy | 36 | 52% |
+| Landscape | 25 | 36% |
 | Tension | 19 | 28% |
 | Threshold | 18 | 26% |
 | Symmetry | 17 | 25% |
-| Morphogenesis | 16 | 24% |
+| Morphogenesis | 16 | 23% |
 
 Anatomy is the most common operation because explanation-through-decomposition is the default intellectual gesture of a playground — you build a model to show how something works. The others are more distinctive and revealing.
 

@@ -660,4 +660,12 @@ export const playgrounds: {
         topics: ['philosophy', 'biology', 'neuroscience'],
         operations: ['landscape', 'anatomy'],
     },
+    {
+        name: 'photosynthetic state space',
+        link: '/playgrounds/photosynthetic-state-space',
+        description: 'the Z-scheme as a controllable landscape of energy flow, protection, and regime shifts',
+        date: 'April 2026',
+        topics: ['biology', 'chemistry', 'physics'],
+        operations: ['landscape', 'anatomy'],
+    },
 ];
