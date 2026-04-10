@@ -676,4 +676,12 @@ export const playgrounds: {
         topics: ['biology', 'philosophy', 'mathematics'],
         operations: ['morphogenesis', 'landscape'],
     },
+    {
+        name: 'moral phase space',
+        link: '/playgrounds/moral-phase-space',
+        description: 'three non-crude moral formalisms applied to the same political scenario',
+        date: 'April 2026',
+        topics: ['philosophy', 'political-science', 'mathematics'],
+        operations: ['anatomy', 'landscape'],
+    },
 ];
