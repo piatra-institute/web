@@ -668,4 +668,12 @@ export const playgrounds: {
         topics: ['biology', 'chemistry', 'physics'],
         operations: ['landscape', 'anatomy'],
     },
+    {
+        name: 'morphospace engine',
+        link: '/playgrounds/morphospace-engine',
+        description: 'node-graph experiments in the space of possible forms',
+        date: 'April 2026',
+        topics: ['biology', 'philosophy', 'mathematics'],
+        operations: ['morphogenesis', 'landscape'],
+    },
 ];
