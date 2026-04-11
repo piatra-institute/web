@@ -684,4 +684,12 @@ export const playgrounds: {
         topics: ['philosophy', 'political-science', 'mathematics'],
         operations: ['anatomy', 'landscape'],
     },
+    {
+        name: 'ontometrics',
+        link: '/playgrounds/ontometrics',
+        description: 'measuring whether an ontology is underdeveloped, calibrated, or overdetermined',
+        date: 'April 2026',
+        topics: ['philosophy', 'mathematics', 'computer-science'],
+        operations: ['anatomy', 'landscape'],
+    },
 ];

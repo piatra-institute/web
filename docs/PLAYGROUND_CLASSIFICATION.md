@@ -60,7 +60,7 @@ The question is not "what field is this playground in?" but "what kind of intell
 
 ### The Six Operations
 
-Across all 80 playgrounds, six fundamental intellectual operations recur. Each playground performs one or two of these.
+Across all 81 playgrounds, six fundamental intellectual operations recur. Each playground performs one or two of these.
 
 
 #### 1. Landscape
@@ -195,14 +195,15 @@ Each playground is assigned 1-2 operations. The primary operation is listed firs
 | photosynthetic state space | landscape, anatomy | light-response landscape across species strategies; Z-scheme decomposed into energy, protection, repair, and carbon-supply control mechanisms |
 | morphospace engine | morphogenesis, landscape | node-graph morphogenesis where emergent phenotypes arise from composed seeds, fields, constraints, and mathematical forcing terms; morphospace as navigable field of possible forms |
 | moral phase space | anatomy, landscape | moral evaluation decomposed into three formal frameworks (deontic logic, capability lattice, domination/repair state-space); polity configurations mapped as a navigable space of normative evaluations |
+| ontometrics | anatomy, landscape | ontology decomposed into measurable components (fit, complexity, redundancy, inconsistency, brittleness); fit-vs-structure phase map as navigable space of ontological quality |
 
 
 ### Distribution
 
 | Operation | Count | Percentage |
 |---|---|---|
-| Anatomy | 37 | 52% |
-| Landscape | 27 | 38% |
+| Anatomy | 38 | 47% |
+| Landscape | 28 | 35% |
 | Tension | 19 | 27% |
 | Threshold | 18 | 25% |
 | Symmetry | 17 | 24% |
