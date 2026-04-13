@@ -692,4 +692,12 @@ export const playgrounds: {
         topics: ['philosophy', 'mathematics', 'computer-science'],
         operations: ['anatomy', 'landscape'],
     },
+    {
+        name: 'epistemic lensing',
+        link: '/playgrounds/epistemic-lensing',
+        description: 'how mediated channels deform belief formation',
+        date: 'April 2026',
+        topics: ['philosophy', 'political-science', 'computer-science'],
+        operations: ['anatomy', 'tension'],
+    },
 ];
