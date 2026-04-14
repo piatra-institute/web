@@ -700,4 +700,12 @@ export const playgrounds: {
         topics: ['philosophy', 'political-science', 'computer-science'],
         operations: ['anatomy', 'tension'],
     },
+    {
+        name: 'coordination under complementarity',
+        link: '/playgrounds/coordination-under-complementarity',
+        description: 'multilevel coordination failure in housing, infrastructure, and spatially fixed systems',
+        date: 'April 2026',
+        topics: ['economics', 'political-science', 'mathematics'],
+        operations: ['anatomy', 'landscape'],
+    },
 ];
