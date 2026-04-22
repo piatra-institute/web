@@ -364,7 +364,7 @@ Hover tooltip wrapper using flowbite-react.
 ```tsx
 import Tooltip from '@/components/Tooltip';
 
-<Tooltip content={<div className="max-w-[250px] p-2">Help text here</div>}>
+<Tooltip content={<div className="max-w-62.5 p-2">Help text here</div>}>
     <span className="text-gray-400 cursor-pointer">?</span>
 </Tooltip>
 ```
