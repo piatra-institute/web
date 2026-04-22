@@ -708,4 +708,12 @@ export const playgrounds: {
         topics: ['economics', 'political-science', 'mathematics'],
         operations: ['anatomy', 'landscape'],
     },
+    {
+        name: 'counterfactual growth engine',
+        link: '/playgrounds/counterfactual-growth-engine',
+        description: 'explore how countries might have evolved under another country’s economic path',
+        date: 'April 2026',
+        topics: ['economics', 'political-science', 'mathematics'],
+        operations: ['landscape', 'anatomy'],
+    },
 ];

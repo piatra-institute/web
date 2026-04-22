@@ -60,7 +60,7 @@ The question is not "what field is this playground in?" but "what kind of intell
 
 ### The Six Operations
 
-Across all 83 playgrounds, six fundamental intellectual operations recur. Each playground performs one or two of these.
+Across all 84 playgrounds, six fundamental intellectual operations recur. Each playground performs one or two of these.
 
 
 #### 1. Landscape
@@ -197,14 +197,15 @@ Each playground is assigned 1-2 operations. The primary operation is listed firs
 | moral phase space | anatomy, landscape | moral evaluation decomposed into three formal frameworks (deontic logic, capability lattice, domination/repair state-space); polity configurations mapped as a navigable space of normative evaluations |
 | ontometrics | anatomy, landscape | ontology decomposed into measurable components (fit, complexity, redundancy, inconsistency, brittleness); fit-vs-structure phase map as navigable space of ontological quality |
 | coordination under complementarity | anatomy, landscape | multilevel coordination failure decomposed into scale-mismatch, complementarity bottlenecks, sheaf-like gluing defects, and harm obstruction; regime space (adaptive, rigid, chaotic, collapse) as navigable landscape |
+| counterfactual growth engine | landscape, anatomy | space of possible cross-country economic trajectories as a navigable landscape; growth decomposed into synthetic-control blending, policy dimensions, convergence drag, and confidence bands |
 
 
 ### Distribution
 
 | Operation | Count | Percentage |
 |---|---|---|
-| Anatomy | 39 | 47% |
-| Landscape | 29 | 35% |
+| Anatomy | 40 | 48% |
+| Landscape | 30 | 36% |
 | Tension | 19 | 27% |
 | Threshold | 18 | 25% |
 | Symmetry | 17 | 24% |
