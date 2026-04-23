@@ -7,12 +7,12 @@ import PrismList from './components/PrismList';
 
 export const metadata: Metadata = {
     title: 'prism',
-    description: 'video-game productions and narrative works',
+    description: 'films, series, and games',
 
     openGraph: {
         ...defaultOpenGraph,
         title: 'prism · piatra.institute',
-        description: 'video-game productions and narrative works',
+        description: 'films, series, and games',
     },
 };
 

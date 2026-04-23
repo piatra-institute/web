@@ -15,7 +15,7 @@ export default function PrismList() {
     return (
         <IndexLayout
             title="prism"
-            description="video-game productions and narrative works"
+            description="films, series, and games"
         >
             <div className="p-6 w-full max-w-lg">
                 {prism.map((item) => {
