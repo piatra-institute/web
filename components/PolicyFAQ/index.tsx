@@ -12,7 +12,7 @@ interface PolicyFAQProps {
 
 export default function PolicyFAQ({
     items,
-    heading = 'frequently asked questions',
+    heading = 'answered questions',
 }: PolicyFAQProps) {
     return (
         <section
