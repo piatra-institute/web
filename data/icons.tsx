@@ -46,6 +46,24 @@ export const settingsIcon = (
 );
 
 
+export const documentIcon = (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#ffffff"
+        strokeWidth="1.75"
+        strokeLinecap="square"
+        strokeLinejoin="miter"
+        style={{ width: '16px', height: '16px' }}
+        aria-hidden="true"
+    >
+        <path d="M14 3 H6 v18 h12 v-13 z" />
+        <path d="M14 3 v5 h4" />
+    </svg>
+);
+
+
 export const arrowDownIcon = (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"
         style={{

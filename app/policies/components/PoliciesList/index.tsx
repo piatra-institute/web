@@ -19,13 +19,12 @@ export default function PoliciesList() {
         >
             <div className="p-6 w-full max-w-lg">
                 {policies.map((policy) => {
-                    const { name, description, link } = policy;
+                    const { path, name, description } = policy;
 
                     return (
                         <Link
-                            key={name + link}
-                            href={link}
-                            target="_blank"
+                            key={path}
+                            href={`/policies/${path}`}
                             className="mb-8 block focus:outline-none focus:ring-1 focus:ring-white"
                             draggable={false}
                         >

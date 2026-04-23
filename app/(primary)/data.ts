@@ -12,10 +12,10 @@ export const links = [
         label: 'playgrounds',
     },
     // FOR LATER
-    // {
-    //     href: '/policies',
-    //     label: 'policies',
-    // },
+    {
+        href: '/policies',
+        label: 'policies',
+    },
     {
         href: '/press',
         label: 'press',
