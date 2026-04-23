@@ -5,6 +5,9 @@ import PlaygroundsList from './components/PlaygroundsList';
 
 
 
+export const dynamic = 'force-static';
+
+
 export const metadata: Metadata = {
     title: 'playgrounds',
     description: 'interactive explorations of ideas and concepts',
