@@ -1,17 +1,18 @@
 export const prism = [
     {
-        name: 'set-point',
-        description: 'ongoing series — master bible, canon, seasons',
+        name: 'kladiators',
         link: '#',
     },
     {
         name: 'against-polyptych',
-        description: 'against ashes · against fear · against flesh · against heaven',
+        link: '#',
+    },
+    {
+        name: 'set-point',
         link: '#',
     },
     {
         name: 'rogringolada',
-        description: 'din lac în puț · luceafărul de serviciu',
         link: '#',
     },
 ];

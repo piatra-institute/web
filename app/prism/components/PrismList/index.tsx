@@ -19,7 +19,7 @@ export default function PrismList() {
         >
             <div className="p-6 w-full max-w-lg">
                 {prism.map((item) => {
-                    const { name, description, link } = item;
+                    const { name, link } = item;
 
                     return (
                         <Link
@@ -31,10 +31,6 @@ export default function PrismList() {
                         >
                             <div className={linkAnchorStyle}>
                                 {name}
-                            </div>
-
-                            <div className="text-sm p-2 pt-0">
-                                {description}
                             </div>
                         </Link>
                     );
