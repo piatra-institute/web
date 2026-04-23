@@ -360,6 +360,11 @@ export const policies: Policy[] = [
                 description: 'the full case. From atlas to compiler, and keeping what Europe builds.',
             },
             {
+                label: 'Phase-I Brief (PDF)',
+                href: '/policies/cerb-phase-i-brief.pdf',
+                description: 'the specific-ask document addressed to DG RTD, ITRE, and ESFRI. Line item, envelope, deliverables, fallback, signatories. Draft for comment; released before formal submission.',
+            },
+            {
                 label: 'Executive Summary (PDF)',
                 href: '/policies/cerb-executive-summary.pdf',
                 description: 'the position paper distilled to a single page for time-poor readers.',
