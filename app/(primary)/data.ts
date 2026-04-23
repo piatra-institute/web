@@ -3,10 +3,6 @@ export const links = [
         href: '/platforms',
         label: 'platforms',
     },
-    // {
-    //     href: '/provocations',
-    //     label: 'provocations',
-    // },
     {
         href: '/papers',
         label: 'papers',
@@ -15,8 +11,21 @@ export const links = [
         href: '/playgrounds',
         label: 'playgrounds',
     },
+    // FOR LATER
+    // {
+    //     href: '/policies',
+    //     label: 'policies',
+    // },
     {
         href: '/press',
         label: 'press',
     },
+    // {
+    //     href: '/prism',
+    //     label: 'prism',
+    // },
+    // {
+    //     href: '/provocations',
+    //     label: 'provocations',
+    // },
 ];
