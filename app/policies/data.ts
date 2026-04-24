@@ -389,6 +389,11 @@ export const policies: Policy[] = [
                 href: '/policies/cerb-press-kit.pdf',
                 description: 'boilerplate, quotable descriptions at multiple lengths, and key facts for journalists.',
             },
+            {
+                label: 'Endorsement Response Template (PDF)',
+                href: '/policies/cerb-endorsement-template.pdf',
+                description: 'for recipients who wish to express support before formal submission. Specifies tiers, attribution preferences, and what signing commits to. Copy fields into an email reply or submit a signed PDF.',
+            },
         ],
     },
     {

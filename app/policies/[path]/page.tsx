@@ -38,14 +38,37 @@ export async function generateMetadata(
 
     const titleLine = policy.subtitle ? `${policy.title}, ${policy.subtitle}` : policy.title;
 
+    const pageUrl = `https://piatra.institute/policies/${path}`;
+
     return {
         title: `${titleLine} · policies`,
         description: policy.description,
 
+        alternates: {
+            canonical: pageUrl,
+        },
+
         openGraph: {
             ...defaultOpenGraph,
+            type: 'article',
+            url: pageUrl,
             title: `${titleLine} · policies · piatra.institute`,
             description: policy.description,
+            images: [
+                {
+                    url: `https://piatra.institute/assets-policies/og/${path}.png`,
+                    width: 1200,
+                    height: 630,
+                    alt: `${titleLine}`,
+                },
+            ],
+        },
+
+        twitter: {
+            card: 'summary_large_image',
+            title: `${titleLine} · policies · piatra.institute`,
+            description: policy.description,
+            images: [`https://piatra.institute/assets-policies/og/${path}.png`],
         },
     };
 }
@@ -58,9 +81,58 @@ export default async function PolicyPage({ params }: Props) {
         notFound();
     }
 
+    const pageUrl = `https://piatra.institute/policies/${path}`;
+    const titleLine = policy.subtitle ? `${policy.title}, ${policy.subtitle}` : policy.title;
+
+    // schema.org Article for policy documents. Policy briefs don't have a
+    // dedicated schema type; Article is the closest broadly-indexed one.
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: titleLine,
+        description: policy.description,
+        url: pageUrl,
+        datePublished: policy.date,
+        inLanguage: 'en',
+        articleSection: 'Policy',
+        author: {
+            '@type': 'Organization',
+            name: 'Piatra . Institute',
+            url: 'https://piatra.institute',
+        },
+        publisher: {
+            '@type': 'Organization',
+            name: 'Piatra . Institute',
+            url: 'https://piatra.institute',
+            logo: {
+                '@type': 'ImageObject',
+                url: 'https://piatra.institute/piatra-institute.png',
+            },
+        },
+        image: `https://piatra.institute/assets-policies/og/${path}.png`,
+        mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': pageUrl,
+        },
+    };
+
     return (
         <div className="flex flex-col items-center w-full min-h-screen bg-black text-white">
+            <a
+                href="#main"
+                className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-black focus:text-white focus:px-3 focus:py-2 focus:ring-1 focus:ring-white"
+            >
+                Skip to content
+            </a>
+
             <Header />
+
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+
+            <main id="main" className="w-full flex flex-col items-center">
 
             <PolicyHero
                 title={policy.title}
@@ -139,6 +211,8 @@ export default async function PolicyPage({ params }: Props) {
             )}
 
             <div className="px-6 py-10" />
+
+            </main>
         </div>
     );
 }
