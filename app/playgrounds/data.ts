@@ -716,4 +716,12 @@ export const playgrounds: {
         topics: ['economics', 'political-science', 'mathematics'],
         operations: ['landscape', 'anatomy'],
     },
+    {
+        name: 'aura atlas',
+        link: '/playgrounds/aura-space',
+        description: 'navigating the relational field of cultural distance, scarcity, ritual, institution, and reception',
+        date: 'May 2026',
+        topics: ['philosophy', 'aesthetics', 'sociology'],
+        operations: ['landscape', 'tension'],
+    },
 ];
