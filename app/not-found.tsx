@@ -14,24 +14,28 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
     return (
-        <div className="flex flex-col items-center w-full min-h-screen p-8">
-            <Header />
-
-            <div className="flex flex-col items-center justify-center grow text-center max-w-xl">
-                <div className="text-7xl font-bold mb-6 select-none">
-                    404
+        <div className="relative w-full min-h-screen flex items-center justify-center bg-black">
+            <div className="relative z-10 text-center px-8 py-16">
+                <div className="mb-12">
+                    <Header />
                 </div>
 
-                <p className="text-lg mb-10">
-                    this URL is outside the narrative
-                </p>
+                <div className="flex flex-col items-center max-w-xl mx-auto">
+                    <div className="text-7xl font-bold mb-6 select-none">
+                        404
+                    </div>
 
-                <Link
-                    href="/"
-                    className={linkAnchorStyle}
-                >
-                    return to piatra.institute
-                </Link>
+                    <p className="text-lg mb-10">
+                        this URL is outside the narrative
+                    </p>
+
+                    <Link
+                        href="/"
+                        className={linkAnchorStyle}
+                    >
+                        return to piatra.institute
+                    </Link>
+                </div>
             </div>
         </div>
     );
