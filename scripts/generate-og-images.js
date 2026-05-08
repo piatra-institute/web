@@ -83,6 +83,11 @@ async function main() {
         console.log(`\n=== Source: ${sourceName} ===`);
         const source = SOURCES[sourceName];
 
+        if (!fs.existsSync(source.dataPath)) {
+            console.log(`SKIP source: ${source.dataPath} not found (likely renamed or staged as private)`);
+            continue;
+        }
+
         if (!DRY_RUN && !fs.existsSync(source.outputDir)) {
             fs.mkdirSync(source.outputDir, { recursive: true });
             console.log(`Created output directory: ${source.outputDir}`);

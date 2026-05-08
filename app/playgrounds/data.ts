@@ -724,4 +724,20 @@ export const playgrounds: {
         topics: ['philosophy', 'aesthetics', 'sociology'],
         operations: ['landscape', 'tension'],
     },
+    {
+        name: 'knife edge',
+        link: '/playgrounds/knife-edge',
+        description: 'wave fate across subcritical, critical, and supercritical regimes, with sheaf-laplacian diagnostics',
+        date: 'May 2026',
+        topics: ['physics', 'neuroscience', 'mathematics'],
+        operations: ['threshold', 'landscape'],
+    },
+    {
+        name: 'forbidden edges',
+        link: '/playgrounds/forbidden-edges',
+        description: 'morality as constraint geometry over a multi-scale graph of agency, harm, and obstruction',
+        date: 'May 2026',
+        topics: ['philosophy', 'sociology', 'neuroscience'],
+        operations: ['tension', 'landscape'],
+    },
 ];
