@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 import IndexLayout from '@/components/IndexLayout';
 import { linkAnchorStyle } from '@/data/styles';
+import { parseIndexDate } from '@/lib/parseIndexDate';
 import {
     playgrounds,
     TOPICS,
@@ -19,38 +20,13 @@ const STORAGE_KEY = 'playgrounds-filter';
 const YEARS = ['2024', '2025', '2026'];
 const MONTHS_ROW_1 = ['01', '02', '03', '04', '05', '06'];
 const MONTHS_ROW_2 = ['07', '08', '09', '10', '11', '12'];
-const MONTH_NAMES: Record<string, string> = {
-    'January': '01',
-    'February': '02',
-    'March': '03',
-    'April': '04',
-    'May': '05',
-    'June': '06',
-    'July': '07',
-    'August': '08',
-    'September': '09',
-    'October': '10',
-    'November': '11',
-    'December': '12',
-};
 
-
-function parseDateString(dateStr: string): { year: string; month: string } | null {
-    // Parse "Month Year" format like "February 2024"
-    const parts = dateStr.split(' ');
-    if (parts.length !== 2) return null;
-
-    const [monthName, year] = parts;
-    const month = MONTH_NAMES[monthName];
-
-    if (!month || !year) return null;
-    return { year, month };
-}
 
 const selectedStyle = 'border-lime-500 text-lime-400 bg-lime-500/10 cursor-pointer';
 const unselectedStyle = 'border-lime-500/30 text-gray-400 hover:border-lime-500/50 hover:text-gray-300 cursor-pointer';
 
 export default function PlaygroundsList() {
+    const [searchQuery, setSearchQuery] = useState('');
     const [selectedYear, setSelectedYear] = useState<string | null>(null);
     const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
     const [selectedTopics, setSelectedTopics] = useState<Set<Topic>>(new Set());
@@ -62,7 +38,8 @@ export default function PlaygroundsList() {
         try {
             const stored = localStorage.getItem(STORAGE_KEY);
             if (stored) {
-                const { year, month, topics, operations } = JSON.parse(stored);
+                const { search, year, month, topics, operations } = JSON.parse(stored);
+                if (typeof search === 'string') setSearchQuery(search);
                 if (year) setSelectedYear(year);
                 if (month) setSelectedMonth(month);
                 if (topics && Array.isArray(topics)) setSelectedTopics(new Set(topics));
@@ -79,6 +56,7 @@ export default function PlaygroundsList() {
         if (!mounted.current) return;
         try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                search: searchQuery,
                 year: selectedYear,
                 month: selectedMonth,
                 topics: Array.from(selectedTopics),
@@ -87,15 +65,26 @@ export default function PlaygroundsList() {
         } catch {
             // Ignore errors
         }
-    }, [selectedYear, selectedMonth, selectedTopics, selectedOperations]);
+    }, [searchQuery, selectedYear, selectedMonth, selectedTopics, selectedOperations]);
+
+    const matchesSearch = useMemo(() => {
+        const q = searchQuery.trim().toLowerCase();
+        if (!q) return () => true;
+        return (p: typeof playgrounds[number]) => {
+            return (
+                p.name.toLowerCase().includes(q) ||
+                p.description.toLowerCase().includes(q)
+            );
+        };
+    }, [searchQuery]);
 
     // Get available months for selected year
     const availableMonths = useMemo(() => {
         if (!selectedYear) return [];
         const months = new Set<string>();
         playgrounds.forEach((p) => {
-            const parsed = parseDateString(p.date);
-            if (parsed && parsed.year === selectedYear) {
+            const parsed = parseIndexDate(p.date);
+            if (parsed && parsed.year === selectedYear && parsed.month) {
                 months.add(parsed.month);
             }
         });
@@ -105,7 +94,7 @@ export default function PlaygroundsList() {
     // Filter playgrounds
     const filteredPlaygrounds = useMemo(() => {
         return playgrounds.filter((p) => {
-            const parsed = parseDateString(p.date);
+            const parsed = parseIndexDate(p.date);
             if (!parsed) return true;
 
             if (selectedYear && parsed.year !== selectedYear) return false;
@@ -114,37 +103,41 @@ export default function PlaygroundsList() {
             if (selectedTopics.size > 0 && !p.topics.some(t => selectedTopics.has(t))) return false;
             if (selectedOperations.size > 0 && !p.operations.some(o => selectedOperations.has(o))) return false;
 
+            if (!matchesSearch(p)) return false;
+
             return true;
         });
-    }, [selectedYear, selectedMonth, selectedTopics, selectedOperations]);
+    }, [selectedYear, selectedMonth, selectedTopics, selectedOperations, matchesSearch]);
 
-    // Available topics given current date + operation filters
+    // Available topics given current date + operation + search filters
     const availableTopics = useMemo(() => {
         const topics = new Set<Topic>();
         playgrounds.forEach((p) => {
-            const parsed = parseDateString(p.date);
+            const parsed = parseIndexDate(p.date);
             if (!parsed) return;
             if (selectedYear && parsed.year !== selectedYear) return;
             if (selectedMonth && parsed.month !== selectedMonth) return;
             if (selectedOperations.size > 0 && !p.operations.some(o => selectedOperations.has(o))) return;
+            if (!matchesSearch(p)) return;
             p.topics.forEach(t => topics.add(t));
         });
         return topics;
-    }, [selectedYear, selectedMonth, selectedOperations]);
+    }, [selectedYear, selectedMonth, selectedOperations, matchesSearch]);
 
-    // Available operations given current date + topic filters
+    // Available operations given current date + topic + search filters
     const availableOperations = useMemo(() => {
         const operations = new Set<Operation>();
         playgrounds.forEach((p) => {
-            const parsed = parseDateString(p.date);
+            const parsed = parseIndexDate(p.date);
             if (!parsed) return;
             if (selectedYear && parsed.year !== selectedYear) return;
             if (selectedMonth && parsed.month !== selectedMonth) return;
             if (selectedTopics.size > 0 && !p.topics.some(t => selectedTopics.has(t))) return;
+            if (!matchesSearch(p)) return;
             p.operations.forEach(o => operations.add(o));
         });
         return operations;
-    }, [selectedYear, selectedMonth, selectedTopics]);
+    }, [selectedYear, selectedMonth, selectedTopics, matchesSearch]);
 
     const handleYearClick = (year: string | null) => {
         if (year === selectedYear) {
@@ -193,11 +186,12 @@ export default function PlaygroundsList() {
             const found = OPERATIONS.find(op => op.key === o);
             if (found) parts.push(found.label);
         });
+        if (searchQuery.trim()) parts.push(`"${searchQuery.trim()}"`);
 
         const count = `${filteredPlaygrounds.length} playground${filteredPlaygrounds.length !== 1 ? 's' : ''}`;
         if (parts.length === 0) return count;
-        return `${count} \u00b7 ${parts.join(' \u00b7 ')}`;
-    }, [filteredPlaygrounds.length, selectedYear, selectedMonth, selectedTopics, selectedOperations]);
+        return `${count} · ${parts.join(' · ')}`;
+    }, [filteredPlaygrounds.length, selectedYear, selectedMonth, selectedTopics, selectedOperations, searchQuery]);
 
     return (
         <IndexLayout
@@ -210,6 +204,33 @@ export default function PlaygroundsList() {
                 </>
             }
         >
+            {/* Search */}
+            <div className="flex justify-center mb-8 px-4">
+                <div className="relative w-full max-w-4xl">
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Escape') setSearchQuery('');
+                        }}
+                        placeholder="search"
+                        className="w-full px-3 py-1.5 pr-9 text-sm border border-lime-500/30 text-lime-100 appearance-none focus:border-lime-500 focus:outline-none transition-colors [&::placeholder]:!bg-transparent [&::placeholder]:!text-lime-200/40"
+                        style={{ backgroundColor: '#000' }}
+                    />
+                    {searchQuery && (
+                        <button
+                            type="button"
+                            onClick={() => setSearchQuery('')}
+                            aria-label="clear search"
+                            className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center text-lime-200/60 hover:text-lime-400 text-base leading-none cursor-pointer"
+                        >
+                            ×
+                        </button>
+                    )}
+                </div>
+            </div>
+
             {/* Year Filter */}
             <div className="flex flex-wrap justify-center gap-2 mb-4">
                 <button
