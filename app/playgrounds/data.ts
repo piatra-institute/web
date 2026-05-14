@@ -740,4 +740,12 @@ export const playgrounds: {
         topics: ['philosophy', 'sociology', 'neuroscience'],
         operations: ['tension', 'landscape'],
     },
+    {
+        name: 'fiscal compass',
+        link: '/playgrounds/fiscal-compass',
+        description: 'mapping when higher taxes help, hurt, or become state capacity across four fiscal rationales',
+        date: 'May 2026',
+        topics: ['economics', 'political-science', 'philosophy'],
+        operations: ['landscape', 'tension'],
+    },
 ];
