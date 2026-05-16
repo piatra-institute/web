@@ -748,4 +748,12 @@ export const playgrounds: {
         topics: ['economics', 'political-science', 'philosophy'],
         operations: ['landscape', 'tension'],
     },
+    {
+        name: 'no global section',
+        link: '/playgrounds/no-global-section',
+        description: 'myths, novels, and the failure to glue local meaning into a single human story',
+        date: 'May 2026',
+        topics: ['philosophy', 'mathematics', 'aesthetics'],
+        operations: ['anatomy', 'tension'],
+    },
 ];
