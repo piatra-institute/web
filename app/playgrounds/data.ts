@@ -756,4 +756,12 @@ export const playgrounds: {
         topics: ['philosophy', 'mathematics', 'aesthetics'],
         operations: ['anatomy', 'tension'],
     },
+    {
+        name: 'the uncare engine',
+        link: '/playgrounds/uncare-engine',
+        description: 'how moral saturation, ressentiment, and tribal reward push people from ordinary care to defending the indefensible',
+        date: 'May 2026',
+        topics: ['philosophy', 'sociology', 'psychology'],
+        operations: ['threshold', 'landscape'],
+    },
 ];
