@@ -764,4 +764,12 @@ export const playgrounds: {
         topics: ['philosophy', 'sociology', 'psychology'],
         operations: ['threshold', 'landscape'],
     },
+    {
+        name: 'salience engine',
+        link: '/playgrounds/salience-engine',
+        description: 'how a neutral physical difference climbs from molecule to sign to value to attention to a world-filter',
+        date: 'May 2026',
+        topics: ['neuroscience', 'psychology', 'philosophy'],
+        operations: ['morphogenesis', 'threshold'],
+    },
 ];
