@@ -28,4 +28,8 @@ export const links = [
     //     href: '/provocations',
     //     label: 'provocations',
     // },
+    // {
+    //     href: '/paideia',
+    //     label: 'paideia',
+    // },
 ];
