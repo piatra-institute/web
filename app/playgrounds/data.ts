@@ -772,4 +772,12 @@ export const playgrounds: {
         topics: ['neuroscience', 'psychology', 'philosophy'],
         operations: ['morphogenesis', 'threshold'],
     },
+    {
+        name: 'Kerr causality',
+        link: '/playgrounds/kerr-causality',
+        description: 'horizons, null paths, and the causal structure of rotating black holes',
+        date: 'May 2026',
+        topics: ['physics', 'mathematics'],
+        operations: ['landscape', 'anatomy'],
+    },
 ];
