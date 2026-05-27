@@ -780,4 +780,12 @@ export const playgrounds: {
         topics: ['physics', 'mathematics'],
         operations: ['landscape', 'anatomy'],
     },
+    {
+        name: 'audience attractor',
+        link: '/playgrounds/audience-attractor',
+        description: 'how floors, ceilings, and basin transitions shape the viewership of personality-driven media',
+        date: 'May 2026',
+        topics: ['economics', 'sociology', 'mathematics'],
+        operations: ['landscape', 'threshold'],
+    },
 ];
