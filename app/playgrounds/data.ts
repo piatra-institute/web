@@ -1,48 +1,11 @@
-export type Topic =
-    | 'mathematics'
-    | 'physics'
-    | 'chemistry'
-    | 'biology'
-    | 'neuroscience'
-    | 'computer-science'
-    | 'economics'
-    | 'political-science'
-    | 'psychology'
-    | 'sociology'
-    | 'philosophy'
-    | 'aesthetics';
+export {
+    TOPICS,
+    OPERATIONS,
+    type Topic,
+    type Operation,
+} from '@/data/classification';
 
-export type Operation =
-    | 'landscape'
-    | 'threshold'
-    | 'symmetry'
-    | 'morphogenesis'
-    | 'anatomy'
-    | 'tension';
-
-export const TOPICS: { key: Topic; label: string; description: string }[] = [
-    { key: 'mathematics', label: 'mathematics', description: 'pure structures: algebra, topology, geometry, number theory' },
-    { key: 'physics', label: 'physics', description: 'matter, energy, and fundamental forces' },
-    { key: 'chemistry', label: 'chemistry', description: 'molecular structure, bonding, and reactions' },
-    { key: 'biology', label: 'biology', description: 'living systems, evolution, and development' },
-    { key: 'neuroscience', label: 'neuroscience', description: 'brain, perception, and consciousness' },
-    { key: 'computer-science', label: 'computer science', description: 'algorithms, computation, and information' },
-    { key: 'economics', label: 'economics', description: 'markets, incentives, and resource allocation' },
-    { key: 'political-science', label: 'political science', description: 'governance, power, and collective choice' },
-    { key: 'psychology', label: 'psychology', description: 'mind, behavior, and cognition' },
-    { key: 'sociology', label: 'sociology', description: 'social structures and collective dynamics' },
-    { key: 'philosophy', label: 'philosophy', description: 'logic, ethics, and epistemology' },
-    { key: 'aesthetics', label: 'aesthetics', description: 'pattern, harmony, and form' },
-];
-
-export const OPERATIONS: { key: Operation; label: string; description: string; question: string }[] = [
-    { key: 'landscape', label: 'landscape', description: 'mapping a possibility space', question: 'what does the terrain look like?' },
-    { key: 'threshold', label: 'threshold', description: 'finding where a system changes regime', question: 'when does it flip?' },
-    { key: 'symmetry', label: 'symmetry', description: 'what stays the same under transformation', question: 'what is preserved?' },
-    { key: 'morphogenesis', label: 'morphogenesis', description: 'watching form emerge from process', question: 'how does form arise?' },
-    { key: 'anatomy', label: 'anatomy', description: 'dissecting structure into working parts', question: 'what\'s inside?' },
-    { key: 'tension', label: 'tension', description: 'tracing opposing forces that hold a system together', question: 'what pulls against what?' },
-];
+import type { Topic, Operation } from '@/data/classification';
 
 export const playgrounds: {
     name: string;

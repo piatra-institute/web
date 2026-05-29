@@ -7,9 +7,10 @@ import IndexLayout from '@/components/IndexLayout';
 import IndexFilters from '@/components/IndexFilters';
 import SubtitleDateable from '@/components/SubtitleDateable';
 import { Paper } from '@/data';
+import { TOPICS, KINDS, type Topic, type Kind } from '@/data/classification';
 
 
-interface OwnPaper {
+export interface OwnPaper {
     title: string;
     authors?: string;
     date: string;
@@ -17,6 +18,8 @@ interface OwnPaper {
     pdf: string;
     github?: string;
     doi?: string;
+    topics?: readonly Topic[];
+    kinds?: readonly Kind[];
 }
 
 type Entry =
@@ -42,6 +45,16 @@ function getSearchableText(entry: Entry): string {
     return [it.title, it.abstract].filter(Boolean).join(' ');
 }
 
+function getTopics(entry: Entry): readonly string[] {
+    if (entry.kind === 'own') return entry.item.topics ?? [];
+    return [];
+}
+
+function getKinds(entry: Entry): readonly string[] {
+    if (entry.kind === 'own') return entry.item.kinds ?? [];
+    return [];
+}
+
 
 export default function PapersList({
     papers,
@@ -63,6 +76,20 @@ export default function PapersList({
                 getSearchableText={getSearchableText}
                 storageKey="papers-filter"
                 dataLabel="paper"
+                chipGroups={[
+                    {
+                        key: 'topics',
+                        label: 'topic',
+                        options: TOPICS,
+                        getItemKeys: getTopics,
+                    },
+                    {
+                        key: 'kinds',
+                        label: 'kind',
+                        options: KINDS,
+                        getItemKeys: getKinds,
+                    },
+                ]}
             >
                 {(filtered) => (
                     <div className="p-6">

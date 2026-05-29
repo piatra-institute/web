@@ -4,30 +4,39 @@ import { useState, useMemo, useEffect, useRef, ReactNode } from 'react';
 
 import { parseIndexDate } from '@/lib/parseIndexDate';
 
+import SearchInput from './SearchInput';
+import YearPills from './YearPills';
+import MonthGrid from './MonthGrid';
+import ChipGroup, { type ChipOption } from './ChipGroup';
 
-const MONTHS_ROW_1 = ['01', '02', '03', '04', '05', '06'];
-const MONTHS_ROW_2 = ['07', '08', '09', '10', '11', '12'];
 
-const selectedStyle = 'border-lime-500 text-lime-400 bg-lime-500/10 cursor-pointer';
-const unselectedStyle = 'border-lime-500/30 text-gray-400 hover:border-lime-500/50 hover:text-gray-300 cursor-pointer';
+export interface ChipGroupConfig<T> {
+    /** storage key fragment, e.g. 'topics' */
+    key: string;
+    /** shown above the chip grid, e.g. 'topic' */
+    label: string;
+    /** the available options for this chip group */
+    options: ChipOption[];
+    /** pull this group's classification from a single item */
+    getItemKeys: (item: T) => readonly string[];
+}
 
 interface IndexFiltersProps<T> {
     items: T[];
     getDate: (item: T) => string | null | undefined;
     getSearchableText: (item: T) => string;
+    chipGroups?: ChipGroupConfig<T>[];
     storageKey: string;
-    /**
-     * Singular noun for the result count, e.g. "playground", "press item",
-     * "paper", "policy". The component pluralises by appending "s".
-     */
+    /** singular noun for the result count, e.g. "playground", "paper" */
     dataLabel: string;
-    children: (filtered: T[], summary: string) => ReactNode;
+    children: (filtered: T[]) => ReactNode;
 }
 
 interface StoredFilters {
     search: string;
     year: string | null;
     month: string | null;
+    chips: Record<string, string[]>;
 }
 
 function readStorage(key: string): StoredFilters | null {
@@ -39,16 +48,21 @@ function readStorage(key: string): StoredFilters | null {
             search: typeof parsed.search === 'string' ? parsed.search : '',
             year: typeof parsed.year === 'string' || parsed.year === null ? parsed.year : null,
             month: typeof parsed.month === 'string' || parsed.month === null ? parsed.month : null,
+            chips: parsed.chips && typeof parsed.chips === 'object' && !Array.isArray(parsed.chips)
+                ? parsed.chips
+                : {},
         };
     } catch {
         return null;
     }
 }
 
+
 export default function IndexFilters<T>({
     items,
     getDate,
     getSearchableText,
+    chipGroups = [],
     storageKey,
     dataLabel,
     children,
@@ -56,33 +70,54 @@ export default function IndexFilters<T>({
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedYear, setSelectedYear] = useState<string | null>(null);
     const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
+    const [selectedChips, setSelectedChips] = useState<Record<string, Set<string>>>(() => {
+        const init: Record<string, Set<string>> = {};
+        for (const g of chipGroups) init[g.key] = new Set();
+        return init;
+    });
     const mounted = useRef(false);
 
+    // load saved state once on mount
     useEffect(() => {
         const stored = readStorage(storageKey);
         if (stored) {
             if (stored.search) setSearchQuery(stored.search);
             if (stored.year) setSelectedYear(stored.year);
             if (stored.month) setSelectedMonth(stored.month);
+            const next: Record<string, Set<string>> = {};
+            for (const g of chipGroups) {
+                next[g.key] = new Set(stored.chips?.[g.key] ?? []);
+            }
+            setSelectedChips(next);
         }
         mounted.current = true;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [storageKey]);
 
+    // debounced persistence (250 ms) so a continuous typing run produces a single write.
     useEffect(() => {
         if (!mounted.current) return;
-        try {
-            localStorage.setItem(
-                storageKey,
-                JSON.stringify({
-                    search: searchQuery,
-                    year: selectedYear,
-                    month: selectedMonth,
-                }),
-            );
-        } catch {
-            // ignore
-        }
-    }, [storageKey, searchQuery, selectedYear, selectedMonth]);
+        const id = setTimeout(() => {
+            try {
+                const chipsObj: Record<string, string[]> = {};
+                for (const g of chipGroups) {
+                    chipsObj[g.key] = Array.from(selectedChips[g.key] ?? []);
+                }
+                localStorage.setItem(
+                    storageKey,
+                    JSON.stringify({
+                        search: searchQuery,
+                        year: selectedYear,
+                        month: selectedMonth,
+                        chips: chipsObj,
+                    }),
+                );
+            } catch {
+                // ignore
+            }
+        }, 250);
+        return () => clearTimeout(id);
+    }, [storageKey, searchQuery, selectedYear, selectedMonth, selectedChips, chipGroups]);
 
     const availableYears = useMemo(() => {
         const ys = new Set<string>();
@@ -105,9 +140,19 @@ export default function IndexFilters<T>({
         return Array.from(ms).sort();
     }, [items, getDate, selectedYear]);
 
-    const filteredItems = useMemo(() => {
-        const q = searchQuery.trim().toLowerCase();
-        return items.filter((it) => {
+    // multi-word, case-insensitive, AND across whitespace-separated tokens.
+    const matchesSearch = useMemo(() => {
+        const tokens = searchQuery.trim().toLowerCase().split(/\s+/).filter(Boolean);
+        if (tokens.length === 0) return () => true;
+        return (it: T) => {
+            const hay = getSearchableText(it).toLowerCase();
+            return tokens.every((t) => hay.includes(t));
+        };
+    }, [searchQuery, getSearchableText]);
+
+    const matchesDate = useMemo(() => {
+        return (it: T) => {
+            if (!selectedYear && !selectedMonth) return true;
             const parsed = parseIndexDate(getDate(it));
             if (selectedYear) {
                 if (!parsed || parsed.year !== selectedYear) return false;
@@ -115,160 +160,144 @@ export default function IndexFilters<T>({
             if (selectedMonth) {
                 if (!parsed || parsed.month !== selectedMonth) return false;
             }
-            if (q.length > 0) {
-                const hay = getSearchableText(it).toLowerCase();
-                if (!hay.includes(q)) return false;
+            return true;
+        };
+    }, [getDate, selectedYear, selectedMonth]);
+
+    // predicate for chip group g, ignoring its own selection. used for cascading availability.
+    const matchesOtherChips = (skipGroupKey: string) => (it: T): boolean => {
+        for (const g of chipGroups) {
+            if (g.key === skipGroupKey) continue;
+            const sel = selectedChips[g.key];
+            if (!sel || sel.size === 0) continue;
+            const keys = g.getItemKeys(it);
+            if (keys.length === 0) return false;
+            if (!keys.some((k) => sel.has(k))) return false;
+        }
+        return true;
+    };
+
+    // predicate that includes every chip group's selection. used for the actual filter.
+    const matchesAllChips = useMemo(() => {
+        return (it: T) => {
+            for (const g of chipGroups) {
+                const sel = selectedChips[g.key];
+                if (!sel || sel.size === 0) continue;
+                const keys = g.getItemKeys(it);
+                if (keys.length === 0) return false;
+                if (!keys.some((k) => sel.has(k))) return false;
             }
             return true;
-        });
-    }, [items, getDate, getSearchableText, selectedYear, selectedMonth, searchQuery]);
+        };
+    }, [chipGroups, selectedChips]);
+
+    const filteredItems = useMemo(() => {
+        return items.filter((it) => matchesDate(it) && matchesSearch(it) && matchesAllChips(it));
+    }, [items, matchesDate, matchesSearch, matchesAllChips]);
+
+    // available chip keys per group: keys that appear in items passing every other filter
+    // (year + month + search + OTHER chip groups).
+    const availablePerGroup = useMemo(() => {
+        const out: Record<string, Set<string>> = {};
+        for (const g of chipGroups) {
+            const pass = matchesOtherChips(g.key);
+            const s = new Set<string>();
+            items.forEach((it) => {
+                if (!matchesDate(it)) return;
+                if (!matchesSearch(it)) return;
+                if (!pass(it)) return;
+                for (const k of g.getItemKeys(it)) s.add(k);
+            });
+            out[g.key] = s;
+        }
+        return out;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [items, chipGroups, selectedChips, matchesDate, matchesSearch]);
 
     const summary = useMemo(() => {
         const parts: string[] = [];
         if (selectedYear) parts.push(selectedYear);
         if (selectedMonth) parts.push(selectedMonth);
+        for (const g of chipGroups) {
+            const sel = selectedChips[g.key];
+            if (!sel) continue;
+            for (const k of sel) {
+                const opt = g.options.find((o) => o.key === k);
+                if (opt) parts.push(opt.label);
+            }
+        }
         if (searchQuery.trim()) parts.push(`"${searchQuery.trim()}"`);
         const count = `${filteredItems.length} ${dataLabel}${filteredItems.length !== 1 ? 's' : ''}`;
-        if (parts.length === 0) return count;
-        return `${count} · ${parts.join(' · ')}`;
-    }, [filteredItems.length, selectedYear, selectedMonth, searchQuery, dataLabel]);
+        return parts.length === 0 ? count : `${count} · ${parts.join(' · ')}`;
+    }, [filteredItems.length, selectedYear, selectedMonth, searchQuery, dataLabel, chipGroups, selectedChips]);
 
-    const handleYearClick = (year: string | null) => {
-        if (year === selectedYear) {
-            setSelectedYear(null);
-            setSelectedMonth(null);
-        } else {
-            setSelectedYear(year);
-            setSelectedMonth(null);
-        }
+    const toggleChip = (groupKey: string, chipKey: string) => {
+        setSelectedChips((prev) => {
+            const next = new Set(prev[groupKey] ?? []);
+            if (next.has(chipKey)) next.delete(chipKey);
+            else next.add(chipKey);
+            return { ...prev, [groupKey]: next };
+        });
     };
 
-    const handleMonthClick = (month: string) => {
-        if (month === selectedMonth) {
-            setSelectedMonth(null);
-        } else {
-            setSelectedMonth(month);
-        }
+    const clearChipGroup = (groupKey: string) => {
+        setSelectedChips((prev) => ({ ...prev, [groupKey]: new Set() }));
+    };
+
+    const handleYearChange = (year: string | null) => {
+        setSelectedYear(year);
+        // clearing the year clears any month selection
+        if (year === null) setSelectedMonth(null);
+        else if (selectedYear !== year) setSelectedMonth(null);
     };
 
     return (
-        <>
-            {/* Search input */}
-            <div className="flex justify-center mb-8 px-4">
-                <div className="relative w-full max-w-4xl">
-                    <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Escape') setSearchQuery('');
-                        }}
-                        placeholder="search"
-                        className="w-full px-3 py-1.5 pr-9 text-sm border border-lime-500/30 text-lime-100 appearance-none focus:border-lime-500 focus:outline-none transition-colors [&::placeholder]:!bg-transparent [&::placeholder]:!text-lime-200/40"
-                        style={{ backgroundColor: '#000' }}
-                    />
-                    {searchQuery && (
-                        <button
-                            type="button"
-                            onClick={() => setSearchQuery('')}
-                            aria-label="clear search"
-                            className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center text-lime-200/60 hover:text-lime-400 text-base leading-none cursor-pointer"
-                        >
-                            ×
-                        </button>
-                    )}
+        <div className="w-full max-w-2xl mx-auto px-4">
+            {/* search */}
+            <div className="mb-8">
+                <SearchInput value={searchQuery} onChange={setSearchQuery} />
+            </div>
+
+            {/* year pills */}
+            <div className="mb-4">
+                <YearPills
+                    years={availableYears}
+                    selected={selectedYear}
+                    onSelect={handleYearChange}
+                />
+            </div>
+
+            {/* month grid */}
+            <div className="mb-4">
+                <MonthGrid
+                    visible={selectedYear !== null}
+                    available={availableMonths}
+                    selected={selectedMonth}
+                    onSelect={setSelectedMonth}
+                />
+            </div>
+
+            {/* chip groups (topics, kinds, operations, …) */}
+            {chipGroups.length > 0 && (
+                <div className="mb-8 flex flex-col gap-6">
+                    {chipGroups.map((g) => (
+                        <ChipGroup
+                            key={g.key}
+                            label={g.label}
+                            options={g.options}
+                            available={availablePerGroup[g.key] ?? new Set()}
+                            selected={selectedChips[g.key] ?? new Set()}
+                            onToggle={(k) => toggleChip(g.key, k)}
+                            onClear={() => clearChipGroup(g.key)}
+                        />
+                    ))}
                 </div>
-            </div>
+            )}
 
-            {/* Year filter */}
-            <div className="flex flex-wrap justify-center gap-2 mb-4">
-                <button
-                    onClick={() => handleYearClick(null)}
-                    className={`px-4 py-1.5 text-sm border transition-colors focus:outline-none ${
-                        selectedYear === null ? selectedStyle : unselectedStyle
-                    }`}
-                >
-                    ALL
-                </button>
-                {availableYears.map((year) => (
-                    <button
-                        key={year}
-                        onClick={() => handleYearClick(year)}
-                        className={`px-4 py-1.5 text-sm border transition-colors focus:outline-none ${
-                            selectedYear === year ? selectedStyle : unselectedStyle
-                        }`}
-                    >
-                        {year}
-                    </button>
-                ))}
-            </div>
+            {/* results count */}
+            <div className="text-center text-sm text-gray-500 mb-6">{summary}</div>
 
-            {/* Month filter (fixed-height container to prevent layout shift) */}
-            <div className="h-25 md:h-10 mb-4">
-                {selectedYear && (
-                    <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-1.5">
-                        <button
-                            onClick={() => setSelectedMonth(null)}
-                            className={`px-2 py-1 text-xs border transition-colors focus:outline-none ${
-                                selectedMonth === null ? selectedStyle : unselectedStyle
-                            }`}
-                        >
-                            YEAR
-                        </button>
-                        <div className="flex gap-1.5">
-                            {MONTHS_ROW_1.map((month) => {
-                                const isAvailable = availableMonths.includes(month);
-                                const isSelected = selectedMonth === month;
-                                return (
-                                    <button
-                                        key={month}
-                                        onClick={() => isAvailable && handleMonthClick(month)}
-                                        disabled={!isAvailable}
-                                        className={`w-10 py-1 text-xs border transition-colors focus:outline-none ${
-                                            isSelected
-                                                ? selectedStyle
-                                                : isAvailable
-                                                    ? unselectedStyle
-                                                    : 'border-gray-800 text-gray-700 cursor-not-allowed'
-                                        }`}
-                                    >
-                                        {month}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                        <div className="flex gap-1.5">
-                            {MONTHS_ROW_2.map((month) => {
-                                const isAvailable = availableMonths.includes(month);
-                                const isSelected = selectedMonth === month;
-                                return (
-                                    <button
-                                        key={month}
-                                        onClick={() => isAvailable && handleMonthClick(month)}
-                                        disabled={!isAvailable}
-                                        className={`w-10 py-1 text-xs border transition-colors focus:outline-none ${
-                                            isSelected
-                                                ? selectedStyle
-                                                : isAvailable
-                                                    ? unselectedStyle
-                                                    : 'border-gray-800 text-gray-700 cursor-not-allowed'
-                                        }`}
-                                    >
-                                        {month}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {/* Results count */}
-            <div className="text-center text-sm text-gray-500 mb-6">
-                {summary}
-            </div>
-
-            {children(filteredItems, summary)}
-        </>
+            {children(filteredItems)}
+        </div>
     );
 }
