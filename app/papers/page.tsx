@@ -25,7 +25,7 @@ const ownPapers = [
     {
         title: 'On Faultization: Generative Pre-Trained Transformer. What Perturbation Reveals About Pattern Access in a Minimal Transformer',
         date: 'March 2026',
-        abstract: 'We apply faultization (a systematic regime of morphogenetic perturbation) to a minimal transformer (4-layer, 16-dimensional, 4-head character-level GPT), asking which patterns from the latent space (Levin, 2026) the system accesses. Twelve experiments reveal that the optimization pattern is accessible through radically different interfaces (local loss, partial communication, chimeric assembly), that absent interface components are tolerated while corrupted ones are catastrophic (+0.2% vs +24.8%), and that gradual noise exposure unlocks a stress-tolerance pattern that sudden exposure does not (p = 0.0001, d = −0.227): a free lunch the system receives without the optimizer paying for it.',
+        abstract: 'We apply faultization (a systematic regime of morphogenetic perturbation) to a minimal transformer (4-layer, 16-dimensional, 4-head character-level GPT), asking which patterns from the latent space (Levin, 2026) the system accesses. Twelve experiments reveal that the optimization pattern is accessible through radically different interfaces (local loss, partial communication, chimeric assembly), that absent interface components are tolerated while corrupted ones are catastrophic (+0.2% vs +24.8%), and that gradual noise exposure unlocks a stress-tolerance pattern that sudden exposure does not (p = 0.0001, d = −0.374): a free lunch the system receives without the optimizer paying for it.',
         pdf: '/papers/on-faultization-gpt.pdf',
         github: 'https://github.com/piatra-institute/papers-on-faultization-gpt',
     },
