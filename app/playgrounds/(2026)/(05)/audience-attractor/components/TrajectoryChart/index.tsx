@@ -14,6 +14,8 @@ import {
     ReferenceLine,
 } from 'recharts';
 
+import ChartTooltip from '@/components/ChartTooltip';
+
 import type { Params, SimEvent, SimRow, Snapshot } from '../../logic';
 
 
@@ -22,38 +24,6 @@ interface TrajectoryChartProps {
     rows: SimRow[];
     events: SimEvent[];
     snapshot: Snapshot | null;
-}
-
-function ChartTooltip({
-    active,
-    payload,
-    label,
-}: {
-    active?: boolean;
-    payload?: Array<{ value: number; name: string; color: string }>;
-    label?: string | number;
-}) {
-    if (!active || !payload?.length) return null;
-    return (
-        <div
-            style={{
-                background: '#0a0a0a',
-                border: '1px solid #84cc16',
-                padding: 10,
-                color: '#ecfccb',
-                fontSize: 11,
-            }}
-        >
-            <div style={{ marginBottom: 4, color: '#a3e635' }}>
-                period {typeof label === 'number' ? label : label}
-            </div>
-            {payload.map((p, i) => (
-                <div key={i}>
-                    <span style={{ color: p.color }}>{p.name}</span>: {Number(p.value).toLocaleString()}
-                </div>
-            ))}
-        </div>
-    );
 }
 
 export default function TrajectoryChart({ params, rows, events, snapshot }: TrajectoryChartProps) {
@@ -91,7 +61,14 @@ export default function TrajectoryChart({ params, rows, events, snapshot }: Traj
                                 axisLine={false}
                                 tickFormatter={(v: number) => v.toLocaleString()}
                             />
-                            <ReTooltip content={<ChartTooltip />} />
+                            <ReTooltip
+                                content={
+                                    <ChartTooltip
+                                        labelFormat={(l) => `period ${l}`}
+                                        valueFormat={(v) => Number(v).toLocaleString()}
+                                    />
+                                }
+                            />
                             <ReferenceLine
                                 y={params.capacity}
                                 stroke="#facc15"

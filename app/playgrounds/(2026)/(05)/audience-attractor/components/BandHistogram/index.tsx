@@ -12,42 +12,14 @@ import {
     ResponsiveContainer,
 } from 'recharts';
 
+import ChartTooltip from '@/components/ChartTooltip';
+
 import { bandLabel, type DetectedBand, type Metrics } from '../../logic';
 
 
 interface BandHistogramProps {
     bands: DetectedBand[];
     metrics: Metrics;
-}
-
-function ChartTooltip({
-    active,
-    payload,
-    label,
-}: {
-    active?: boolean;
-    payload?: Array<{ value: number; name: string; color: string }>;
-    label?: string | number;
-}) {
-    if (!active || !payload?.length) return null;
-    return (
-        <div
-            style={{
-                background: '#0a0a0a',
-                border: '1px solid #84cc16',
-                padding: 10,
-                color: '#ecfccb',
-                fontSize: 11,
-            }}
-        >
-            <div style={{ marginBottom: 4, color: '#a3e635' }}>{label}</div>
-            {payload.map((p, i) => (
-                <div key={i}>
-                    <span style={{ color: p.color }}>{p.name}</span>: {(Number(p.value) * 100).toFixed(1)}%
-                </div>
-            ))}
-        </div>
-    );
 }
 
 export default function BandHistogram({ bands, metrics }: BandHistogramProps) {
@@ -85,7 +57,13 @@ export default function BandHistogram({ bands, metrics }: BandHistogramProps) {
                                 axisLine={false}
                                 tickFormatter={(v: number) => `${Math.round(v * 100)}%`}
                             />
-                            <ReTooltip content={<ChartTooltip />} />
+                            <ReTooltip
+                                content={
+                                    <ChartTooltip
+                                        valueFormat={(v) => `${(Number(v) * 100).toFixed(1)}%`}
+                                    />
+                                }
+                            />
                             <Bar dataKey="share" name="dwell share">
                                 {data.map((d, i) => (
                                     <Cell

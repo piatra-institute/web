@@ -1,3 +1,5 @@
+import { clamp01, clamp100 } from '@/lib/playgroundMath';
+
 import {
     OBJECTS,
     OBJECT_KEYS,
@@ -193,14 +195,6 @@ export interface Metrics {
     stability: number;
     stageIndex: number;
     statusIndex: number;
-}
-
-function clamp01(x: number): number {
-    return Math.max(0, Math.min(1, x));
-}
-
-function clamp100(x: number): number {
-    return Math.max(0, Math.min(100, Math.round(x)));
 }
 
 export function temperatureOf(p: FieldValues): number {

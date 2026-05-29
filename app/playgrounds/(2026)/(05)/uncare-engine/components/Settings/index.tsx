@@ -4,6 +4,7 @@ import React from 'react';
 
 import SliderInput from '@/components/SliderInput';
 import Button from '@/components/Button';
+import MetricDelta from '@/components/MetricDelta';
 
 import {
     AXIS_HINTS,
@@ -22,37 +23,6 @@ import {
     type PresetKey,
     type Snapshot,
 } from '../../logic';
-
-
-function MetricDelta({
-    label,
-    current,
-    saved,
-    higherIsBetter = true,
-}: {
-    label: string;
-    current: number;
-    saved: number;
-    higherIsBetter?: boolean;
-}) {
-    const delta = current - saved;
-    const arrow = delta > 0.5 ? '↑' : delta < -0.5 ? '↓' : '=';
-    const positive = higherIsBetter ? delta > 0.5 : delta < -0.5;
-    const negative = higherIsBetter ? delta < -0.5 : delta > 0.5;
-    const color = positive
-        ? 'text-lime-400'
-        : negative
-            ? 'text-orange-400'
-            : 'text-lime-200/40';
-    return (
-        <div className="text-lime-200/60 text-xs font-mono">
-            {label}: <span className="text-lime-400">{current}</span>{' '}
-            <span className={color}>
-                {arrow} {Math.abs(delta)}
-            </span>
-        </div>
-    );
-}
 
 
 interface SettingsProps {

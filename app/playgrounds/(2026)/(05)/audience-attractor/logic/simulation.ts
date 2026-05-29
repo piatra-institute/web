@@ -1,23 +1,10 @@
 // stochastic audience-attractor simulation.
 // deterministic given fixed (params, scenario, seed): the rng is seeded.
 
+import { clamp } from '@/lib/playgroundMath';
+import { gaussian, seededRandom } from '@/lib/rng';
+
 import type { ScenarioKey } from './scenarios';
-
-
-function seededRandom(seed: number): number {
-    const x = Math.sin(seed) * 10000;
-    return x - Math.floor(x);
-}
-
-function gaussian(seed: number): number {
-    const u = Math.max(0.000001, seededRandom(seed));
-    const v = Math.max(0.000001, seededRandom(seed + 991));
-    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
-}
-
-function clamp(v: number, lo: number, hi: number): number {
-    return Math.max(lo, Math.min(hi, v));
-}
 
 export interface SimulationParams {
     initialFloor: number;

@@ -12,43 +12,13 @@ import {
     ReferenceLine,
 } from 'recharts';
 
+import ChartTooltip from '@/components/ChartTooltip';
+
 import { driftData, type Params } from '../../logic';
 
 
 interface DriftCurveProps {
     params: Params;
-}
-
-function ChartTooltip({
-    active,
-    payload,
-    label,
-}: {
-    active?: boolean;
-    payload?: Array<{ value: number; name: string; color: string }>;
-    label?: string | number;
-}) {
-    if (!active || !payload?.length) return null;
-    return (
-        <div
-            style={{
-                background: '#0a0a0a',
-                border: '1px solid #84cc16',
-                padding: 10,
-                color: '#ecfccb',
-                fontSize: 11,
-            }}
-        >
-            <div style={{ marginBottom: 4, color: '#a3e635' }}>
-                {typeof label === 'number' ? `${Math.round(Math.pow(10, label) - 1).toLocaleString()} viewers` : label}
-            </div>
-            {payload.map((p, i) => (
-                <div key={i}>
-                    <span style={{ color: p.color }}>{p.name}</span>: {Number(p.value).toFixed(3)}
-                </div>
-            ))}
-        </div>
-    );
 }
 
 export default function DriftCurve({ params }: DriftCurveProps) {
@@ -104,7 +74,16 @@ export default function DriftCurve({ params }: DriftCurveProps) {
                                 tickLine={false}
                                 axisLine={false}
                             />
-                            <ReTooltip content={<ChartTooltip />} />
+                            <ReTooltip
+                                content={
+                                    <ChartTooltip
+                                        labelFormat={(l) => typeof l === 'number'
+                                            ? `${Math.round(Math.pow(10, l) - 1).toLocaleString()} viewers`
+                                            : String(l)}
+                                        valueFormat={(v) => Number(v).toFixed(3)}
+                                    />
+                                }
+                            />
                             <ReferenceLine y={0} stroke="#a3e635" strokeOpacity={0.45} strokeWidth={1} />
                             <ReferenceLine
                                 x={floorLog}

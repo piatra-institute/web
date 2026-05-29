@@ -4,6 +4,7 @@ import React from 'react';
 
 import SliderInput from '@/components/SliderInput';
 import Button from '@/components/Button';
+import MetricDelta from '@/components/MetricDelta';
 
 import {
     CASES,
@@ -19,39 +20,6 @@ import {
     type Params,
     type Snapshot,
 } from '../../logic';
-
-
-function MetricDelta({
-    label,
-    current,
-    saved,
-    decimals = 2,
-    higherIsBetter = true,
-}: {
-    label: string;
-    current: number;
-    saved: number;
-    decimals?: number;
-    higherIsBetter?: boolean;
-}) {
-    const delta = current - saved;
-    const arrow = delta > 0.005 ? '↑' : delta < -0.005 ? '↓' : '=';
-    const positive = higherIsBetter ? delta > 0.005 : delta < -0.005;
-    const negative = higherIsBetter ? delta < -0.005 : delta > 0.005;
-    const color = positive
-        ? 'text-lime-400'
-        : negative
-            ? 'text-orange-400'
-            : 'text-lime-200/40';
-    return (
-        <div className="text-lime-200/60 text-xs font-mono">
-            {label}: <span className="text-lime-400">{current.toFixed(decimals)}</span>{' '}
-            <span className={color}>
-                {arrow} {Math.abs(delta).toFixed(decimals)}
-            </span>
-        </div>
-    );
-}
 
 
 interface SettingsProps {
@@ -176,11 +144,11 @@ export default function Settings({
                             current vs saved ({snapshot.label})
                         </div>
                         <div className="grid grid-cols-2 gap-2">
-                            <MetricDelta label="span" current={metrics.allowedSpan} saved={snapshot.metrics.allowedSpan} />
-                            <MetricDelta label="rmin" current={metrics.rMin} saved={snapshot.metrics.rMin} />
-                            <MetricDelta label="rmax" current={metrics.rMax} saved={snapshot.metrics.rMax} />
-                            <MetricDelta label="r+" current={metrics.rPlus} saved={snapshot.metrics.rPlus} />
-                            <MetricDelta label="r-" current={metrics.rMinus} saved={snapshot.metrics.rMinus} />
+                            <MetricDelta label="span" current={metrics.allowedSpan} saved={snapshot.metrics.allowedSpan} decimals={2} />
+                            <MetricDelta label="rmin" current={metrics.rMin} saved={snapshot.metrics.rMin} decimals={2} />
+                            <MetricDelta label="rmax" current={metrics.rMax} saved={snapshot.metrics.rMax} decimals={2} />
+                            <MetricDelta label="r+" current={metrics.rPlus} saved={snapshot.metrics.rPlus} decimals={2} />
+                            <MetricDelta label="r-" current={metrics.rMinus} saved={snapshot.metrics.rMinus} decimals={2} />
                             <MetricDelta label="cross" current={metrics.crossings} saved={snapshot.metrics.crossings} decimals={0} />
                         </div>
                     </div>

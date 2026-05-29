@@ -16,6 +16,7 @@ import AssumptionPanel, { Assumption } from '@/components/AssumptionPanel';
 import CalibrationPanel, { CalibrationResult } from '@/components/CalibrationPanel';
 import SensitivityAnalysis, { SensitivityBar } from '@/components/SensitivityAnalysis';
 import VersionSelector, { ModelVersion } from '@/components/VersionSelector';
+import ChartTooltip from '@/components/ChartTooltip';
 
 import {
     CASES,
@@ -46,38 +47,6 @@ const TABS: { key: Tab; label: string }[] = [
     { key: 'cases', label: 'cases' },
     { key: 'analysis', label: 'analysis' },
 ];
-
-function ChartTooltip({
-    active,
-    payload,
-    label,
-}: {
-    active?: boolean;
-    payload?: Array<{ value: number; name: string; color: string }>;
-    label?: string | number;
-}) {
-    if (!active || !payload?.length) return null;
-    return (
-        <div
-            style={{
-                background: '#0a0a0a',
-                border: '1px solid #84cc16',
-                padding: 10,
-                color: '#ecfccb',
-                fontSize: 11,
-            }}
-        >
-            <div style={{ marginBottom: 4, color: '#a3e635' }}>
-                {typeof label === 'number' ? label.toFixed(2) : label}
-            </div>
-            {payload.map((p, i) => (
-                <div key={i}>
-                    <span style={{ color: p.color }}>{p.name}</span>: {Number(p.value).toFixed(3)}
-                </div>
-            ))}
-        </div>
-    );
-}
 
 interface ViewerProps {
     params: Params;
@@ -406,7 +375,14 @@ export default function Viewer({
                                         tickLine={false}
                                         axisLine={false}
                                     />
-                                    <ReTooltip content={<ChartTooltip />} />
+                                    <ReTooltip
+                                        content={
+                                            <ChartTooltip
+                                                labelFormat={(l) => typeof l === 'number' ? l.toFixed(2) : String(l)}
+                                                valueFormat={(v) => Number(v).toFixed(3)}
+                                            />
+                                        }
+                                    />
                                     <ReferenceLine
                                         x={Number(params[sweepField].toFixed(3))}
                                         stroke="#a3e635"

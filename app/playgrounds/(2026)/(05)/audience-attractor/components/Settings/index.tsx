@@ -4,6 +4,7 @@ import React from 'react';
 
 import SliderInput from '@/components/SliderInput';
 import Button from '@/components/Button';
+import MetricDelta from '@/components/MetricDelta';
 
 import {
     FIELD_GROUPS,
@@ -20,44 +21,6 @@ import {
     type ScenarioKey,
     type Snapshot,
 } from '../../logic';
-
-
-function MetricDelta({
-    label,
-    current,
-    saved,
-    decimals = 0,
-    isPercent = false,
-    higherIsBetter = true,
-}: {
-    label: string;
-    current: number;
-    saved: number;
-    decimals?: number;
-    isPercent?: boolean;
-    higherIsBetter?: boolean;
-}) {
-    const delta = current - saved;
-    const eps = isPercent ? 0.005 : 0.5;
-    const arrow = delta > eps ? '↑' : delta < -eps ? '↓' : '=';
-    const positive = higherIsBetter ? delta > eps : delta < -eps;
-    const negative = higherIsBetter ? delta < -eps : delta > eps;
-    const color = positive
-        ? 'text-lime-400'
-        : negative
-            ? 'text-orange-400'
-            : 'text-lime-200/40';
-    const fmt = (v: number) =>
-        isPercent ? `${(v * 100).toFixed(decimals)}%` : decimals > 0 ? v.toFixed(decimals) : Math.round(v).toLocaleString();
-    return (
-        <div className="text-lime-200/60 text-xs font-mono">
-            {label}: <span className="text-lime-400">{fmt(current)}</span>{' '}
-            <span className={color}>
-                {arrow} {fmt(Math.abs(delta))}
-            </span>
-        </div>
-    );
-}
 
 
 interface SettingsProps {
@@ -133,7 +96,7 @@ export default function Settings({
                             <MetricDelta label="trough" current={metrics.troughViewers} saved={snapshot.metrics.troughViewers} />
                             <MetricDelta label="dwell" current={metrics.dwellShare} saved={snapshot.metrics.dwellShare} isPercent decimals={0} />
                             <MetricDelta label="core" current={metrics.coreShare} saved={snapshot.metrics.coreShare} isPercent decimals={0} />
-                            <MetricDelta label="log range" current={metrics.logRange} saved={snapshot.metrics.logRange} decimals={2} higherIsBetter={false} />
+                            <MetricDelta label="log range" current={metrics.logRange} saved={snapshot.metrics.logRange} decimals={2} higherIsBetter={false} eps={0.5} />
                         </div>
                     </div>
                 ) : (

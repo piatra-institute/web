@@ -1,3 +1,5 @@
+import { clamp100 } from '@/lib/playgroundMath';
+
 import type { CaseKey } from './cases';
 import { CASES } from './cases';
 import { getStageByScore } from './stages';
@@ -124,13 +126,9 @@ export interface Metrics {
     stageIndex: number;
 }
 
-function clamp01(x: number): number {
-    return Math.max(0, Math.min(100, Math.round(x)));
-}
-
 export function scoreModel(p: AxisValues): Metrics {
     const exitInv = 100 - p.exit;
-    const madness = clamp01(
+    const madness = clamp100(
         p.load * 0.22 +
         p.shame * 0.18 +
         exitInv * 0.20 +
@@ -139,14 +137,14 @@ export function scoreModel(p: AxisValues): Metrics {
         p.isolation * 0.10,
     );
 
-    const escapeVelocity = clamp01(
+    const escapeVelocity = clamp100(
         p.exit * 0.48 +
         (100 - p.tribe) * 0.24 +
         (100 - p.isolation) * 0.18 +
         (100 - p.inflation) * 0.10,
     );
 
-    const inversionPressure = clamp01(
+    const inversionPressure = clamp100(
         p.shame * 0.28 +
         p.tribe * 0.28 +
         p.inflation * 0.22 +
@@ -154,19 +152,19 @@ export function scoreModel(p: AxisValues): Metrics {
         exitInv * 0.10,
     );
 
-    const monstrosityPotential = clamp01(
+    const monstrosityPotential = clamp100(
         madness * 0.45 +
         inversionPressure * 0.30 +
         p.tribe * 0.15 +
         p.isolation * 0.10,
     );
 
-    const careCapacity = clamp01(
+    const careCapacity = clamp100(
         100 - madness * 0.85 +
         (p.exit - 50) * 0.20,
     );
 
-    const backlashRisk = clamp01(
+    const backlashRisk = clamp100(
         p.load * 0.28 +
         p.shame * 0.30 +
         p.inflation * 0.22 +
@@ -212,11 +210,11 @@ export function extractAxes(p: AxisValues): AxisValues {
 }
 
 export function pressureComponent(p: AxisValues): number {
-    return clamp01(p.load * 0.45 + p.shame * 0.30 + p.inflation * 0.25);
+    return clamp100(p.load * 0.45 + p.shame * 0.30 + p.inflation * 0.25);
 }
 
 export function captureComponent(p: AxisValues): number {
-    return clamp01(p.tribe * 0.40 + (100 - p.exit) * 0.35 + p.isolation * 0.25);
+    return clamp100(p.tribe * 0.40 + (100 - p.exit) * 0.35 + p.isolation * 0.25);
 }
 
 export function dominantAxis(p: AxisValues): AxisKey {

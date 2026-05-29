@@ -16,6 +16,8 @@ import AssumptionPanel, { Assumption } from '@/components/AssumptionPanel';
 import CalibrationPanel, { CalibrationResult } from '@/components/CalibrationPanel';
 import SensitivityAnalysis, { SensitivityBar } from '@/components/SensitivityAnalysis';
 import VersionSelector, { ModelVersion } from '@/components/VersionSelector';
+import ChartTooltip from '@/components/ChartTooltip';
+import InvariantBar from '@/components/InvariantBar';
 
 import {
     AXIS_KEYS,
@@ -52,67 +54,6 @@ const INVARIANT_ROWS: { key: keyof Metrics; label: string; higherIsBetter: boole
     { key: 'careCapacity', label: 'care capacity', higherIsBetter: true },
     { key: 'backlashRisk', label: 'backlash risk', higherIsBetter: false },
 ];
-
-function ChartTooltip({
-    active,
-    payload,
-    label,
-}: {
-    active?: boolean;
-    payload?: Array<{ value: number; name: string; color: string }>;
-    label?: string | number;
-}) {
-    if (!active || !payload?.length) return null;
-    return (
-        <div
-            style={{
-                background: '#0a0a0a',
-                border: '1px solid #84cc16',
-                padding: 10,
-                color: '#ecfccb',
-                fontSize: 11,
-            }}
-        >
-            <div style={{ marginBottom: 4, color: '#a3e635' }}>
-                {typeof label === 'number' ? label.toFixed(0) : label}
-            </div>
-            {payload.map((p, i) => (
-                <div key={i}>
-                    <span style={{ color: p.color }}>{p.name}</span>: {Number(p.value).toFixed(0)}
-                </div>
-            ))}
-        </div>
-    );
-}
-
-function InvariantBar({
-    label,
-    value,
-    saved,
-}: {
-    label: string;
-    value: number;
-    saved?: number;
-}) {
-    return (
-        <div className="grid grid-cols-[140px_1fr_36px] items-center gap-3">
-            <div className="text-xs font-mono text-lime-200/70">{label}</div>
-            <div className="relative h-4 bg-lime-500/5 border border-lime-500/15">
-                <div
-                    className="h-full bg-lime-500/60"
-                    style={{ width: `${value}%` }}
-                />
-                {saved !== undefined && (
-                    <div
-                        className="absolute top-0 h-full border-l-2 border-orange-400 border-dashed"
-                        style={{ left: `${saved}%` }}
-                    />
-                )}
-            </div>
-            <div className="text-right text-xs font-mono text-lime-400">{value}</div>
-        </div>
-    );
-}
 
 interface ViewerProps {
     params: Params;

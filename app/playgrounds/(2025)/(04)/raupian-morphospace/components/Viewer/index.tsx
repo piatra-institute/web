@@ -184,7 +184,7 @@ const Viewer: React.FC<ViewerProps> = ({ W, D, T, autoRotate, setW, setD, setT }
                     const marker = new THREE.Mesh(markerGeom.clone(), markerMat.clone()); marker.position.set(wVal, dVal * 5, tVal); marker.userData = { W: wVal, D: dVal, T: tVal, isMarker: true } as MarkerUserData; group.add(marker);
                 }
             }
-        } console.log(`Populated morphospace with ${group.children.length} markers.`); scene.add(group); return group;
+        } scene.add(group); return group;
     };
     const updateVisualization = (scene: THREE.Scene, W_val: number, D_val: number, T_val: number) => {
         // Update floating marker position
@@ -331,7 +331,6 @@ const Viewer: React.FC<ViewerProps> = ({ W, D, T, autoRotate, setW, setD, setT }
 
         // Cleanup function for *this specific effect*
         return () => {
-            console.log("Removing keydown listener"); // Debugging
             window.removeEventListener('keydown', handleKeyDown);
         };
     }, [handleKeyDown]); // Re-attach listener ONLY if handleKeyDown function identity changes
@@ -341,7 +340,6 @@ const Viewer: React.FC<ViewerProps> = ({ W, D, T, autoRotate, setW, setD, setT }
     useEffect(() => {
         // Only run update if scene exists (avoids errors during initial render/cleanup)
         if (sceneRef.current) {
-            console.log("Updating visualization due to W, D, T change"); // Debugging
             updateVisualization(sceneRef.current, W, D, T);
         }
     }, [W, D, T]); // Correct dependencies
