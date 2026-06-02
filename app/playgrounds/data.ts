@@ -751,4 +751,12 @@ export const playgrounds: {
         topics: ['economics', 'sociology', 'mathematics'],
         operations: ['landscape', 'threshold'],
     },
+    {
+        name: 'family threshold',
+        link: '/playgrounds/family-threshold',
+        description: 'how moral weights and observation noise push a child-protection institution into removal, reunification, or rupture',
+        date: 'June 2026',
+        topics: ['psychology', 'sociology', 'political-science'],
+        operations: ['threshold', 'tension'],
+    },
 ];
