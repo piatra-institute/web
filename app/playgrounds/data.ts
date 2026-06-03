@@ -759,4 +759,12 @@ export const playgrounds: {
         topics: ['psychology', 'sociology', 'political-science'],
         operations: ['threshold', 'tension'],
     },
+    {
+        name: 'rotary fields',
+        link: '/playgrounds/rotary-fields',
+        description: 'rotary attention and neural phase coding share one move: position as angle',
+        date: 'June 2026',
+        topics: ['computer-science', 'neuroscience', 'mathematics'],
+        operations: ['symmetry', 'landscape'],
+    },
 ];
