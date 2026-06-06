@@ -1,9 +1,150 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SliderInput from '@/components/SliderInput';
 import Toggle from '@/components/Toggle';
 import Dropdown from '@/components/Dropdown';
 import Button from '@/components/Button';
 import PlaygroundSettings from '@/components/PlaygroundSettings';
+import type { LifesongExportKind, LifesongExportOptions } from '../Viewer';
+
+
+const EXPORT_KINDS: { kind: LifesongExportKind; label: string; hint: string }[] = [
+  { kind: 'image', label: 'image', hint: 'PNG still of the lifesong' },
+  { kind: 'audio', label: 'song', hint: 'WAV rendering of the current song' },
+  { kind: 'video', label: 'loop', hint: 'WebM lifesong loop' },
+];
+
+const PRESETS = [
+  {
+    label: 'cardiac orbit',
+    description: 'steady pulse, warm pentatonic motion',
+    values: {
+      dimensions: 3,
+      attractorType: 'limit-cycle',
+      timeScale: 1.2,
+      nonlinearity: 0.32,
+      heartRate: 72,
+      breathingRate: 14,
+      brainwaveFreq: 8,
+      circadianPeriod: 24,
+      scaleType: 'pentatonic',
+      tempo: 96,
+      harmonicComplexity: 0.35,
+      timbreVariation: 0.2,
+      fitnessFunction: 'stability',
+      mutationRate: 0.02,
+      selectionPressure: 0.82,
+      showPhaseSpace: true,
+      showRhythms: true,
+      showSpectrum: true,
+      colorMode: 'frequency',
+      speedMs: 45,
+    },
+  },
+  {
+    label: 'neural weather',
+    description: 'fast oscillations, chromatic sparks',
+    values: {
+      dimensions: 4,
+      attractorType: 'strange',
+      timeScale: 1.85,
+      nonlinearity: 0.78,
+      heartRate: 86,
+      breathingRate: 20,
+      brainwaveFreq: 32,
+      circadianPeriod: 23.4,
+      scaleType: 'chromatic',
+      tempo: 150,
+      harmonicComplexity: 0.82,
+      timbreVariation: 0.88,
+      fitnessFunction: 'novelty',
+      mutationRate: 0.12,
+      selectionPressure: 0.38,
+      showPhaseSpace: true,
+      showRhythms: true,
+      showSpectrum: true,
+      colorMode: 'energy',
+      speedMs: 30,
+    },
+  },
+  {
+    label: 'circadian tide',
+    description: 'slow drift, minor harmonic breathing',
+    values: {
+      dimensions: 3,
+      attractorType: 'torus',
+      timeScale: 0.62,
+      nonlinearity: 0.22,
+      heartRate: 58,
+      breathingRate: 9,
+      brainwaveFreq: 4.5,
+      circadianPeriod: 25.2,
+      scaleType: 'minor',
+      tempo: 72,
+      harmonicComplexity: 0.58,
+      timbreVariation: 0.36,
+      fitnessFunction: 'harmony',
+      mutationRate: 0.035,
+      selectionPressure: 0.64,
+      showPhaseSpace: true,
+      showRhythms: true,
+      showSpectrum: true,
+      colorMode: 'phase',
+      speedMs: 70,
+    },
+  },
+  {
+    label: 'metabolic flare',
+    description: 'bright unstable life, high mutation',
+    values: {
+      dimensions: 5,
+      attractorType: 'strange',
+      timeScale: 2.4,
+      nonlinearity: 0.92,
+      heartRate: 104,
+      breathingRate: 24,
+      brainwaveFreq: 18,
+      circadianPeriod: 21.6,
+      scaleType: 'whole-tone',
+      tempo: 176,
+      harmonicComplexity: 0.72,
+      timbreVariation: 0.68,
+      fitnessFunction: 'complexity',
+      mutationRate: 0.18,
+      selectionPressure: 0.46,
+      showPhaseSpace: true,
+      showRhythms: true,
+      showSpectrum: true,
+      colorMode: 'amplitude',
+      speedMs: 25,
+    },
+  },
+  {
+    label: 'homeostasis',
+    description: 'quiet fixed point, almost breathing',
+    values: {
+      dimensions: 2,
+      attractorType: 'fixed-point',
+      timeScale: 0.38,
+      nonlinearity: 0.12,
+      heartRate: 64,
+      breathingRate: 11,
+      brainwaveFreq: 7,
+      circadianPeriod: 24.8,
+      scaleType: 'major',
+      tempo: 84,
+      harmonicComplexity: 0.24,
+      timbreVariation: 0.12,
+      fitnessFunction: 'stability',
+      mutationRate: 0.005,
+      selectionPressure: 0.94,
+      showPhaseSpace: true,
+      showRhythms: true,
+      showSpectrum: true,
+      colorMode: 'frequency',
+      speedMs: 85,
+    },
+  },
+] as const;
 
 interface SettingsProps {
   // Phase space parameters
@@ -64,7 +205,7 @@ interface SettingsProps {
   
   // Actions
   onReset: () => void;
-  onExport: () => void;
+  onExport: (options: LifesongExportOptions) => void;
 }
 
 const Settings: React.FC<SettingsProps> = ({
@@ -115,9 +256,60 @@ const Settings: React.FC<SettingsProps> = ({
   onReset,
   onExport,
 }) => {
+  const [exportKind, setExportKind] = useState<LifesongExportKind>('image');
+  const [includeOverlay, setIncludeOverlay] = useState(true);
+  const visualExport = exportKind !== 'audio';
+
+  const loadPreset = (preset: typeof PRESETS[number]) => {
+    const { values } = preset;
+    setDimensions(values.dimensions);
+    setAttractorType(values.attractorType);
+    setTimeScale(values.timeScale);
+    setNonlinearity(values.nonlinearity);
+    setHeartRate(values.heartRate);
+    setBreathingRate(values.breathingRate);
+    setBrainwaveFreq(values.brainwaveFreq);
+    setCircadianPeriod(values.circadianPeriod);
+    setScaleType(values.scaleType);
+    setTempo(values.tempo);
+    setHarmonicComplexity(values.harmonicComplexity);
+    setTimbreVariation(values.timbreVariation);
+    setFitnessFunction(values.fitnessFunction);
+    setMutationRate(values.mutationRate);
+    setSelectionPressure(values.selectionPressure);
+    setShowPhaseSpace(values.showPhaseSpace);
+    setShowRhythms(values.showRhythms);
+    setShowSpectrum(values.showSpectrum);
+    setColorMode(values.colorMode);
+    setSpeedMs(values.speedMs);
+    setEnableAudio(false);
+  };
+
   return (
     <PlaygroundSettings
       sections={[
+        {
+          title: 'Presets',
+          content: (
+            <div className="grid grid-cols-1 gap-2">
+              {PRESETS.map((preset) => (
+                <button
+                  key={preset.label}
+                  type="button"
+                  onClick={() => loadPreset(preset)}
+                  className="border border-lime-500/20 px-3 py-2 text-left transition-colors hover:border-lime-500/50 hover:bg-lime-500/10"
+                >
+                  <div className="text-xs text-lime-400 font-semibold">
+                    {preset.label}
+                  </div>
+                  <div className="text-[10px] text-lime-200/45 mt-1">
+                    {preset.description}
+                  </div>
+                </button>
+              ))}
+            </div>
+          ),
+        },
         {
           title: 'Phase Space',
           content: (
@@ -356,9 +548,44 @@ const Settings: React.FC<SettingsProps> = ({
         {
           title: 'Actions',
           content: (
-            <div className="flex gap-4">
-              <Button onClick={onReset} label="Reset" />
-              <Button onClick={onExport} label="Export" />
+            <div className="space-y-4">
+              <div className="border border-lime-500/20 p-3 space-y-3">
+                <div className="text-xs text-lime-400 font-semibold">Export</div>
+                <div className="grid grid-cols-3 gap-1">
+                  {EXPORT_KINDS.map((option) => (
+                    <button
+                      key={option.kind}
+                      type="button"
+                      onClick={() => setExportKind(option.kind)}
+                      className={`border px-2 py-2 text-xs transition-colors ${
+                        exportKind === option.kind
+                          ? 'border-lime-500 bg-lime-500/10 text-lime-400'
+                          : 'border-lime-500/20 text-lime-200/60 hover:border-lime-500/40'
+                      }`}
+                      title={option.hint}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="text-[10px] text-lime-200/40 leading-relaxed">
+                  {EXPORT_KINDS.find(option => option.kind === exportKind)?.hint}
+                </div>
+                {visualExport && (
+                  <Toggle
+                    text="Overlay UI"
+                    value={includeOverlay}
+                    toggle={() => setIncludeOverlay(!includeOverlay)}
+                    tooltip="Include titles, panel labels, and readouts in image/video exports"
+                  />
+                )}
+                <Button
+                  onClick={() => onExport({ kind: exportKind, includeOverlay })}
+                  label={`Export ${exportKind === 'audio' ? 'song' : exportKind}`}
+                  className="w-full"
+                />
+              </div>
+              <Button onClick={onReset} label="Reset" className="w-full" />
             </div>
           ),
         },

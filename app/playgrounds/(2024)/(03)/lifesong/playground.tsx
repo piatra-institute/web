@@ -4,7 +4,10 @@ import { useState, useRef } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Settings from './components/Settings';
-import Viewer from './components/Viewer';
+import Viewer, {
+    type LifesongExportOptions,
+    type LifesongViewerRef,
+} from './components/Viewer';
 
 export default function LifesongPlayground() {
     // Phase space parameters
@@ -42,7 +45,7 @@ export default function LifesongPlayground() {
     const [speedMs, setSpeedMs] = useState(50);
     const [refreshKey, setRefreshKey] = useState(0);
     
-    const viewerRef = useRef<{ exportCanvas: () => void }>(null);
+    const viewerRef = useRef<LifesongViewerRef>(null);
     
     const handleReset = () => {
         setDimensions(3);
@@ -70,8 +73,8 @@ export default function LifesongPlayground() {
         setRefreshKey(prev => prev + 1);
     };
     
-    const handleExport = () => {
-        viewerRef.current?.exportCanvas();
+    const handleExport = (options: LifesongExportOptions) => {
+        void viewerRef.current?.exportMedia(options);
     };
 
     return (
