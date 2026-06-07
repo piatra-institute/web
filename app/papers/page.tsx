@@ -130,6 +130,24 @@ const ownPapers: OwnPaper[] = [
         topics: ['computer-science'] as const,
         kinds: ['simulation', 'formal'] as const,
     },
+    {
+        title: 'From Proto-Agent to Person: A Bootstrapping Architecture for the Development of Personhood',
+        date: 'June 2026',
+        abstract: 'A human newborn is a living organism with homeostatic regulation, affect, sensorimotor coupling, social-orienting biases, and a powerful capacity for statistical learning. It is not yet a language-bearing, norm-bearing, autobiographically extended self. By the age of three to five a recognizable someone has formed, and by adulthood the same initial architecture can support a scientist, a citizen, a parent, a legal subject, a reflective philosophical agent. This paper proposes a bootstrapping architecture that accounts for that divergence without appeal either to pure maturation or to a blank slate. The thesis is that adult cognitive personhood is co-compiled: biologically prepared proto-agential systems enter caregiver-mediated loops of affect regulation, joint attention, language, norm enforcement, autobiographical narration, executive scaffolding, and cultural-tool use, and the child progressively internalizes the regulatory and symbolic structures first run around it by others. The argument integrates developmental psychology, attachment theory, predictive processing, language-acquisition research, Vygotskian internalization, Tomasellian shared intentionality, autobiographical-memory theory, executive-function development, and cultural evolution, and tests the integrated account against the boundary cases of institutional deprivation and late first-language acquisition. The result is a layered control architecture in which each acquired layer rewrites the learning conditions for the next. The account is developmental and cognitive, and is held strictly separate from claims about moral or legal status: the newborn lacks adult-style cognitive personhood and retains full moral standing. The developmental layering mirrors, under compression, the layered history of the person concept itself, which classical anthropology has long treated as a category assembled across the history of societies rather than given whole.',
+        pdf: '/papers/from-proto-agent-to-person.pdf',
+        github: 'https://github.com/piatra-institute/papers-from-proto-agent-to-person',
+        topics: ['psychology', 'philosophy', 'biology'] as const,
+        kinds: ['essay'] as const,
+    },
+    {
+        title: 'The Birth of Morphotopy: From Earth-Measure to the Spaces of Life and Mind',
+        date: 'June 2026',
+        abstract: 'Across physics, biology, cognitive science, and machine learning the same move recurs: a domain that is not spatial is rendered as a structured space of possible forms, and its behaviour is treated as movement, transformation, and constraint within that space. Configuration spaces, morphospaces, conceptual spaces, and the latent spaces of trained networks are instances. This paper argues that the move is not a set of independent metaphors but the latest phase of one long process in the history of geometry, the progressive detachment of form from physical extension. We trace that history stratigraphically, from the surveyor\'s field and the Euclidean figure through coordinates, the collapse of the parallel postulate, Riemann\'s intrinsic manifold, Klein\'s transformation groups, topology, phase space, and information geometry, to biological morphospace and the representational geometry of brains and machines, each stratum remaining in use beneath the next. We then name the current phase morphotopy and, so that the name does more than relabel, give five conditions a treatment must satisfy to count as a morphotopic one rather than a spatial figure of speech, and apply them to cases that pass and cases that fail. One structural feature carries across the strata, geometric frustration, the failure of locally satisfiable constraints to compose into a global solution; we exhibit it exactly in a minimal model and date the strata to show that the abstraction accelerates, with three quarters of them falling in the last twentieth of the span. The claim is historical and organizational rather than a new mathematics, and it is bounded: rendering the structure of a mind as navigable geometry is not an account of why there is experience.',
+        pdf: '/papers/the-birth-of-morphotopy.pdf',
+        github: 'https://github.com/piatra-institute/papers-the-birth-of-morphotopy',
+        topics: ['mathematics', 'computer-science', 'philosophy', 'history'] as const,
+        kinds: ['genealogy', 'simulation'] as const,
+    },
 ];
 
 
