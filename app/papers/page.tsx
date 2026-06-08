@@ -148,6 +148,15 @@ const ownPapers: OwnPaper[] = [
         topics: ['mathematics', 'computer-science', 'philosophy', 'history'] as const,
         kinds: ['genealogy', 'simulation'] as const,
     },
+    {
+        title: 'Geodesics of Care: A Scale-Free Geometry of Concern',
+        date: 'June 2026',
+        abstract: 'Care is usually studied as an emotion, a virtue, or a social practice. This paper develops a different primitive. A system cares for another, in the weak sense, when the second system\'s viability enters the first system\'s perception, model, valuation, and choice of action; it cares in the strong sense when that coupling is conscious, valued, and answerable to the other\'s consent and standing. The proposal is that this single relation, directed viability-coupling, runs from bacterial coordination through immune tolerance, animal attachment, human compassion, institutions, and artificial agents, and that its structure is geometric. We define a care-distance as the least-cost admissible path by which one agent comes to detect, represent, value, and improve another\'s viability without collapsing the other\'s agency, and we show that this distance is a directed quasi-metric: it is asymmetric, and it can violate the triangle inequality, so the moral world is not a circle around the self but a curved and broken manifold of concern. The vocabulary of that manifold, radius, diameter, depth, curvature, topology, and singularity, is given precise definitions and matched to established findings in moral psychology, which become measurements of curvature rather than a list of separate biases. A minimal control model, solved exactly, makes three claims concrete: care-distance is a quasi-metric; preserving the other\'s option-entropy has a measurable price in the other\'s expected viability, and that price is small while the welfare lost to coercion\'s failure is large; and the policy deformation required to help scales steeply with relational distance, so kin are an order of magnitude cheaper to reach than distant strangers. The account is organizational and formal rather than a new ethics, and it is bounded: rendering concern as navigable geometry measures coupling, cost, and the preservation of agency, and it does not measure, or explain, what concern feels like from inside.',
+        pdf: '/papers/geodesics-of-care.pdf',
+        github: 'https://github.com/piatra-institute/papers-geodesics-of-care',
+        topics: ['philosophy', 'psychology', 'biology', 'computer-science'] as const,
+        kinds: ['formal', 'simulation'] as const,
+    },
 ];
 
 
