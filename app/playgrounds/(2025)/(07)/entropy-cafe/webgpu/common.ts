@@ -26,7 +26,8 @@ export const GLASS_RADIUS = 1.35;
 export const GLASS_HEIGHT = 3.6;
 export const PARTICLE_RADIUS = 0.06;
 
-// Metrics grid
+// Metrics grid: the coarse-graining that defines the entropy (see the
+// coarse-graining-defines-entropy assumption).
 export const METRICS_GRID_SIZE = 32;
 export const METRICS_SCALE = 10000;
 

@@ -194,7 +194,7 @@ export const playgrounds: {
     {
         name: 'entropy caf\u00e9',
         link: '/playgrounds/entropy-cafe',
-        description: 'entropy and complexity through coffee mixing metaphor',
+        description: 'cream into coffee: entropy rises while complexity rises and then falls',
         date: 'July 2025',
         topics: ['physics', 'chemistry'],
         operations: ['morphogenesis'],

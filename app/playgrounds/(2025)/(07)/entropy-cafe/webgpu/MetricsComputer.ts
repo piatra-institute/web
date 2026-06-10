@@ -164,23 +164,28 @@ export class MetricsComputer {
             const kineticSum = data[3];
             const count = data[4];
 
-            const scale = METRICS_SCALE;
-            const denom = Math.max(1, count) * scale;
-
-            const entropy = entropySum / denom;
-            const mixedness = mixednessSum / denom;
-            const complexity = complexitySum / denom;
-            const kinetic = kineticSum / denom;
+            const denom = Math.max(1, count) * METRICS_SCALE;
 
             return {
-                entropy,
-                mixedness,
-                complexity,
-                kinetic,
+                entropy: entropySum / denom,
+                mixedness: mixednessSum / denom,
+                complexity: complexitySum / denom,
+                kinetic: kineticSum / denom,
                 count,
             };
+        } catch {
+            // mapAsync can reject if a metrics copy and the map race under load.
+            // Recover gracefully instead of permanently stalling the readback.
+            return null;
         } finally {
-            this.metricsReadBuffer.unmap();
+            // Guard the unmap: if mapAsync rejected the buffer is not mapped and
+            // unmap would throw, which previously left readInFlight stuck true
+            // and froze every later read. Always reset the flag.
+            try {
+                this.metricsReadBuffer.unmap();
+            } catch {
+                // buffer was not mapped; nothing to release.
+            }
             this.readInFlight = false;
         }
     }
