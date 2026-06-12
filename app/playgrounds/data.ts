@@ -767,4 +767,20 @@ export const playgrounds: {
         topics: ['computer-science', 'neuroscience', 'mathematics'],
         operations: ['symmetry', 'landscape'],
     },
+    {
+        name: 'the lexical liar',
+        link: '/playgrounds/lexical-liar',
+        description: 'contronyms as context-sensitive operators',
+        date: 'June 2026',
+        topics: ['philosophy', 'computer-science'],
+        operations: ['tension', 'landscape'],
+    },
+    {
+        name: 'trisquare',
+        link: '/playgrounds/trisquare',
+        description: 'conformal quantum gravity, a perfect-square action, and 4D scalar phi-fourth',
+        date: 'June 2026',
+        topics: ['physics', 'mathematics'],
+        operations: ['symmetry', 'anatomy'],
+    },
 ];
