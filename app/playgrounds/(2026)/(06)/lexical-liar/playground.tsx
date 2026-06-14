@@ -174,7 +174,7 @@ export default function LexicalLiarPlayground({ sourceContext }: Props) {
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    after Patrick Grim, The Incomplete Universe (1991)
+                    Patrick Grim, The Incomplete Universe (1991)
                 </a>
             }
             sections={sections}

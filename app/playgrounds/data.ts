@@ -783,4 +783,20 @@ export const playgrounds: {
         topics: ['physics', 'mathematics'],
         operations: ['symmetry', 'anatomy'],
     },
+    {
+        name: 'arithmetic dynamics',
+        link: '/playgrounds/arithmetic-dynamics',
+        description: 'orbits, attractors, and the shared logic of form across math, evolution, and development',
+        date: 'June 2026',
+        topics: ['mathematics', 'biology'],
+        operations: ['morphogenesis', 'landscape'],
+    },
+    {
+        name: 'ideological bent',
+        link: '/playgrounds/ideological-bent',
+        description: 'measuring how an actor swap bends a forecast from its causal baseline',
+        date: 'June 2026',
+        topics: ['political-science', 'psychology'],
+        operations: ['symmetry', 'tension'],
+    },
 ];
