@@ -175,6 +175,15 @@ const ownPapers: OwnPaper[] = [
         topics: ['philosophy', 'biology', 'computer-science'] as const,
         kinds: ['essay', 'genealogy'] as const,
     },
+    {
+        title: 'Political Autoimmunity: Adverse-Interest Voting and the Functions That Decide It',
+        date: 'June 2026',
+        abstract: 'To say a group voted against its interests is to run a calculation and hide most of its inputs: it presupposes one interest where a voter has several, reads a candidate\'s likely harm to a group while ignoring whatever the candidate offers, treats a knowable harm and an unforeseeable one as the same act, and never says whether it is counting voters or counting votes. This paper turns the accusation into a measurement model that exposes each input and prices the verdict\'s dependence on it. Adverse policy risk for a group, candidate, and policy domain factors as a product of exposure, institutional dependence, candidate hostility, implementation probability, and magnitude; a foreseeability gate and a salience gate separate the risk a voter could know and weigh from raw exposure; and net alignment under a given definition of interest is the candidate\'s weighted protective benefit minus the weighted adverse risk, so that gross risk and net alignment are different quantities whose difference is exactly the protective term the folk accusation drops. Run on three synthetic but anchored 2024 cases (support for Trump among LGBTQ, Muslim, and Latino voters), solved exactly and propagated through forty thousand seeded Monte-Carlo draws, the model shows three buried parameters governing the answer. The interest function moves the same Latino vote from aligned under a material reading to misaligned under a rights reading, flipping the verdict\'s sign for one of three groups while it holds negative for the other two. The counting frame inverts the most-misaligned group from LGBTQ, judged per supporter, to Latino, judged per the votes a bloc moves. The awareness gate removes between forty-three and fifty-eight percent of each group\'s gross risk, and the leftover uncertainty is dominated by the quantities measured worst, exposure and salience and awareness, while the policy-hostility term the accusation leans on carries least. One configuration is robust, the rights-dependence reading of the LGBTQ case per voter, surviving in ninety-two percent of draws; the headline ordering as a whole survives in seventy-four. The construct\'s contribution is to make the hidden inputs explicit and report how much of any verdict each one carries. It does not issue the verdict, and the paper is precise about why it cannot.',
+        pdf: '/papers/political-autoimmunity.pdf',
+        github: 'https://github.com/piatra-institute/papers-political-autoimmunity',
+        topics: ['political-science', 'psychology', 'economics'] as const,
+        kinds: ['formal', 'simulation'] as const,
+    },
 ];
 
 
