@@ -799,4 +799,12 @@ export const playgrounds: {
         topics: ['political-science', 'psychology'],
         operations: ['symmetry', 'tension'],
     },
+    {
+        name: 'political autoimmunity',
+        link: '/playgrounds/political-autoimmunity',
+        description: 'decomposing when group vote choice is misaligned with measurable policy exposure',
+        date: 'June 2026',
+        topics: ['political-science', 'economics', 'psychology'],
+        operations: ['anatomy', 'tension'],
+    },
 ];
