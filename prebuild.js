@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { execSync } = require('child_process');
 
 
 
@@ -47,10 +48,20 @@ const dataFiles = [
 
 
 
+const runPiatraBench = () => {
+    try {
+        execSync('node piatrabench/scorer.mjs', { stdio: 'inherit' });
+    } catch (error) {
+        console.warn('piatrabench scorer failed (non-fatal):', error.message);
+    }
+};
+
+
 const main = async () => {
     for (const { type, dataFile, link } of dataFiles) {
         await fetchData(type, dataFile, link);
     }
+    runPiatraBench();
 }
 
 main();
