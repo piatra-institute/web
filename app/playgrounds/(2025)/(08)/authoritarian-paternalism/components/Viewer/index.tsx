@@ -46,8 +46,23 @@ function quantiles(sortedArr: number[], qs = [0.1, 0.5, 0.9]) {
     });
 }
 
+interface SeriesRow {
+    t: number;
+    F: number;
+    Order: number;
+    Support: number;
+    AvgAgency: number;
+    VarShare: number;
+}
+
+interface AgentRow {
+    t: number;
+    P: number;
+    A: number;
+}
+
 interface MiniChartProps {
-    data: any[];
+    data: Record<string, number>[];
     xKey?: string;
     ySeries?: { key: string; label: string }[];
     yDomain?: [number, number];
@@ -155,8 +170,8 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
 
     const [q10, q50, q90] = useMemo(() => quantiles(thetas), [thetas]);
 
-    const [series, setSeries] = useState<any[]>([]);
-    const [agentSeries, setAgentSeries] = useState({ low: [] as any[], mid: [] as any[], high: [] as any[] });
+    const [series, setSeries] = useState<SeriesRow[]>([]);
+    const [agentSeries, setAgentSeries] = useState<{ low: AgentRow[]; mid: AgentRow[]; high: AgentRow[] }>({ low: [], mid: [], high: [] });
     const [telemetry, setTelemetry] = useState({ t: 0, F: F0, Order: Order0, Support: 0, AvgAgency: 0, VarShare: 0 });
 
     const baseTerm = (F: number, Order: number) => a * g - d * r + b * Order - kappa * k;
@@ -174,7 +189,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
 
         const reps = [q10, q50, q90];
         const repLabels = ["low", "mid", "high"];
-        const repOut: any = {};
+        const repOut: Record<string, { P: number; A: number }> = {};
 
         for (let i = 0; i < N; i++) {
             const th = thetas[i];
@@ -298,7 +313,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
     }, [series, F0, Order0]);
 
     const agentsForChart = useMemo(() => {
-        const fix = (arr: any[]) => (arr && arr.length > 0 ? arr : [{ t: 0, P: 0, A: 0 }])
+        const fix = (arr: AgentRow[]) => (arr && arr.length > 0 ? arr : [{ t: 0, P: 0, A: 0 }])
             .map((row, idx) => ({ ...row, t: typeof row.t === "number" ? row.t : idx }));
         return {
             low: fix(agentSeries.low),
@@ -404,20 +419,20 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
                             data={agentsForChart.low}
                             ySeries={[{ key: "P", label: "P (low θ)" }]}
                             yDomain={[0, 1]}
-                            title="Representative Agent — low θ"
+                            title="Representative Agent:low θ"
                         />
                         <MiniChart
                             data={agentsForChart.mid}
                             ySeries={[{ key: "P", label: "P (median θ)" }]}
                             yDomain={[0, 1]}
-                            title="Representative Agent — median θ"
+                            title="Representative Agent:median θ"
                         />
                         <div className="md:col-span-2">
                             <MiniChart
                                 data={agentsForChart.high}
                                 ySeries={[{ key: "P", label: "P (high θ)" }]}
                                 yDomain={[0, 1]}
-                                title="Representative Agent — high θ"
+                                title="Representative Agent:high θ"
                             />
                         </div>
                     </div>

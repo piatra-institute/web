@@ -1,7 +1,7 @@
 {
-  "generated": "2026-06-22T16:58:30.579Z",
+  "generated": "2026-06-22T17:15:18.499Z",
   "n": 101,
-  "avg": 73.4,
+  "avg": 73.8,
   "build": true,
   "links": false,
   "eras": {
@@ -12,8 +12,8 @@
     },
     "2025": {
       "n": 39,
-      "score": 2584,
-      "infra": 11
+      "score": 2627,
+      "infra": 15
     },
     "2026": {
       "n": 49,
@@ -25,29 +25,29 @@
     {
       "key": "claude opus 4.8",
       "label": "Claude Opus 4.8",
-      "n": 33,
-      "mean": 90.9,
+      "n": 34,
+      "mean": 91.1,
       "meanByCat": {
         "build": 98.8,
         "meta": 100,
         "structure": 98.8,
-        "infra": 73.7,
-        "style": 86.7
+        "infra": 74.5,
+        "style": 87.1
       },
       "best": {
-        "slug": "kerr-causality",
-        "name": "Kerr causality",
+        "slug": "authoritarian-paternalism",
+        "name": "authoritarian paternalism",
         "score": 100
       }
     }
   ],
   "honestyCounts": {
-    "verified": 7,
-    "notAutoVerifiable": 94,
+    "verified": 8,
+    "notAutoVerifiable": 93,
     "failed": 0,
     "flagged": 0
   },
-  "unattributed": 68,
+  "unattributed": 67,
   "unregistered": [
     "artificial-death",
     "byte-birth"
@@ -9117,12 +9117,12 @@
       "year": 2025,
       "month": 8,
       "name": "authoritarian paternalism",
-      "model": null,
-      "modelKey": null,
-      "score": 57,
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
+      "score": 100,
       "byCat": {
         "build": {
-          "earned": 20,
+          "earned": 25,
           "total": 25
         },
         "meta": {
@@ -9130,24 +9130,24 @@
           "total": 15
         },
         "structure": {
-          "earned": 17,
+          "earned": 20,
           "total": 20
         },
         "infra": {
-          "earned": 0,
+          "earned": 25,
           "total": 25
         },
         "style": {
-          "earned": 5,
+          "earned": 15,
           "total": 15
         }
       },
       "catPct": {
-        "build": 80,
+        "build": 100,
         "meta": 100,
-        "structure": 85,
-        "infra": 0,
-        "style": 33
+        "structure": 100,
+        "infra": 100,
+        "style": 100
       },
       "checks": [
         {
@@ -9164,8 +9164,8 @@
           "label": "no `any`",
           "category": "build",
           "weight": 5,
-          "ratio": 0,
-          "detail": "7 occurrence(s)",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -9254,7 +9254,7 @@
           "label": "logic/ module",
           "category": "structure",
           "weight": 3,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -9263,7 +9263,7 @@
           "label": "assumptions.ts",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -9272,7 +9272,7 @@
           "label": "calibration.ts",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -9281,7 +9281,7 @@
           "label": "versions.ts",
           "category": "infra",
           "weight": 4,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -9290,7 +9290,7 @@
           "label": "research companion",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -9299,8 +9299,8 @@
           "label": "no em-dashes",
           "category": "style",
           "weight": 6,
-          "ratio": 0,
-          "detail": "in components/Viewer/index.tsx",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -9308,8 +9308,8 @@
           "label": "no font-serif/sans",
           "category": "style",
           "weight": 4,
-          "ratio": 0,
-          "detail": "font-serif/sans present",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -9322,74 +9322,33 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "assumptions",
-          "label": "assumptions.ts",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "calibration",
-          "label": "calibration.ts",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "research",
-          "label": "research companion",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "no-emdash",
-          "label": "no em-dashes",
-          "lost": 6,
-          "detail": "in components/Viewer/index.tsx"
-        },
-        {
-          "id": "no-any",
-          "label": "no `any`",
-          "lost": 5,
-          "detail": "7 occurrence(s)"
-        },
-        {
-          "id": "versions",
-          "label": "versions.ts",
-          "lost": 4,
-          "detail": ""
-        },
-        {
-          "id": "outro-font",
-          "label": "no font-serif/sans",
-          "lost": 4,
-          "detail": "font-serif/sans present"
-        },
-        {
-          "id": "logic",
-          "label": "logic/ module",
-          "lost": 3,
-          "detail": ""
-        }
-      ],
+      "failed": [],
       "warnings": [
         "1 `rounded` className(s) — verify none are on main containers/buttons"
       ],
-      "infraCount": 0,
+      "infraCount": 4,
       "citations": [],
       "calibration": {
-        "status": "na",
-        "fit": null
+        "status": "verified",
+        "n": 5,
+        "fit": {
+          "mean": 0,
+          "worst": 0
+        },
+        "message": null
       },
       "honestyWarnings": [],
       "honesty": {
-        "calibration": "na",
-        "fit": null,
+        "calibration": "verified",
+        "fit": {
+          "mean": 0,
+          "worst": 0
+        },
         "citations": "unchecked",
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 57
+      "headline": 100
     },
     {
       "slug": "berkshire-engine",

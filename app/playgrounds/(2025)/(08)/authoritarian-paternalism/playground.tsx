@@ -3,12 +3,21 @@
 import { useState, useRef } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 
 
 export default function AuthoritarianPaternalismPlayground() {
+    const calibration = buildCalibration();
     // Population & horizon
     const [N, setN] = useState(2000);
     const [T, setT] = useState(120);
@@ -90,7 +99,7 @@ export default function AuthoritarianPaternalismPlayground() {
                     id: 'intro',
                     type: 'intro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-4">Model Overview</h2>
                             <p>
                                 This simulation models how <strong className="font-semibold text-lime-400">paternal signaling</strong> (F) 
@@ -152,7 +161,7 @@ export default function AuthoritarianPaternalismPlayground() {
                     id: 'outro',
                     type: 'outro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-6">Understanding the Results</h2>
                             
                             <div className="space-y-6">
@@ -230,6 +239,19 @@ export default function AuthoritarianPaternalismPlayground() {
                                         Use for conceptual exploration, not empirical prediction.
                                     </p>
                                 </div>
+
+                                <div className="border-t border-lime-500/20 pt-6">
+                                    <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                                </div>
+
+                                <CalibrationPanel results={calibration} outputLabel="steady-state value" />
+
+                                <AssumptionPanel assumptions={assumptions} />
+
+                                <div>
+                                    <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                                    <ModelChangelog entries={changelog} />
+                                </div>
                             </div>
                         </div>
                     )
@@ -285,6 +307,7 @@ export default function AuthoritarianPaternalismPlayground() {
                     onExport={handleExport}
                 />
             }
+            researchUrl="/playgrounds/authoritarian-paternalism/research"
         />
     );
 }
