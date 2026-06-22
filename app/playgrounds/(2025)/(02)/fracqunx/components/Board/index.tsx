@@ -122,7 +122,7 @@ function Board({
         const randomX = 0
         setBeads(prev => [...prev, {
             id: Date.now() + Math.random(),
-            position: [randomX, 5, 0] as any,
+            position: [randomX, 5, 0],
         }]);
     }
 
@@ -152,8 +152,8 @@ function Board({
                     position: [
                         x, // X position
                         flipperY + y, // Y position (starting from flipper height)
-                        0 // Z position
-                    ] as any,
+                        0, // Z position
+                    ],
                 };
                 newBeads.push(bead);
             }

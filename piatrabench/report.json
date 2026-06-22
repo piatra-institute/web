@@ -1,7 +1,7 @@
 {
-  "generated": "2026-06-22T13:00:08.395Z",
+  "generated": "2026-06-22T14:28:30.873Z",
   "n": 101,
-  "avg": 72.6,
+  "avg": 73,
   "build": true,
   "links": false,
   "eras": {
@@ -12,8 +12,8 @@
     },
     "2025": {
       "n": 39,
-      "score": 2506,
-      "infra": 3
+      "score": 2547,
+      "infra": 7
     },
     "2026": {
       "n": 49,
@@ -25,14 +25,14 @@
     {
       "key": "claude opus 4.8",
       "label": "Claude Opus 4.8",
-      "n": 31,
-      "mean": 90.5,
+      "n": 32,
+      "mean": 90.8,
       "meanByCat": {
-        "build": 98.7,
+        "build": 98.8,
         "meta": 100,
-        "structure": 100,
-        "infra": 72,
-        "style": 85.8
+        "structure": 99.7,
+        "infra": 72.9,
+        "style": 86.3
       },
       "best": {
         "slug": "kerr-causality",
@@ -42,12 +42,12 @@
     }
   ],
   "honestyCounts": {
-    "verified": 5,
-    "notAutoVerifiable": 96,
+    "verified": 6,
+    "notAutoVerifiable": 95,
     "failed": 0,
     "flagged": 0
   },
-  "unattributed": 70,
+  "unattributed": 69,
   "unregistered": [
     "artificial-death",
     "byte-birth"
@@ -3705,12 +3705,12 @@
       "year": 2025,
       "month": 2,
       "name": "fracqunx",
-      "model": null,
-      "modelKey": null,
-      "score": 57,
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
+      "score": 98,
       "byCat": {
         "build": {
-          "earned": 20,
+          "earned": 25,
           "total": 25
         },
         "meta": {
@@ -3718,24 +3718,24 @@
           "total": 15
         },
         "structure": {
-          "earned": 11,
+          "earned": 18,
           "total": 20
         },
         "infra": {
-          "earned": 0,
+          "earned": 25,
           "total": 25
         },
         "style": {
-          "earned": 11,
+          "earned": 15,
           "total": 15
         }
       },
       "catPct": {
-        "build": 80,
+        "build": 100,
         "meta": 100,
-        "structure": 55,
-        "infra": 0,
-        "style": 73
+        "structure": 90,
+        "infra": 100,
+        "style": 100
       },
       "checks": [
         {
@@ -3752,8 +3752,8 @@
           "label": "no `any`",
           "category": "build",
           "weight": 5,
-          "ratio": 0,
-          "detail": "10 occurrence(s)",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -3815,7 +3815,7 @@
           "label": "PlaygroundViewer",
           "category": "structure",
           "weight": 4,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -3842,7 +3842,7 @@
           "label": "logic/ module",
           "category": "structure",
           "weight": 3,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -3851,7 +3851,7 @@
           "label": "assumptions.ts",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -3860,7 +3860,7 @@
           "label": "calibration.ts",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -3869,7 +3869,7 @@
           "label": "versions.ts",
           "category": "infra",
           "weight": 4,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -3878,7 +3878,7 @@
           "label": "research companion",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -3896,8 +3896,8 @@
           "label": "no font-serif/sans",
           "category": "style",
           "weight": 4,
-          "ratio": 0,
-          "detail": "font-serif/sans present",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -3912,54 +3912,6 @@
       ],
       "failed": [
         {
-          "id": "assumptions",
-          "label": "assumptions.ts",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "calibration",
-          "label": "calibration.ts",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "research",
-          "label": "research companion",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "no-any",
-          "label": "no `any`",
-          "lost": 5,
-          "detail": "10 occurrence(s)"
-        },
-        {
-          "id": "viewer",
-          "label": "PlaygroundViewer",
-          "lost": 4,
-          "detail": ""
-        },
-        {
-          "id": "versions",
-          "label": "versions.ts",
-          "lost": 4,
-          "detail": ""
-        },
-        {
-          "id": "outro-font",
-          "label": "no font-serif/sans",
-          "lost": 4,
-          "detail": "font-serif/sans present"
-        },
-        {
-          "id": "logic",
-          "label": "logic/ module",
-          "lost": 3,
-          "detail": ""
-        },
-        {
           "id": "settings-viewer",
           "label": "Settings + Viewer split",
           "lost": 2,
@@ -3969,21 +3921,29 @@
       "warnings": [
         "2 `rounded` className(s) — verify none are on main containers/buttons"
       ],
-      "infraCount": 0,
+      "infraCount": 4,
       "citations": [],
       "calibration": {
-        "status": "na",
-        "fit": null
+        "status": "verified",
+        "n": 5,
+        "fit": {
+          "mean": 0.04499780284165815,
+          "worst": 0.15717006005566145
+        },
+        "message": null
       },
       "honestyWarnings": [],
       "honesty": {
-        "calibration": "na",
-        "fit": null,
+        "calibration": "verified",
+        "fit": {
+          "mean": 0.04499780284165815,
+          "worst": 0.15717006005566145
+        },
         "citations": "unchecked",
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 57
+      "headline": 98
     },
     {
       "slug": "halley-window",

@@ -1,7 +1,3 @@
-import * as THREE from 'three';
-
-
-
 export interface PegData {
     x: number;
     y: number;
@@ -12,7 +8,7 @@ export interface PegData {
 
 export interface BeadData {
     id: number;
-    position: THREE.Vector3;
+    position: [number, number, number];
 }
 
 

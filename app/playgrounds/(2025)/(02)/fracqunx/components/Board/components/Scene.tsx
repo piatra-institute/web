@@ -3,6 +3,8 @@ import React, {
     useImperativeHandle,
     useRef,
     useCallback,
+    type Dispatch,
+    type SetStateAction,
 } from 'react';
 
 import {
@@ -43,7 +45,7 @@ export interface SceneProps {
     pegs: PegData[];
     beads: BeadData[];
     setSelectedPeg: (index: number | null) => void;
-    setPegs: (pegs: PegData[]) => void;
+    setPegs: Dispatch<SetStateAction<PegData[]>>;
     areaOfEffect: boolean;
     morphodynamics: boolean;
     customCurve: THREE.CatmullRomCurve3 | null;

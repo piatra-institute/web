@@ -6,7 +6,7 @@ import * as THREE from 'three';
 
 
 interface DrawingMaterialUniforms {
-    [uniform: string]: THREE.IUniform<any>;
+    [uniform: string]: THREE.IUniform<unknown>;
     drawingTexture: THREE.IUniform<THREE.Texture | null>;
     backgroundColor: THREE.IUniform<THREE.Color>;
     backgroundOpacity: THREE.IUniform<number>;

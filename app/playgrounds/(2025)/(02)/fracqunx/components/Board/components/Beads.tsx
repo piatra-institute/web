@@ -29,7 +29,7 @@ function Bead({
     bounceFactor,
     radius = BEAD_RADIUS,
 }: {
-    position: THREE.Vector3,
+    position: [number, number, number],
     pegs: PegData[];
     bounceFactor: number;
     radius?: number,

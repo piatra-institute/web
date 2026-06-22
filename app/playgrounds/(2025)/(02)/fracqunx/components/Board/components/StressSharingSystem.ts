@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, type Dispatch, type SetStateAction } from "react";
 import * as THREE from "three";
 import { BeadData, PegData } from "../data";
 
@@ -26,7 +26,7 @@ const DEFAULT_MAX_AOE_SIZE = 1;
 export const useAdaptiveStressUpdateLoop = (
     pegs: PegData[],
     beads: BeadData[],
-    setPegs: any,
+    setPegs: Dispatch<SetStateAction<PegData[]>>,
     customCurve: THREE.CatmullRomCurve3 | null,
     adaptiveEnabled: boolean,
     {
@@ -44,17 +44,17 @@ export const useAdaptiveStressUpdateLoop = (
         if (!adaptiveEnabled || !customCurve) return;
 
         const intervalId = setInterval(() => {
-            setPegs((oldPegs: any) => {
-                return oldPegs.map((peg: any) => {
+            setPegs((oldPegs) => {
+                return oldPegs.map((peg) => {
                     // Peg position
                     const pegPos = new THREE.Vector3(peg.x, peg.y, 0);
 
                     // Nearby beads
                     const nearbyBeads = beads.filter((bead) => {
                         const beadPos = new THREE.Vector3(
-                            (bead as any).position[0],
-                            (bead as any).position[1],
-                            (bead as any).position[2] ?? 0,
+                            bead.position[0],
+                            bead.position[1],
+                            bead.position[2] ?? 0,
                         );
                         return pegPos.distanceTo(beadPos) < influenceRadius;
                     });
@@ -62,7 +62,7 @@ export const useAdaptiveStressUpdateLoop = (
                     // Average Y of those beads
                     const avgY = nearbyBeads.length > 0
                         ? nearbyBeads.reduce(
-                            (sum, b) => sum + (b as any).position[1],
+                            (sum, b) => sum + b.position[1],
                             0,
                         ) / nearbyBeads.length
                         : peg.y;
