@@ -26,6 +26,8 @@ const ARGS = new Set(process.argv.slice(2));
 const DO_BUILD = !ARGS.has('--no-build');
 const DO_LINKS = ARGS.has('--links');
 const DO_CALIBRATION = !ARGS.has('--no-calibration');
+const DO_RUNS = ARGS.has('--runs');
+const RUNS_DIR = path.join(OUT_DIR, 'runs');
 
 // ---------------------------------------------------------------------------
 // Classification enums (from data/classification, per CLAUDE.md)
@@ -164,7 +166,11 @@ function walk(dir, { skip = [] } = {}) {
 // parse data.ts registry (string-aware bracket scan, then eval the literal)
 // ---------------------------------------------------------------------------
 function parseRegistry() {
-    const raw = read(path.join(PG_ROOT, 'data.ts'));
+    return parseRegistryFrom(path.join(PG_ROOT, 'data.ts'));
+}
+
+function parseRegistryFrom(file) {
+    const raw = read(file);
     const eq = raw.indexOf('= [');
     if (eq < 0) return [];
     const start = raw.indexOf('[', eq);
@@ -626,8 +632,159 @@ function buildReports(results, registry, pgs, build) {
 }
 
 // ---------------------------------------------------------------------------
+// runs mode (--runs): score artifacts a coding agent produced from a frozen
+// seed, one per piatrabench/runs/<label>/output. Reuses scorePlayground so a
+// run is graded on the exact same rubric + honesty gate as the live corpus.
+// See piatrabench/runs/README.md for the manual build protocol.
+// ---------------------------------------------------------------------------
+function findPgDir(outDir) {
+    const page = walk(outDir).find((f) =>
+        f.endsWith(`${path.sep}page.tsx`) && !f.includes(`${path.sep}research${path.sep}`));
+    return page ? path.dirname(page) : outDir;
+}
+
+function discoverRuns() {
+    let entries;
+    try { entries = fs.readdirSync(RUNS_DIR, { withFileTypes: true }); } catch { return []; }
+    const runs = [];
+    for (const e of entries) {
+        if (!e.isDirectory() || e.name.startsWith('.')) continue;
+        const dir = path.join(RUNS_DIR, e.name);
+        if (!exists(path.join(dir, 'output'))) continue;
+        runs.push({ label: e.name, dir, outDir: path.join(dir, 'output') });
+    }
+    return runs.sort((a, b) => a.label.localeCompare(b.label));
+}
+
+function scoreRun(run) {
+    let meta;
+    try { meta = JSON.parse(read(path.join(run.dir, 'meta.json')) || '{}'); } catch { meta = {}; }
+    const pgDir = findPgDir(run.outDir);
+    if (!exists(path.join(pgDir, 'page.tsx'))) {
+        console.error(`  ! ${run.label}: no page.tsx under output/, skipping`);
+        return null;
+    }
+    const slug = meta.slug || path.basename(pgDir);
+    const dateStr = meta.date || null;
+    let year = null, month = null;
+    if (dateStr) {
+        const mm = dateStr.match(/(\w+)\s+(\d{4})/);
+        if (mm) { const mi = MONTHS.indexOf(mm[1]); if (mi >= 0) month = mi + 1; year = +mm[2]; }
+    }
+    const pg = {
+        slug, dir: pgDir, rel: path.relative(ROOT, pgDir),
+        year, month, pathDate: dateStr, era: year ? `${year}` : 'unknown',
+    };
+    const reg = parseRegistryFrom(path.join(run.dir, 'data.ts'));
+    const regBySlug = new Map(reg.map((x) => [(x.link || '').replace('/playgrounds/', ''), x]));
+
+    // build & types come from the recorded worktree typecheck — tsc needs full
+    // repo context that a copied output folder lacks. No build block in meta.json
+    // means the build check is excluded for this run (and it won't be comparable).
+    const build = { ran: false, byDir: new Map() };
+    if (meta.build && meta.build.ran !== false) {
+        build.ran = true;
+        if (meta.build.tscClean === false) {
+            build.byDir.set(pg.rel, [`recorded: ${meta.build.errors || '1'}+ tsc error(s)`]);
+        }
+    }
+
+    const r = scorePlayground(pg, regBySlug, build);
+
+    // attribution: the bundle you ran (agent + model) is authoritative here, not
+    // the playground's own versions.ts self-report.
+    const label = meta.model && meta.agent ? `${meta.agent} (${meta.model})`
+        : (meta.model || meta.agent || r.model);
+    if (label) { r.model = label; r.modelKey = label.toLowerCase(); }
+    r.agent = meta.agent || null;
+    r.seed = meta.seed || null;
+    r.run = meta.run ?? null;
+    r.label = run.label;
+    r.wallClockMin = meta.wallClockMin ?? null;
+    r.cost = meta.cost ?? null;
+    return r;
+}
+
+function runReports(results) {
+    fs.mkdirSync(OUT_DIR, { recursive: true });
+    const n = results.length;
+    if (!n) {
+        console.log('\n  No runs under piatrabench/runs/<label>/output. See piatrabench/runs/README.md.\n');
+        fs.writeFileSync(path.join(OUT_DIR, 'runs-report.json'),
+            JSON.stringify({ generated: new Date().toISOString(), mode: 'runs', n: 0, bundles: [], results: [] }, null, 2));
+        return;
+    }
+    const avg = Math.round((results.reduce((a, r) => a + r.headline, 0) / n) * 10) / 10;
+    const bundles = aggregateModels(results); // groups by modelKey == agent+model bundle
+    const sorted = [...results].sort((a, b) => b.headline - a.headline);
+
+    const L = [];
+    L.push('');
+    L.push('  PiatraBench · runs (same-seed, per agent+model bundle)');
+    L.push(`  ${n} run(s) · mean ${avg}/100${DO_LINKS ? ' · links checked' : ''}`);
+    L.push('');
+    L.push('  bundle leaderboard               mean   n');
+    for (const b of bundles) L.push(`    ${b.label.padEnd(28)} ${b.mean.toFixed(1).padStart(5)}   ${b.n}`);
+    L.push('');
+    L.push('  runs:');
+    for (const r of sorted) {
+        const tag = r.honesty.verdict === 'fail' ? ' ⚠ honesty' : '';
+        const wc = r.wallClockMin != null ? ` ${r.wallClockMin}m` : '';
+        L.push(`    ${String(r.headline).padStart(5)}  ${bar(r.headline)}  ${r.label}${wc}${tag}`);
+    }
+    L.push('');
+    L.push('  full report: piatrabench/runs-report.md');
+    L.push('');
+    console.log(L.join('\n'));
+
+    const cm = (v) => (v == null ? '–' : `${v}%`);
+    const honCell = (r) => r.honesty.verdict === 'fail' ? 'FAIL'
+        : r.honesty.calibration === 'verified' ? 'cal ✓'
+            : r.honesty.calibration === 'unverified' ? 'cal ?' : '–';
+
+    const md = [];
+    md.push('# PiatraBench — runs report');
+    md.push('');
+    md.push('Same-seed builds scored per agent+model bundle. Each entry is the deterministic Layer 0 score plus the honesty gate, run on the artifact a coding agent produced from a frozen seed. This measures the **model + its coding harness** as a bundle, not the model in isolation. Build & types are sourced from each run\'s recorded `meta.json` (tsc is run once in the build worktree, where it has full repo context); OG images are a post-build human step and are uniformly absent here, so run scores sit a couple of points below corpus scores and should be compared run-to-run.');
+    md.push('');
+    md.push(`- Generated: ${new Date().toISOString()}`);
+    md.push(`- Runs: **${n}** · mean **${avg}/100**`);
+    md.push('');
+    md.push('## Bundle leaderboard');
+    md.push('');
+    md.push('| bundle | runs | mean | build | meta | structure | infra | style | best |');
+    md.push('| --- | --- | --- | --- | --- | --- | --- | --- | --- |');
+    for (const b of bundles) {
+        md.push(`| ${b.label} | ${b.n} | **${b.mean}** | ${cm(b.meanByCat.build)} | ${cm(b.meanByCat.meta)} | ${cm(b.meanByCat.structure)} | ${cm(b.meanByCat.infra)} | ${cm(b.meanByCat.style)} | ${b.best.slug} (${b.best.score}) |`);
+    }
+    md.push('');
+    md.push('## Runs');
+    md.push('');
+    md.push('| run | seed | bundle | score | honesty | wall-clock | cost |');
+    md.push('| --- | --- | --- | --- | --- | --- | --- |');
+    for (const r of sorted) {
+        md.push(`| ${r.label} | ${r.seed || '?'} | ${r.model || '?'} | ${r.headline} | ${honCell(r)} | ${r.wallClockMin != null ? r.wallClockMin + 'm' : '–'} | ${r.cost != null ? r.cost : '–'} |`);
+    }
+    md.push('');
+    fs.writeFileSync(path.join(OUT_DIR, 'runs-report.md'), md.join('\n'));
+    fs.writeFileSync(path.join(OUT_DIR, 'runs-report.json'), JSON.stringify({
+        generated: new Date().toISOString(), mode: 'runs', n, avg, links: DO_LINKS, bundles, results,
+    }, null, 2));
+}
+
+// ---------------------------------------------------------------------------
 // main
 // ---------------------------------------------------------------------------
+if (DO_RUNS) {
+    const runs = discoverRuns();
+    console.log(`Discovered ${runs.length} run(s) under piatrabench/runs.`);
+    const runResults = runs.map(scoreRun).filter(Boolean);
+    if (DO_LINKS) { console.log('Resolving citations…'); await checkLinks(runResults); }
+    runResults.forEach(finalize);
+    runReports(runResults);
+    process.exit(0);
+}
+
 const registry = parseRegistry();
 const registryBySlug = new Map(registry.map((e) => [(e.link || '').replace('/playgrounds/', ''), e]));
 const pgs = discover();

@@ -5,7 +5,7 @@ import type { ChangelogEntry } from '@/components/ModelChangelog';
 export const versions: ModelVersion[] = [
     {
         id: 'claude-v1',
-        llm: 'claude opus 4.7',
+        llm: 'claude opus 4.8',
         date: 'May 2026',
         description:
             'first cut. ports the ideation prototype to the playground conventions: PlaygroundLayout, controlled-component state, black-and-lime palette, six named scenarios, snapshot comparison, parameter sweep, sensitivity tornado, calibration table, ten assumptions, and a research companion.',

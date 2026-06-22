@@ -4,7 +4,7 @@ import { ChangelogEntry } from '@/components/ModelChangelog';
 export const versions: ModelVersion[] = [
     {
         id: 'claude-v1',
-        llm: 'Claude',
+        llm: 'claude opus 4.8',
         date: 'March 2026',
         description: 'Initial atlas with 25 constructions across 11 modes',
     },

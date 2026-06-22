@@ -1,0 +1,284 @@
+{
+  "generated": "2026-06-22T12:15:31.507Z",
+  "mode": "runs",
+  "n": 1,
+  "avg": 98,
+  "links": false,
+  "bundles": [
+    {
+      "key": "claude-code (claude-opus-4-8)",
+      "label": "claude-code (claude-opus-4-8)",
+      "n": 1,
+      "mean": 98,
+      "meanByCat": {
+        "build": 100,
+        "meta": 87,
+        "structure": 100,
+        "infra": 100,
+        "style": 100
+      },
+      "best": {
+        "slug": "allometric-scaling",
+        "name": "allometric scaling",
+        "score": 98
+      }
+    }
+  ],
+  "results": [
+    {
+      "slug": "allometric-scaling",
+      "rel": "piatrabench/runs/allometric-scaling__claude-code__1/output/allometric-scaling",
+      "link": "/playgrounds/allometric-scaling",
+      "date": "June 2026",
+      "era": "2026",
+      "year": 2026,
+      "month": 6,
+      "name": "allometric scaling",
+      "model": "claude-code (claude-opus-4-8)",
+      "modelKey": "claude-code (claude-opus-4-8)",
+      "score": 98,
+      "byCat": {
+        "build": {
+          "earned": 25,
+          "total": 25
+        },
+        "meta": {
+          "earned": 13,
+          "total": 15
+        },
+        "structure": {
+          "earned": 20,
+          "total": 20
+        },
+        "infra": {
+          "earned": 25,
+          "total": 25
+        },
+        "style": {
+          "earned": 15,
+          "total": 15
+        }
+      },
+      "catPct": {
+        "build": 100,
+        "meta": 87,
+        "structure": 100,
+        "infra": 100,
+        "style": 100
+      },
+      "checks": [
+        {
+          "id": "build",
+          "label": "tsc clean",
+          "category": "build",
+          "weight": 20,
+          "ratio": 1,
+          "detail": "",
+          "applicable": true
+        },
+        {
+          "id": "no-any",
+          "label": "no `any`",
+          "category": "build",
+          "weight": 5,
+          "ratio": 1,
+          "detail": "",
+          "applicable": true
+        },
+        {
+          "id": "registered",
+          "label": "in data.ts",
+          "category": "meta",
+          "weight": 5,
+          "ratio": 1,
+          "detail": "",
+          "applicable": true
+        },
+        {
+          "id": "classification",
+          "label": "valid topics/operations",
+          "category": "meta",
+          "weight": 4,
+          "ratio": 1,
+          "detail": "",
+          "applicable": true
+        },
+        {
+          "id": "date-path",
+          "label": "date matches path",
+          "category": "meta",
+          "weight": 2,
+          "ratio": 1,
+          "detail": "",
+          "applicable": true
+        },
+        {
+          "id": "og",
+          "label": "OG image present",
+          "category": "meta",
+          "weight": 2,
+          "ratio": 0,
+          "detail": "missing og png",
+          "applicable": true
+        },
+        {
+          "id": "default-og",
+          "label": "defaultOpenGraph used",
+          "category": "meta",
+          "weight": 2,
+          "ratio": 1,
+          "detail": "",
+          "applicable": true
+        },
+        {
+          "id": "layout",
+          "label": "PlaygroundLayout",
+          "category": "structure",
+          "weight": 6,
+          "ratio": 1,
+          "detail": "",
+          "applicable": true
+        },
+        {
+          "id": "viewer",
+          "label": "PlaygroundViewer",
+          "category": "structure",
+          "weight": 4,
+          "ratio": 1,
+          "detail": "",
+          "applicable": true
+        },
+        {
+          "id": "playground-file",
+          "label": "playground.tsx",
+          "category": "structure",
+          "weight": 3,
+          "ratio": 1,
+          "detail": "",
+          "applicable": true
+        },
+        {
+          "id": "settings-viewer",
+          "label": "Settings + Viewer split",
+          "category": "structure",
+          "weight": 4,
+          "ratio": 1,
+          "detail": "",
+          "applicable": true
+        },
+        {
+          "id": "logic",
+          "label": "logic/ module",
+          "category": "structure",
+          "weight": 3,
+          "ratio": 1,
+          "detail": "",
+          "applicable": true
+        },
+        {
+          "id": "assumptions",
+          "label": "assumptions.ts",
+          "category": "infra",
+          "weight": 7,
+          "ratio": 1,
+          "detail": "",
+          "applicable": true
+        },
+        {
+          "id": "calibration",
+          "label": "calibration.ts",
+          "category": "infra",
+          "weight": 7,
+          "ratio": 1,
+          "detail": "",
+          "applicable": true
+        },
+        {
+          "id": "versions",
+          "label": "versions.ts",
+          "category": "infra",
+          "weight": 4,
+          "ratio": 1,
+          "detail": "",
+          "applicable": true
+        },
+        {
+          "id": "research",
+          "label": "research companion",
+          "category": "infra",
+          "weight": 7,
+          "ratio": 1,
+          "detail": "",
+          "applicable": true
+        },
+        {
+          "id": "no-emdash",
+          "label": "no em-dashes",
+          "category": "style",
+          "weight": 6,
+          "ratio": 1,
+          "detail": "",
+          "applicable": true
+        },
+        {
+          "id": "outro-font",
+          "label": "no font-serif/sans",
+          "category": "style",
+          "weight": 4,
+          "ratio": 1,
+          "detail": "",
+          "applicable": true
+        },
+        {
+          "id": "palette",
+          "label": "lime palette",
+          "category": "style",
+          "weight": 5,
+          "ratio": 1,
+          "detail": "",
+          "applicable": true
+        }
+      ],
+      "failed": [
+        {
+          "id": "og",
+          "label": "OG image present",
+          "lost": 2,
+          "detail": "missing og png"
+        }
+      ],
+      "warnings": [],
+      "infraCount": 4,
+      "citations": [
+        "https://doi.org/10.1126/science.276.5309.122"
+      ],
+      "calibration": {
+        "status": "verified",
+        "n": 4,
+        "fit": {
+          "mean": 0.04266037581699345,
+          "worst": 0.14285714285714285
+        },
+        "message": null
+      },
+      "honestyWarnings": [],
+      "agent": "claude-code",
+      "seed": "allometric-scaling",
+      "run": 1,
+      "label": "allometric-scaling__claude-code__1",
+      "wallClockMin": null,
+      "cost": null,
+      "honesty": {
+        "calibration": "verified",
+        "fit": {
+          "mean": 0.04266037581699345,
+          "worst": 0.14285714285714285
+        },
+        "citations": "unchecked",
+        "flags": [],
+        "verdict": "ok"
+      },
+      "headline": 98
+    }
+  ]
+}

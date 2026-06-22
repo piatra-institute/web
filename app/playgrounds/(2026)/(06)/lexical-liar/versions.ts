@@ -5,7 +5,7 @@ import type { ChangelogEntry } from '@/components/ModelChangelog';
 export const versions: ModelVersion[] = [
     {
         id: 'claude-v1',
-        llm: 'claude fable 5',
+        llm: 'claude opus 4.8',
         date: 'June 2026',
         description:
             'first cut. ports the contronym ideation prototype to playground conventions: PlaygroundLayout, black-and-lime palette, eight contronyms as presets, context frames, manual pull, free-text keyword scorer, collapse-context paradox mode, a semantic-attractor map, calibration against hand-labelled polarity, and nine assumptions.',

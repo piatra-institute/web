@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-20T16:31:14.996Z",
+  "generated": "2026-06-22T13:00:08.395Z",
   "n": 101,
   "avg": 72.6,
   "build": true,
@@ -25,91 +25,19 @@
     {
       "key": "claude opus 4.8",
       "label": "Claude Opus 4.8",
-      "n": 3,
-      "mean": 100,
+      "n": 31,
+      "mean": 90.5,
       "meanByCat": {
-        "build": 100,
+        "build": 98.7,
         "meta": 100,
         "structure": 100,
-        "infra": 100,
-        "style": 100
-      },
-      "best": {
-        "slug": "arithmetic-dynamics",
-        "name": "arithmetic dynamics",
-        "score": 100
-      }
-    },
-    {
-      "key": "claude fable 5",
-      "label": "Claude Fable 5",
-      "n": 3,
-      "mean": 97.7,
-      "meanByCat": {
-        "build": 100,
-        "meta": 100,
-        "structure": 100,
-        "infra": 90.7,
-        "style": 100
-      },
-      "best": {
-        "slug": "lexical-liar",
-        "name": "the lexical liar",
-        "score": 100
-      }
-    },
-    {
-      "key": "claude opus 4.7",
-      "label": "Claude Opus 4.7",
-      "n": 7,
-      "mean": 95.4,
-      "meanByCat": {
-        "build": 97.1,
-        "meta": 100,
-        "structure": 100,
-        "infra": 88,
-        "style": 94.3
+        "infra": 72,
+        "style": 85.8
       },
       "best": {
         "slug": "kerr-causality",
         "name": "Kerr causality",
         "score": 100
-      }
-    },
-    {
-      "key": "claude",
-      "label": "Claude",
-      "n": 14,
-      "mean": 87.6,
-      "meanByCat": {
-        "build": 98.6,
-        "meta": 100,
-        "structure": 100,
-        "infra": 62,
-        "style": 82.9
-      },
-      "best": {
-        "slug": "pettini-tensor-networks",
-        "name": "Pettini tensor networks",
-        "score": 94
-      }
-    },
-    {
-      "key": "claude opus 4.6",
-      "label": "Claude Opus 4.6",
-      "n": 4,
-      "mean": 80,
-      "meanByCat": {
-        "build": 100,
-        "meta": 100,
-        "structure": 100,
-        "infra": 44,
-        "style": 60
-      },
-      "best": {
-        "slug": "morphologies-of-stability",
-        "name": "morphologies of stability",
-        "score": 80
       }
     }
   ],
@@ -7642,8 +7570,8 @@
       "year": 2025,
       "month": 7,
       "name": "entropy café",
-      "model": "Claude Fable 5",
-      "modelKey": "claude fable 5",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 93,
       "byCat": {
         "build": {
@@ -18198,8 +18126,8 @@
       "year": 2026,
       "month": 3,
       "name": "frontier governance",
-      "model": "Claude",
-      "modelKey": "claude",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 87,
       "byCat": {
         "build": {
@@ -18447,8 +18375,8 @@
       "year": 2026,
       "month": 3,
       "name": "geometries of action",
-      "model": "Claude",
-      "modelKey": "claude",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 93,
       "byCat": {
         "build": {
@@ -19212,8 +19140,8 @@
       "year": 2026,
       "month": 3,
       "name": "modes of combination",
-      "model": "Claude",
-      "modelKey": "claude",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 75,
       "byCat": {
         "build": {
@@ -19997,8 +19925,8 @@
       "year": 2026,
       "month": 3,
       "name": "Pettini tensor networks",
-      "model": "Claude",
-      "modelKey": "claude",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 94,
       "byCat": {
         "build": {
@@ -20499,8 +20427,8 @@
       "year": 2026,
       "month": 4,
       "name": "coordination under complementarity",
-      "model": "Claude",
-      "modelKey": "claude",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 86,
       "byCat": {
         "build": {
@@ -20747,8 +20675,8 @@
       "year": 2026,
       "month": 4,
       "name": "counterfactual growth engine",
-      "model": "Claude",
-      "modelKey": "claude",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 80,
       "byCat": {
         "build": {
@@ -21001,8 +20929,8 @@
       "year": 2026,
       "month": 4,
       "name": "epistemic lensing",
-      "model": "Claude",
-      "modelKey": "claude",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 94,
       "byCat": {
         "build": {
@@ -21242,8 +21170,8 @@
       "year": 2026,
       "month": 4,
       "name": "moral phase space",
-      "model": "Claude",
-      "modelKey": "claude",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 86,
       "byCat": {
         "build": {
@@ -21490,8 +21418,8 @@
       "year": 2026,
       "month": 4,
       "name": "morphologies of stability",
-      "model": "Claude Opus 4.6",
-      "modelKey": "claude opus 4.6",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 80,
       "byCat": {
         "build": {
@@ -21744,8 +21672,8 @@
       "year": 2026,
       "month": 4,
       "name": "morphospace engine",
-      "model": "Claude",
-      "modelKey": "claude",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 86,
       "byCat": {
         "build": {
@@ -21992,8 +21920,8 @@
       "year": 2026,
       "month": 4,
       "name": "ontogenic engine",
-      "model": "Claude Opus 4.6",
-      "modelKey": "claude opus 4.6",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 80,
       "byCat": {
         "build": {
@@ -22246,8 +22174,8 @@
       "year": 2026,
       "month": 4,
       "name": "ontometrics",
-      "model": "Claude",
-      "modelKey": "claude",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 86,
       "byCat": {
         "build": {
@@ -22494,8 +22422,8 @@
       "year": 2026,
       "month": 4,
       "name": "photosynthetic state space",
-      "model": "Claude Opus 4.6",
-      "modelKey": "claude opus 4.6",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 80,
       "byCat": {
         "build": {
@@ -22748,8 +22676,8 @@
       "year": 2026,
       "month": 4,
       "name": "societal harm topology",
-      "model": "Claude Opus 4.6",
-      "modelKey": "claude opus 4.6",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 80,
       "byCat": {
         "build": {
@@ -22999,8 +22927,8 @@
       "year": 2026,
       "month": 5,
       "name": "audience attractor",
-      "model": "Claude Opus 4.7",
-      "modelKey": "claude opus 4.7",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 95,
       "byCat": {
         "build": {
@@ -23242,8 +23170,8 @@
       "year": 2026,
       "month": 5,
       "name": "aura atlas",
-      "model": "Claude",
-      "modelKey": "claude",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 80,
       "byCat": {
         "build": {
@@ -23495,8 +23423,8 @@
       "year": 2026,
       "month": 5,
       "name": "fiscal compass",
-      "model": "Claude",
-      "modelKey": "claude",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 93,
       "byCat": {
         "build": {
@@ -23738,8 +23666,8 @@
       "year": 2026,
       "month": 5,
       "name": "forbidden edges",
-      "model": "Claude",
-      "modelKey": "claude",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 93,
       "byCat": {
         "build": {
@@ -23981,8 +23909,8 @@
       "year": 2026,
       "month": 5,
       "name": "Kerr causality",
-      "model": "Claude Opus 4.7",
-      "modelKey": "claude opus 4.7",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 100,
       "byCat": {
         "build": {
@@ -24217,8 +24145,8 @@
       "year": 2026,
       "month": 5,
       "name": "knife edge",
-      "model": "Claude",
-      "modelKey": "claude",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 93,
       "byCat": {
         "build": {
@@ -24460,8 +24388,8 @@
       "year": 2026,
       "month": 5,
       "name": "no global section",
-      "model": "Claude Opus 4.7",
-      "modelKey": "claude opus 4.7",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 93,
       "byCat": {
         "build": {
@@ -24703,8 +24631,8 @@
       "year": 2026,
       "month": 5,
       "name": "salience engine",
-      "model": "Claude Opus 4.7",
-      "modelKey": "claude opus 4.7",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 100,
       "byCat": {
         "build": {
@@ -24939,8 +24867,8 @@
       "year": 2026,
       "month": 5,
       "name": "the uncare engine",
-      "model": "Claude Opus 4.7",
-      "modelKey": "claude opus 4.7",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 93,
       "byCat": {
         "build": {
@@ -25424,8 +25352,8 @@
       "year": 2026,
       "month": 6,
       "name": "family threshold",
-      "model": "Claude Opus 4.7",
-      "modelKey": "claude opus 4.7",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 100,
       "byCat": {
         "build": {
@@ -25902,8 +25830,8 @@
       "year": 2026,
       "month": 6,
       "name": "the lexical liar",
-      "model": "Claude Fable 5",
-      "modelKey": "claude fable 5",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 100,
       "byCat": {
         "build": {
@@ -26386,8 +26314,8 @@
       "year": 2026,
       "month": 6,
       "name": "rotary fields",
-      "model": "Claude Opus 4.7",
-      "modelKey": "claude opus 4.7",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 87,
       "byCat": {
         "build": {
@@ -26635,8 +26563,8 @@
       "year": 2026,
       "month": 6,
       "name": "trisquare",
-      "model": "Claude Fable 5",
-      "modelKey": "claude fable 5",
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
       "score": 100,
       "byCat": {
         "build": {

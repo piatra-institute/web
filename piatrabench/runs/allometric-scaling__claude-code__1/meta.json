@@ -1,0 +1,13 @@
+{
+  "seed": "allometric-scaling",
+  "slug": "allometric-scaling",
+  "agent": "claude-code",
+  "model": "claude-opus-4-8",
+  "run": 1,
+  "date": "June 2026",
+  "wallClockMin": null,
+  "cost": null,
+  "build": { "ran": true, "tscClean": true, "errors": 0 },
+  "transcript": "trace.md",
+  "notes": "Real build by Claude Code (Opus 4.8) in this session, following piatrabench/runs/KICKOFF.md. tsc --noEmit was run against the full repo with the playground present and was clean. OG image not generated (post-build human step), so the OG check is expected to fail in runs mode."
+}

@@ -5,7 +5,7 @@ import type { ChangelogEntry } from '@/components/ModelChangelog';
 export const versions: ModelVersion[] = [
     {
         id: 'claude-v1',
-        llm: 'Claude Opus 4.7',
+        llm: 'claude opus 4.8',
         date: 'May 2026',
         description:
             'Initial implementation. Ten figures across return, descent, mortality, transfer, cosmic order, infinite appetite, bureaucracy, society, over-possibility, and pathological collapse. Six axes (locality, abstraction, desire, institution, trauma, knowledge), five lenses (sheaf, stalk, monodromy, obstruction, derived), four presets. Custom obstruction map visualization plus radar, sweep, sensitivity, calibration, and assumption panels.',

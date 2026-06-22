@@ -5,7 +5,7 @@ import type { ChangelogEntry } from '@/components/ModelChangelog';
 export const versions: ModelVersion[] = [
     {
         id: 'claude-v1',
-        llm: 'claude fable 5',
+        llm: 'claude opus 4.8',
         date: 'June 2026',
         description:
             'first cut. ports the Turok dimension-zero scalar correspondence ideation into playground conventions: PlaygroundLayout, black-and-lime palette, the correspondence triangle with status-tagged edges, a status ledger, the Ward identity constraint game, a conformally flat sector with finite-difference curvature, the phi-fourth RG flow, an action translator, calibration of the curvature method against analytic metrics, and nine assumptions.',

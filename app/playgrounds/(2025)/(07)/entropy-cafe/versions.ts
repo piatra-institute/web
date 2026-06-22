@@ -5,7 +5,7 @@ import type { ChangelogEntry } from '@/components/ModelChangelog';
 export const versions: ModelVersion[] = [
     {
         id: 'claude-v1',
-        llm: 'claude (fable 5)',
+        llm: 'claude opus 4.8',
         date: 'June 2026',
         description:
             'brings the WebGPU coffee-and-cream fluid onto the playground template: PlaygroundLayout, black-and-lime palette, honest coarse-grained entropy and complexity with no cosmetic rescaling (auto-scaled charts instead), five named presets, snapshot comparison, the entropy-and-complexity time-series, nine assumptions, a qualitative reading of the three mixing phases, and a research companion.',

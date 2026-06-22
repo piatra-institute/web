@@ -4,7 +4,7 @@ import type { ChangelogEntry } from '@/components/ModelChangelog';
 export const versions: ModelVersion[] = [
     {
         id: 'claude-v1',
-        llm: 'Claude',
+        llm: 'claude opus 4.8',
         date: 'April 2026',
         description: 'Initial implementation',
     },

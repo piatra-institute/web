@@ -4,7 +4,7 @@ import { ChangelogEntry } from '@/components/ModelChangelog';
 export const versions: ModelVersion[] = [
     {
         id: 'claude-v1',
-        llm: 'Claude Opus 4.6',
+        llm: 'claude opus 4.8',
         date: 'April 2026',
         description: 'initial implementation with four canonical stabilizing patterns',
     },

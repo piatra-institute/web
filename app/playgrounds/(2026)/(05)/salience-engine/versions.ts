@@ -5,7 +5,7 @@ import type { ChangelogEntry } from '@/components/ModelChangelog';
 export const versions: ModelVersion[] = [
     {
         id: 'claude-v1',
-        llm: 'claude opus 4.7',
+        llm: 'claude opus 4.8',
         date: 'May 2026',
         description:
             'first cut. an eight-rung ladder from matter to over-salience, six salience objects with eight-dimensional profiles, an eight-weight salience field, and a softmax attention layer. four presets and three signal regimes.',

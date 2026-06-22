@@ -2,7 +2,7 @@
 
 Deterministic conformance of all playgrounds to the current template (CLAUDE.md). No model judgement.
 
-- Generated: 2026-06-20T16:31:14.996Z
+- Generated: 2026-06-22T13:00:08.394Z
 - Playgrounds: **101**
 - Mean score: **72.6/100**
 - Build check: enabled (tsc --noEmit, attributed per-playground)
@@ -24,11 +24,7 @@ Mean Layer 0 conformance per generating model (from each playground's versions.t
 
 | model | playgrounds | mean score | build | meta | structure | infra | style | best |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Claude Opus 4.8 | 3 | **100** | 100% | 100% | 100% | 100% | 100% | arithmetic-dynamics (100) |
-| Claude Fable 5 | 3 | **97.7** | 100% | 100% | 100% | 90.7% | 100% | lexical-liar (100) |
-| Claude Opus 4.7 | 7 | **95.4** | 97.1% | 100% | 100% | 88% | 94.3% | kerr-causality (100) |
-| Claude | 14 | **87.6** | 98.6% | 100% | 100% | 62% | 82.9% | pettini-tensor-networks (94) |
-| Claude Opus 4.6 | 4 | **80** | 100% | 100% | 100% | 44% | 60% | morphologies-of-stability (80) |
+| Claude Opus 4.8 | 31 | **90.5** | 98.7% | 100% | 100% | 72% | 85.8% | kerr-causality (100) |
 | _(unattributed)_ | 70 | – | | | | | | |
 
 ## Honesty

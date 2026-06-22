@@ -5,7 +5,7 @@ import type { ChangelogEntry } from '@/components/ModelChangelog';
 export const versions: ModelVersion[] = [
     {
         id: 'claude-v1',
-        llm: 'claude opus 4.7',
+        llm: 'claude opus 4.8',
         date: 'June 2026',
         description:
             'first cut. ports the RoPE-and-neural-phase ideation prototype to playground conventions: PlaygroundLayout, black-and-lime palette, five named presets, snapshot comparison, parameter sweep, sensitivity tornado, calibration table against attention concentration, ten assumptions.',

@@ -5,7 +5,7 @@ import type { ChangelogEntry } from '@/components/ModelChangelog';
 export const versions: ModelVersion[] = [
     {
         id: 'claude-v1',
-        llm: 'claude opus 4.7',
+        llm: 'claude opus 4.8',
         date: 'May 2026',
         description:
             'first cut. six-axis composite madness score with derived inversion pressure, monstrosity potential, escape velocity, care capacity, and backlash risk. ten domain cases. six stages from ordinary load to monstrous uncare.',
