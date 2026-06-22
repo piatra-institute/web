@@ -6,9 +6,20 @@ import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundSettings from '@/components/PlaygroundSettings';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
+import Equation from '@/components/Equation';
 import Fractal from '@/app/playgrounds/(2025)/(02)/halley-window/components/Fractal';
 
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
+
 export default function HalleyWindowPlayground() {
+    const calibration = buildCalibration();
+
     // Default values calibrated to match the reference image
     const [constant, setConstant] = useState(5);
     const [centerX, setCenterX] = useState(-0.3);
@@ -73,24 +84,49 @@ export default function HalleyWindowPlayground() {
             id: 'about',
             type: 'outro' as const,
             content: (
-                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
-                        <p>
-                            Halley&apos;s method is a root-finding algorithm that uses both first and
-                            second derivatives to converge faster than Newton&apos;s method. When applied
-                            to complex polynomials, it creates stunning fractal patterns that reveal
-                            the convergence basins for each root.
+                <div className="space-y-8 text-gray-300">
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Root-finding made visible</h3>
+                        <p className="leading-relaxed text-sm">
+                            Halley&apos;s method finds a root of a function using its first and second
+                            derivatives, converging cubically, faster than Newton&apos;s quadratic method.
+                            Run it on the polynomial z to the n minus 1 and colour each starting point by
+                            which root it reaches, and the plane splits into basins of attraction.
                         </p>
-                        <p>
-                            Each colored region represents points that converge to the same root,
-                            while the intricate boundaries between regions showcase the chaotic
-                            behavior of the iterative method. The fractal structure emerges from
-                            the sensitivity of the convergence to initial conditions.
+                        <div className="my-3">
+                            <Equation mode="block" math="z \;\mapsto\; z - \frac{2\,f\,f'}{2\,f'^2 - c\,f\,f''}" />
+                        </div>
+                        <p className="leading-relaxed text-sm">
+                            The weight c slides between two classics: c = 1 is Halley&apos;s method, and
+                            c = 0 drops the second-derivative term to give Newton&apos;s method, z minus f
+                            over f prime.
                         </p>
-                        <p>
-                            Key concepts include: numerical analysis, root-finding algorithms,
-                            complex analysis, fractal geometry, convergence basins, and the
-                            relationship between mathematical iteration and visual beauty.
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Why the boundaries are fractal</h3>
+                        <p className="leading-relaxed text-sm">
+                            The roots of z to the n minus 1 are the n-th roots of unity, equally spaced on
+                            the unit circle. Each smooth region converges to one of them, but the
+                            boundaries between regions are fractal: between any two basins lies a sliver of
+                            a third, and tiny changes in the start flip which root you reach. The
+                            calibration panel checks convergence in the well-behaved interior; the
+                            assumptions panel is honest about the chaotic boundary and the rendering limits.
                         </p>
+                    </div>
+
+                    <div className="border-t border-lime-500/20 pt-6">
+                        <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                    </div>
+
+                    <CalibrationPanel results={calibration} outputLabel="converged value" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -245,6 +281,7 @@ export default function HalleyWindowPlayground() {
             subtitle="Root-Finding Algorithms in the Complex Plane"
             sections={sections}
             settings={settings}
+            researchUrl="/playgrounds/halley-window/research"
         />
     );
 }

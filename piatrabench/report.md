@@ -2,9 +2,9 @@
 
 Deterministic conformance of all playgrounds to the current template (CLAUDE.md). No model judgement.
 
-- Generated: 2026-06-22T14:28:30.872Z
+- Generated: 2026-06-22T16:58:30.578Z
 - Playgrounds: **101**
-- Mean score: **73/100**
+- Mean score: **73.4/100**
 - Build check: enabled (tsc --noEmit, attributed per-playground)
 - Citation resolution: disabled (run with --links)
 
@@ -15,7 +15,7 @@ Scoring categories (weights): build & types 25, registration & metadata 15, stru
 | era | playgrounds | mean score | mean infra (/4) |
 | --- | --- | --- | --- |
 | 2024 | 13 | 61.1 | 0.0 |
-| 2025 | 39 | 65.3 | 0.2 |
+| 2025 | 39 | 66.3 | 0.3 |
 | 2026 | 49 | 82.4 | 1.9 |
 
 ## Model leaderboard
@@ -24,15 +24,15 @@ Mean Layer 0 conformance per generating model (from each playground's versions.t
 
 | model | playgrounds | mean score | build | meta | structure | infra | style | best |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Claude Opus 4.8 | 32 | **90.8** | 98.8% | 100% | 99.7% | 72.9% | 86.3% | kerr-causality (100) |
-| _(unattributed)_ | 69 | – | | | | | | |
+| Claude Opus 4.8 | 33 | **90.9** | 98.8% | 100% | 98.8% | 73.7% | 86.7% | kerr-causality (100) |
+| _(unattributed)_ | 68 | – | | | | | | |
 
 ## Honesty
 
 Honesty is a gate, not a deduction: a failed check caps the headline score so polish cannot buy back fabrication. Calibration is executed headlessly; **verified** means the displayed `predicted` values are genuinely computed by the engine, not hardcoded to match `expected`. Fit (predicted vs expected error) is reported but never gates, because an honest playground may deliberately show a poorly-fitting model (e.g. lexical-liar).
 
-- calibration verified (reproduces): **6**
-- not auto-verifiable (no calibration, or prediction computed in-component): 95
+- calibration verified (reproduces): **7**
+- not auto-verifiable (no calibration, or prediction computed in-component): 94
 - failed (dead citation or hardcoded calibration): 0
 - flagged for review: 0
 - citations: not checked (run with --links)
@@ -45,6 +45,7 @@ Calibration fit, where `predicted` is verifiable (high error is not necessarily 
 | arithmetic-dynamics | 6 | 5.6% | 26.9% |
 | fracqunx | 5 | 4.5% | 15.7% |
 | trisquare | 4 | 0.1% | 0.1% |
+| halley-window | 5 | 0.0% | 0.0% |
 | ideological-bent | 5 | 0.0% | 0.0% |
 | political-autoimmunity | 6 | 0.0% | 0.0% |
 
@@ -58,7 +59,6 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 
 - **artificial-death** — 46/100 · June 2024 · assumptions.ts; calibration.ts; research companion; in data.ts (not registered); lime palette; valid topics/operations (no registry entry) · 1 `rounded` className(s) — verify none are on main containers/buttons
 - **byte-birth** — 46/100 · June 2024 · assumptions.ts; calibration.ts; research companion; in data.ts (not registered); lime palette; valid topics/operations (no registry entry) · 1 `rounded` className(s) — verify none are on main containers/buttons
-- **halley-window** — 57/100 · February 2025 · assumptions.ts; calibration.ts; research companion; lime palette; PlaygroundViewer; versions.ts · 2 `rounded` className(s) — verify none are on main containers/buttons
 - **authoritarian-paternalism** — 57/100 · August 2025 · assumptions.ts; calibration.ts; research companion; no em-dashes (in components/Viewer/index.tsx); no `any` (7 occurrence(s)); versions.ts · 1 `rounded` className(s) — verify none are on main containers/buttons
 - **truth-violence-dynamics** — 57/100 · August 2025 · assumptions.ts; calibration.ts; research companion; no em-dashes (in playground.tsx); no `any` (7 occurrence(s)); versions.ts · 1 `rounded` className(s) — verify none are on main containers/buttons
 - **algorithmic-monodominance** — 57/100 · November 2025 · assumptions.ts; calibration.ts; research companion; no em-dashes (in playground.tsx); no `any` (1 occurrence(s)); PlaygroundViewer · 1 `rounded` className(s) — verify none are on main containers/buttons
@@ -145,6 +145,7 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 - **knife-edge** — 93/100 · May 2026 · research companion
 - **no-global-section** — 93/100 · May 2026 · research companion
 - **uncare-engine** — 93/100 · May 2026 · research companion
+- **halley-window** — 94/100 · February 2025 · PlaygroundViewer; Settings + Viewer split (no Viewer) · 2 `rounded` className(s) — verify none are on main containers/buttons
 - **pettini-tensor-networks** — 94/100 · March 2026 · no em-dashes (in assumptions.ts, calibration.ts, components/Viewer/index.tsx)
 - **epistemic-lensing** — 94/100 · April 2026 · no em-dashes (in assumptions.ts, calibration.ts, logic/index.ts)
 - **audience-attractor** — 95/100 · May 2026 · no `any` (1 occurrence(s))
@@ -164,6 +165,7 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | trisquare | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | June 2026 |
 | fracqunx | 98 | cal ✓ (fit 16%) | 100% | 100% | 90% | 100% | 100% | February 2025 |
 | audience-attractor | 95 | – | 80% | 100% | 100% | 100% | 100% | May 2026 |
+| halley-window | 94 | cal ✓ (fit 0%) | 100% | 100% | 70% | 100% | 100% | February 2025 |
 | pettini-tensor-networks | 94 | – | 100% | 100% | 100% | 100% | 60% | March 2026 |
 | epistemic-lensing | 94 | – | 100% | 100% | 100% | 100% | 60% | April 2026 |
 | entropy-cafe | 93 | – | 100% | 100% | 100% | 72% | 100% | July 2025 |
@@ -249,7 +251,6 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | story-suffering-coherence | 60 | – | 100% | 100% | 80% | 0% | 27% | July 2025 |
 | estigrade | 59 | – | 100% | 100% | 65% | 0% | 40% | September 2024 |
 | raupian-morphospace | 59 | – | 100% | 100% | 65% | 0% | 40% | April 2025 |
-| halley-window | 57 | – | 100% | 100% | 55% | 0% | 40% | February 2025 |
 | authoritarian-paternalism | 57 | – | 80% | 100% | 85% | 0% | 33% | August 2025 |
 | truth-violence-dynamics | 57 | – | 80% | 100% | 85% | 0% | 33% | August 2025 |
 | algorithmic-monodominance | 57 | – | 80% | 100% | 65% | 0% | 60% | November 2025 |
