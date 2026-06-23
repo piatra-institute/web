@@ -7,7 +7,8 @@ import React, {
 import {
     runBirdSymSimulation,
     generateBifurcationData,
-    type BirdSymParameters
+    type BirdSymParameters,
+    type SimulationResult
 } from '../../logic/birdsym';
 import {
     createBifurcationDiagramPoints,
@@ -66,7 +67,7 @@ const Viewer = forwardRef<CaptureHandle, ViewerProps>((props, ref) => {
     const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
     const [isSimulating, setIsSimulating] = useState(false);
     const [simulationComplete, setSimulationComplete] = useState(false);
-    const [bifurcationResults, setBifurcationResults] = useState<any[]>([]);
+    const [bifurcationResults, setBifurcationResults] = useState<SimulationResult[]>([]);
     const [timeSeriesResults, setTimeSeriesResults] = useState<any | null>(null);
 
     // Expose the capture method for taking screenshots

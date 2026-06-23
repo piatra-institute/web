@@ -1,5 +1,7 @@
 'use client';
 
+import type { SimulationResult } from './birdsym';
+
 /**
  * Utility functions for rendering bifurcation diagrams
  */
@@ -21,7 +23,7 @@ export function mapRange(
  * Create the data points for rendering a bifurcation diagram
  */
 export function createBifurcationDiagramPoints(
-    results: any[],
+    results: SimulationResult[],
     canvasWidth: number,
     canvasHeight: number,
     bifurcationStart: number,

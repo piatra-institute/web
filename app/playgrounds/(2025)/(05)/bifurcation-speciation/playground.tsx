@@ -4,9 +4,17 @@ import React, { useRef, useState } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Button from '@/components/Button';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import CaptureHelper, { CaptureHandle } from './components/CaptureHelper';
+
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 // Default parameter values for the simulation
 const defaults = {
@@ -24,6 +32,7 @@ const defaults = {
 
 export default function BifurcationSpeciationPlayground() {
     const viewerRef = useRef<CaptureHandle>(null);
+    const calibration = buildCalibration();
 
     // BirdSym model parameters
     const [birdCount, setBirdCount] = useState(defaults.birdCount);
@@ -132,24 +141,40 @@ export default function BifurcationSpeciationPlayground() {
             id: 'about',
             type: 'outro' as const,
             content: (
-                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
-                        <p>
-                            The BirdSym model demonstrates how sympatric speciation can emerge
-                            through resource competition and adaptive dynamics. Unlike allopatric
-                            speciation that requires geographic isolation, sympatric speciation
-                            occurs within the same geographical area through ecological specialization.
+                <div className="space-y-8 text-gray-300">
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Speciation without a barrier</h3>
+                        <p className="leading-relaxed text-sm">
+                            The BirdSym model shows how sympatric speciation can emerge from resource competition alone,
+                            with no geographic isolation. Birds spread along a trait axis stay one cluster until
+                            competition crosses a threshold, then split into two specialists on either side of the
+                            richest resources.
                         </p>
-                        <p>
-                            This playground visualizes bifurcation diagrams showing how populations
-                            can split into distinct species as environmental parameters change.
-                            The model captures the critical transitions where a single population
-                            becomes unstable and bifurcates into multiple coexisting species.
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Speciation as broken symmetry</h3>
+                        <p className="leading-relaxed text-sm">
+                            The bifurcation diagram sweeps the competition parameter: below a critical value a single
+                            cluster is stable, above it the symmetric state loses stability and forks in two. This is a
+                            pitchfork bifurcation, the same mathematics as a buckling beam. The calibration panel checks
+                            the deterministic Gaussian kernels underneath; the assumptions panel is honest about the
+                            random initial perturbation and what the model leaves out.
                         </p>
-                        <p>
-                            Key concepts include: adaptive dynamics, evolutionary branching,
-                            resource competition, bifurcation theory, and the mathematics of
-                            speciation processes in ecological systems.
-                        </p>
+                    </div>
+
+                    <div className="border-t border-lime-500/20 pt-6">
+                        <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                    </div>
+
+                    <CalibrationPanel results={calibration} outputLabel="kernel value" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -188,6 +213,7 @@ export default function BifurcationSpeciationPlayground() {
             subtitle="Sympatric Speciation Through Adaptive Dynamics"
             sections={sections}
             settings={settings}
+            researchUrl="/playgrounds/bifurcation-speciation/research"
         />
     );
 }

@@ -1,7 +1,7 @@
 {
-  "generated": "2026-06-23T07:22:09.936Z",
+  "generated": "2026-06-23T07:33:53.775Z",
   "n": 101,
-  "avg": 76.3,
+  "avg": 76.6,
   "build": true,
   "links": false,
   "eras": {
@@ -12,8 +12,8 @@
     },
     "2025": {
       "n": 39,
-      "score": 2830,
-      "infra": 35
+      "score": 2869,
+      "infra": 39
     },
     "2026": {
       "n": 49,
@@ -25,14 +25,14 @@
     {
       "key": "claude opus 4.8",
       "label": "Claude Opus 4.8",
-      "n": 40,
-      "mean": 92.4,
+      "n": 41,
+      "mean": 92.6,
       "meanByCat": {
         "build": 99,
         "meta": 100,
         "structure": 98.5,
-        "infra": 78.3,
-        "style": 89
+        "infra": 78.8,
+        "style": 89.3
       },
       "best": {
         "slug": "estigrade",
@@ -42,12 +42,12 @@
     }
   ],
   "honestyCounts": {
-    "verified": 14,
-    "notAutoVerifiable": 87,
+    "verified": 15,
+    "notAutoVerifiable": 86,
     "failed": 0,
     "flagged": 0
   },
-  "unattributed": 61,
+  "unattributed": 60,
   "unregistered": [
     "artificial-death",
     "byte-birth"
@@ -4696,12 +4696,12 @@
       "year": 2025,
       "month": 5,
       "name": "bifurcation speciation",
-      "model": null,
-      "modelKey": null,
-      "score": 61,
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
+      "score": 100,
       "byCat": {
         "build": {
-          "earned": 20,
+          "earned": 25,
           "total": 25
         },
         "meta": {
@@ -4713,20 +4713,20 @@
           "total": 20
         },
         "infra": {
-          "earned": 0,
+          "earned": 25,
           "total": 25
         },
         "style": {
-          "earned": 6,
+          "earned": 15,
           "total": 15
         }
       },
       "catPct": {
-        "build": 80,
+        "build": 100,
         "meta": 100,
         "structure": 100,
-        "infra": 0,
-        "style": 40
+        "infra": 100,
+        "style": 100
       },
       "checks": [
         {
@@ -4743,8 +4743,8 @@
           "label": "no `any`",
           "category": "build",
           "weight": 5,
-          "ratio": 0,
-          "detail": "2 occurrence(s)",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -4842,7 +4842,7 @@
           "label": "assumptions.ts",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -4851,7 +4851,7 @@
           "label": "calibration.ts",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -4860,7 +4860,7 @@
           "label": "versions.ts",
           "category": "infra",
           "weight": 4,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -4869,7 +4869,7 @@
           "label": "research companion",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -4887,8 +4887,8 @@
           "label": "no font-serif/sans",
           "category": "style",
           "weight": 4,
-          "ratio": 0,
-          "detail": "font-serif/sans present",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -4896,71 +4896,36 @@
           "label": "lime palette",
           "category": "style",
           "weight": 5,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "assumptions",
-          "label": "assumptions.ts",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "calibration",
-          "label": "calibration.ts",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "research",
-          "label": "research companion",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "no-any",
-          "label": "no `any`",
-          "lost": 5,
-          "detail": "2 occurrence(s)"
-        },
-        {
-          "id": "palette",
-          "label": "lime palette",
-          "lost": 5,
-          "detail": ""
-        },
-        {
-          "id": "versions",
-          "label": "versions.ts",
-          "lost": 4,
-          "detail": ""
-        },
-        {
-          "id": "outro-font",
-          "label": "no font-serif/sans",
-          "lost": 4,
-          "detail": "font-serif/sans present"
-        }
-      ],
+      "failed": [],
       "warnings": [],
-      "infraCount": 0,
+      "infraCount": 4,
       "citations": [],
       "calibration": {
-        "status": "na",
-        "fit": null
+        "status": "verified",
+        "n": 4,
+        "fit": {
+          "mean": 0,
+          "worst": 0
+        },
+        "message": null
       },
       "honestyWarnings": [],
       "honesty": {
-        "calibration": "na",
-        "fit": null,
+        "calibration": "verified",
+        "fit": {
+          "mean": 0,
+          "worst": 0
+        },
         "citations": "unchecked",
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 61
+      "headline": 100
     },
     {
       "slug": "lefebvrian-conscience",
