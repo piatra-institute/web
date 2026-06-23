@@ -1,14 +1,14 @@
 {
-  "generated": "2026-06-23T07:44:43.637Z",
+  "generated": "2026-06-23T07:57:35.511Z",
   "n": 101,
-  "avg": 77,
+  "avg": 77.4,
   "build": true,
   "links": false,
   "eras": {
     "2024": {
       "n": 13,
-      "score": 835,
-      "infra": 4
+      "score": 873,
+      "infra": 8
     },
     "2025": {
       "n": 39,
@@ -25,29 +25,29 @@
     {
       "key": "claude opus 4.8",
       "label": "Claude Opus 4.8",
-      "n": 42,
-      "mean": 92.7,
+      "n": 43,
+      "mean": 92.9,
       "meanByCat": {
-        "build": 99,
+        "build": 99.1,
         "meta": 100,
         "structure": 98.6,
-        "infra": 79.3,
-        "style": 89.5
+        "infra": 79.8,
+        "style": 89.8
       },
       "best": {
-        "slug": "estigrade",
-        "name": "estigrade",
+        "slug": "everything-relevant",
+        "name": "everything... relevant",
         "score": 100
       }
     }
   ],
   "honestyCounts": {
-    "verified": 16,
-    "notAutoVerifiable": 85,
+    "verified": 17,
+    "notAutoVerifiable": 84,
     "failed": 0,
     "flagged": 0
   },
-  "unattributed": 59,
+  "unattributed": 58,
   "unregistered": [
     "artificial-death",
     "byte-birth"
@@ -612,9 +612,9 @@
       "year": 2024,
       "month": 3,
       "name": "everything... relevant",
-      "model": null,
-      "modelKey": null,
-      "score": 62,
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
+      "score": 100,
       "byCat": {
         "build": {
           "earned": 25,
@@ -625,24 +625,24 @@
           "total": 15
         },
         "structure": {
-          "earned": 17,
+          "earned": 20,
           "total": 20
         },
         "infra": {
-          "earned": 0,
+          "earned": 25,
           "total": 25
         },
         "style": {
-          "earned": 5,
+          "earned": 15,
           "total": 15
         }
       },
       "catPct": {
         "build": 100,
         "meta": 100,
-        "structure": 85,
-        "infra": 0,
-        "style": 33
+        "structure": 100,
+        "infra": 100,
+        "style": 100
       },
       "checks": [
         {
@@ -749,7 +749,7 @@
           "label": "logic/ module",
           "category": "structure",
           "weight": 3,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -758,7 +758,7 @@
           "label": "assumptions.ts",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -767,7 +767,7 @@
           "label": "calibration.ts",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -776,7 +776,7 @@
           "label": "versions.ts",
           "category": "infra",
           "weight": 4,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -785,7 +785,7 @@
           "label": "research companion",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -794,8 +794,8 @@
           "label": "no em-dashes",
           "category": "style",
           "weight": 6,
-          "ratio": 0,
-          "detail": "in playground.tsx",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -803,8 +803,8 @@
           "label": "no font-serif/sans",
           "category": "style",
           "weight": 4,
-          "ratio": 0,
-          "detail": "font-serif/sans present",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -817,68 +817,33 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "assumptions",
-          "label": "assumptions.ts",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "calibration",
-          "label": "calibration.ts",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "research",
-          "label": "research companion",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "no-emdash",
-          "label": "no em-dashes",
-          "lost": 6,
-          "detail": "in playground.tsx"
-        },
-        {
-          "id": "versions",
-          "label": "versions.ts",
-          "lost": 4,
-          "detail": ""
-        },
-        {
-          "id": "outro-font",
-          "label": "no font-serif/sans",
-          "lost": 4,
-          "detail": "font-serif/sans present"
-        },
-        {
-          "id": "logic",
-          "label": "logic/ module",
-          "lost": 3,
-          "detail": ""
-        }
-      ],
+      "failed": [],
       "warnings": [
         "1 `rounded` className(s) — verify none are on main containers/buttons"
       ],
-      "infraCount": 0,
+      "infraCount": 4,
       "citations": [],
       "calibration": {
-        "status": "na",
-        "fit": null
+        "status": "verified",
+        "n": 4,
+        "fit": {
+          "mean": 0.000025,
+          "worst": 0.0001
+        },
+        "message": null
       },
       "honestyWarnings": [],
       "honesty": {
-        "calibration": "na",
-        "fit": null,
+        "calibration": "verified",
+        "fit": {
+          "mean": 0.000025,
+          "worst": 0.0001
+        },
         "citations": "unchecked",
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 62
+      "headline": 100
     },
     {
       "slug": "eyevolution",

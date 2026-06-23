@@ -3,10 +3,19 @@
 import { useState, useRef } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
+
 export default function EverythingRelevantPlayground() {
+    const calibration = buildCalibration();
     // Core equation parameters
     const [couplingConstant, setCouplingConstant] = useState(0.1);
     const [fieldAmplitude, setFieldAmplitude] = useState(1.0);
@@ -80,12 +89,12 @@ export default function EverythingRelevantPlayground() {
                     id: 'intro',
                     type: 'intro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-4">The Dream of Unification</h2>
                             <p>
                                 Inspired by <strong className="font-semibold text-lime-400">Sean Carroll&apos;s</strong> work on fundamental physics, 
-                                this playground explores the tantalizing possibility that all of physics—particles, forces, 
-                                spacetime, and quantum mechanics—might emerge from a single, elegantly simple equation.
+                                this playground explores the tantalizing possibility that all of physics, particles, forces,
+                                spacetime, and quantum mechanics, might emerge from a single, elegantly simple equation.
                             </p>
                             <p>
                                 While we don&apos;t yet know what this equation might look like, we can explore how different 
@@ -142,7 +151,7 @@ export default function EverythingRelevantPlayground() {
                     id: 'outro',
                     type: 'outro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-6">The Quest for Everything</h2>
                             
                             <div className="space-y-6">
@@ -184,7 +193,7 @@ export default function EverythingRelevantPlayground() {
                                 <div className="bg-black border border-gray-800 p-6">
                                     <h3 className="text-lg font-semibold text-lime-400 mb-3">The Beauty of Symmetry</h3>
                                     <p className="mb-3">
-                                        Symmetries are not just mathematical curiosities—they&apos;re fundamental to physical law:
+                                        Symmetries are not just mathematical curiosities, they&apos;re fundamental to physical law:
                                     </p>
                                     <ul className="space-y-2 text-sm">
                                         <li>• <strong>Noether&apos;s Theorem:</strong> Every symmetry corresponds to a conservation law</li>
@@ -212,6 +221,19 @@ export default function EverythingRelevantPlayground() {
                                         <li>• Steven Weinberg - &quot;Dreams of a Final Theory&quot;</li>
                                         <li>• Carlo Rovelli - &quot;The Order of Time&quot;</li>
                                     </ul>
+                                </div>
+
+                                <div className="border-t border-lime-500/20 pt-6">
+                                    <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                                </div>
+
+                                <CalibrationPanel results={calibration} outputLabel="energy / drift" />
+
+                                <AssumptionPanel assumptions={assumptions} />
+
+                                <div>
+                                    <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                                    <ModelChangelog entries={changelog} />
                                 </div>
                             </div>
                         </div>
@@ -266,6 +288,7 @@ export default function EverythingRelevantPlayground() {
                     onExport={handleExport}
                 />
             }
+            researchUrl="/playgrounds/everything-relevant/research"
         />
     );
 }
