@@ -3,12 +3,21 @@
 import { useState, useRef } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 
 
 export default function AgencyErosionPlayground() {
+    const calibration = buildCalibration();
     // Simulation parameters
     const [numAgents, setNumAgents] = useState(400);
     const [steps, setSteps] = useState(120);
@@ -67,7 +76,7 @@ export default function AgencyErosionPlayground() {
                     id: 'intro',
                     type: 'intro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-4">Identity Substitution Dynamics</h2>
                             <p>
                                 This simulation models how <strong className="font-semibold text-lime-400">symbolic identity signaling</strong> can
@@ -125,7 +134,7 @@ export default function AgencyErosionPlayground() {
                     id: 'outro',
                     type: 'outro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-6">Model Interpretation & Dynamics</h2>
 
                             <div className="space-y-6">
@@ -204,6 +213,19 @@ export default function AgencyErosionPlayground() {
                                         before any policy application.
                                     </p>
                                 </div>
+
+                                <div className="border-t border-lime-500/20 pt-6">
+                                    <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                                </div>
+
+                                <CalibrationPanel results={calibration} outputLabel="core value" />
+
+                                <AssumptionPanel assumptions={assumptions} />
+
+                                <div>
+                                    <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                                    <ModelChangelog entries={changelog} />
+                                </div>
                             </div>
                         </div>
                     )
@@ -251,6 +273,7 @@ export default function AgencyErosionPlayground() {
                     onExport={handleExport}
                 />
             }
+            researchUrl="/playgrounds/agency-erosion/research"
         />
     );
 }

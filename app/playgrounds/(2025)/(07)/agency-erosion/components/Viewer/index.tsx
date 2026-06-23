@@ -102,14 +102,18 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
     const last = data[data.length - 1] || {};
 
     // Custom tooltip with better styling
-    const CustomTooltip = ({ active, payload, label }: any) => {
+    const CustomTooltip = ({ active, payload, label }: {
+        active?: boolean;
+        payload?: { dataKey?: string | number; color?: string; name?: string; value?: number }[];
+        label?: string | number;
+    }) => {
         if (active && payload && payload.length) {
             return (
                 <div className="bg-black border border-gray-800 p-3 text-xs">
                     <p className="text-gray-400 mb-1">Step {label}</p>
-                    {payload.map((entry: any) => (
+                    {payload.map((entry) => (
                         <p key={entry.dataKey} style={{ color: entry.color }}>
-                            {entry.name}: {entry.value.toFixed(3)}
+                            {entry.name}: {entry.value?.toFixed(3)}
                         </p>
                     ))}
                 </div>
@@ -233,7 +237,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
                         </div>
                     </div>
                     <div className="text-xs text-gray-400">
-                        <span>0</span> — <span>{data.length - 1}</span>
+                        <span>0</span> to <span>{data.length - 1}</span>
                     </div>
                 </div>
             </div>
@@ -243,12 +247,12 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
 
 Viewer.displayName = 'Viewer';
 
-function MetricCard({ label, value, color }: { label: string; value: any; color: string }) {
+function MetricCard({ label, value, color }: { label: string; value: number | string | undefined; color: string }) {
     return (
         <div className="bg-black border border-gray-800 p-3">
             <div className="text-xs text-gray-400">{label}</div>
             <div className={`text-lg font-semibold tabular-nums ${color}`}>
-                {typeof value === 'number' ? value.toFixed(3) : value || '—'}
+                {typeof value === 'number' ? value.toFixed(3) : value || '-'}
             </div>
         </div>
     );
