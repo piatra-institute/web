@@ -1,14 +1,14 @@
 {
-  "generated": "2026-06-23T04:50:57.518Z",
+  "generated": "2026-06-23T05:44:27.708Z",
   "n": 101,
-  "avg": 74.7,
+  "avg": 75.1,
   "build": true,
   "links": false,
   "eras": {
     "2024": {
       "n": 13,
-      "score": 794,
-      "infra": 0
+      "score": 835,
+      "infra": 4
     },
     "2025": {
       "n": 39,
@@ -25,29 +25,29 @@
     {
       "key": "claude opus 4.8",
       "label": "Claude Opus 4.8",
-      "n": 36,
-      "mean": 91.6,
+      "n": 37,
+      "mean": 91.9,
       "meanByCat": {
         "build": 98.9,
         "meta": 100,
         "structure": 98.9,
-        "infra": 75.9,
-        "style": 87.8
+        "infra": 76.5,
+        "style": 88.1
       },
       "best": {
-        "slug": "authoritarian-paternalism",
-        "name": "authoritarian paternalism",
+        "slug": "estigrade",
+        "name": "estigrade",
         "score": 100
       }
     }
   ],
   "honestyCounts": {
-    "verified": 10,
-    "notAutoVerifiable": 91,
+    "verified": 11,
+    "notAutoVerifiable": 90,
     "failed": 0,
     "flagged": 0
   },
-  "unattributed": 65,
+  "unattributed": 64,
   "unregistered": [
     "artificial-death",
     "byte-birth"
@@ -3149,9 +3149,9 @@
       "year": 2024,
       "month": 9,
       "name": "estigrade",
-      "model": null,
-      "modelKey": null,
-      "score": 59,
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
+      "score": 100,
       "byCat": {
         "build": {
           "earned": 25,
@@ -3162,24 +3162,24 @@
           "total": 15
         },
         "structure": {
-          "earned": 13,
+          "earned": 20,
           "total": 20
         },
         "infra": {
-          "earned": 0,
+          "earned": 25,
           "total": 25
         },
         "style": {
-          "earned": 6,
+          "earned": 15,
           "total": 15
         }
       },
       "catPct": {
         "build": 100,
         "meta": 100,
-        "structure": 65,
-        "infra": 0,
-        "style": 40
+        "structure": 100,
+        "infra": 100,
+        "style": 100
       },
       "checks": [
         {
@@ -3277,8 +3277,8 @@
           "label": "Settings + Viewer split",
           "category": "structure",
           "weight": 4,
-          "ratio": 0,
-          "detail": "no Settings, no Viewer",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -3286,7 +3286,7 @@
           "label": "logic/ module",
           "category": "structure",
           "weight": 3,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -3295,7 +3295,7 @@
           "label": "assumptions.ts",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -3304,7 +3304,7 @@
           "label": "calibration.ts",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -3313,7 +3313,7 @@
           "label": "versions.ts",
           "category": "infra",
           "weight": 4,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -3322,7 +3322,7 @@
           "label": "research companion",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -3340,8 +3340,8 @@
           "label": "no font-serif/sans",
           "category": "style",
           "weight": 4,
-          "ratio": 0,
-          "detail": "font-serif/sans present",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -3349,77 +3349,36 @@
           "label": "lime palette",
           "category": "style",
           "weight": 5,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "assumptions",
-          "label": "assumptions.ts",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "calibration",
-          "label": "calibration.ts",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "research",
-          "label": "research companion",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "palette",
-          "label": "lime palette",
-          "lost": 5,
-          "detail": ""
-        },
-        {
-          "id": "settings-viewer",
-          "label": "Settings + Viewer split",
-          "lost": 4,
-          "detail": "no Settings, no Viewer"
-        },
-        {
-          "id": "versions",
-          "label": "versions.ts",
-          "lost": 4,
-          "detail": ""
-        },
-        {
-          "id": "outro-font",
-          "label": "no font-serif/sans",
-          "lost": 4,
-          "detail": "font-serif/sans present"
-        },
-        {
-          "id": "logic",
-          "label": "logic/ module",
-          "lost": 3,
-          "detail": ""
-        }
-      ],
+      "failed": [],
       "warnings": [],
-      "infraCount": 0,
+      "infraCount": 4,
       "citations": [],
       "calibration": {
-        "status": "na",
-        "fit": null
+        "status": "verified",
+        "n": 4,
+        "fit": {
+          "mean": 0,
+          "worst": 0
+        },
+        "message": null
       },
       "honestyWarnings": [],
       "honesty": {
-        "calibration": "na",
-        "fit": null,
+        "calibration": "verified",
+        "fit": {
+          "mean": 0,
+          "worst": 0
+        },
         "citations": "unchecked",
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 59
+      "headline": 100
     },
     {
       "slug": "coasellular-morphogenesis",

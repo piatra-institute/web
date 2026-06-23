@@ -1,65 +1,33 @@
 'use client';
 
-import {
-    useState,
-    useEffect,
-} from 'react';
-
-import Image from 'next/image';
+import { useState, useMemo } from 'react';
 
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
-import PlaygroundSettings from '@/components/PlaygroundSettings';
-import Input from '@/components/Input';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 
+import Settings from './components/Settings';
+import Viewer from './components/Viewer';
+import { computeFinalGrade } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 
 export default function EstigradePlayground() {
-    const [
-        reward,
-        setReward,
-    ] = useState(0.1);
+    const [reward, setReward] = useState(0.1);
+    const [penalty, setPenalty] = useState(0.2);
+    const [estimatedGrade, setEstimatedGrade] = useState(80);
+    const [examGrade, setExamGrade] = useState(80);
 
-    const [
-        penalty,
-        setPenalty,
-    ] = useState(0.2);
-
-    const [
-        estimatedGrade,
-        setEstimatedGrade,
-    ] = useState(80);
-
-    const [
-        examGrade,
-        setExamGrade,
-    ] = useState(80);
-
-    const [
-        finalGrade,
-        setFinalGrade,
-    ] = useState(0);
-
-
-    useEffect(() => {
-        const computeFinalGrade = () => {
-            const gradeDifference = Math.abs(examGrade - estimatedGrade);
-
-            return parseInt(
-                (
-                    examGrade + reward * (100 - gradeDifference) - penalty * gradeDifference
-                ).toFixed(2)
-            );
-        }
-
-        const finalGrade = computeFinalGrade();
-        setFinalGrade(finalGrade);
-    }, [
-        reward,
-        penalty,
-        estimatedGrade,
-        examGrade,
-    ]);
+    const finalGrade = useMemo(
+        () => computeFinalGrade({ estimatedGrade, examGrade, reward, penalty }),
+        [estimatedGrade, examGrade, reward, penalty],
+    );
+    const calibration = useMemo(() => buildCalibration(), []);
 
     const sections = [
         {
@@ -71,31 +39,7 @@ export default function EstigradePlayground() {
             type: 'canvas' as const,
             content: (
                 <PlaygroundViewer>
-                    <div className="flex flex-col items-center">
-                        <div className="max-w-[300px] p-4 min-h-[22px] overflow-auto md:max-w-[700px] mb-8 text-center">
-                            <Image
-                                src="/assets-playgrounds/estigrade/estigrade-formula.png"
-                                alt="estigrade formula"
-                                className="select-none"
-                                height={22}
-                                width={600}
-                                priority={true}
-                                draggable={false}
-                                style={{
-                                    width: '600px',
-                                    height: '22px',
-                                    maxWidth: 'initial',
-                                }}
-                            />
-                        </div>
-
-                        <div className="flex justify-between mt-8 mb-12 text-xl font-bold">
-                            <div>Final Grade:</div>
-                            <div className="px-4 xl:px-8 text-green-400">
-                                {finalGrade}
-                            </div>
-                        </div>
-                    </div>
+                    <Viewer finalGrade={finalGrade} />
                 </PlaygroundViewer>
             ),
         },
@@ -103,156 +47,64 @@ export default function EstigradePlayground() {
             id: 'about',
             type: 'outro' as const,
             content: (
-                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
-                        <p>
-                            Estigrade is an experimental grading system designed to develop students&apos; metacognitive skills
-                            by incentivizing accurate self-assessment. Before taking an exam, students estimate their
-                            expected score. Their final grade is then adjusted based on the accuracy of this prediction.
+                <div className="space-y-8 text-gray-300">
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Grading the estimate, not just the exam</h3>
+                        <p className="leading-relaxed text-sm">
+                            Estigrade is an experimental grading rule designed to develop students&apos; metacognitive
+                            skills by rewarding accurate self-assessment. Before an exam, a student estimates their
+                            expected score, and the final grade is adjusted by how close that prediction turned out to be.
                         </p>
-                        <p>
-                            The formula balances two components: a reward for accurate estimation and a penalty for
-                            inaccuracy. When students correctly predict their performance, they receive bonus points.
-                            When they&apos;re off the mark, points are deducted.
+                        <p className="leading-relaxed text-sm mt-3">
+                            The formula balances two terms: a reward for a close estimate and a penalty for a far one.
+                            Predict your performance well and you gain bonus points; miss badly and points are deducted.
                         </p>
-                        <p>
-                            This approach encourages students to develop better self-awareness about their knowledge
-                            and preparation level, ultimately leading to improved learning outcomes and more realistic
-                            self-assessment skills that are valuable beyond the classroom.
+                    </div>
+
+                    <div className="border-l-2 border-lime-500/40 pl-4">
+                        <p className="text-lime-200/80 text-sm">
+                            The idea is to make self-knowledge a graded skill, so students build realistic self-assessment
+                            that carries beyond the classroom. Whether it actually improves learning, and whether honest
+                            estimation is even the score-maximizing strategy, are open questions the assumptions panel keeps
+                            separate from the formula itself.
                         </p>
+                    </div>
+
+                    <div className="border-t border-lime-500/20 pt-6">
+                        <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                    </div>
+
+                    <CalibrationPanel results={calibration} outputLabel="final grade" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
     ];
 
-    const settings = (
-        <PlaygroundSettings
-            sections={[
-                {
-                    title: 'Grade Estimation Parameters',
-                    content: (
-                        <>
-                            <Input
-                                value={estimatedGrade}
-                                onChange={(e) => {
-                                    const value = parseInt(e);
-                                    if (isNaN(value)) {
-                                        setEstimatedGrade(0);
-                                        return;
-                                    }
-                                    if (value < 0) {
-                                        setEstimatedGrade(0);
-                                        return;
-                                    }
-                                    if (value > 100) {
-                                        setEstimatedGrade(100);
-                                        return;
-                                    }
-                                    setEstimatedGrade(value);
-                                }}
-                                label="Estimated Grade"
-                                compact={true}
-                                type="number"
-                                min={0}
-                                max={100}
-                                inputMode="numeric"
-                            />
-                            <Input
-                                value={examGrade}
-                                onChange={(e) => {
-                                    const value = parseInt(e);
-                                    if (isNaN(value)) {
-                                        setExamGrade(0);
-                                        return;
-                                    }
-                                    if (value < 0) {
-                                        setExamGrade(0);
-                                        return;
-                                    }
-                                    if (value > 100) {
-                                        setExamGrade(100);
-                                        return;
-                                    }
-                                    setExamGrade(value);
-                                }}
-                                label="Actual Exam Grade"
-                                compact={true}
-                                type="number"
-                                min={0}
-                                max={100}
-                                inputMode="numeric"
-                            />
-                        </>
-                    ),
-                },
-                {
-                    title: 'Adjustment Factors',
-                    content: (
-                        <>
-                            <Input
-                                value={reward}
-                                onChange={(e) => {
-                                    const value = parseFloat(e);
-                                    if (isNaN(value)) {
-                                        setReward(0);
-                                        return;
-                                    }
-                                    if (value < 0) {
-                                        setReward(0);
-                                        return;
-                                    }
-                                    if (value > 1) {
-                                        setReward(1);
-                                        return;
-                                    }
-                                    setReward(value);
-                                }}
-                                label="Reward Factor (r)"
-                                compact={true}
-                                type="number"
-                                min={0}
-                                max={1}
-                                step={0.1}
-                                inputMode="decimal"
-                            />
-                            <Input
-                                value={penalty}
-                                onChange={(e) => {
-                                    const value = parseFloat(e);
-                                    if (isNaN(value)) {
-                                        setPenalty(0);
-                                        return;
-                                    }
-                                    if (value < 0) {
-                                        setPenalty(0);
-                                        return;
-                                    }
-                                    if (value > 1) {
-                                        setPenalty(1);
-                                        return;
-                                    }
-                                    setPenalty(value);
-                                }}
-                                label="Penalty Factor (p)"
-                                compact={true}
-                                type="number"
-                                min={0}
-                                max={1}
-                                step={0.1}
-                                inputMode="decimal"
-                            />
-                        </>
-                    ),
-                },
-            ]}
-        />
-    );
-
     return (
         <PlaygroundLayout
-            title="Estigrade"
+            title="estigrade"
             subtitle="enhance grades when students accurately estimate their exam scores"
             sections={sections}
-            settings={settings}
+            settings={
+                <Settings
+                    estimatedGrade={estimatedGrade}
+                    setEstimatedGrade={setEstimatedGrade}
+                    examGrade={examGrade}
+                    setExamGrade={setExamGrade}
+                    reward={reward}
+                    setReward={setReward}
+                    penalty={penalty}
+                    setPenalty={setPenalty}
+                />
+            }
+            researchUrl="/playgrounds/estigrade/research"
         />
     );
 }
