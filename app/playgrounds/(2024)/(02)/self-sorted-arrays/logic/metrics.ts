@@ -52,7 +52,7 @@ export const computeSortednessValue = (
         const previous = distribution[i - 1];
         const current = distribution[i];
 
-        if (current > previous) {
+        if (current.value > previous.value) {
             sum++;
         }
     }

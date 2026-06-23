@@ -2,9 +2,9 @@
 
 Deterministic conformance of all playgrounds to the current template (CLAUDE.md). No model judgement.
 
-- Generated: 2026-06-23T13:43:08.562Z
+- Generated: 2026-06-23T14:04:14.475Z
 - Playgrounds: **101**
-- Mean score: **80.8/100**
+- Mean score: **81.1/100**
 - Build check: enabled (tsc --noEmit, attributed per-playground)
 - Citation resolution: disabled (run with --links)
 
@@ -14,7 +14,7 @@ Scoring categories (weights): build & types 25, registration & metadata 15, stru
 
 | era | playgrounds | mean score | mean infra (/4) |
 | --- | --- | --- | --- |
-| 2024 | 13 | 73.0 | 1.2 |
+| 2024 | 13 | 75.7 | 1.5 |
 | 2025 | 39 | 81.3 | 1.8 |
 | 2026 | 49 | 82.4 | 1.9 |
 
@@ -24,15 +24,15 @@ Mean Layer 0 conformance per generating model (from each playground's versions.t
 
 | model | playgrounds | mean score | build | meta | structure | infra | style | best |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Claude Opus 4.8 | 52 | **94.1** | 99.2% | 100% | 98.5% | 83.3% | 91.5% | everything-relevant (100) |
-| _(unattributed)_ | 49 | – | | | | | | |
+| Claude Opus 4.8 | 53 | **94.1** | 99.2% | 100% | 98.3% | 83.6% | 91.7% | everything-relevant (100) |
+| _(unattributed)_ | 48 | – | | | | | | |
 
 ## Honesty
 
 Honesty is a gate, not a deduction: a failed check caps the headline score so polish cannot buy back fabrication. Calibration is executed headlessly; **verified** means the displayed `predicted` values are genuinely computed by the engine, not hardcoded to match `expected`. Fit (predicted vs expected error) is reported but never gates, because an honest playground may deliberately show a poorly-fitting model (e.g. lexical-liar).
 
-- calibration verified (reproduces): **26**
-- not auto-verifiable (no calibration, or prediction computed in-component): 75
+- calibration verified (reproduces): **27**
+- not auto-verifiable (no calibration, or prediction computed in-component): 74
 - failed (dead citation or hardcoded calibration): 0
 - flagged for review: 0
 - citations: not checked (run with --links)
@@ -46,6 +46,7 @@ Calibration fit, where `predicted` is verifiable (high error is not necessarily 
 | fracqunx | 5 | 4.5% | 15.7% |
 | trisquare | 4 | 0.1% | 0.1% |
 | everything-relevant | 4 | 0.0% | 0.0% |
+| self-sorted-arrays | 5 | 0.0% | 0.0% |
 | lifesong | 5 | 0.0% | 0.0% |
 | vote-no | 5 | 0.0% | 0.0% |
 | estigrade | 4 | 0.0% | 0.0% |
@@ -78,7 +79,6 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 
 - **artificial-death** — 46/100 · June 2024 · assumptions.ts; calibration.ts; research companion; in data.ts (not registered); lime palette; valid topics/operations (no registry entry) · 1 `rounded` className(s) — verify none are on main containers/buttons
 - **byte-birth** — 46/100 · June 2024 · assumptions.ts; calibration.ts; research companion; in data.ts (not registered); lime palette; valid topics/operations (no registry entry) · 1 `rounded` className(s) — verify none are on main containers/buttons
-- **self-sorted-arrays** — 63/100 · February 2024 · assumptions.ts; calibration.ts; research companion; no `any` (5 occurrence(s)); lime palette; versions.ts
 - **eyevolution** — 63/100 · March 2024 · assumptions.ts; calibration.ts; research companion; no `any` (2 occurrence(s)); versions.ts; no font-serif/sans (font-serif/sans present) · 6 `rounded` className(s) — verify none are on main containers/buttons
 - **pacemaker-accumulator** — 63/100 · March 2024 · assumptions.ts; calibration.ts; research companion; no `any` (2 occurrence(s)); versions.ts; no font-serif/sans (font-serif/sans present) · 2 `rounded` className(s) — verify none are on main containers/buttons
 - **lefebvrian-conscience** — 63/100 · May 2025 · assumptions.ts; calibration.ts; research companion; no `any` (2 occurrence(s)); versions.ts; no font-serif/sans (font-serif/sans present) · 17 `rounded` className(s) — verify none are on main containers/buttons
@@ -151,6 +151,7 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 - **audience-attractor** — 95/100 · May 2026 · no `any` (1 occurrence(s))
 - **raupian-morphospace** — 96/100 · April 2025 · PlaygroundViewer
 - **logical-morphogenesis** — 96/100 · December 2025 · PlaygroundViewer
+- **self-sorted-arrays** — 98/100 · February 2024 · Settings + Viewer split (no Viewer)
 - **fracqunx** — 98/100 · February 2025 · Settings + Viewer split (no Viewer) · 2 `rounded` className(s) — verify none are on main containers/buttons
 
 ## Full scorecard
@@ -182,6 +183,7 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | lexical-liar | 100 | cal ✓ (fit 900%) | 100% | 100% | 100% | 100% | 100% | June 2026 |
 | political-autoimmunity | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | June 2026 |
 | trisquare | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | June 2026 |
+| self-sorted-arrays | 98 | cal ✓ (fit 0%) | 100% | 100% | 90% | 100% | 100% | February 2024 |
 | fracqunx | 98 | cal ✓ (fit 16%) | 100% | 100% | 90% | 100% | 100% | February 2025 |
 | raupian-morphospace | 96 | cal ✓ (fit 0%) | 100% | 100% | 80% | 100% | 100% | April 2025 |
 | logical-morphogenesis | 96 | cal ✓ (fit 0%) | 100% | 100% | 80% | 100% | 100% | December 2025 |
@@ -251,7 +253,6 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | coasellular-morphogenesis | 64 | – | 100% | 100% | 90% | 0% | 40% | November 2024 |
 | hsp90-canalization | 64 | – | 100% | 100% | 65% | 0% | 73% | April 2025 |
 | periodic-table-of-state-spaces | 64 | – | 80% | 100% | 100% | 0% | 60% | March 2026 |
-| self-sorted-arrays | 63 | – | 80% | 100% | 90% | 0% | 67% | February 2024 |
 | eyevolution | 63 | – | 80% | 100% | 85% | 0% | 73% | March 2024 |
 | pacemaker-accumulator | 63 | – | 80% | 100% | 85% | 0% | 73% | March 2024 |
 | lefebvrian-conscience | 63 | – | 80% | 100% | 85% | 0% | 73% | May 2025 |

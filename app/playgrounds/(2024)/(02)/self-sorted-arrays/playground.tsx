@@ -10,8 +10,16 @@ import {
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import PlaygroundSettings from '@/components/PlaygroundSettings';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
+
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 import {
     integerBetweenLimits,
@@ -44,6 +52,7 @@ import {
 
 
 export default function SelfSortedArraysPlayground() {
+    const calibration = buildCalibration();
     // #region references
     const tissue = useRef(new Tissue(
         (cellID, swapID)  => {
@@ -450,7 +459,8 @@ export default function SelfSortedArraysPlayground() {
                         <a
                             href="https://arxiv.org/abs/2401.05375"
                             target="_blank"
-                            className="text-blue-400 hover:text-blue-300 text-sm underline"
+                            rel="noopener noreferrer"
+                            className="text-lime-400 hover:text-lime-300 text-sm underline"
                         >
                             2023, Michael Levin et al., Classical Sorting Algorithms as a Model of Morphogenesis
                         </a>
@@ -518,7 +528,7 @@ export default function SelfSortedArraysPlayground() {
                                 onChange={(value) => {
                                     const count = parseInt(value);
                                     if (isNaN(count)) {
-                                        setCount('' as any);
+                                        setCount(0);
                                         return;
                                     }
                                     if (count <= 0 || count > 999) {
@@ -547,24 +557,47 @@ export default function SelfSortedArraysPlayground() {
             id: 'about',
             type: 'outro' as const,
             content: (
-                <>
-                    <p>
-                        Self-sorted arrays demonstrate how complex organizational behaviors can emerge
-                        from simple local rules. Each cell follows basic sorting algorithms (bubble,
-                        insertion, or selection sort) but operates independently, creating emergent
-                        global organization through distributed computation.
-                    </p>
-                    <p>
-                        This playground implements concepts from Michael Levin&apos;s research on morphogenesis,
-                        showing how biological development might use similar algorithmic principles to
-                        organize cellular structures. The cells can exhibit various behaviors including
-                        mutation, damage, repair, conversion, division, and apoptosis.
-                    </p>
-                    <p>
-                        Key concepts include: distributed sorting algorithms, emergent organization,
-                        cellular automata, morphogenetic algorithms, and bio-inspired computation.
-                    </p>
-                </>
+                <div className="space-y-8 text-gray-300">
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Sorting as a collective behaviour</h3>
+                        <p className="leading-relaxed text-sm">
+                            Self-sorted arrays show how global order can emerge from simple local rules. Each element is
+                            an autonomous cell following a basic sorting algotype (bubble, insertion, or selection) and
+                            acting only on its neighbours, with no central view of the array. Order arises bottom-up
+                            through distributed swaps.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Sorting as agency</h3>
+                        <p className="leading-relaxed text-sm">
+                            The framing follows Michael Levin and colleagues&apos; work treating classical sorting
+                            algorithms as agential material: reframed as populations of agents, they show unexpected
+                            robustness, clustering, and delayed-gratification behaviours a monolithic algorithm never
+                            displays. The cells here can also mutate, convert, divide, and aggregate.
+                        </p>
+                    </div>
+
+                    <div className="border-l-2 border-lime-500/40 pl-4">
+                        <p className="text-lime-200/80 text-sm">
+                            The calibration panel checks the exact order metrics (sortedness and aggregation); the
+                            assumptions panel separates those metrics from the basal-cognition interpretation.
+                        </p>
+                    </div>
+
+                    <div className="border-t border-lime-500/20 pt-6">
+                        <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                    </div>
+
+                    <CalibrationPanel results={calibration} outputLabel="order metric" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
+                </div>
             ),
         },
     ];
@@ -659,13 +692,15 @@ export default function SelfSortedArraysPlayground() {
                 <a
                     href="https://arxiv.org/abs/2401.05375"
                     target="_blank"
-                    className="text-blue-400 hover:text-blue-300 underline"
+                    rel="noopener noreferrer"
+                    className="underline"
                 >
                     2023, Michael Levin et al., Classical Sorting Algorithms as a Model of Morphogenesis
                 </a>
             }
             sections={sections}
             settings={settings}
+            researchUrl="/playgrounds/self-sorted-arrays/research"
         />
     );
     // #endregion render

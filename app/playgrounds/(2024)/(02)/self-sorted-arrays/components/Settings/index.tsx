@@ -304,7 +304,7 @@ export default function Settings(
                         throw new Error('Invalid JavaScript object format');
                     }
 
-                    const data: any[] = [];
+                    const data: Record<string, unknown>[] = [];
 
                     for (const element of objectExpression.elements) {
                         if (!element) {
@@ -315,7 +315,7 @@ export default function Settings(
                             continue;
                         }
 
-                        const jsonObject: any = {};
+                        const jsonObject: Record<string, unknown> = {};
                         for (const prop of element.properties) {
                             if (prop.type !== 'Property') {
                                 continue;
@@ -336,7 +336,8 @@ export default function Settings(
 
                     setTimeout(() => {
                         clearTissue();
-                        setDistribution(data);
+                        // user-pasted data: validated by shape above, cast at this trust boundary
+                        setDistribution(data as unknown as CellData[]);
                     }, 50);
                 } catch (error) {
                     console.error(_error);
@@ -607,7 +608,7 @@ export default function Settings(
                                 'lime',
                             ]}
                             atSelect={(colorType) => {
-                                setColorType(colorType as any);
+                                setColorType(colorType as 'random' | 'blue' | 'lime');
                             }}
                         />
 
@@ -663,7 +664,7 @@ export default function Settings(
                                     'environmental',
                                 ]}
                                 atSelect={(mutationStrategy) => {
-                                    setMutationStrategy(mutationStrategy as any);
+                                    setMutationStrategy(mutationStrategy as 'random' | 'increment' | 'decrement' | 'environmental');
                                 }}
                             />
                         </div>
