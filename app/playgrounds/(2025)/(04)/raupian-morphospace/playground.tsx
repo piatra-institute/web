@@ -3,8 +3,16 @@
 import { useState, useEffect } from 'react';
 
 import PlaygroundLayout from '@/components/PlaygroundLayout';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from '@/app/playgrounds/(2025)/(04)/raupian-morphospace/components/Settings';
 import Viewer from '@/app/playgrounds/(2025)/(04)/raupian-morphospace/components/Viewer';
+
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 
 
@@ -20,6 +28,8 @@ export default function RaupianMorphospacePlayground() {
     const [D, setD] = useState(defaultValues.D);     // Distance from coiling axis / Aperture radius
     const [T, setT] = useState(defaultValues.T);     // Translation rate along the coiling axis
     const [autoRotate, setAutoRotate] = useState(true);
+
+    const calibration = buildCalibration();
 
     const reset = () => {
         setW(defaultValues.W);
@@ -61,24 +71,39 @@ export default function RaupianMorphospacePlayground() {
             id: 'about',
             type: 'outro' as const,
             content: (
-                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
-                    <p>
-                        David M. Raup&apos;s three-parameter model revolutionized our understanding
-                        of shell morphology by reducing the infinite variety of mollusk shells
-                        to just three geometric parameters: whorl expansion rate (W), distance
-                        from coiling axis (D), and translation rate (T).
-                    </p>
-                    <p>
-                        This morphospace visualization allows exploration of theoretical shell
-                        forms, many of which don&apos;t exist in nature. By adjusting the three
-                        parameters, you can navigate through possible shell geometries and
-                        understand the constraints that shape biological form.
-                    </p>
-                    <p>
-                        Key concepts include: theoretical morphology, parametric modeling,
-                        evolutionary constraints, shell geometry, and the relationship between
-                        mathematical possibility and biological reality.
-                    </p>
+                <div className="space-y-8 text-gray-300">
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Three numbers for a shell</h3>
+                        <p className="leading-relaxed text-sm">
+                            David M. Raup&apos;s model reduced the variety of mollusc shells to three geometric
+                            parameters: the whorl expansion rate (W), the distance from the coiling axis (D), and the
+                            translation rate along the axis (T). A shell grows by accretion along a logarithmic spiral,
+                            and these three numbers fix the sweep.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Theoretical versus realized form</h3>
+                        <p className="leading-relaxed text-sm">
+                            Most of the W-D-T cube corresponds to shells that never evolved. Real shells cluster in a
+                            few regions, leaving vast volumes of geometrically possible but biologically unseen forms.
+                            That gap between the possible and the realized is the point: the empty space maps the
+                            functional and developmental constraints that shape biological form.
+                        </p>
+                    </div>
+
+                    <div className="border-t border-lime-500/20 pt-6">
+                        <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                    </div>
+
+                    <CalibrationPanel results={calibration} outputLabel="geometric ratio" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -106,13 +131,15 @@ export default function RaupianMorphospacePlayground() {
                 <a
                     href="https://www.jstor.org/stable/1301992"
                     target="_blank"
-                    className="text-blue-400 hover:text-blue-300 underline"
+                    rel="noopener noreferrer"
+                    className="underline"
                 >
                     1966, Raup, Geometric Analysis of Shell Coiling
                 </a>
             }
             sections={sections}
             settings={settings}
+            researchUrl="/playgrounds/raupian-morphospace/research"
         />
     );
 }
