@@ -3,13 +3,22 @@
 import { useState, useRef } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer, {
     type LifesongExportOptions,
     type LifesongViewerRef,
 } from './components/Viewer';
 
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
+
 export default function LifesongPlayground() {
+    const calibration = buildCalibration();
     // Phase space parameters
     const [dimensions, setDimensions] = useState(3);
     const [attractorType, setAttractorType] = useState('strange');
@@ -86,7 +95,7 @@ export default function LifesongPlayground() {
                     id: 'intro',
                     type: 'intro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-4">Life as Orbits in Phase Space</h2>
                             <p>
                                 Inspired by <strong className="font-semibold text-lime-400">Richard Watson&apos;s</strong> profound insight that 
@@ -94,7 +103,7 @@ export default function LifesongPlayground() {
                                 create musical patterns when mapped from their dynamical trajectories.
                             </p>
                             <p>
-                                Every living system—from heartbeats to neural oscillations—traces paths through 
+                                Every living system, from heartbeats to neural oscillations, traces paths through
                                 phase space. These orbits encode the temporal patterns that sustain life. When 
                                 translated to musical parameters, they reveal the <strong className="font-semibold text-lime-400">hidden songs</strong> 
                                 embedded in biological processes.
@@ -150,7 +159,7 @@ export default function LifesongPlayground() {
                     id: 'outro',
                     type: 'outro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-6">The Mathematics of Life&apos;s Music</h2>
                             
                             <div className="space-y-6">
@@ -211,6 +220,19 @@ export default function LifesongPlayground() {
                                         <li>• Glass & Mackey - &quot;From Clocks to Chaos: The Rhythms of Life&quot;</li>
                                     </ul>
                                 </div>
+
+                                <div className="border-t border-lime-500/20 pt-6">
+                                    <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                                </div>
+
+                                <CalibrationPanel results={calibration} outputLabel="pitch / frequency" />
+
+                                <AssumptionPanel assumptions={assumptions} />
+
+                                <div>
+                                    <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                                    <ModelChangelog entries={changelog} />
+                                </div>
                             </div>
                         </div>
                     )
@@ -266,6 +288,7 @@ export default function LifesongPlayground() {
                     onExport={handleExport}
                 />
             }
+            researchUrl="/playgrounds/lifesong/research"
         />
     );
 }
