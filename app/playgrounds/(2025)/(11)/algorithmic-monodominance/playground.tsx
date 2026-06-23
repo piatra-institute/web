@@ -2,16 +2,25 @@
 
 import { useState } from 'react';
 import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayout';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import Equation from '@/components/Equation';
 import { SimulationParams, PRESETS, PresetId } from './constants';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 const DEFAULT_PARAMS: SimulationParams = PRESETS[0].params;
 
 export default function Playground() {
     const [params, setParams] = useState<SimulationParams>(DEFAULT_PARAMS);
     const [selectedPresetId, setSelectedPresetId] = useState<PresetId>('pluralistic');
+    const calibration = buildCalibration();
 
     const handleParamsChange = (newParams: SimulationParams) => {
         setParams(newParams);
@@ -41,9 +50,9 @@ export default function Playground() {
             id: 'canvas',
             type: 'canvas',
             content: (
-                <div className="w-full h-full flex flex-col items-center justify-center p-8 space-y-8">
+                <PlaygroundViewer>
                     <Viewer params={params} />
-                </div>
+                </PlaygroundViewer>
             ),
         },
         {
@@ -82,7 +91,7 @@ export default function Playground() {
                         <p className="text-gray-300">
                             The separation parameter controls how distinct different algorithmic niches
                             are in strategy space. Even with high convexity, if niches are far enough
-                            apart, you can have several winners—each a local monopolist in their domain.
+                            apart, you can have several winners, each a local monopolist in their domain.
                             When niches collapse together (low separation), competition becomes direct,
                             and only the globally optimal strategy survives. This is why the transition
                             to monodominance is not automatic: it requires both high convexity{' '}
@@ -93,10 +102,10 @@ export default function Playground() {
                     <div className="border-l-2 border-lime-500/50 pl-4">
                         <h4 className="text-lime-400 font-semibold mb-2">Background Slack and Ecosystem Dependence</h4>
                         <p className="text-gray-300">
-                            The slack parameter represents the minimum fitness floor—how much room there
+                            The slack parameter represents the minimum fitness floor, how much room there
                             is for marginal strategies to persist. With high slack, weak strategies can
                             survive as liquidity providers, noise traders, or marginal participants. With
-                            no slack, the system becomes maximally harsh: any strategy below the optimal
+                            no slack, the system becomes maximally harsh, and any strategy below the optimal
                             is driven to extinction. Paradoxically, the dominant algorithm{' '}
                             <em>needs</em> this ecosystem: it requires counterparties, volatility, and a
                             steady flow of inferior orders. Total annihilation would kill its own edge.
@@ -109,7 +118,7 @@ export default function Playground() {
                             The top-5% fitness share measures what fraction of total fitness is captured
                             by the strongest strategies. The Gini coefficient measures inequality across
                             the entire landscape. As you increase convexity and collapse niches, both
-                            metrics rise sharply—the signature of algorithmic monodominance. A Gini near
+                            metrics rise sharply, the signature of algorithmic monodominance. A Gini near
                             1 means almost all fitness is concentrated in a single point; a Gini near 0
                             means fitness is evenly distributed across many strategies.
                         </p>
@@ -118,7 +127,7 @@ export default function Playground() {
                     <div className="border-l-2 border-lime-500/50 pl-4">
                         <h4 className="text-lime-400 font-semibold mb-2">What Dies Is Not Capitalism</h4>
                         <p className="text-gray-300">
-                            RenTec-class algorithms do not end capitalism as a mode of production—they
+                            RenTec-class algorithms do not end capitalism as a mode of production, they
                             still operate on private capital, wage labour, and profit accumulation. What
                             dies is capitalism as an <em>ecology of many capitals</em>: the ideological
                             story of fair competition, price discovery by many participants, and equal
@@ -126,6 +135,19 @@ export default function Playground() {
                             logic, but with accumulation routed through opaque, closed, machine-driven
                             systems that ordinary capital owners cannot realistically enter or understand.
                         </p>
+                    </div>
+
+                    <div className="border-t border-lime-500/20 pt-6">
+                        <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                    </div>
+
+                    <CalibrationPanel results={calibration} outputLabel="concentration metric" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
                     </div>
                 </div>
             ),
@@ -146,6 +168,7 @@ export default function Playground() {
                     onReset={handleReset}
                 />
             }
+            researchUrl="/playgrounds/algorithmic-monodominance/research"
         />
     );
 }
