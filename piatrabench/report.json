@@ -1,7 +1,7 @@
 {
-  "generated": "2026-06-23T12:57:50.093Z",
+  "generated": "2026-06-23T13:43:08.563Z",
   "n": 101,
-  "avg": 80.4,
+  "avg": 80.8,
   "build": true,
   "links": false,
   "eras": {
@@ -12,8 +12,8 @@
     },
     "2025": {
       "n": 39,
-      "score": 3138,
-      "infra": 67
+      "score": 3172,
+      "infra": 71
     },
     "2026": {
       "n": 49,
@@ -25,14 +25,14 @@
     {
       "key": "claude opus 4.8",
       "label": "Claude Opus 4.8",
-      "n": 51,
-      "mean": 94,
+      "n": 52,
+      "mean": 94.1,
       "meanByCat": {
         "build": 99.2,
         "meta": 100,
-        "structure": 98.8,
-        "infra": 83,
-        "style": 91.4
+        "structure": 98.5,
+        "infra": 83.3,
+        "style": 91.5
       },
       "best": {
         "slug": "everything-relevant",
@@ -42,12 +42,12 @@
     }
   ],
   "honestyCounts": {
-    "verified": 25,
-    "notAutoVerifiable": 76,
+    "verified": 26,
+    "notAutoVerifiable": 75,
     "failed": 0,
     "flagged": 0
   },
-  "unattributed": 50,
+  "unattributed": 49,
   "unregistered": [
     "artificial-death",
     "byte-birth"
@@ -13113,9 +13113,9 @@
       "year": 2025,
       "month": 12,
       "name": "logical morphogenesis",
-      "model": null,
-      "modelKey": null,
-      "score": 62,
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
+      "score": 96,
       "byCat": {
         "build": {
           "earned": 25,
@@ -13126,24 +13126,24 @@
           "total": 15
         },
         "structure": {
-          "earned": 13,
+          "earned": 16,
           "total": 20
         },
         "infra": {
-          "earned": 0,
+          "earned": 25,
           "total": 25
         },
         "style": {
-          "earned": 9,
+          "earned": 15,
           "total": 15
         }
       },
       "catPct": {
         "build": 100,
         "meta": 100,
-        "structure": 65,
-        "infra": 0,
-        "style": 60
+        "structure": 80,
+        "infra": 100,
+        "style": 100
       },
       "checks": [
         {
@@ -13250,7 +13250,7 @@
           "label": "logic/ module",
           "category": "structure",
           "weight": 3,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -13259,7 +13259,7 @@
           "label": "assumptions.ts",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -13268,7 +13268,7 @@
           "label": "calibration.ts",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -13277,7 +13277,7 @@
           "label": "versions.ts",
           "category": "infra",
           "weight": 4,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -13286,7 +13286,7 @@
           "label": "research companion",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -13295,8 +13295,8 @@
           "label": "no em-dashes",
           "category": "style",
           "weight": 6,
-          "ratio": 0,
-          "detail": "in playground.tsx",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -13320,66 +13320,38 @@
       ],
       "failed": [
         {
-          "id": "assumptions",
-          "label": "assumptions.ts",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "calibration",
-          "label": "calibration.ts",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "research",
-          "label": "research companion",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "no-emdash",
-          "label": "no em-dashes",
-          "lost": 6,
-          "detail": "in playground.tsx"
-        },
-        {
           "id": "viewer",
           "label": "PlaygroundViewer",
           "lost": 4,
           "detail": ""
-        },
-        {
-          "id": "versions",
-          "label": "versions.ts",
-          "lost": 4,
-          "detail": ""
-        },
-        {
-          "id": "logic",
-          "label": "logic/ module",
-          "lost": 3,
-          "detail": ""
         }
       ],
       "warnings": [],
-      "infraCount": 0,
+      "infraCount": 4,
       "citations": [
         "https://doi.org/10.1016/0097-8493(93)90013-Y"
       ],
       "calibration": {
-        "status": "na",
-        "fit": null
+        "status": "verified",
+        "n": 5,
+        "fit": {
+          "mean": 0,
+          "worst": 0
+        },
+        "message": null
       },
       "honestyWarnings": [],
       "honesty": {
-        "calibration": "na",
-        "fit": null,
+        "calibration": "verified",
+        "fit": {
+          "mean": 0,
+          "worst": 0
+        },
         "citations": "unchecked",
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 62
+      "headline": 96
     },
     {
       "slug": "unknot-studio",

@@ -2,6 +2,10 @@
 
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayout';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import Equation from '@/components/Equation';
@@ -13,8 +17,12 @@ import {
     getSentencesForPreset,
     simulate,
 } from './constants';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 export default function Playground() {
+    const calibration = buildCalibration();
     const [sentences, setSentences] = useState<Sentence[]>(getSentencesForPreset('basic'));
     const [params, setParams] = useState<SimulationParams>(DEFAULT_PARAMS);
     const [selectedPresetId, setSelectedPresetId] = useState<PresetId>('basic');
@@ -197,7 +205,7 @@ export default function Playground() {
                             Just as gene regulatory networks produce spatial patterns in embryonic development,
                             these sentence networks produce <em>temporal</em> patterns in truth-space. The
                             timeline grid resembles a kymograph of developmental waves. This view into the
-                            &quot;latent space&quot; of logic reveals how structure emerges from self-reference—a
+                            &quot;latent space&quot; of logic reveals how structure emerges from self-reference, a
                             morphogenesis of meaning itself.
                         </p>
                     </div>
@@ -214,6 +222,19 @@ export default function Playground() {
                             ).
                         </p>
                     </div>
+
+                    <div className="border-t border-lime-500/20 pt-6">
+                        <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                    </div>
+
+                    <CalibrationPanel results={calibration} outputLabel="period / truth" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -227,7 +248,8 @@ export default function Playground() {
                 <a
                     href="https://doi.org/10.1016/0097-8493(93)90013-Y"
                     target="_blank"
-                    className="text-blue-400 hover:text-blue-300 underline"
+                    rel="noopener noreferrer"
+                    className="underline"
                 >
                     1993, Grim et al., Self-reference and paradox in two and three dimensions
                 </a>
@@ -245,6 +267,7 @@ export default function Playground() {
                     onReset={handleReset}
                 />
             }
+            researchUrl="/playgrounds/logical-morphogenesis/research"
         />
     );
 }
