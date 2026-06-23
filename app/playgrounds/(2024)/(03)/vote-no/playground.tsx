@@ -3,10 +3,19 @@
 import { useState, useRef } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
+
 export default function VoteNoPlayground() {
+    const calibration = buildCalibration();
     // Community parameters
     const [communitySize, setCommunitySize] = useState(100);
     const [proposalComplexity, setProposalComplexity] = useState(0.5);
@@ -80,12 +89,12 @@ export default function VoteNoPlayground() {
                     id: 'intro',
                     type: 'intro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-4">The Democratic Power of &quot;No&quot;</h2>
                             <p>
                                 In democratic systems, the ability to say <strong className="font-semibold text-lime-400">&quot;no&quot;</strong> is often 
                                 more powerful than the ability to say &quot;yes.&quot; This playground explores what happens in a 
-                                community where members can only vote to reject proposals—never to approve them.
+                                community where members can only vote to reject proposals, never to approve them.
                             </p>
                             <p>
                                 Through collective rejection, communities can evolve toward better solutions by 
@@ -143,7 +152,7 @@ export default function VoteNoPlayground() {
                     id: 'outro',
                     type: 'outro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-6">Democracy Through Elimination</h2>
                             
                             <div className="space-y-6">
@@ -201,6 +210,19 @@ export default function VoteNoPlayground() {
                                         <li>• Friedrich Hayek - &quot;The Use of Knowledge in Society&quot;</li>
                                     </ul>
                                 </div>
+
+                                <div className="border-t border-lime-500/20 pt-6">
+                                    <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                                </div>
+
+                                <CalibrationPanel results={calibration} outputLabel="rule output" />
+
+                                <AssumptionPanel assumptions={assumptions} />
+
+                                <div>
+                                    <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                                    <ModelChangelog entries={changelog} />
+                                </div>
                             </div>
                         </div>
                     )
@@ -254,6 +276,7 @@ export default function VoteNoPlayground() {
                     onExport={handleExport}
                 />
             }
+            researchUrl="/playgrounds/vote-no/research"
         />
     );
 }
