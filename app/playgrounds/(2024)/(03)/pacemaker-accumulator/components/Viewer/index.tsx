@@ -31,7 +31,7 @@ function randn() {
 }
 
 interface MiniChartProps {
-    data: any[];
+    data: Record<string, number>[];
     xKey?: string;
     ySeries?: { key: string; label: string; color?: string }[];
     yDomain?: [number, number];
@@ -173,7 +173,7 @@ function MiniChart({
 const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref) => {
     const [currentTime, setCurrentTime] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
-    const [simulationData, setSimulationData] = useState<any[]>([]);
+    const [simulationData, setSimulationData] = useState<Record<string, number>[]>([]);
     const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
     // Simulation state
@@ -472,7 +472,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
             )}
 
             {/* Information Panel */}
-            <div className="bg-black border border-gray-800 p-6 text-gray-300 font-serif text-sm leading-relaxed">
+            <div className="bg-black border border-gray-800 p-6 text-gray-300 text-sm leading-relaxed">
                 <h3 className="text-lg font-semibold text-lime-400 mb-4">Neuroscience of Timing</h3>
                 <div className="space-y-4">
                     <p>

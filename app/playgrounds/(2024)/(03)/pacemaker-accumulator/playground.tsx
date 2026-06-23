@@ -3,10 +3,19 @@
 import { useState, useRef } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
+
 export default function PacemakerAccumulatorPlayground() {
+    const calibration = buildCalibration();
     // Simulation parameters
     const [duration, setDuration] = useState(30);
     const [speedMs, setSpeedMs] = useState(50);
@@ -69,7 +78,7 @@ export default function PacemakerAccumulatorPlayground() {
                     id: 'intro',
                     type: 'intro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-4">Neural Timing Mechanisms</h2>
                             <p>
                                 This simulation explores the <strong className="font-semibold text-lime-400">pacemaker-accumulator model</strong> of 
@@ -125,7 +134,7 @@ export default function PacemakerAccumulatorPlayground() {
                     id: 'outro',
                     type: 'outro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-6">Understanding Biological Timing</h2>
                             
                             <div className="space-y-6">
@@ -172,6 +181,19 @@ export default function PacemakerAccumulatorPlayground() {
                                         and artificial intelligence (implementing temporal cognition in neural networks).
                                     </p>
                                 </div>
+
+                                <div className="border-t border-lime-500/20 pt-6">
+                                    <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                                </div>
+
+                                <CalibrationPanel results={calibration} outputLabel="interval / CV" />
+
+                                <AssumptionPanel assumptions={assumptions} />
+
+                                <div>
+                                    <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                                    <ModelChangelog entries={changelog} />
+                                </div>
                             </div>
                         </div>
                     )
@@ -213,6 +235,7 @@ export default function PacemakerAccumulatorPlayground() {
                     onExport={handleExport}
                 />
             }
+            researchUrl="/playgrounds/pacemaker-accumulator/research"
         />
     );
 }
