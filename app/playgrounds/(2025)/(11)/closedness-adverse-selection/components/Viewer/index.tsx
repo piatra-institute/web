@@ -276,7 +276,7 @@ export default function Viewer({ params }: ViewerProps) {
                                 <>
                                     <strong className="text-lime-400">Open system:</strong> The cutoff is high,
                                     allowing agents with strong moral aversion to enter. The entrant distribution
-                                    closely matches the population—minimal adverse selection.
+                                    closely matches the population, with minimal adverse selection.
                                 </>
                             )}
                             {stats.cutoff > 0.4 && stats.cutoff <= 0.7 && (
@@ -297,7 +297,7 @@ export default function Viewer({ params }: ViewerProps) {
                                 <>
                                     <strong className="text-lime-400">Severe selection:</strong> Only agents
                                     with very low moral aversion will enter. The system acts as a filter that
-                                    admits primarily corruption-tolerant individuals—a self-reinforcing trap.
+                                    admits primarily corruption-tolerant individuals, a self-reinforcing trap.
                                 </>
                             )}
                         </p>

@@ -2,9 +2,9 @@
 
 Deterministic conformance of all playgrounds to the current template (CLAUDE.md). No model judgement.
 
-- Generated: 2026-06-23T12:16:23.577Z
+- Generated: 2026-06-23T12:44:28.149Z
 - Playgrounds: **101**
-- Mean score: **79.7/100**
+- Mean score: **80.1/100**
 - Build check: enabled (tsc --noEmit, attributed per-playground)
 - Citation resolution: disabled (run with --links)
 
@@ -15,7 +15,7 @@ Scoring categories (weights): build & types 25, registration & metadata 15, stru
 | era | playgrounds | mean score | mean infra (/4) |
 | --- | --- | --- | --- |
 | 2024 | 13 | 73.0 | 1.2 |
-| 2025 | 39 | 78.5 | 1.5 |
+| 2025 | 39 | 79.5 | 1.6 |
 | 2026 | 49 | 82.4 | 1.9 |
 
 ## Model leaderboard
@@ -24,15 +24,15 @@ Mean Layer 0 conformance per generating model (from each playground's versions.t
 
 | model | playgrounds | mean score | build | meta | structure | infra | style | best |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Claude Opus 4.8 | 49 | **93.8** | 99.2% | 100% | 98.8% | 82.3% | 91% | everything-relevant (100) |
-| _(unattributed)_ | 52 | – | | | | | | |
+| Claude Opus 4.8 | 50 | **93.9** | 99.2% | 100% | 98.8% | 82.6% | 91.2% | everything-relevant (100) |
+| _(unattributed)_ | 51 | – | | | | | | |
 
 ## Honesty
 
 Honesty is a gate, not a deduction: a failed check caps the headline score so polish cannot buy back fabrication. Calibration is executed headlessly; **verified** means the displayed `predicted` values are genuinely computed by the engine, not hardcoded to match `expected`. Fit (predicted vs expected error) is reported but never gates, because an honest playground may deliberately show a poorly-fitting model (e.g. lexical-liar).
 
-- calibration verified (reproduces): **23**
-- not auto-verifiable (no calibration, or prediction computed in-component): 78
+- calibration verified (reproduces): **24**
+- not auto-verifiable (no calibration, or prediction computed in-component): 77
 - failed (dead citation or hardcoded calibration): 0
 - flagged for review: 0
 - citations: not checked (run with --links)
@@ -62,6 +62,7 @@ Calibration fit, where `predicted` is verifiable (high error is not necessarily 
 | scarcity-over-technology | 4 | 0.0% | 0.0% |
 | subconscious-state-space | 5 | 0.0% | 0.0% |
 | algorithmic-monodominance | 4 | 0.0% | 0.0% |
+| closedness-adverse-selection | 5 | 0.0% | 0.0% |
 | ideological-bent | 5 | 0.0% | 0.0% |
 | political-autoimmunity | 6 | 0.0% | 0.0% |
 
@@ -75,7 +76,6 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 
 - **artificial-death** — 46/100 · June 2024 · assumptions.ts; calibration.ts; research companion; in data.ts (not registered); lime palette; valid topics/operations (no registry entry) · 1 `rounded` className(s) — verify none are on main containers/buttons
 - **byte-birth** — 46/100 · June 2024 · assumptions.ts; calibration.ts; research companion; in data.ts (not registered); lime palette; valid topics/operations (no registry entry) · 1 `rounded` className(s) — verify none are on main containers/buttons
-- **closedness-adverse-selection** — 62/100 · November 2025 · assumptions.ts; calibration.ts; research companion; no em-dashes (in components/Viewer/index.tsx, playground.tsx); PlaygroundViewer; versions.ts
 - **space-between-algorithms** — 62/100 · November 2025 · assumptions.ts; calibration.ts; research companion; no em-dashes (in components/Settings/index.tsx, components/Viewer/index.tsx, playground.tsx); PlaygroundViewer; versions.ts
 - **logical-morphogenesis** — 62/100 · December 2025 · assumptions.ts; calibration.ts; research companion; no em-dashes (in playground.tsx); PlaygroundViewer; versions.ts
 - **self-sorted-arrays** — 63/100 · February 2024 · assumptions.ts; calibration.ts; research companion; no `any` (5 occurrence(s)); lime palette; versions.ts
@@ -171,6 +171,7 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | scarcity-over-technology | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | September 2025 |
 | subconscious-state-space | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | October 2025 |
 | algorithmic-monodominance | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | November 2025 |
+| closedness-adverse-selection | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | November 2025 |
 | kerr-causality | 100 | – | 100% | 100% | 100% | 100% | 100% | May 2026 |
 | salience-engine | 100 | – | 100% | 100% | 100% | 100% | 100% | May 2026 |
 | arithmetic-dynamics | 100 | cal ✓ (fit 27%) | 100% | 100% | 100% | 100% | 100% | June 2026 |
@@ -252,7 +253,6 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | pacemaker-accumulator | 63 | – | 80% | 100% | 85% | 0% | 73% | March 2024 |
 | lefebvrian-conscience | 63 | – | 80% | 100% | 85% | 0% | 73% | May 2025 |
 | tuition-resentment | 63 | – | 80% | 100% | 85% | 0% | 73% | August 2025 |
-| closedness-adverse-selection | 62 | – | 100% | 100% | 65% | 0% | 60% | November 2025 |
 | space-between-algorithms | 62 | – | 100% | 100% | 65% | 0% | 60% | November 2025 |
 | logical-morphogenesis | 62 | – | 100% | 100% | 65% | 0% | 60% | December 2025 |
 | artificial-death | 46 | – | 100% | 13% | 65% | 0% | 40% | June 2024 |

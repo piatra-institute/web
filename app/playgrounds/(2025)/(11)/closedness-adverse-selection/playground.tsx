@@ -2,16 +2,25 @@
 
 import { useState } from 'react';
 import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayout';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import Equation from '@/components/Equation';
 import { SimulationParams, PRESETS, PresetId } from './constants';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 const DEFAULT_PARAMS: SimulationParams = PRESETS[0].params;
 
 export default function Playground() {
     const [params, setParams] = useState<SimulationParams>(DEFAULT_PARAMS);
     const [selectedPresetId, setSelectedPresetId] = useState<PresetId>('open');
+    const calibration = buildCalibration();
 
     const handleParamsChange = (newParams: SimulationParams) => {
         setParams(newParams);
@@ -41,9 +50,9 @@ export default function Playground() {
             id: 'canvas',
             type: 'canvas',
             content: (
-                <div className="w-full h-full flex flex-col items-center justify-center p-8 space-y-8">
+                <PlaygroundViewer>
                     <Viewer params={params} />
-                </div>
+                </PlaygroundViewer>
             ),
         },
         {
@@ -128,7 +137,7 @@ export default function Playground() {
                         <h4 className="text-lime-400 font-semibold mb-2">Dynamic Reinforcement</h4>
                         <p className="text-gray-300">
                             Closedness today selects tomorrow&apos;s joiners, who then vote for or
-                            normalize closedness—locking in a corruption-prone attractor. The
+                            normalize closedness, locking in a corruption-prone attractor. The
                             coupled mean-field map{' '}
                             <Equation math="k_{t+1} = \Gamma(\Phi(m^*(k_t)))" />
                             {' '}can have stable high-closedness equilibria with persistently low
@@ -144,11 +153,24 @@ export default function Playground() {
                             The model shows that no-criticism constraints mathematically implement
                             a screening device that filters in agents already inclined to tolerate
                             or benefit from corrupt equilibria. This is not about individual moral
-                            failure—it&apos;s about structural forces that systematically select for
+                            failure, it&apos;s about structural forces that systematically select for
                             certain types. The sound, evidence-based stance: condemn the structure,
                             predict higher corruption rates, and evaluate individuals by actions
                             within that structure rather than by mere affiliation.
                         </p>
+                    </div>
+
+                    <div className="border-t border-lime-500/20 pt-6">
+                        <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                    </div>
+
+                    <CalibrationPanel results={calibration} outputLabel="model value" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
                     </div>
                 </div>
             ),
@@ -169,6 +191,7 @@ export default function Playground() {
                     onReset={handleReset}
                 />
             }
+            researchUrl="/playgrounds/closedness-adverse-selection/research"
         />
     );
 }
