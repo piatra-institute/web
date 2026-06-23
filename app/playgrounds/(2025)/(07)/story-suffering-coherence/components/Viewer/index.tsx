@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
-import PlaygroundViewer from '@/components/PlaygroundViewer'
 import Button from '@/components/Button'
 import { ParticleSystem, SystemState } from '../../logic'
 
@@ -206,8 +205,7 @@ export function Viewer({
   }, [speed, animate])
 
   return (
-    <PlaygroundViewer>
-      <div className="relative w-full h-full" style={{ minHeight: '100vh' }}>
+    <div className="relative w-full h-full" style={{ minHeight: '100vh' }}>
         <canvas
           ref={canvasRef}
           onClick={handleCanvasClick}
@@ -288,7 +286,6 @@ export function Viewer({
             </div>
           </div>
         </div>
-      </div>
-    </PlaygroundViewer>
+    </div>
   )
 }

@@ -1,11 +1,21 @@
 'use client'
 
 import PlaygroundLayout from '@/components/PlaygroundLayout'
+import PlaygroundViewer from '@/components/PlaygroundViewer'
+import AssumptionPanel from '@/components/AssumptionPanel'
+import CalibrationPanel from '@/components/CalibrationPanel'
+import VersionSelector from '@/components/VersionSelector'
+import ModelChangelog from '@/components/ModelChangelog'
 import { Settings } from './components/Settings'
 import { Viewer } from './components/Viewer'
 import { useState } from 'react'
 
+import { buildCalibration } from './calibration'
+import { assumptions } from './assumptions'
+import { versions, changelog } from './versions'
+
 export default function StorySufferingCoherencePlayground() {
+  const calibration = buildCalibration()
   const [speed, setSpeed] = useState(1)
   const [particleCount, setParticleCount] = useState(100)
   const [connectionDistance, setConnectionDistance] = useState(100)
@@ -49,7 +59,11 @@ export default function StorySufferingCoherencePlayground() {
     {
       id: 'simulation',
       type: 'canvas' as const,
-      content: <Viewer {...settings} />,
+      content: (
+        <PlaygroundViewer>
+          <Viewer {...settings} />
+        </PlaygroundViewer>
+      ),
     },
     {
       id: 'outro',
@@ -59,7 +73,7 @@ export default function StorySufferingCoherencePlayground() {
           <p className="text-gray-400">
             The particles represent individual experiences or &ldquo;sufferings&rdquo; that,
             when connected, form a coherent narrative structure. The coherence score
-            (Φ proxy) measures the system&apos;s narrative integration—its ability to
+            (Φ proxy) measures the system&apos;s narrative integration, its ability to
             maintain a unified story despite external pressures.
           </p>
 
@@ -74,12 +88,12 @@ export default function StorySufferingCoherencePlayground() {
             <span className="text-amber-300">Fragmentation</span> occurs when the system is
             overwhelmed by high-frequency, low-meaning inputs. The narrative breaks down,
             connections dissolve, and particles move chaotically. Without a shared story,
-            the system loses its ability to coordinate or plan—a form of induced teleophobia.
+            the system loses its ability to coordinate or plan, a form of induced teleophobia.
           </p>
 
           <p className="text-gray-400">
             During <span className="text-indigo-300">narrative reconstruction</span>, you manually
-            weave new connections between sufferings. Each link represents an acknowledgment—a
+            weave new connections between sufferings. Each link represents an acknowledgment, a
             conscious integration of pain into meaning. As the network rebuilds, the system
             regains its capacity for coherent action, but the new story may differ from the
             original, shaped by which sufferings you choose to connect.
@@ -88,9 +102,22 @@ export default function StorySufferingCoherencePlayground() {
           <p className="text-gray-400">
             This model explores how consciousness emerges from the integration of disparate
             experiences, how trauma can shatter that integration, and how healing involves
-            the deliberate reconstruction of narrative coherence—not by forgetting suffering,
+            the deliberate reconstruction of narrative coherence, not by forgetting suffering,
             but by weaving it into a story that can hold complexity.
           </p>
+
+          <div className="border-t border-lime-500/20 pt-6">
+            <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+          </div>
+
+          <CalibrationPanel results={calibration} outputLabel="coherence score" />
+
+          <AssumptionPanel assumptions={assumptions} />
+
+          <div>
+            <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+            <ModelChangelog entries={changelog} />
+          </div>
         </div>
       ),
     },
@@ -102,6 +129,7 @@ export default function StorySufferingCoherencePlayground() {
       subtitle="narrative emergence from suffering integration"
       sections={sections}
       settings={<Settings {...settings} />}
+      researchUrl="/playgrounds/story-suffering-coherence/research"
     />
   )
 }
