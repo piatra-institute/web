@@ -4,6 +4,10 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import PlaygroundSettings from '@/components/PlaygroundSettings';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import Legend from './components/Legend';
@@ -19,6 +23,10 @@ import {
     PLOT_INTERVAL, MAX_PLOT_POINTS, MAX_LOG_ENTRIES, Group,
 } from './lib/agent';
 
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
+
 
 
 // Default settings values
@@ -32,6 +40,7 @@ const defaultSettings = {
 };
 
 export default function LefebvrePlayground() {
+    const calibration = buildCalibration();
     // --- State Variables ---
     const [numAgents, setNumAgents] = useState(defaultSettings.numAgents);
     const [sys1Ratio, setSys1Ratio] = useState(defaultSettings.sys1Ratio);
@@ -214,7 +223,7 @@ export default function LefebvrePlayground() {
             }
 
             frameCount.current++;
-            let interactionUpdates: any[] = [];
+            let interactionUpdates: NonNullable<ReturnType<typeof handleInteraction>>[] = [];
 
             // 1. Create a mutable copy WITH methods for calculations in this step
             let tempAgents = currentAgents.map(a => Object.assign(Object.create(Object.getPrototypeOf(a)), a));
@@ -465,7 +474,7 @@ export default function LefebvrePlayground() {
             id: 'about',
             type: 'outro' as const,
             content: (
-                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                     <p>
                         This simulation explores Vladimir Lefebvre&apos;s Algebra of Conscience,
                         a mathematical framework for modeling ethical decision-making and
@@ -487,6 +496,19 @@ export default function LefebvrePlayground() {
                         motivational overrides (feelings of guilt or suffering driving behavior),
                         and the emergent dynamics between competing ethical systems in social space.
                     </p>
+
+                    <div className="border-t border-lime-500/20 pt-6">
+                        <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                    </div>
+
+                    <CalibrationPanel results={calibration} outputLabel="archetype attribute" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -594,6 +616,7 @@ export default function LefebvrePlayground() {
             }
             sections={sections}
             settings={settings}
+            researchUrl="/playgrounds/lefebvrian-conscience/research"
         />
     );
 }

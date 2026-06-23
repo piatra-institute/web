@@ -53,7 +53,7 @@ export default function Settings({
         { id: 'stats', label: 'Stats' },
         { id: 'log', label: 'Log' },
         { id: 'analytics', label: 'Analytics' },
-    ];
+    ] as const;
 
     return (
         <SettingsContainer>
@@ -62,7 +62,7 @@ export default function Settings({
                 {tabs.map(tab => (
                     <button
                         key={tab.id}
-                        onClick={() => setActiveTab(tab.id as any)}
+                        onClick={() => setActiveTab(tab.id)}
                         className={`flex-1 px-2 py-1 text-xs transition-colors ${
                             activeTab === tab.id 
                                 ? 'bg-white/20 text-white' 
