@@ -3,8 +3,17 @@
 import { useState, useRef, useEffect } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+
+import type { Params, DataRow } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 // Utility functions
 const clamp01 = (x: number) => (x < 0 ? 0 : x > 1 ? 1 : x);
@@ -17,11 +26,11 @@ function S(E: number) {
 // RK4 integration step
 function rk4Step(
     state: { u: number; t: number; v: number; tau?: number },
-    params: any,
+    params: Params,
     exog: { E: (t: number) => number; M: (t: number) => number; IT: (t: number) => number },
     dt: number
 ) {
-    const f = (s: any, time: number) => {
+    const f = (s: { u: number; t: number; v: number; tau?: number }, time: number) => {
         const E = Math.max(0, exog.E(time));
         const M = Math.max(0, exog.M(time));
         const IT = Math.max(0, exog.IT(time));
@@ -111,7 +120,7 @@ export default function TruthViolenceDynamicsPlayground() {
     const [dt, setDt] = useState(0.05);
     const [speed, setSpeed] = useState(30);
     const [maxPoints, setMaxPoints] = useState(1000);
-    const [data, setData] = useState<any[]>([]);
+    const [data, setData] = useState<DataRow[]>([]);
 
     // Initial conditions for reset
     const [initialU, setInitialU] = useState(0.2);
@@ -124,6 +133,8 @@ export default function TruthViolenceDynamicsPlayground() {
     const [baseIT, setBaseIT] = useState(0.6);
 
     const viewerRef = useRef<{ exportCanvas: () => void }>(null);
+
+    const calibration = buildCalibration();
 
     // Calculate risk index
     const risk = (() => {
@@ -262,7 +273,7 @@ export default function TruthViolenceDynamicsPlayground() {
             M: (t: number) => MRef.current(t), 
             IT: (t: number) => ITRef.current(t) 
         };
-        const seed: any[] = [];
+        const seed: DataRow[] = [];
         let s = { u: 0.2, t: 0.45, v: 0.05, tau: 0 };
         for (let i = 0; i < 20; i++) {
             s = { ...rk4Step(s, params, exog, dt), tau: parseFloat(((s.tau ?? 0) + dt).toFixed(4)) };
@@ -324,7 +335,7 @@ export default function TruthViolenceDynamicsPlayground() {
                     id: 'intro',
                     type: 'intro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-4">Parrhesia Suppression Model</h2>
                             <p>
                                 Interactive exploration of the coupled ODE model for <strong className="text-lime-400">uncertainty (u)</strong>,{' '}
@@ -369,7 +380,7 @@ export default function TruthViolenceDynamicsPlayground() {
                     id: 'outro',
                     type: 'outro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-4">Implications & Extensions</h2>
                             
                             <div className="space-y-4">
@@ -414,9 +425,22 @@ export default function TruthViolenceDynamicsPlayground() {
                                 </div>
                                 
                                 <p className="text-sm text-gray-400 italic">
-                                    &ldquo;The first casualty when war comes is truth&rdquo; — but truth-seeking itself may be the 
+                                    &ldquo;The first casualty when war comes is truth&rdquo;, but truth-seeking itself may be the
                                     earlier casualty, creating conditions where violence becomes acceptable.
                                 </p>
+
+                                <div className="border-t border-lime-500/20 pt-6">
+                                    <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                                </div>
+
+                                <CalibrationPanel results={calibration} outputLabel="model value" />
+
+                                <AssumptionPanel assumptions={assumptions} />
+
+                                <div>
+                                    <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                                    <ModelChangelog entries={changelog} />
+                                </div>
                             </div>
                         </div>
                     )
@@ -451,6 +475,7 @@ export default function TruthViolenceDynamicsPlayground() {
                     onExport={handleExport}
                 />
             }
+            researchUrl="/playgrounds/truth-violence-dynamics/research"
         />
     );
 }

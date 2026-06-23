@@ -13,8 +13,10 @@ import {
     ReferenceLine
 } from 'recharts';
 
+import type { DataRow } from '../../logic';
+
 interface ViewerProps {
-    data: any[];
+    data: DataRow[];
     running: boolean;
     onToggleRunning: () => void;
     onStep: () => void;
@@ -152,9 +154,9 @@ const Viewer = forwardRef(({
                                     borderRadius: '0'
                                 }}
                                 labelStyle={{ color: '#9ca3af' }}
-                                formatter={(value: any) => {
-                                    const num = typeof value === 'number' ? value : parseFloat(value);
-                                    return isNaN(num) ? value : num.toFixed(4);
+                                formatter={(value) => {
+                                    const num = typeof value === 'number' ? value : parseFloat(String(value));
+                                    return Number.isNaN(num) ? String(value) : num.toFixed(4);
                                 }}
                             />
                             <Legend 
@@ -218,9 +220,9 @@ const Viewer = forwardRef(({
                                     borderRadius: '0'
                                 }}
                                 labelStyle={{ color: '#9ca3af' }}
-                                formatter={(value: any) => {
-                                    const num = typeof value === 'number' ? value : parseFloat(value);
-                                    return isNaN(num) ? value : num.toFixed(4);
+                                formatter={(value) => {
+                                    const num = typeof value === 'number' ? value : parseFloat(String(value));
+                                    return Number.isNaN(num) ? String(value) : num.toFixed(4);
                                 }}
                             />
                             <Legend 
