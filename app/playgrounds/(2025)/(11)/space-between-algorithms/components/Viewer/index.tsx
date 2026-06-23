@@ -225,7 +225,7 @@ const Viewer = forwardRef<ViewerRef, ViewerProps>(({ params }, ref) => {
                     <div className="p-3 border-b border-lime-500/20">
                         <h3 className="text-lime-400 font-semibold text-sm">Computation Tree + Goal Slack</h3>
                         <p className="text-xs text-gray-400 mt-1">
-                            Branch thickness represents slack—many micro-paths to same macro-outcome
+                            Branch thickness represents slack, many micro-paths to same macro-outcome
                         </p>
                     </div>
                     <div className="h-80">

@@ -2,15 +2,24 @@
 
 import { useRef, useState } from 'react';
 import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayout';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer, { ViewerRef } from './components/Viewer';
 import Equation from '@/components/Equation';
 import { SimulationParams, PRESETS, PresetId } from './constants';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 const DEFAULT_PARAMS: SimulationParams = PRESETS[0].params;
 
 export default function Playground() {
     const viewerRef = useRef<ViewerRef>(null);
+    const calibration = buildCalibration();
 
     // Lift state up to prevent reset on settings toggle
     const [params, setParams] = useState<SimulationParams>(DEFAULT_PARAMS);
@@ -49,9 +58,9 @@ export default function Playground() {
             id: 'canvas',
             type: 'canvas',
             content: (
-                <div className="w-full h-full flex flex-col items-center justify-center p-8 space-y-8">
+                <PlaygroundViewer>
                     <Viewer ref={viewerRef} params={params} />
-                </div>
+                </PlaygroundViewer>
             ),
         },
         {
@@ -66,9 +75,9 @@ export default function Playground() {
                             entropy{' '}
                             <Equation math="H(A_t \mid H_t)" />
                             {' '}measures how many nontrivial options the system has at each step. Combined with
-                            empowerment—the mutual information{' '}
+                            empowerment, the mutual information{' '}
                             <Equation math="I(A_t ; S_{t+\Delta})" />
-                            {' '}between actions and future states—this captures meaningful choices rather than mere noise.
+                            {' '}between actions and future states, this captures meaningful choices rather than mere noise.
                         </p>
                     </div>
 
@@ -90,7 +99,7 @@ export default function Playground() {
                             we have causal emergence:{' '}
                             <Equation math="\text{EI}(\text{macro}) > \text{EI}(\text{micro})" />
                             . This is where high-level decisions become better levers on system behavior than
-                            raw micro-variables—the mathematical signature of genuine agency at scale.
+                            raw micro-variables, the mathematical signature of genuine agency at scale.
                         </p>
                     </div>
 
@@ -99,7 +108,7 @@ export default function Playground() {
                         <p className="text-gray-300">
                             The Bernshteyn–Rozhoň bridge connects local distributed algorithms to measurable
                             colorings on infinite Borel graphs. High descriptive regularity means solutions
-                            are tame (Borel/Baire measurable) and locally implementable—not pathological
+                            are tame (Borel/Baire measurable) and locally implementable, not pathological
                             axiom-of-choice constructions that cannot be realized by physical systems.
                         </p>
                     </div>
@@ -107,7 +116,7 @@ export default function Playground() {
                     <div className="border-l-2 border-lime-500/50 pl-4">
                         <h4 className="text-lime-400 font-semibold mb-2">The Tree and Cloth Metaphor</h4>
                         <p className="text-gray-300">
-                            The visualization shows algorithms as trees—computation unfolding through time—with
+                            The visualization shows algorithms as trees, computation unfolding through time, with
                             a translucent cloth representing goal slack: the fiber bundle of micro-implementations
                             that achieve the same macro-outcome. Thick cloth means many paths to the same goal;
                             thin cloth means rigid, deterministic execution. This is freedom made geometric.
@@ -125,6 +134,19 @@ export default function Playground() {
                             to systems that navigate policy space itself, exploiting slack between implementations
                             and using macro-scale descriptions as powerful levers on their own dynamics.
                         </p>
+                    </div>
+
+                    <div className="border-t border-lime-500/20 pt-6">
+                        <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                    </div>
+
+                    <CalibrationPanel results={calibration} outputLabel="freedom score" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
                     </div>
                 </div>
             ),
@@ -145,6 +167,7 @@ export default function Playground() {
                     onReset={handleReset}
                 />
             }
+            researchUrl="/playgrounds/space-between-algorithms/research"
         />
     );
 }

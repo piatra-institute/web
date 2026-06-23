@@ -180,7 +180,7 @@ export default function Settings({
             <div className="text-xs text-gray-500 space-y-2">
                 <p>
                     <strong>Tree thickness:</strong> The cloth around branches represents goal
-                    slack—how many micro-implementations achieve the same macro-outcome.
+                    slack, how many micro-implementations achieve the same macro-outcome.
                 </p>
                 <p>
                     <strong>Freedom score:</strong> Weighted combination of intra-entropy,
