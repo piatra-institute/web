@@ -1,7 +1,7 @@
 {
-  "generated": "2026-06-23T11:55:07.806Z",
+  "generated": "2026-06-23T12:16:23.578Z",
   "n": 101,
-  "avg": 79.3,
+  "avg": 79.7,
   "build": true,
   "links": false,
   "eras": {
@@ -12,8 +12,8 @@
     },
     "2025": {
       "n": 39,
-      "score": 3024,
-      "infra": 55
+      "score": 3062,
+      "infra": 59
     },
     "2026": {
       "n": 49,
@@ -25,14 +25,14 @@
     {
       "key": "claude opus 4.8",
       "label": "Claude Opus 4.8",
-      "n": 48,
-      "mean": 93.6,
+      "n": 49,
+      "mean": 93.8,
       "meanByCat": {
         "build": 99.2,
         "meta": 100,
         "structure": 98.8,
-        "infra": 81.9,
-        "style": 90.8
+        "infra": 82.3,
+        "style": 91
       },
       "best": {
         "slug": "everything-relevant",
@@ -42,12 +42,12 @@
     }
   ],
   "honestyCounts": {
-    "verified": 22,
-    "notAutoVerifiable": 79,
+    "verified": 23,
+    "notAutoVerifiable": 78,
     "failed": 0,
     "flagged": 0
   },
-  "unattributed": 53,
+  "unattributed": 52,
   "unregistered": [
     "artificial-death",
     "byte-birth"
@@ -11344,9 +11344,9 @@
       "year": 2025,
       "month": 10,
       "name": "subconscious state space",
-      "model": null,
-      "modelKey": null,
-      "score": 62,
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
+      "score": 100,
       "byCat": {
         "build": {
           "earned": 25,
@@ -11357,24 +11357,24 @@
           "total": 15
         },
         "structure": {
-          "earned": 13,
+          "earned": 20,
           "total": 20
         },
         "infra": {
-          "earned": 0,
+          "earned": 25,
           "total": 25
         },
         "style": {
-          "earned": 9,
+          "earned": 15,
           "total": 15
         }
       },
       "catPct": {
         "build": 100,
         "meta": 100,
-        "structure": 65,
-        "infra": 0,
-        "style": 60
+        "structure": 100,
+        "infra": 100,
+        "style": 100
       },
       "checks": [
         {
@@ -11454,7 +11454,7 @@
           "label": "PlaygroundViewer",
           "category": "structure",
           "weight": 4,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -11481,7 +11481,7 @@
           "label": "logic/ module",
           "category": "structure",
           "weight": 3,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -11490,7 +11490,7 @@
           "label": "assumptions.ts",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -11499,7 +11499,7 @@
           "label": "calibration.ts",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -11508,7 +11508,7 @@
           "label": "versions.ts",
           "category": "infra",
           "weight": 4,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -11517,7 +11517,7 @@
           "label": "research companion",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -11526,8 +11526,8 @@
           "label": "no em-dashes",
           "category": "style",
           "weight": 6,
-          "ratio": 0,
-          "detail": "in components/Viewer/index.tsx, playground.tsx",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -11549,66 +11549,31 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "assumptions",
-          "label": "assumptions.ts",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "calibration",
-          "label": "calibration.ts",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "research",
-          "label": "research companion",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "no-emdash",
-          "label": "no em-dashes",
-          "lost": 6,
-          "detail": "in components/Viewer/index.tsx, playground.tsx"
-        },
-        {
-          "id": "viewer",
-          "label": "PlaygroundViewer",
-          "lost": 4,
-          "detail": ""
-        },
-        {
-          "id": "versions",
-          "label": "versions.ts",
-          "lost": 4,
-          "detail": ""
-        },
-        {
-          "id": "logic",
-          "label": "logic/ module",
-          "lost": 3,
-          "detail": ""
-        }
-      ],
+      "failed": [],
       "warnings": [],
-      "infraCount": 0,
+      "infraCount": 4,
       "citations": [],
       "calibration": {
-        "status": "na",
-        "fit": null
+        "status": "verified",
+        "n": 5,
+        "fit": {
+          "mean": 0,
+          "worst": 0
+        },
+        "message": null
       },
       "honestyWarnings": [],
       "honesty": {
-        "calibration": "na",
-        "fit": null,
+        "calibration": "verified",
+        "fit": {
+          "mean": 0,
+          "worst": 0
+        },
         "citations": "unchecked",
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 62
+      "headline": 100
     },
     {
       "slug": "algorithmic-monodominance",

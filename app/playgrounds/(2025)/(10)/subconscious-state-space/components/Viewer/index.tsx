@@ -292,11 +292,11 @@ const Viewer = forwardRef<ViewerRef>((_, ref) => {
                     <div className="text-sm text-gray-300 space-y-2">
                         <p>
                             <strong className="text-lime-400">High access probability:</strong> Both nodes frequently
-                            sustain elevated activity with strong synchrony—indicative of conditions permitting global ignition.
+                            sustain elevated activity with strong synchrony, indicative of conditions permitting global ignition.
                         </p>
                         <p>
                             <strong className="text-lime-400">Low access probability:</strong> Nodes fail to maintain
-                            sustained, synchronized high activity—characteristic of unconscious regimes (sleep, anesthesia).
+                            sustained, synchronized high activity, characteristic of unconscious regimes (sleep, anesthesia).
                         </p>
                         <p>
                             <strong className="text-lime-400">Slow-wave frequency:</strong> Reflects the dominant oscillation

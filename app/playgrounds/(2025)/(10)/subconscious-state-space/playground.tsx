@@ -2,8 +2,17 @@
 
 import { useRef } from 'react';
 import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayout';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 export interface ViewerRef {
     updateSimulation: (params: SimulationParams) => void;
@@ -21,6 +30,7 @@ export interface SimulationParams {
 
 export default function Playground() {
     const viewerRef = useRef<ViewerRef>(null);
+    const calibration = buildCalibration();
 
     const handleParamsChange = (params: SimulationParams) => {
         viewerRef.current?.updateSimulation(params);
@@ -39,9 +49,9 @@ export default function Playground() {
             id: 'canvas',
             type: 'canvas',
             content: (
-                <div className="w-full h-full flex items-center justify-center p-8">
+                <PlaygroundViewer>
                     <Viewer ref={viewerRef} />
-                </div>
+                </PlaygroundViewer>
             ),
         },
         {
@@ -72,7 +82,7 @@ export default function Playground() {
                     <div className="border-l-2 border-lime-500/50 pl-4">
                         <h4 className="text-lime-400 font-semibold mb-2">Access Probability Metric</h4>
                         <p className="text-gray-300">
-                            The access probability metric serves as a heuristic proxy for global ignition—the sustained,
+                            The access probability metric serves as a heuristic proxy for global ignition, the sustained,
                             synchronized activity across cortical regions associated with conscious access. It measures
                             the fraction of temporal windows where both nodes maintain high excitatory activity
                             (&gt;0.65) for &gt;120ms while exhibiting significant synchrony (r &gt; 0.25). This captures
@@ -92,6 +102,19 @@ export default function Playground() {
                             tendencies rather than quantitative predictions.
                         </p>
                     </div>
+
+                    <div className="border-t border-lime-500/20 pt-6">
+                        <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                    </div>
+
+                    <CalibrationPanel results={calibration} outputLabel="primitive value" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -103,6 +126,7 @@ export default function Playground() {
             description="exploring molecular-scale control of conscious access through neural dynamics simulation"
             sections={sections}
             settings={<Settings onParamsChange={handleParamsChange} onReset={handleReset} />}
+            researchUrl="/playgrounds/subconscious-state-space/research"
         />
     );
 }
