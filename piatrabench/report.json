@@ -1,7 +1,7 @@
 {
-  "generated": "2026-06-23T06:42:08.654Z",
+  "generated": "2026-06-23T07:22:09.936Z",
   "n": 101,
-  "avg": 75.9,
+  "avg": 76.3,
   "build": true,
   "links": false,
   "eras": {
@@ -12,8 +12,8 @@
     },
     "2025": {
       "n": 39,
-      "score": 2790,
-      "infra": 31
+      "score": 2830,
+      "infra": 35
     },
     "2026": {
       "n": 49,
@@ -25,14 +25,14 @@
     {
       "key": "claude opus 4.8",
       "label": "Claude Opus 4.8",
-      "n": 39,
-      "mean": 92.2,
+      "n": 40,
+      "mean": 92.4,
       "meanByCat": {
         "build": 99,
         "meta": 100,
         "structure": 98.5,
-        "infra": 77.7,
-        "style": 88.7
+        "infra": 78.3,
+        "style": 89
       },
       "best": {
         "slug": "estigrade",
@@ -42,12 +42,12 @@
     }
   ],
   "honestyCounts": {
-    "verified": 13,
-    "notAutoVerifiable": 88,
+    "verified": 14,
+    "notAutoVerifiable": 87,
     "failed": 0,
     "flagged": 0
   },
-  "unattributed": 62,
+  "unattributed": 61,
   "unregistered": [
     "artificial-death",
     "byte-birth"
@@ -8176,12 +8176,12 @@
       "year": 2025,
       "month": 7,
       "name": "meaning autogenesis",
-      "model": null,
-      "modelKey": null,
-      "score": 60,
+      "model": "Claude Opus 4.8",
+      "modelKey": "claude opus 4.8",
+      "score": 100,
       "byCat": {
         "build": {
-          "earned": 20,
+          "earned": 25,
           "total": 25
         },
         "meta": {
@@ -8193,20 +8193,20 @@
           "total": 20
         },
         "infra": {
-          "earned": 0,
+          "earned": 25,
           "total": 25
         },
         "style": {
-          "earned": 5,
+          "earned": 15,
           "total": 15
         }
       },
       "catPct": {
-        "build": 80,
+        "build": 100,
         "meta": 100,
         "structure": 100,
-        "infra": 0,
-        "style": 33
+        "infra": 100,
+        "style": 100
       },
       "checks": [
         {
@@ -8223,8 +8223,8 @@
           "label": "no `any`",
           "category": "build",
           "weight": 5,
-          "ratio": 0,
-          "detail": "1 occurrence(s)",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -8322,7 +8322,7 @@
           "label": "assumptions.ts",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -8331,7 +8331,7 @@
           "label": "calibration.ts",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -8340,7 +8340,7 @@
           "label": "versions.ts",
           "category": "infra",
           "weight": 4,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -8349,7 +8349,7 @@
           "label": "research companion",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -8358,8 +8358,8 @@
           "label": "no em-dashes",
           "category": "style",
           "weight": 6,
-          "ratio": 0,
-          "detail": "in components/Settings/index.tsx",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -8367,8 +8367,8 @@
           "label": "no font-serif/sans",
           "category": "style",
           "weight": 4,
-          "ratio": 0,
-          "detail": "font-serif/sans present",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -8381,52 +8381,9 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "assumptions",
-          "label": "assumptions.ts",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "calibration",
-          "label": "calibration.ts",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "research",
-          "label": "research companion",
-          "lost": 7,
-          "detail": ""
-        },
-        {
-          "id": "no-emdash",
-          "label": "no em-dashes",
-          "lost": 6,
-          "detail": "in components/Settings/index.tsx"
-        },
-        {
-          "id": "no-any",
-          "label": "no `any`",
-          "lost": 5,
-          "detail": "1 occurrence(s)"
-        },
-        {
-          "id": "versions",
-          "label": "versions.ts",
-          "lost": 4,
-          "detail": ""
-        },
-        {
-          "id": "outro-font",
-          "label": "no font-serif/sans",
-          "lost": 4,
-          "detail": "font-serif/sans present"
-        }
-      ],
+      "failed": [],
       "warnings": [],
-      "infraCount": 0,
+      "infraCount": 4,
       "citations": [
         "https://en.wikipedia.org/wiki/Chemoton",
         "https://escholarship.org/uc/item/3707x1mm",
@@ -8439,18 +8396,26 @@
         "https://doi.org/10.1007/s12304-021-09453-9"
       ],
       "calibration": {
-        "status": "na",
-        "fit": null
+        "status": "verified",
+        "n": 5,
+        "fit": {
+          "mean": 0,
+          "worst": 0
+        },
+        "message": null
       },
       "honestyWarnings": [],
       "honesty": {
-        "calibration": "na",
-        "fit": null,
+        "calibration": "verified",
+        "fit": {
+          "mean": 0,
+          "worst": 0
+        },
         "citations": "unchecked",
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 60
+      "headline": 100
     },
     {
       "slug": "ramsey-ports",

@@ -3,12 +3,21 @@
 import { useState, useRef } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 
 
 export default function MeaningAutogenesisPlayground() {
+    const calibration = buildCalibration();
     const [currentLevel, setCurrentLevel] = useState(0);
     const [simulationRunning, setSimulationRunning] = useState(false);
     const [simulationPaused, setSimulationPaused] = useState(false);
@@ -88,7 +97,7 @@ export default function MeaningAutogenesisPlayground() {
                     id: 'intro',
                     type: 'intro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-4">Biosemiotics: From Molecule to Sign</h2>
                             <p>
                                 This playground simulates the emergence of semiotic (meaning-making) processes from simple chemistry.
@@ -121,7 +130,7 @@ export default function MeaningAutogenesisPlayground() {
                     id: 'outro',
                     type: 'outro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-6">Understanding Biosemiotic Emergence</h2>
 
                             <p>
@@ -182,6 +191,19 @@ export default function MeaningAutogenesisPlayground() {
                                     builds on the previous, creating increasingly sophisticated forms of biological meaning.
                                 </p>
                             </div>
+
+                            <div className="border-t border-lime-500/20 pt-6">
+                                <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                            </div>
+
+                            <CalibrationPanel results={calibration} outputLabel="core value" />
+
+                            <AssumptionPanel assumptions={assumptions} />
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                                <ModelChangelog entries={changelog} />
+                            </div>
                         </div>
                     )
                 }
@@ -203,6 +225,7 @@ export default function MeaningAutogenesisPlayground() {
                     simulationParams={simulationParams}
                 />
             }
+            researchUrl="/playgrounds/meaning-autogenesis/research"
         />
     );
 }

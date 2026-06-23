@@ -32,7 +32,7 @@ const levelDescriptions = {
 
 **The Sign:** Any disruption to the capsid is a sign of "non-self".
 
-**The Interpretation:** The system's only response (the **interpretant**) is to use the released catalysts to rebuild itself. Because it responds to all disruptions in the same way, this is an **iconic** interpretation—the most basic form of meaning, based on simple resemblance (a broken thing is replaced by a fixed thing).
+**The Interpretation:** The system's only response (the **interpretant**) is to use the released catalysts to rebuild itself. Because it responds to all disruptions in the same way, this is an **iconic** interpretation, the most basic form of meaning, based on simple resemblance (a broken thing is replaced by a fixed thing).
 
 **What to watch for:** Once the shell forms, click 'Disrupt Capsid'. Watch as the freed catalysts (blue and green circles) consume substrates (purple squares) to create new capsid parts, which then form a new shell.`
     },

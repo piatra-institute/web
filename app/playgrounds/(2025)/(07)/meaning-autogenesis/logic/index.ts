@@ -6,7 +6,7 @@ export interface Molecule {
     radius: number;
     type: 'C' | 'F' | 'A' | 'D' | 'G';
     color: string;
-    boundTo: any;
+    boundTo: Autogen | BindingSite | null;
 }
 
 export interface Autogen {
