@@ -3,10 +3,19 @@
 import { useState, useRef } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
+
 export default function EyevolutionPlayground() {
+    const calibration = buildCalibration();
     // Evolution parameters
     const [generations, setGenerations] = useState(500);
     const [populationSize, setPopulationSize] = useState(100);
@@ -70,7 +79,7 @@ export default function EyevolutionPlayground() {
                     id: 'intro',
                     type: 'intro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-4">The Evolution of Eyes</h2>
                             <p>
                                 Eyes have evolved independently <strong className="font-semibold text-lime-400">over 60 times</strong> throughout 
@@ -131,7 +140,7 @@ export default function EyevolutionPlayground() {
                     id: 'outro',
                     type: 'outro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-6">Understanding Eye Evolution</h2>
                             
                             <div className="space-y-6">
@@ -207,6 +216,19 @@ export default function EyevolutionPlayground() {
                                         <li>• Parker (2003) - &quot;In the Blink of an Eye&quot;</li>
                                     </ul>
                                 </div>
+
+                                <div className="border-t border-lime-500/20 pt-6">
+                                    <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                                </div>
+
+                                <CalibrationPanel results={calibration} outputLabel="fitness / eye type" />
+
+                                <AssumptionPanel assumptions={assumptions} />
+
+                                <div>
+                                    <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                                    <ModelChangelog entries={changelog} />
+                                </div>
                             </div>
                         </div>
                     )
@@ -250,6 +272,7 @@ export default function EyevolutionPlayground() {
                     onExport={handleExport}
                 />
             }
+            researchUrl="/playgrounds/eyevolution/research"
         />
     );
 }

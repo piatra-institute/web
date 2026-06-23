@@ -68,7 +68,7 @@ function randn() {
 }
 
 interface MiniChartProps {
-    data: any[];
+    data: Record<string, number>[];
     xKey?: string;
     ySeries?: { key: string; label: string; color?: string }[];
     yDomain?: [number, number];
@@ -188,7 +188,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
     const [population, setPopulation] = useState<Organism[]>([]);
     const [lineages, setLineages] = useState<LineageData[]>([]);
     const [convergenceEvents, setConvergenceEvents] = useState<ConvergenceEvent[]>([]);
-    const [generationData, setGenerationData] = useState<any[]>([]);
+    const [generationData, setGenerationData] = useState<Record<string, number>[]>([]);
     const [telemetry, setTelemetry] = useState({
         generation: 0,
         avgFitness: 0,
