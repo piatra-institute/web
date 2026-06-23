@@ -3,10 +3,19 @@
 import { useState, useRef, useEffect } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
+
 export default function ScarcityOverTechnologyPlayground() {
+    const calibration = buildCalibration();
     const [technology, setTechnology] = useState(20);
     const [users, setUsers] = useState(100000000);
     const [techEfficacy, setTechEfficacy] = useState(1.5);
@@ -84,7 +93,7 @@ export default function ScarcityOverTechnologyPlayground() {
                             <div className="border-l-2 border-lime-500/50 pl-4">
                                 <h4 className="text-lime-400 font-semibold mb-2">λ · Scarcity as Shadow Price</h4>
                                 <p className="text-gray-300">
-                                    The dual multiplier from optimization theory—when constraints bind, 
+                                    The dual multiplier from optimization theory: when constraints bind,
                                     prices emerge. As technology expands capacity, λ → 0, and the resource 
                                     exits the economic sphere entirely. Post-scarcity is λ = 0.
                                 </p>
@@ -95,7 +104,7 @@ export default function ScarcityOverTechnologyPlayground() {
                                 <p className="text-gray-300">
                                     Not a place or thing, but a rate of change. The economy exists precisely 
                                     where technology meets scarcity. When this derivative approaches zero, 
-                                    the economic problem dissolves—the resource becomes like air.
+                                    the economic problem dissolves, the resource becomes like air.
                                 </p>
                             </div>
 
@@ -103,7 +112,7 @@ export default function ScarcityOverTechnologyPlayground() {
                                 <h4 className="text-lime-400 font-semibold mb-2">h · Artificial Scarcity</h4>
                                 <p className="text-gray-300">
                                     Corruption and hoarding create phantom constraints. Even infinite 
-                                    technology cannot solve artificially maintained scarcity—a political 
+                                    technology cannot solve artificially maintained scarcity, a political
                                     problem masquerading as an economic one.
                                 </p>
                             </div>
@@ -111,7 +120,7 @@ export default function ScarcityOverTechnologyPlayground() {
                             <div className="border-l-2 border-lime-500/50 pl-4">
                                 <h4 className="text-lime-400 font-semibold mb-2">A · The Final Frontier</h4>
                                 <p className="text-gray-300">
-                                    Attention, time, care—resources that technology cannot multiply. 
+                                    Attention, time, care: resources that technology cannot multiply.
                                     As material scarcity vanishes, these become the new economic primitives. 
                                     The economy of the future is an economy of human attention.
                                 </p>
@@ -121,10 +130,23 @@ export default function ScarcityOverTechnologyPlayground() {
                         <div className="mt-8 p-4 bg-black border border-lime-500/20">
                             <p className="text-sm text-lime-400">
                                 The economy is not eternal. It is a temporary phenomenon, 
-                                a turbulence in the flow from scarcity to abundance. 
+                                a turbulence in the flow from scarcity to abundance.
                                 Our task is not to manage it, but to obsolete it.
                             </p>
                         </div>
+                    </div>
+
+                    <div className="border-t border-lime-500/20 pt-6">
+                        <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                    </div>
+
+                    <CalibrationPanel results={calibration} outputLabel="model value" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
                     </div>
                 </div>
             ),
@@ -156,6 +178,7 @@ export default function ScarcityOverTechnologyPlayground() {
                     onExport={handleExport}
                 />
             }
+            researchUrl="/playgrounds/scarcity-over-technology/research"
         />
     );
 }

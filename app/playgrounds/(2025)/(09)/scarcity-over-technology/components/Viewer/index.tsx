@@ -183,9 +183,9 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>(({
                             <Tooltip 
                                 contentStyle={{ backgroundColor: '#000000', border: '1px solid #84cc16' }}
                                 labelStyle={{ color: '#84cc16' }}
-                                formatter={(value: any) => {
+                                formatter={(value) => {
                                     if (value === null || value === undefined) return 'N/A';
-                                    return typeof value === 'number' ? value.toFixed(2) : value;
+                                    return typeof value === 'number' ? value.toFixed(2) : String(value);
                                 }}
                             />
                             <Legend 
