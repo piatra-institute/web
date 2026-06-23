@@ -3,12 +3,21 @@
 import { useState, useRef, useCallback } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Viewer from './components/Viewer';
 import Settings from './components/Settings';
+
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 
 
 export default function GeometryBecomingTopologyPlayground() {
+    const calibration = buildCalibration();
     const [epsilon, setEpsilon] = useState(50);
     const [useExoticStructure, setUseExoticStructure] = useState(false);
     const [currentView, setCurrentView] = useState<'metric' | 'smooth' | 'topology'>('topology');
@@ -66,9 +75,9 @@ export default function GeometryBecomingTopologyPlayground() {
             id: 'about',
             type: 'outro' as const,
             content: (
-                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                     <p>
-                        This interactive visualization explores the mathematical hierarchy underlying <strong className="text-lime-200">Topological Data Analysis (TDA)</strong>—a framework that extracts robust structural features from high-dimensional data. Beginning with a discrete point cloud embedded in ℝ², we construct increasingly abstract representations that reveal fundamental geometric invariants.
+                        This interactive visualization explores the mathematical hierarchy underlying <strong className="text-lime-200">Topological Data Analysis (TDA)</strong>, a framework that extracts robust structural features from high-dimensional data. Beginning with a discrete point cloud embedded in ℝ², we construct increasingly abstract representations that reveal fundamental geometric invariants.
                     </p>
                     <p>
                         The <strong className="text-lime-200">Vietoris-Rips parameter ε</strong> governs the formation of our simplicial complex: for each pair of points within Euclidean distance ε, we add a 1-simplex (edge). When three points are pairwise connected, we fill in the 2-simplex (triangle). This construction yields a <a href="https://en.wikipedia.org/wiki/Vietoris%E2%80%93Rips_complex" target="_blank" className="text-lime-200 hover:text-lime-50 underline">Vietoris-Rips complex</a> Rips(X,ε), providing a combinatorial approximation to the underlying topological space.
@@ -78,12 +87,25 @@ export default function GeometryBecomingTopologyPlayground() {
                     </p>
                     <ul className="list-disc pl-5 space-y-2">
                         <li><strong className="text-lime-200">Riemannian structure</strong> (Metric View): The complete geometric data, including the metric tensor g<sub>ij</sub>. Preserved by <strong className="text-lime-200">isometries</strong> φ: (M,g) → (M&apos;,g&apos;) where φ*g&apos; = g. Invariants include geodesic distances, curvature tensors, and volume forms.</li>
-                        <li><strong className="text-lime-200">Smooth structure</strong> (Smooth View): The differentiable manifold structure, forgetting the metric but retaining C<sup>∞</sup> compatibility. Preserved by <strong className="text-lime-200">diffeomorphisms</strong>. The &quot;Exotic Structure&quot; toggle illustrates Milnor&apos;s discovery of exotic 7-spheres—manifolds homeomorphic but not diffeomorphic to S<sup>7</sup>.</li>
+                        <li><strong className="text-lime-200">Smooth structure</strong> (Smooth View): The differentiable manifold structure, forgetting the metric but retaining C<sup>∞</sup> compatibility. Preserved by <strong className="text-lime-200">diffeomorphisms</strong>. The &quot;Exotic Structure&quot; toggle illustrates Milnor&apos;s discovery of exotic 7-spheres, manifolds homeomorphic but not diffeomorphic to S<sup>7</sup>.</li>
                         <li><strong className="text-lime-200">Topological structure</strong> (Topological View): The coarsest structure, preserving only continuity. Characterized by <strong className="text-lime-200">homeomorphism</strong> invariants: the Betti numbers β<sub>k</sub> = rank(H<sub>k</sub>) measuring k-dimensional holes. Here, β<sub>0</sub> counts connected components and β<sub>1</sub> counts 1-dimensional cycles.</li>
                     </ul>
                     <p>
-                        This hierarchical decomposition—from rigid Riemannian geometry through smooth manifolds to flexible topology—exemplifies the power of categorical thinking in mathematics. In applications to biological data, where noise and measurement uncertainty dominate, topological invariants provide stable signatures of global structure. Rather than asking &quot;what is the precise conformation?&quot; we ask &quot;what is the persistent homology?&quot;—capturing essential connectivity patterns that survive perturbations.
+                        This hierarchical decomposition, from rigid Riemannian geometry through smooth manifolds to flexible topology, exemplifies the power of categorical thinking in mathematics. In applications to biological data, where noise and measurement uncertainty dominate, topological invariants provide stable signatures of global structure. Rather than asking &quot;what is the precise conformation?&quot; we ask &quot;what is the persistent homology?&quot;, capturing essential connectivity patterns that survive perturbations.
                     </p>
+
+                    <div className="border-t border-lime-500/20 pt-6">
+                        <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                    </div>
+
+                    <CalibrationPanel results={calibration} outputLabel="invariant / distance" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -106,6 +128,7 @@ export default function GeometryBecomingTopologyPlayground() {
                     onExport={handleExport}
                 />
             }
+            researchUrl="/playgrounds/geometry-becoming-topology/research"
         />
     );
 }
