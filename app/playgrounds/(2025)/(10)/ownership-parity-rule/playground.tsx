@@ -2,6 +2,7 @@
 
 import { useRef, useCallback, useState, useEffect } from 'react';
 import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayout';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
 import VersionSelector from '@/components/VersionSelector';
 import CalibrationPanel from '@/components/CalibrationPanel';
 import AssumptionPanel from '@/components/AssumptionPanel';
@@ -56,9 +57,9 @@ export default function Playground() {
             id: 'canvas',
             type: 'canvas',
             content: (
-                <div className="w-full h-full flex items-center justify-center p-8">
+                <PlaygroundViewer>
                     <Viewer ref={viewerRef} />
-                </div>
+                </PlaygroundViewer>
             ),
         },
         {

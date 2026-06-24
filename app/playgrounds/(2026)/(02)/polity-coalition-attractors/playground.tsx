@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
 import VersionSelector from '@/components/VersionSelector';
 import CalibrationPanel from '@/components/CalibrationPanel';
@@ -63,13 +64,15 @@ export default function PolityCoalitionAttractorsPlayground() {
             id: 'canvas',
             type: 'canvas' as const,
             content: (
-                <Viewer
-                    params={params}
-                    sim={sim}
-                    init={init}
-                    basin={basin}
-                    onInitChange={setInit}
-                />
+                <PlaygroundViewer>
+                    <Viewer
+                        params={params}
+                        sim={sim}
+                        init={init}
+                        basin={basin}
+                        onInitChange={setInit}
+                    />
+                </PlaygroundViewer>
             ),
         },
         {

@@ -8,7 +8,7 @@ import VersionSelector from '@/components/VersionSelector';
 import ModelChangelog from '@/components/ModelChangelog';
 import Equation from '@/components/Equation';
 
-import Board from './components/Board';
+import Board from './components/Viewer';
 import { buildCalibration } from './calibration';
 import { assumptions } from './assumptions';
 import { versions, changelog } from './versions';

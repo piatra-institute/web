@@ -1,23 +1,23 @@
 {
-  "generated": "2026-06-24T05:05:24.900Z",
+  "generated": "2026-06-24T07:53:00.439Z",
   "n": 101,
-  "avg": 98.4,
+  "avg": 98.5,
   "build": true,
   "links": false,
   "eras": {
     "2024": {
       "n": 13,
-      "score": 1188,
+      "score": 1192,
       "infra": 44
     },
     "2025": {
       "n": 39,
-      "score": 3863,
+      "score": 3869,
       "infra": 155
     },
     "2026": {
       "n": 49,
-      "score": 4884,
+      "score": 4892,
       "infra": 196
     }
   },
@@ -26,17 +26,17 @@
       "key": "claude opus 4.8",
       "label": "Claude Opus 4.8",
       "n": 99,
-      "mean": 99.4,
+      "mean": 99.6,
       "meanByCat": {
         "build": 100,
         "meta": 100,
-        "structure": 97.5,
+        "structure": 98.4,
         "infra": 99.7,
         "style": 100
       },
       "best": {
-        "slug": "cpt-variance",
-        "name": "CPT variance",
+        "slug": "self-sorted-arrays",
+        "name": "self-sorted arrays",
         "score": 100
       }
     }
@@ -65,7 +65,7 @@
       "name": "self-sorted arrays",
       "model": "Claude Opus 4.8",
       "modelKey": "claude opus 4.8",
-      "score": 98,
+      "score": 100,
       "byCat": {
         "build": {
           "earned": 25,
@@ -76,7 +76,7 @@
           "total": 15
         },
         "structure": {
-          "earned": 18,
+          "earned": 20,
           "total": 20
         },
         "infra": {
@@ -91,7 +91,7 @@
       "catPct": {
         "build": 100,
         "meta": 100,
-        "structure": 90,
+        "structure": 100,
         "infra": 100,
         "style": 100
       },
@@ -191,8 +191,8 @@
           "label": "Settings + Viewer split",
           "category": "structure",
           "weight": 4,
-          "ratio": 0.5,
-          "detail": "no Viewer",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -268,14 +268,7 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "settings-viewer",
-          "label": "Settings + Viewer split",
-          "lost": 2,
-          "detail": "no Viewer"
-        }
-      ],
+      "failed": [],
       "warnings": [],
       "infraCount": 4,
       "citations": [
@@ -302,7 +295,7 @@
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 98
+      "headline": 100
     },
     {
       "slug": "cpt-variance",
@@ -3101,7 +3094,7 @@
       "name": "coasellular morphogenesis",
       "model": "Claude Opus 4.8",
       "modelKey": "claude opus 4.8",
-      "score": 98,
+      "score": 100,
       "byCat": {
         "build": {
           "earned": 25,
@@ -3112,7 +3105,7 @@
           "total": 15
         },
         "structure": {
-          "earned": 18,
+          "earned": 20,
           "total": 20
         },
         "infra": {
@@ -3127,7 +3120,7 @@
       "catPct": {
         "build": 100,
         "meta": 100,
-        "structure": 90,
+        "structure": 100,
         "infra": 100,
         "style": 100
       },
@@ -3227,8 +3220,8 @@
           "label": "Settings + Viewer split",
           "category": "structure",
           "weight": 4,
-          "ratio": 0.5,
-          "detail": "no Viewer",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -3304,14 +3297,7 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "settings-viewer",
-          "label": "Settings + Viewer split",
-          "lost": 2,
-          "detail": "no Viewer"
-        }
-      ],
+      "failed": [],
       "warnings": [],
       "infraCount": 4,
       "citations": [],
@@ -3335,7 +3321,7 @@
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 98
+      "headline": 100
     },
     {
       "slug": "fracqunx",
@@ -3348,7 +3334,7 @@
       "name": "fracqunx",
       "model": "Claude Opus 4.8",
       "modelKey": "claude opus 4.8",
-      "score": 98,
+      "score": 100,
       "byCat": {
         "build": {
           "earned": 25,
@@ -3359,7 +3345,7 @@
           "total": 15
         },
         "structure": {
-          "earned": 18,
+          "earned": 20,
           "total": 20
         },
         "infra": {
@@ -3374,7 +3360,7 @@
       "catPct": {
         "build": 100,
         "meta": 100,
-        "structure": 90,
+        "structure": 100,
         "infra": 100,
         "style": 100
       },
@@ -3474,8 +3460,8 @@
           "label": "Settings + Viewer split",
           "category": "structure",
           "weight": 4,
-          "ratio": 0.5,
-          "detail": "no Viewer",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -3551,14 +3537,7 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "settings-viewer",
-          "label": "Settings + Viewer split",
-          "lost": 2,
-          "detail": "no Viewer"
-        }
-      ],
+      "failed": [],
       "warnings": [
         "2 `rounded` className(s) — verify none are on main containers/buttons"
       ],
@@ -3584,7 +3563,7 @@
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 98
+      "headline": 100
     },
     {
       "slug": "halley-window",
@@ -9940,7 +9919,7 @@
       "name": "ownership parity rule",
       "model": "Claude Opus 4.8",
       "modelKey": "claude opus 4.8",
-      "score": 96,
+      "score": 100,
       "byCat": {
         "build": {
           "earned": 25,
@@ -9951,7 +9930,7 @@
           "total": 15
         },
         "structure": {
-          "earned": 16,
+          "earned": 20,
           "total": 20
         },
         "infra": {
@@ -9966,7 +9945,7 @@
       "catPct": {
         "build": 100,
         "meta": 100,
-        "structure": 80,
+        "structure": 100,
         "infra": 100,
         "style": 100
       },
@@ -10048,7 +10027,7 @@
           "label": "PlaygroundViewer",
           "category": "structure",
           "weight": 4,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -10143,14 +10122,7 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "viewer",
-          "label": "PlaygroundViewer",
-          "lost": 4,
-          "detail": ""
-        }
-      ],
+      "failed": [],
       "warnings": [],
       "infraCount": 4,
       "citations": [],
@@ -10174,7 +10146,7 @@
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 96
+      "headline": 100
     },
     {
       "slug": "placebo-nocebo-dynamics",
@@ -14546,7 +14518,7 @@
       "name": "gait gambit",
       "model": "Claude Opus 4.8",
       "modelKey": "claude opus 4.8",
-      "score": 96,
+      "score": 100,
       "byCat": {
         "build": {
           "earned": 25,
@@ -14557,7 +14529,7 @@
           "total": 15
         },
         "structure": {
-          "earned": 16,
+          "earned": 20,
           "total": 20
         },
         "infra": {
@@ -14572,7 +14544,7 @@
       "catPct": {
         "build": 100,
         "meta": 100,
-        "structure": 80,
+        "structure": 100,
         "infra": 100,
         "style": 100
       },
@@ -14654,7 +14626,7 @@
           "label": "PlaygroundViewer",
           "category": "structure",
           "weight": 4,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -14749,14 +14721,7 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "viewer",
-          "label": "PlaygroundViewer",
-          "lost": 4,
-          "detail": ""
-        }
-      ],
+      "failed": [],
       "warnings": [
         "3 `rounded` className(s) — verify none are on main containers/buttons"
       ],
@@ -14782,7 +14747,7 @@
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 96
+      "headline": 100
     },
     {
       "slug": "hydride-anomaly",
@@ -15275,7 +15240,7 @@
       "name": "polity coalition attractors",
       "model": "Claude Opus 4.8",
       "modelKey": "claude opus 4.8",
-      "score": 96,
+      "score": 100,
       "byCat": {
         "build": {
           "earned": 25,
@@ -15286,7 +15251,7 @@
           "total": 15
         },
         "structure": {
-          "earned": 16,
+          "earned": 20,
           "total": 20
         },
         "infra": {
@@ -15301,7 +15266,7 @@
       "catPct": {
         "build": 100,
         "meta": 100,
-        "structure": 80,
+        "structure": 100,
         "infra": 100,
         "style": 100
       },
@@ -15383,7 +15348,7 @@
           "label": "PlaygroundViewer",
           "category": "structure",
           "weight": 4,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -15478,14 +15443,7 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "viewer",
-          "label": "PlaygroundViewer",
-          "lost": 4,
-          "detail": ""
-        }
-      ],
+      "failed": [],
       "warnings": [],
       "infraCount": 4,
       "citations": [],
@@ -15509,7 +15467,7 @@
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 96
+      "headline": 100
     },
     {
       "slug": "trust-transaction-spectrum",

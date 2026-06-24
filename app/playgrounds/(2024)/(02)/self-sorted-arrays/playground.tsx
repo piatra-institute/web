@@ -26,7 +26,7 @@ import {
 } from '@/logic/utilities';
 
 import CellsChart1D from '@/app/playgrounds/(2024)/(02)/self-sorted-arrays/components/CellsChart1D';
-import CellViewer from '@/app/playgrounds/(2024)/(02)/self-sorted-arrays/components/CellViewer';
+import CellViewer from '@/app/playgrounds/(2024)/(02)/self-sorted-arrays/components/Viewer';
 import Settings from '@/app/playgrounds/(2024)/(02)/self-sorted-arrays/components/Settings';
 
 import {

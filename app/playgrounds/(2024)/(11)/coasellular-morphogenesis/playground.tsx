@@ -23,7 +23,7 @@ import { versions, changelog } from './versions';
 
 
 const DynamicCoasellulars = dynamic(
-    () => import('./components/Coasellulars'), {
+    () => import('./components/Viewer'), {
         ssr: false,
     },
 );

@@ -2,9 +2,9 @@
 
 Deterministic conformance of all playgrounds to the current template (CLAUDE.md). No model judgement.
 
-- Generated: 2026-06-24T05:05:24.899Z
+- Generated: 2026-06-24T07:53:00.439Z
 - Playgrounds: **101**
-- Mean score: **98.4/100**
+- Mean score: **98.5/100**
 - Build check: enabled (tsc --noEmit, attributed per-playground)
 - Citation resolution: disabled (run with --links)
 
@@ -14,9 +14,9 @@ Scoring categories (weights): build & types 25, registration & metadata 15, stru
 
 | era | playgrounds | mean score | mean infra (/4) |
 | --- | --- | --- | --- |
-| 2024 | 13 | 91.4 | 3.4 |
-| 2025 | 39 | 99.1 | 4.0 |
-| 2026 | 49 | 99.7 | 4.0 |
+| 2024 | 13 | 91.7 | 3.4 |
+| 2025 | 39 | 99.2 | 4.0 |
+| 2026 | 49 | 99.8 | 4.0 |
 
 ## Model leaderboard
 
@@ -24,7 +24,7 @@ Mean Layer 0 conformance per generating model (from each playground's versions.t
 
 | model | playgrounds | mean score | build | meta | structure | infra | style | best |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Claude Opus 4.8 | 99 | **99.4** | 100% | 100% | 97.5% | 99.7% | 100% | cpt-variance (100) |
+| Claude Opus 4.8 | 99 | **99.6** | 100% | 100% | 98.4% | 99.7% | 100% | self-sorted-arrays (100) |
 | _(unattributed)_ | 2 | – | | | | | | |
 
 ## Honesty
@@ -141,20 +141,15 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 - **crystallographic-groups** — 94/100 · July 2025 · PlaygroundViewer; Settings + Viewer split (no Viewer)
 - **hsp90-canalization** — 96/100 · April 2025 · PlaygroundViewer · 1 `rounded` className(s) — verify none are on main containers/buttons
 - **raupian-morphospace** — 96/100 · April 2025 · PlaygroundViewer
-- **ownership-parity-rule** — 96/100 · October 2025 · PlaygroundViewer
 - **logical-morphogenesis** — 96/100 · December 2025 · PlaygroundViewer
 - **descent-and-closure** — 96/100 · January 2026 · PlaygroundViewer
 - **geometry-of-fragmentation** — 96/100 · January 2026 · PlaygroundViewer
-- **gait-gambit** — 96/100 · February 2026 · PlaygroundViewer · 3 `rounded` className(s) — verify none are on main containers/buttons
-- **polity-coalition-attractors** — 96/100 · February 2026 · PlaygroundViewer
-- **self-sorted-arrays** — 98/100 · February 2024 · Settings + Viewer split (no Viewer)
-- **coasellular-morphogenesis** — 98/100 · November 2024 · Settings + Viewer split (no Viewer)
-- **fracqunx** — 98/100 · February 2025 · Settings + Viewer split (no Viewer) · 2 `rounded` className(s) — verify none are on main containers/buttons
 
 ## Full scorecard
 
 | playground | score | honesty | build | meta | structure | infra | style | date |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| self-sorted-arrays | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | February 2024 |
 | cpt-variance | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | March 2024 |
 | everything-relevant | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | March 2024 |
 | eyevolution | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | March 2024 |
@@ -164,6 +159,8 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | refractive-computation | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | March 2024 |
 | vote-no | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | March 2024 |
 | estigrade | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | September 2024 |
+| coasellular-morphogenesis | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | November 2024 |
+| fracqunx | 100 | cal ✓ (fit 16%) | 100% | 100% | 100% | 100% | 100% | February 2025 |
 | bifurcation-speciation | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | May 2025 |
 | lefebvrian-conscience | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | May 2025 |
 | debt-singularity | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | June 2025 |
@@ -185,6 +182,7 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | tuition-resentment | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | August 2025 |
 | plr-harmony | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | September 2025 |
 | scarcity-over-technology | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | September 2025 |
+| ownership-parity-rule | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | October 2025 |
 | placebo-nocebo-dynamics | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | October 2025 |
 | social-propagation | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | October 2025 |
 | subconscious-state-space | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | October 2025 |
@@ -200,8 +198,10 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | nested-observer-windows | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | January 2026 |
 | author-function-atlas | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | February 2026 |
 | bordism-to-action | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | February 2026 |
+| gait-gambit | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | February 2026 |
 | hydride-anomaly | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | February 2026 |
 | order-theoretic-ontology | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | February 2026 |
+| polity-coalition-attractors | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | February 2026 |
 | trust-transaction-spectrum | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | February 2026 |
 | co2-metabolism-hypothesis | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | March 2026 |
 | cost-of-chaos | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | March 2026 |
@@ -240,17 +240,11 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | political-autoimmunity | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | June 2026 |
 | rotary-fields | 100 | – | 100% | 100% | 100% | 100% | 100% | June 2026 |
 | trisquare | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | June 2026 |
-| self-sorted-arrays | 98 | cal ✓ (fit 0%) | 100% | 100% | 90% | 100% | 100% | February 2024 |
-| coasellular-morphogenesis | 98 | cal ✓ (fit 0%) | 100% | 100% | 90% | 100% | 100% | November 2024 |
-| fracqunx | 98 | cal ✓ (fit 16%) | 100% | 100% | 90% | 100% | 100% | February 2025 |
 | hsp90-canalization | 96 | cal ✓ (fit 20%) | 100% | 100% | 80% | 100% | 100% | April 2025 |
 | raupian-morphospace | 96 | cal ✓ (fit 0%) | 100% | 100% | 80% | 100% | 100% | April 2025 |
-| ownership-parity-rule | 96 | cal ✓ (fit 0%) | 100% | 100% | 80% | 100% | 100% | October 2025 |
 | logical-morphogenesis | 96 | cal ✓ (fit 0%) | 100% | 100% | 80% | 100% | 100% | December 2025 |
 | descent-and-closure | 96 | cal ✓ (fit 0%) | 100% | 100% | 80% | 100% | 100% | January 2026 |
 | geometry-of-fragmentation | 96 | cal ✓ (fit 0%) | 100% | 100% | 80% | 100% | 100% | January 2026 |
-| gait-gambit | 96 | cal ✓ (fit 0%) | 100% | 100% | 80% | 100% | 100% | February 2026 |
-| polity-coalition-attractors | 96 | cal ✓ (fit 0%) | 100% | 100% | 80% | 100% | 100% | February 2026 |
 | halley-window | 94 | cal ✓ (fit 0%) | 100% | 100% | 70% | 100% | 100% | February 2025 |
 | crystallographic-groups | 94 | cal ✓ (fit 0%) | 100% | 100% | 70% | 100% | 100% | July 2025 |
 | entropy-cafe | 93 | – | 100% | 100% | 100% | 72% | 100% | July 2025 |

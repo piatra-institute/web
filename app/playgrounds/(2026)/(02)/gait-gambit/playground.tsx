@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
 import VersionSelector from '@/components/VersionSelector';
 import CalibrationPanel from '@/components/CalibrationPanel';
@@ -42,14 +43,16 @@ export default function GaitGambitPlayground() {
       id: 'canvas',
       type: 'canvas' as const,
       content: (
-        <Viewer
-          context={context}
-          weights={weights}
-          axisX={axisX}
-          axisY={axisY}
-          crossoverAxis={crossoverAxis}
-          showAllPolicies={showAllPolicies}
-        />
+        <PlaygroundViewer>
+          <Viewer
+            context={context}
+            weights={weights}
+            axisX={axisX}
+            axisY={axisY}
+            crossoverAxis={crossoverAxis}
+            showAllPolicies={showAllPolicies}
+          />
+        </PlaygroundViewer>
       ),
     },
     {
