@@ -99,6 +99,19 @@ export function labelFor(x: number, y: number): QuadrantType {
     return 'Bandit';
 }
 
+// Pure quadrant classifier on Cipolla's two payoff axes.
+// selfGain is benefit to oneself (x), otherGain is benefit to others (y).
+// Returns the lowercase quadrant name. This is the deterministic core the
+// stochastic population sampler and the calibration panel both rely on.
+export type Quadrant = 'intelligent' | 'helpless' | 'bandit' | 'stupid';
+
+export function classify(selfGain: number, otherGain: number): Quadrant {
+    if (selfGain >= 0 && otherGain >= 0) return 'intelligent';
+    if (selfGain < 0 && otherGain >= 0) return 'helpless';
+    if (selfGain >= 0 && otherGain < 0) return 'bandit';
+    return 'stupid';
+}
+
 // Net welfare classification
 export function netWelfareFor(x: number, y: number): NetWelfareType {
     return x + y >= 0 ? 'net+' : 'net-';
@@ -382,7 +395,7 @@ export const COUNTRY_PRESETS: Record<string, CountryMacros> = {
 
 // Format number for display
 export function fmt(n: number): string {
-    if (!Number.isFinite(n)) return '—';
+    if (!Number.isFinite(n)) return 'n/a';
     const abs = Math.abs(n);
     if (abs >= 100) return n.toFixed(0);
     if (abs >= 10) return n.toFixed(1);

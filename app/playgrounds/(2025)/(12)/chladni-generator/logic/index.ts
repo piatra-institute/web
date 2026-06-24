@@ -16,6 +16,27 @@
 
 export type ShapeType = 'circle' | 'square' | 'rectangle' | 'ring';
 
+/**
+ * Pure Chladni nodal function for a square plate with free edges.
+ * Matches the per-pixel formula used by the Viewer (buildChladniMode):
+ *   S(x,y) = cos(m pi x) cos(n pi y) +/- cos(n pi x) cos(m pi y)
+ * with x, y in [0, 1] (normalized plate coordinates).
+ *
+ * symmetric = true uses + (symmetric mode); symmetric = false uses - (antisymmetric).
+ * Nodal lines are the curves where chladni(...) = 0.
+ */
+export function chladni(
+    x: number,
+    y: number,
+    m: number,
+    n: number,
+    symmetric: boolean = true,
+): number {
+    const term1 = Math.cos(m * Math.PI * x) * Math.cos(n * Math.PI * y);
+    const term2 = Math.cos(n * Math.PI * x) * Math.cos(m * Math.PI * y);
+    return symmetric ? term1 + term2 : term1 - term2;
+}
+
 export const clamp = (x: number, lo: number, hi: number): number =>
     x < lo ? lo : x > hi ? hi : x;
 

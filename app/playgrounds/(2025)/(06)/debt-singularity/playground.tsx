@@ -3,9 +3,16 @@
 import { useState, useRef, useCallback } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import Viewer from './components/Viewer';
 import Settings from './components/Settings';
 import { historicalScenarios } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 
 
@@ -18,6 +25,8 @@ export default function Playground() {
     const [selectedScenario, setSelectedScenario] = useState('custom');
 
     const viewerRef = useRef<{ exportCanvas: () => void }>(null);
+
+    const calibration = buildCalibration();
 
     const handleScenarioChange = useCallback((scenario: string) => {
         setSelectedScenario(scenario);
@@ -80,24 +89,44 @@ export default function Playground() {
             id: 'about',
             type: 'outro' as const,
             content: (
-                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
-                    <p>
-                        This model visualizes the economic &ldquo;phase&rdquo; of debt. The grid shows every combination
-                        of Interest Rate and Inflation Rate. Move your cursor over the grid to explore its &ldquo;Real Rate&rdquo;.
-                    </p>
-                    <p>
-                        <strong className="font-semibold text-lime-400">Green Zone (Asset Phase):</strong> Inflation
-                        is higher than interest. The real value of debt decays over time, benefiting the debtor.
-                    </p>
-                    <p>
-                        <strong className="font-semibold text-red-400">Red Zone (Liability Phase):</strong> Interest
-                        is higher than inflation. The real burden of debt grows, costing the debtor.
-                    </p>
-                    <p>
-                        The model includes <strong className="font-semibold text-white">Annual Payments</strong>,
-                        simulating a real loan. The visualization shows how payments and inflation interact to reduce
-                        the debt&apos;s value below the initial amount.
-                    </p>
+                <div className="space-y-8 text-gray-300">
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">The phase of a debt</h3>
+                        <p className="leading-relaxed text-sm">
+                            This model visualizes the economic &ldquo;phase&rdquo; of debt. The grid shows every combination
+                            of interest rate and inflation rate. Move your cursor over the grid to explore its real rate,
+                            the order parameter that decides whether the debt grows or decays in felt terms.
+                        </p>
+                    </div>
+
+                    <div className="border-l-2 border-lime-500/40 pl-4">
+                        <p className="text-lime-200/80 mb-2">
+                            <strong className="font-semibold text-lime-400">Green zone (asset phase):</strong> inflation
+                            is higher than interest. The real value of debt decays over time, benefiting the debtor.
+                        </p>
+                        <p className="text-lime-200/80">
+                            <strong className="font-semibold text-red-400">Red zone (liability phase):</strong> interest
+                            is higher than inflation. The real burden of debt grows, costing the debtor.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">The model</h3>
+                        <p className="leading-relaxed text-sm">
+                            The nominal balance follows an affine annual map, B(t+1) = (1 + r) B(t) - P, and its real
+                            value is that balance deflated by cumulative inflation. The diagonal r = i is a continuous
+                            phase boundary: nothing diverges there, but the long-run direction of the real balance flips
+                            sign. Annual payments simulate a real loan, with the fixed point P/r marking the balance that
+                            interest exactly services.
+                        </p>
+                    </div>
+
+                    <div className="space-y-4">
+                        <VersionSelector versions={versions} active="claude-v1" />
+                        <CalibrationPanel results={calibration} outputLabel="loop vs closed form" />
+                        <AssumptionPanel assumptions={assumptions} />
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -107,6 +136,7 @@ export default function Playground() {
         <PlaygroundLayout
             title="Debt Singularity"
             subtitle="phase transitions of debt through economic conditions"
+            researchUrl="/playgrounds/debt-singularity/research"
             sections={sections}
             settings={
                 <Settings

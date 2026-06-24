@@ -3,8 +3,15 @@
 import { useState, useRef } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 export default function TuitionResentmentPlayground() {
     // Institutional factors
@@ -33,7 +40,9 @@ export default function TuitionResentmentPlayground() {
     const [qualityProgram, setQualityProgram] = useState(false);
     
     const [refreshKey, setRefreshKey] = useState(0);
-    
+
+    const calibration = buildCalibration();
+
     const viewerRef = useRef<{ exportCanvas: () => void }>(null);
     
     const handleReset = () => {
@@ -63,12 +72,13 @@ export default function TuitionResentmentPlayground() {
         <PlaygroundLayout
             title="tuition resentment"
             subtitle="high-tuition psychodynamics and attribution of blame"
+            researchUrl="/playgrounds/tuition-resentment/research"
             sections={[
                 {
                     id: 'intro',
                     type: 'intro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-4">Attribution Dynamics Model</h2>
                             <p>
                                 This simulation explores how <strong className="font-semibold text-lime-400">high tuition fees</strong> create 
@@ -122,70 +132,93 @@ export default function TuitionResentmentPlayground() {
                     id: 'outro',
                     type: 'outro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
-                            <h2 className="text-2xl font-bold text-white mb-6">Understanding the Results</h2>
-                            
-                            <div className="space-y-6">
-                                <div className="bg-black border border-gray-800 p-6">
-                                    <h3 className="text-lg font-semibold text-lime-400 mb-3">The Attribution Mechanism</h3>
-                                    <p className="mb-3">
-                                        The attribution parameter λ (lambda) is crucial:
-                                    </p>
-                                    <div className="bg-black border border-gray-800 p-3 mb-3 font-mono text-sm">
-                                        λ = σ(θ₀ + θ₁·Power + θ₂·Identity + θ₃·SocialComp)
-                                    </div>
-                                    <ul className="space-y-2 ml-4 text-sm">
-                                        <li>• When λ is high (→1): Students blame themselves for disappointment</li>
-                                        <li>• When λ is low (→0): Students blame the institution</li>
-                                        <li>• Power asymmetry increases self-blame (grades as leverage)</li>
-                                        <li>• Identity internalization increases self-blame (ego protection)</li>
-                                        <li>• Social comparison increases self-blame (peer pressure)</li>
-                                    </ul>
-                                </div>
-                                
-                                <div className="bg-black border border-gray-800 p-6">
-                                    <h3 className="text-lg font-semibold text-lime-400 mb-3">Resentment Dynamics</h3>
-                                    <div className="bg-black border border-gray-800 p-3 mb-3 font-mono text-sm">
-                                        R_internal = λ × Dissonance<br/>
-                                        R_external = (1-λ) × Dissonance
-                                    </div>
-                                    <p className="text-sm">
-                                        Dissonance gets channeled into either self-resentment (harmful to mental health) or 
-                                        institutional resentment (leads to complaints). High tuition paradoxically can reduce 
-                                        complaints by increasing λ through sunk-cost and prestige effects.
+                        <div className="space-y-8 text-gray-300">
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">The attribution mechanism</h3>
+                                <p className="leading-relaxed text-sm mb-3">
+                                    The attribution parameter lambda decides where disappointment goes. It is a logistic of three
+                                    psychological drivers, bounded between institutional blame and self-blame.
+                                </p>
+                                <div className="border-l-2 border-lime-500/40 pl-4">
+                                    <p className="text-lime-200/80 mb-2 font-mono text-sm">
+                                        lambda = sigma(theta0 + theta1 Power + theta2 Identity + theta3 SocialComparison)
                                     </p>
                                 </div>
-                                
-                                <div className="bg-black border border-gray-800 p-6">
-                                    <h3 className="text-lg font-semibold text-lime-400 mb-3">Institutional Manipulation</h3>
-                                    <ul className="space-y-2 text-sm">
-                                        <li><strong>Grade Inflation:</strong> Artificially raises observed quality, reducing dissonance but risking reputation when detected</li>
-                                        <li><strong>Prestige Messaging:</strong> Increases expectations AND attribution to self (double effect)</li>
-                                        <li><strong>Marketing Intensity:</strong> Raises expectations without improving quality</li>
-                                        <li><strong>Quality Investment:</strong> The only genuine way to reduce dissonance long-term</li>
-                                    </ul>
-                                </div>
-                                
-                                <div className="bg-black border border-gray-800 p-6">
-                                    <h3 className="text-lg font-semibold text-lime-400 mb-3">Key Scenarios to Explore</h3>
-                                    <ol className="space-y-2 text-sm">
-                                        <li><strong>1. High Cost, Low Quality:</strong> Set tuition to max, quality to min - watch self-blame dominate</li>
-                                        <li><strong>2. Grade Inflation Trap:</strong> High grade leniency temporarily helps but damages reputation</li>
-                                        <li><strong>3. Aid Shock Impact:</strong> Enable aid shock - see how reduced cost changes attribution</li>
-                                        <li><strong>4. Quality Investment:</strong> Enable quality program - the sustainable path to satisfaction</li>
-                                    </ol>
-                                </div>
-                                
-                                <div className="mt-8 p-6 border border-gray-800">
-                                    <h3 className="text-lg font-semibold text-white mb-3">Model Insights</h3>
-                                    <p className="text-sm text-gray-400">
-                                        This model reveals how high tuition can create a self-reinforcing cycle: high costs raise expectations, 
-                                        unmet expectations create dissonance, but psychological mechanisms (sunk cost, identity protection) 
-                                        channel this into self-blame rather than institutional critique. This protects institutions from 
-                                        accountability while harming student wellbeing. Understanding these dynamics is crucial for both 
-                                        policy intervention and individual awareness.
+                                <ul className="space-y-2 mt-3 text-sm leading-relaxed">
+                                    <li>When lambda is high (toward 1): students blame themselves for the disappointment.</li>
+                                    <li>When lambda is low (toward 0): students blame the institution.</li>
+                                    <li>Power asymmetry raises self-blame, since grades are leverage.</li>
+                                    <li>Identity internalization raises self-blame, as ego protection.</li>
+                                    <li>Social comparison raises self-blame, through peer pressure.</li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Resentment dynamics</h3>
+                                <div className="border-l-2 border-lime-500/40 pl-4">
+                                    <p className="text-lime-200/80 mb-2 font-mono text-sm">
+                                        R_self = lambda Dissonance
+                                    </p>
+                                    <p className="text-lime-200/80 mb-2 font-mono text-sm">
+                                        R_institutional = (1 - lambda) Dissonance
                                     </p>
                                 </div>
+                                <p className="leading-relaxed text-sm mt-3">
+                                    A single pool of dissonance is split into self-resentment, which harms wellbeing, and institutional
+                                    resentment, which drives complaints. High tuition can paradoxically reduce complaints by raising lambda
+                                    through sunk-cost and prestige effects.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Institutional levers</h3>
+                                <ul className="space-y-2 text-sm leading-relaxed">
+                                    <li>Grade inflation raises observed quality, reducing dissonance but risking reputation when an audit detects it.</li>
+                                    <li>Prestige messaging raises both expectation and self-attribution, a double effect.</li>
+                                    <li>Marketing intensity raises expectation without improving quality.</li>
+                                    <li>Quality investment is the only genuine way to reduce dissonance over the long run.</li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Scenarios to explore</h3>
+                                <ol className="space-y-2 text-sm leading-relaxed">
+                                    <li>High cost, low quality: set tuition to max and quality to min, and watch self-blame dominate.</li>
+                                    <li>Grade-inflation trap: high leniency helps briefly but damages reputation once audited.</li>
+                                    <li>Aid shock: enable it to see how reduced cost shifts attribution.</li>
+                                    <li>Quality program: enable it for the sustainable path to satisfaction.</li>
+                                </ol>
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Model insights</h3>
+                                <p className="leading-relaxed text-sm">
+                                    The model dramatizes a self-reinforcing cycle: high cost raises expectation, unmet expectation creates
+                                    dissonance, and psychological mechanisms (sunk cost, identity protection) route that dissonance into
+                                    self-blame rather than institutional critique. This protects institutions from accountability while
+                                    harming student wellbeing. The exact arithmetic is verified below; the interpretation is an argument, not
+                                    a forecast.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Model version</h3>
+                                <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                                <CalibrationPanel results={calibration} outputLabel="model value" />
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                                <AssumptionPanel assumptions={assumptions} />
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                                <ModelChangelog entries={changelog} />
                             </div>
                         </div>
                     )

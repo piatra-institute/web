@@ -246,7 +246,7 @@ function CompareView({ params, onParamsChange }: ViewProps) {
             {/* Compact selection grid */}
             <div>
                 <div className="text-lime-200/40 text-xs mb-2">
-                    Click to select (max 3){params.compareIds.length > 0 && ` — ${params.compareIds.length} selected`}
+                    Click to select (max 3){params.compareIds.length > 0 && `, ${params.compareIds.length} selected`}
                 </div>
                 <div className="grid gap-1" style={{ gridTemplateColumns: 'repeat(6, 1fr)' }}>
                     {STATE_SPACES.map((space) => {

@@ -5,14 +5,24 @@ import { useState } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import { type Params, DEFAULT_PARAMS } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 
 export default function PeriodicTableOfStateSpacesPlayground() {
     const [params, setParams] = useState<Params>(DEFAULT_PARAMS);
+    const [activeVersion, setActiveVersion] = useState<string>(versions[0]?.id ?? '');
+
+    const calibration = buildCalibration();
 
     const sections = [
         {
@@ -57,7 +67,7 @@ export default function PeriodicTableOfStateSpacesPlayground() {
                         dimensionality. Dynamics gives stochasticity, nonlinearity, and predictability.
                         Epistemics gives observability and controllability. Systems theory gives
                         openness and adaptation. Social structure gives endogeneity and reflexivity.
-                        No single axis determines the &quot;difficulty&quot; of a science — it is the
+                        No single axis determines the &quot;difficulty&quot; of a science. It is the
                         combination that matters.
                     </p>
 
@@ -87,7 +97,7 @@ export default function PeriodicTableOfStateSpacesPlayground() {
                     <h3 className="text-lime-400 font-semibold mb-3">Prediction, Explanation, Intervention</h3>
                     <p>
                         Pure prediction is too weak a criterion for science. A black-box correlation
-                        may predict without explaining. Science requires robustness under perturbation —
+                        may predict without explaining. Science requires robustness under perturbation,
                         which is precisely what the controllability and observability axes capture.
                         A system that is observable and controllable admits experiments; one that is
                         neither admits only observation and narrative.
@@ -103,6 +113,36 @@ export default function PeriodicTableOfStateSpacesPlayground() {
                         final taxonomy but a tool for thinking about what kind of knowledge is possible
                         in what kind of domain.
                     </p>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model Version</h3>
+                        <VersionSelector
+                            versions={versions}
+                            active={activeVersion}
+                            onSelect={setActiveVersion}
+                        />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <p className="leading-relaxed text-sm mb-3">
+                            The classifier is deterministic, so it can be checked. For each canonical case,
+                            the nearest cell (rank 1 by Euclidean distance) should fall inside the set of
+                            cells a domain expert already assigned to that case. A boolean pass is computed,
+                            never hardcoded.
+                        </p>
+                        <CalibrationPanel results={calibration} outputLabel="nearest cell in declared tag set" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                        <AssumptionPanel assumptions={assumptions} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model Changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -134,6 +174,7 @@ export default function PeriodicTableOfStateSpacesPlayground() {
             }
             sections={sections}
             settings={settings}
+            researchUrl="/playgrounds/periodic-table-of-state-spaces/research"
         />
     );
 }

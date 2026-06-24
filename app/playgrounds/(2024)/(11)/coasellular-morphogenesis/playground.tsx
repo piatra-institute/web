@@ -10,8 +10,15 @@ import dynamic from 'next/dynamic';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Input from '@/components/Input';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import VersionSelector from '@/components/VersionSelector';
+import ModelChangelog from '@/components/ModelChangelog';
 
 import Settings from './components/Settings';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 
 
@@ -48,6 +55,9 @@ export default function CoasellularMorphogenesisPlayground() {
         matrixColumns,
         pointsCount,
     ]);
+
+
+    const calibration = buildCalibration();
 
 
     const sections = [
@@ -113,24 +123,46 @@ export default function CoasellularMorphogenesisPlayground() {
             id: 'about',
             type: 'outro' as const,
             content: (
-                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
-                        <p>
-                            Coasellular morphogenesis applies the Coase theorem from economics to 
-                            biological development. Named after economist Ronald Coase, this theorem 
-                            suggests that under certain conditions, parties can negotiate solutions 
-                            to externality problems regardless of initial property rights.
+                <div className="space-y-8 text-gray-300">
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">The Coase theorem, applied to cells</h3>
+                        <p className="leading-relaxed text-sm">
+                            Coasellular morphogenesis applies the Coase theorem from economics to
+                            biological development. Named after economist Ronald Coase, the theorem
+                            says that under well-defined rights and low transaction costs, parties
+                            can bargain their way to an efficient allocation regardless of who holds
+                            the rights to begin with.
                         </p>
-                        <p>
-                            In this biological context, individual cells act as economic agents 
-                            that negotiate their morphological states through transaction costs. 
-                            Each cell maintains energy for transactions and uses neighboring cells 
-                            as distributed memory, creating emergent developmental patterns.
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Cells as bargaining agents</h3>
+                        <p className="leading-relaxed text-sm">
+                            Here each cell acts as an economic agent that negotiates its morphological
+                            state through transactions with its neighbours. A transaction moves one
+                            unit of endowment from one cell to the next, so the total value across the
+                            tissue is conserved; bargaining only reallocates. Each cell maintains an
+                            energy budget for transactions and uses its neighbours as distributed
+                            memory, and the running friction of bargaining shapes the emergent pattern.
                         </p>
-                        <p>
-                            Key concepts include: Coase theorem, transaction cost economics, 
-                            cellular automata, distributed cognition, bioelectric signaling, 
-                            and the economics of morphogenesis.
+                    </div>
+
+                    <div className="border-l-2 border-lime-500/40 pl-4">
+                        <p className="text-lime-200/80 mb-2">
+                            Two structural facts hold for every run: value is conserved across the
+                            grid, and every transaction spends energy proportional to the transaction
+                            cost. These are the conservation and friction halves of Coase&apos;s argument,
+                            and both are checked exactly in the calibration panel below.
                         </p>
+                    </div>
+
+                    <VersionSelector versions={versions} active="claude-v1" />
+
+                    <CalibrationPanel results={calibration} outputLabel="coasean invariants" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <ModelChangelog entries={changelog} />
                 </div>
             ),
         },
@@ -153,6 +185,7 @@ export default function CoasellularMorphogenesisPlayground() {
             subtitle="Bioelectric Negotiation Through Transaction Costs"
             sections={sections}
             settings={settings}
+            researchUrl="/playgrounds/coasellular-morphogenesis/research"
         />
     );
 }

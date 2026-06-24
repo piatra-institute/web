@@ -2,10 +2,18 @@
 
 import { useRef } from 'react';
 import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayout';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import Equation from '@/components/Equation';
 import { ShapeType } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 export interface ViewerRef {
     updateSimulation: (params: SimulationParams) => void;
@@ -41,6 +49,7 @@ export interface SimulationParams {
 
 export default function Playground() {
     const viewerRef = useRef<ViewerRef>(null);
+    const calibration = buildCalibration();
 
     const handleParamsChange = (params: SimulationParams) => {
         viewerRef.current?.updateSimulation(params);
@@ -59,21 +68,21 @@ export default function Playground() {
             id: 'canvas',
             type: 'canvas',
             content: (
-                <div className="w-full h-full">
+                <PlaygroundViewer>
                     <Viewer ref={viewerRef} />
-                </div>
+                </PlaygroundViewer>
             ),
         },
         {
             id: 'outro',
             type: 'outro',
             content: (
-                <div className="space-y-6">
+                <div className="space-y-8 text-gray-300">
                     <div className="border-l-2 border-lime-500/50 pl-4">
                         <h4 className="text-lime-400 font-semibold mb-2">Chladni Patterns</h4>
                         <p className="text-gray-300">
                             Ernst Chladni (1756-1827) discovered that fine particles on a vibrating plate
-                            accumulate along <em>nodal lines</em>—curves where the plate remains stationary.
+                            accumulate along <em>nodal lines</em>, curves where the plate remains stationary.
                             These patterns reveal the plate&apos;s eigenmodes: the natural frequencies at which
                             it resonates.
                         </p>
@@ -153,6 +162,26 @@ export default function Playground() {
                             contributing to the development of the biharmonic equation in elasticity theory.
                         </p>
                     </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Implementation</h3>
+                        <VersionSelector versions={versions} active="claude-v1" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <CalibrationPanel results={calibration} outputLabel="nodal amplitude" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                        <AssumptionPanel assumptions={assumptions} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -165,6 +194,7 @@ export default function Playground() {
             description="visualizing eigenmodes through nodal line formation"
             sections={sections}
             settings={<Settings onParamsChange={handleParamsChange} onReset={handleReset} />}
+            researchUrl="/playgrounds/chladni-generator/research"
         />
     );
 }

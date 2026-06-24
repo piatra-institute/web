@@ -3,29 +3,7 @@
 import { forwardRef, useImperativeHandle, useState, useMemo } from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Legend } from 'recharts';
 import { ViewerRef, PurchaseEvent } from '../../playground';
-import { SERIES } from '../../logic/stock-prices';
-
-function priceAt(ticker: string, date: Date): number | null {
-    const series = SERIES[ticker]?.prices || {};
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const key = `${year}-${month.toString().padStart(2, '0')}`;
-
-    // Direct match
-    if (series[key] != null) return series[key];
-
-    // Look backwards for most recent available price
-    const keys = Object.keys(series).sort();
-    if (keys.length === 0) return null;
-
-    for (let i = keys.length - 1; i >= 0; i--) {
-        if (keys[i] <= key) {
-            return series[keys[i]];
-        }
-    }
-
-    return null;
-}
+import { SERIES, priceAt } from '../../logic';
 
 interface TimelinePoint {
     date: Date;

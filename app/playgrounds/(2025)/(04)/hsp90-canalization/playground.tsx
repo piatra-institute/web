@@ -2,11 +2,18 @@
 
 import { useRef, useState } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import RadarGlyph from './components/RadarGlyph';
 import FitnessLegend from './components/FitnessLegend';
 import { CaptureHandle } from './components/CaptureHelper';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 
 
@@ -23,6 +30,8 @@ const defaults = {
 
 export default function Hsp90CanalizationPlayground() {
     const viewerRef = useRef<CaptureHandle>(null);
+
+    const calibration = buildCalibration();
 
     const [capacity, setCapacity] = useState(defaults.capacity);
     const [gSD, setGSD] = useState(defaults.gSD);
@@ -96,24 +105,55 @@ export default function Hsp90CanalizationPlayground() {
             id: 'about',
             type: 'outro' as const,
             content: (
-                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
-                    <p>
-                        Hsp90 is a molecular chaperone that plays a crucial role in genetic
-                        canalization - the ability of organisms to maintain consistent
-                        phenotypes despite genetic and environmental variation. This playground
-                        visualizes how Hsp90 buffers latent phenotypic variance.
-                    </p>
-                    <p>
-                        Under normal conditions, Hsp90 masks the effects of cryptic genetic
-                        variation, ensuring stable development. However, when Hsp90 function
-                        is compromised (by stress, mutations, or inhibition), previously
-                        hidden traits become visible, potentially accelerating evolution.
-                    </p>
-                    <p>
-                        Key concepts include: genetic canalization, phenotypic buffering,
-                        cryptic genetic variation, molecular chaperones, and evolutionary
-                        capacitance in developmental systems.
-                    </p>
+                <div className="space-y-8 text-gray-300">
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">The capacitor idea</h3>
+                        <p className="leading-relaxed text-sm">
+                            Hsp90 is a molecular chaperone that supports genetic
+                            canalization, the ability of organisms to hold a consistent
+                            phenotype despite genetic and environmental variation. This
+                            playground visualizes how Hsp90 buffers latent phenotypic
+                            variance and releases it under stress.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Buffering and release</h3>
+                        <p className="leading-relaxed text-sm">
+                            Under normal conditions Hsp90 masks the effects of cryptic
+                            genetic variation, keeping development stable. When Hsp90
+                            function is compromised, by stress, mutation, or inhibition,
+                            previously hidden traits become visible and can be acted on by
+                            selection.
+                        </p>
+                        <div className="border-l-2 border-lime-500/40 pl-4 mt-3">
+                            <p className="text-lime-200/80 mb-2">
+                                Key concepts: genetic canalization, phenotypic buffering,
+                                cryptic genetic variation, molecular chaperones, and
+                                evolutionary capacitance in developmental systems.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model version</h3>
+                        <VersionSelector versions={versions} active="claude-v1" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <CalibrationPanel results={calibration} outputLabel="hidden variance (%)" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                        <AssumptionPanel assumptions={assumptions} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -150,6 +190,7 @@ export default function Hsp90CanalizationPlayground() {
             }
             sections={sections}
             settings={settings}
+            researchUrl="/playgrounds/hsp90-canalization/research"
         />
     );
 }

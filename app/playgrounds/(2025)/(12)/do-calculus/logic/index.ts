@@ -73,7 +73,7 @@ export const clamp01 = (x: number): number => {
 };
 
 export const fmt = (x: number, d = 4): string => {
-    if (!Number.isFinite(x)) return '—';
+    if (!Number.isFinite(x)) return 'n/a';
     return x.toFixed(d);
 };
 
@@ -748,6 +748,110 @@ export function computeEffects(
     }
 
     return rows;
+}
+
+// ============================================
+// Discrete backdoor model (closed form)
+// ============================================
+//
+// A small, fully-specified binary structural causal model used for the
+// pedagogy of the do-operator and for calibration. It is deterministic: every
+// quantity below is a closed-form function of the conditional probability
+// tables, with no Monte-Carlo sampling. This is the part of the playground that
+// can be checked against hand computation.
+//
+// Graph:  U -> X,  U -> Y,  X -> Y   (U is an unobserved/observed confounder)
+//
+//   P(U = 1)                 = pU
+//   P(X = 1 | U = u)         = pX[u]
+//   P(Y = 1 | X = x, U = u)  = pY[x][u]
+
+export interface BackdoorModel {
+    /** P(U = 1) */
+    pU: number;
+    /** pX[u] = P(X = 1 | U = u), indexed by u in {0,1} */
+    pX: [number, number];
+    /** pY[x][u] = P(Y = 1 | X = x, U = u) */
+    pY: [[number, number], [number, number]];
+}
+
+/** Prior P(U = u) for u in {0,1}. */
+export function priorU(m: BackdoorModel): [number, number] {
+    return [1 - m.pU, m.pU];
+}
+
+/**
+ * Backdoor-adjusted interventional probability:
+ *   P(Y = 1 | do(X = x)) = sum_u P(Y = 1 | X = x, U = u) P(U = u)
+ * The confounder U is a sufficient adjustment set because it blocks the only
+ * backdoor path X <- U -> Y.
+ */
+export function pYdoX(m: BackdoorModel, x: 0 | 1): number {
+    const pu = priorU(m);
+    return m.pY[x][0] * pu[0] + m.pY[x][1] * pu[1];
+}
+
+/** Joint P(X = x, U = u) under observation (no intervention). */
+export function jointXU(m: BackdoorModel, x: 0 | 1, u: 0 | 1): number {
+    const pu = priorU(m);
+    const pxGivenU = x === 1 ? m.pX[u] : 1 - m.pX[u];
+    return pxGivenU * pu[u];
+}
+
+/** Marginal observational P(X = x). */
+export function pX(m: BackdoorModel, x: 0 | 1): number {
+    return jointXU(m, x, 0) + jointXU(m, x, 1);
+}
+
+/** Posterior P(U = u | X = x) via Bayes. */
+export function posteriorUgivenX(m: BackdoorModel, x: 0 | 1): [number, number] {
+    const px = pX(m, x);
+    if (px <= 0) return [0, 0];
+    return [jointXU(m, x, 0) / px, jointXU(m, x, 1) / px];
+}
+
+/**
+ * Naive observational conditional:
+ *   P(Y = 1 | X = x) = sum_u P(Y = 1 | X = x, U = u) P(U = u | X = x)
+ * Unlike pYdoX, this weights by the X-conditioned posterior over U, so when U
+ * influences X the confounding shows up as a gap between the two quantities.
+ */
+export function pYgivenX(m: BackdoorModel, x: 0 | 1): number {
+    const post = posteriorUgivenX(m, x);
+    return m.pY[x][0] * post[0] + m.pY[x][1] * post[1];
+}
+
+/**
+ * Average causal effect via the do-operator:
+ *   ACE = P(Y = 1 | do(X = 1)) - P(Y = 1 | do(X = 0)).
+ */
+export function averageCausalEffect(m: BackdoorModel): number {
+    return pYdoX(m, 1) - pYdoX(m, 0);
+}
+
+/**
+ * Naive (confounded) association:
+ *   P(Y = 1 | X = 1) - P(Y = 1 | X = 0).
+ * Equals the ACE only when U does not affect X (no open backdoor path).
+ */
+export function naiveAssociation(m: BackdoorModel): number {
+    return pYgivenX(m, 1) - pYgivenX(m, 0);
+}
+
+/** Confounding bias: how far the naive association sits from the true effect. */
+export function confoundingBias(m: BackdoorModel): number {
+    return naiveAssociation(m) - averageCausalEffect(m);
+}
+
+/** Total observational mass over the four (X,Y) cells; a normalization check. */
+export function observationalMass(m: BackdoorModel): number {
+    let total = 0;
+    for (let x = 0 as 0 | 1; x <= 1; x = (x + 1) as 0 | 1) {
+        const px = pX(m, x);
+        const py = pYgivenX(m, x);
+        total += px * py + px * (1 - py);
+    }
+    return total;
 }
 
 export function computeGrangerAndTE(

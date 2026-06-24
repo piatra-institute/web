@@ -23,8 +23,10 @@ interface ViewerProps {
 const clamp = (x: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, x));
 const sigmoid = (x: number) => 1 / (1 + Math.exp(-x));
 
+type ChartRow = Record<string, number>;
+
 interface MiniChartProps {
-    data: any[];
+    data: ChartRow[];
     xKey?: string;
     ySeries?: { key: string; label: string }[];
     yDomain?: [number, number];
@@ -129,7 +131,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
     
     const [isRunning, setIsRunning] = useState(false);
     const [currentT, setCurrentT] = useState(0);
-    const [series, setSeries] = useState<any[]>([]);
+    const [series, setSeries] = useState<ChartRow[]>([]);
     const [telemetry, setTelemetry] = useState({
         t: 0,
         expectation: 0,

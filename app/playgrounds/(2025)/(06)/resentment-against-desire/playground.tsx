@@ -2,51 +2,35 @@
 
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
+import Equation from '@/components/Equation';
 import { useState, useCallback } from 'react';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 
 
 const IntroContent = () => (
-    <div className="space-y-6 text-gray-300 font-serif max-w-3xl mx-auto">
+    <div className="space-y-6 text-gray-300 max-w-3xl mx-auto">
         <p className="text-xl">
-            In 1982, Werner Güth, Rolf Schmittberger, and Bernd Schwarze conducted a groundbreaking experiment that challenged fundamental assumptions about rational economic behavior. Their &quot;Ultimatum Game&quot; revealed a profound truth: humans will reject unfair offers even when it costs them, suggesting that our sense of fairness often trumps pure self-interest.
+            In 1982, Werner Güth, Rolf Schmittberger, and Bernd Schwarze ran an experiment that challenged a basic assumption about rational economic behavior. Their &quot;Ultimatum Game&quot; revealed a stubborn fact: people will reject unfair offers even when refusal costs them, suggesting that a sense of fairness often outweighs pure self-interest.
         </p>
         <p>
-            This playground recreates that historic experiment as an interactive psychological tool. Experience the internal tension between desire for gain and resentment against unfairness—the same forces that drive real-world negotiations, from salary discussions to international trade agreements.
+            This playground recreates that experiment as an interactive tool. You feel the tension between desire for gain and resentment against unfairness, the same forces that drive real negotiations, from salary talks to trade agreements.
         </p>
         <p>
-            As the Responder, face a simple choice: accept or reject the Proposer&apos;s offer. But within this simplicity lies complexity—how much unfairness will one tolerate? When does resentment overcome desire for reward? The model predicts decisions based on these competing forces, allowing exploration of the boundaries of rationality.
+            As the Responder, you face a simple choice: accept or reject the Proposer&apos;s offer. Within that simplicity sits a hard question. How much unfairness will you tolerate, and when does resentment overcome the desire for reward? The model predicts decisions from these competing forces, letting you explore the boundary of rationality.
         </p>
     </div>
 );
 
-const AboutContent = () => (
-    <div className="space-y-6 text-gray-300 font-serif max-w-3xl mx-auto">
-        <h3 className="text-2xl font-bold text-gray-200">The Original Experiment</h3>
-        <p>
-            The 1982 study involved 42 economics students from the University of Cologne, divided into Proposers and Responders. Proposers received 4-10 German Marks to split, while Responders could accept or reject the offer. If rejected, both received nothing. The results defied classical economic theory: Proposers offered an average of 37% of the total (with 50/50 being the most common split), and Responders frequently rejected offers they deemed unfair.
-        </p>
-
-        <h3 className="text-2xl font-bold text-gray-200">The Model</h3>
-        <p>
-            This simulation models decision-making as a competition between two psychological forces:
-        </p>
-        <ul className="list-disc list-inside space-y-2 ml-4">
-            <li><strong className="text-blue-300">Desire</strong>: Motivation to gain reward, adjustable from indifference to desperation</li>
-            <li><strong className="text-red-300">Resentment</strong>: Aversion to unfairness, automatically calculated based on the offer&apos;s deviation from an equal split</li>
-        </ul>
-        <p>
-            The model predicts acceptance when desire meets or exceeds resentment. This simple rule captures the essence of the phase transition observed in human behavior—the tipping point where rational calculation gives way to principled rejection.
-        </p>
-
-        <h3 className="text-2xl font-bold text-gray-200">Scientific Significance</h3>
-        <p>
-            The Ultimatum Game has been replicated thousands of times across cultures, consistently confirming that humans value fairness alongside material gain. This finding has profound implications for economics, psychology, evolutionary biology, and artificial intelligence. It suggests that cooperation and fairness norms are not mere social constructs but fundamental aspects of human decision-making.
-        </p>
-    </div>
-);
+const calibration = buildCalibration();
 
 export default function ResentmentAgainstDesirePlayground() {
     // Game state
@@ -125,7 +109,61 @@ export default function ResentmentAgainstDesirePlayground() {
         {
             id: 'about',
             type: 'outro' as const,
-            content: <AboutContent />,
+            content: (
+                <div className="space-y-8 text-gray-300">
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">The original experiment</h3>
+                        <p className="leading-relaxed text-sm">
+                            The 1982 study divided economics students at the University of Cologne into Proposers and Responders. Proposers received a sum to split; Responders could accept or reject. If rejected, both received nothing. The results defied classical theory: the even split was the most common offer, well above the self-interested minimum, and Responders frequently rejected offers they judged unfair, paying with their own money to punish a stingy proposer.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">The model</h3>
+                        <p className="leading-relaxed text-sm">
+                            The simulation treats a decision as a contest between two scalar forces: desire for reward, set by you, and resentment at unfairness, computed from the offer. Resentment is a linear ramp in the gap below the even split, capped at the top of its range:
+                        </p>
+                        <div className="my-3">
+                            <Equation
+                                mode="block"
+                                math="\text{resentment} = \min\big((5 - \text{offer})\cdot 25,\ 100\big)"
+                            />
+                        </div>
+                        <div className="border-l-2 border-lime-500/40 pl-4 mt-3">
+                            <p className="text-lime-200/80 text-sm">
+                                The responder accepts when desire is at least as large as resentment, and rejects otherwise. Where the two forces meet sits the tipping point, the knife-edge where a small nudge flips the outcome.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Scientific significance</h3>
+                        <p className="leading-relaxed text-sm">
+                            The Ultimatum Game has been replicated thousands of times across cultures, consistently confirming that people value fairness alongside material gain. The two-force sketch here is a stripped-down cousin of inequity-aversion theory, where the resentment term stands in for the penalty on getting less than an equal share. The companion article works through the relation in detail.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Version</h3>
+                        <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <CalibrationPanel results={calibration} outputLabel="model rule" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                        <AssumptionPanel assumptions={assumptions} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
+                </div>
+            ),
         },
     ];
 
@@ -146,13 +184,15 @@ export default function ResentmentAgainstDesirePlayground() {
                 <a
                     href="https://doi.org/10.1016/0167-2681(82)90011-7"
                     target="_blank"
+                    rel="noopener noreferrer"
                     className="underline"
                 >
-                    1982, Güth, Schmittberger, & Schwarze, An Experimental Analysis of Ultimatum Bargaining
+                    1982, Güth, Schmittberger, &amp; Schwarze, An Experimental Analysis of Ultimatum Bargaining
                 </a>
             }
             sections={sections}
             settings={settings}
+            researchUrl="/playgrounds/resentment-against-desire/research"
         />
     );
 }

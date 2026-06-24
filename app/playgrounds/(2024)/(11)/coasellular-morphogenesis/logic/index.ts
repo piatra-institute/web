@@ -182,3 +182,89 @@ export class RotatingCircles {
         this.transactPoints();
     }
 }
+
+
+// #region deterministic core
+// The live simulation injects randomness in two places: each circle's starting
+// energy (Math.random) and the sign of every value adjustment (Math.random>0.5).
+// The deterministic core below strips that noise so the model's structural
+// invariants can be verified exactly. These are the load-bearing economic claims
+// of the model and are independent of the random draws.
+
+export interface DeterministicTransaction {
+    /** index of the boundary point on the lower-index circle of the pair */
+    give: number;
+    /** index of the boundary point on the higher-index circle of the pair */
+    take: number;
+    /** signed unit moved from `give` to `take` (±1) */
+    sign: number;
+}
+
+
+/**
+ * Enumerate the neighbour boundary pairs for a rows-by-columns grid of circles
+ * whose points sit at fixed equal angular spacing. A horizontal pair exists for
+ * every interior vertical edge of the grid; a vertical pair for every interior
+ * horizontal edge. Each pair contributes exactly one transaction. This is the
+ * deterministic skeleton of `RotatingCircles.transactPoints` with the angular
+ * gating satisfied (a point is always in the boundary cone at some rotation).
+ */
+export function neighbourPairCount(rows: number, columns: number): number {
+    const horizontal = rows * Math.max(0, columns - 1);
+    const vertical = Math.max(0, rows - 1) * columns;
+    return horizontal + vertical;
+}
+
+
+/**
+ * Total scalar value held across every point in the grid. The transaction rule
+ * moves a unit from one paired point to the other (value1 += a, value2 -= a),
+ * so this quantity is conserved by construction: the Coasean result that
+ * bargaining redistributes endowments without creating or destroying value.
+ */
+export function totalPointValue(values: number[]): number {
+    return values.reduce((sum, v) => sum + v, 0);
+}
+
+
+/**
+ * Apply a deterministic sequence of transactions to a flat value array. Each
+ * transaction moves `sign` units from `give` to `take`. Returns the resulting
+ * array. Used to demonstrate that, whatever the signs, the total is invariant.
+ */
+export function applyTransactions(
+    values: number[],
+    transactions: DeterministicTransaction[],
+): number[] {
+    const out = values.slice();
+    for (const t of transactions) {
+        out[t.give] -= t.sign;
+        out[t.take] += t.sign;
+    }
+    return out;
+}
+
+
+/**
+ * Net energy change of the whole grid after one transaction, holding the
+ * transaction cost fixed. In `transactPoints` both circles of a pair have their
+ * energy moved by `transactionCost * adjustment1` with the SAME sign, so the
+ * grid energy is not conserved: each transaction injects 2 * cost * sign units
+ * of energy. This returns the magnitude per transaction (|sign| = 1), the cost
+ * of running the bargaining machinery itself.
+ */
+export function energyPerTransaction(transactionCost: number): number {
+    return 2 * transactionCost;
+}
+
+
+/**
+ * Total energy expended to run `pairs` transactions at a given cost. Equal to
+ * pairs * energyPerTransaction(cost) by linearity. This is the model's analogue
+ * of cumulative transaction cost: the friction that, in Coase's theorem, decides
+ * whether efficient bargaining actually happens.
+ */
+export function cumulativeTransactionEnergy(pairs: number, transactionCost: number): number {
+    return pairs * energyPerTransaction(transactionCost);
+}
+// #endregion deterministic core
