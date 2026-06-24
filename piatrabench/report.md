@@ -2,9 +2,9 @@
 
 Deterministic conformance of all playgrounds to the current template (CLAUDE.md). No model judgement.
 
-- Generated: 2026-06-24T01:48:02.947Z
+- Generated: 2026-06-24T05:05:24.899Z
 - Playgrounds: **101**
-- Mean score: **97.8/100**
+- Mean score: **98.4/100**
 - Build check: enabled (tsc --noEmit, attributed per-playground)
 - Citation resolution: disabled (run with --links)
 
@@ -16,7 +16,7 @@ Scoring categories (weights): build & types 25, registration & metadata 15, stru
 | --- | --- | --- | --- |
 | 2024 | 13 | 91.4 | 3.4 |
 | 2025 | 39 | 99.1 | 4.0 |
-| 2026 | 49 | 98.5 | 3.9 |
+| 2026 | 49 | 99.7 | 4.0 |
 
 ## Model leaderboard
 
@@ -24,7 +24,7 @@ Mean Layer 0 conformance per generating model (from each playground's versions.t
 
 | model | playgrounds | mean score | build | meta | structure | infra | style | best |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Claude Opus 4.8 | 99 | **98.8** | 99.8% | 100% | 97.5% | 98% | 99.2% | cpt-variance (100) |
+| Claude Opus 4.8 | 99 | **99.4** | 100% | 100% | 97.5% | 99.7% | 100% | cpt-variance (100) |
 | _(unattributed)_ | 2 | – | | | | | | |
 
 ## Honesty
@@ -137,17 +137,8 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 - **artificial-death** — 46/100 · June 2024 · assumptions.ts; calibration.ts; research companion; in data.ts (not registered); lime palette; valid topics/operations (no registry entry) · 1 `rounded` className(s) — verify none are on main containers/buttons
 - **byte-birth** — 46/100 · June 2024 · assumptions.ts; calibration.ts; research companion; in data.ts (not registered); lime palette; valid topics/operations (no registry entry) · 1 `rounded` className(s) — verify none are on main containers/buttons
 - **entropy-cafe** — 93/100 · July 2025 · calibration.ts
-- **geometries-of-action** — 93/100 · March 2026 · research companion
-- **fiscal-compass** — 93/100 · May 2026 · research companion
-- **forbidden-edges** — 93/100 · May 2026 · research companion
-- **knife-edge** — 93/100 · May 2026 · research companion
-- **no-global-section** — 93/100 · May 2026 · research companion
-- **uncare-engine** — 93/100 · May 2026 · research companion
 - **halley-window** — 94/100 · February 2025 · PlaygroundViewer; Settings + Viewer split (no Viewer) · 2 `rounded` className(s) — verify none are on main containers/buttons
 - **crystallographic-groups** — 94/100 · July 2025 · PlaygroundViewer; Settings + Viewer split (no Viewer)
-- **pettini-tensor-networks** — 94/100 · March 2026 · no em-dashes (in assumptions.ts, calibration.ts, components/Viewer/index.tsx)
-- **epistemic-lensing** — 94/100 · April 2026 · no em-dashes (in assumptions.ts, calibration.ts, logic/index.ts)
-- **audience-attractor** — 95/100 · May 2026 · no `any` (1 occurrence(s))
 - **hsp90-canalization** — 96/100 · April 2025 · PlaygroundViewer · 1 `rounded` className(s) — verify none are on main containers/buttons
 - **raupian-morphospace** — 96/100 · April 2025 · PlaygroundViewer
 - **ownership-parity-rule** — 96/100 · October 2025 · PlaygroundViewer
@@ -215,14 +206,17 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | co2-metabolism-hypothesis | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | March 2026 |
 | cost-of-chaos | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | March 2026 |
 | frontier-governance | 100 | – | 100% | 100% | 100% | 100% | 100% | March 2026 |
+| geometries-of-action | 100 | – | 100% | 100% | 100% | 100% | 100% | March 2026 |
 | greimas-square-dynamics | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | March 2026 |
 | lithic-grammar | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | March 2026 |
 | modes-of-combination | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | March 2026 |
 | north-south-divergence | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | March 2026 |
 | periodic-table-of-state-spaces | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | March 2026 |
+| pettini-tensor-networks | 100 | – | 100% | 100% | 100% | 100% | 100% | March 2026 |
 | trainable-gene-circuits | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | March 2026 |
 | coordination-under-complementarity | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | April 2026 |
 | counterfactual-growth-engine | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | April 2026 |
+| epistemic-lensing | 100 | – | 100% | 100% | 100% | 100% | 100% | April 2026 |
 | moral-phase-space | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | April 2026 |
 | morphologies-of-stability | 100 | cal ✓ (fit 1%) | 100% | 100% | 100% | 100% | 100% | April 2026 |
 | morphospace-engine | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | April 2026 |
@@ -230,9 +224,15 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | ontometrics | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | April 2026 |
 | photosynthetic-state-space | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | April 2026 |
 | societal-harm-topology | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | April 2026 |
+| audience-attractor | 100 | – | 100% | 100% | 100% | 100% | 100% | May 2026 |
 | aura-space | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | May 2026 |
+| fiscal-compass | 100 | – | 100% | 100% | 100% | 100% | 100% | May 2026 |
+| forbidden-edges | 100 | – | 100% | 100% | 100% | 100% | 100% | May 2026 |
 | kerr-causality | 100 | – | 100% | 100% | 100% | 100% | 100% | May 2026 |
+| knife-edge | 100 | – | 100% | 100% | 100% | 100% | 100% | May 2026 |
+| no-global-section | 100 | – | 100% | 100% | 100% | 100% | 100% | May 2026 |
 | salience-engine | 100 | – | 100% | 100% | 100% | 100% | 100% | May 2026 |
+| uncare-engine | 100 | – | 100% | 100% | 100% | 100% | 100% | May 2026 |
 | arithmetic-dynamics | 100 | cal ✓ (fit 27%) | 100% | 100% | 100% | 100% | 100% | June 2026 |
 | family-threshold | 100 | – | 100% | 100% | 100% | 100% | 100% | June 2026 |
 | ideological-bent | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | June 2026 |
@@ -251,17 +251,8 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | geometry-of-fragmentation | 96 | cal ✓ (fit 0%) | 100% | 100% | 80% | 100% | 100% | January 2026 |
 | gait-gambit | 96 | cal ✓ (fit 0%) | 100% | 100% | 80% | 100% | 100% | February 2026 |
 | polity-coalition-attractors | 96 | cal ✓ (fit 0%) | 100% | 100% | 80% | 100% | 100% | February 2026 |
-| audience-attractor | 95 | – | 80% | 100% | 100% | 100% | 100% | May 2026 |
 | halley-window | 94 | cal ✓ (fit 0%) | 100% | 100% | 70% | 100% | 100% | February 2025 |
 | crystallographic-groups | 94 | cal ✓ (fit 0%) | 100% | 100% | 70% | 100% | 100% | July 2025 |
-| pettini-tensor-networks | 94 | – | 100% | 100% | 100% | 100% | 60% | March 2026 |
-| epistemic-lensing | 94 | – | 100% | 100% | 100% | 100% | 60% | April 2026 |
 | entropy-cafe | 93 | – | 100% | 100% | 100% | 72% | 100% | July 2025 |
-| geometries-of-action | 93 | – | 100% | 100% | 100% | 72% | 100% | March 2026 |
-| fiscal-compass | 93 | – | 100% | 100% | 100% | 72% | 100% | May 2026 |
-| forbidden-edges | 93 | – | 100% | 100% | 100% | 72% | 100% | May 2026 |
-| knife-edge | 93 | – | 100% | 100% | 100% | 72% | 100% | May 2026 |
-| no-global-section | 93 | – | 100% | 100% | 100% | 72% | 100% | May 2026 |
-| uncare-engine | 93 | – | 100% | 100% | 100% | 72% | 100% | May 2026 |
 | artificial-death | 46 | – | 100% | 13% | 65% | 0% | 40% | June 2024 |
 | byte-birth | 46 | – | 100% | 13% | 65% | 0% | 40% | June 2024 |

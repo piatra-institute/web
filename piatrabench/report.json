@@ -1,7 +1,7 @@
 {
-  "generated": "2026-06-24T01:48:02.948Z",
+  "generated": "2026-06-24T05:05:24.900Z",
   "n": 101,
-  "avg": 97.8,
+  "avg": 98.4,
   "build": true,
   "links": false,
   "eras": {
@@ -17,8 +17,8 @@
     },
     "2026": {
       "n": 49,
-      "score": 4825,
-      "infra": 190
+      "score": 4884,
+      "infra": 196
     }
   },
   "models": [
@@ -26,13 +26,13 @@
       "key": "claude opus 4.8",
       "label": "Claude Opus 4.8",
       "n": 99,
-      "mean": 98.8,
+      "mean": 99.4,
       "meanByCat": {
-        "build": 99.8,
+        "build": 100,
         "meta": 100,
         "structure": 97.5,
-        "infra": 98,
-        "style": 99.2
+        "infra": 99.7,
+        "style": 100
       },
       "best": {
         "slug": "cpt-variance",
@@ -16502,7 +16502,7 @@
       "name": "geometries of action",
       "model": "Claude Opus 4.8",
       "modelKey": "claude opus 4.8",
-      "score": 93,
+      "score": 100,
       "byCat": {
         "build": {
           "earned": 25,
@@ -16517,7 +16517,7 @@
           "total": 20
         },
         "infra": {
-          "earned": 18,
+          "earned": 25,
           "total": 25
         },
         "style": {
@@ -16529,7 +16529,7 @@
         "build": 100,
         "meta": 100,
         "structure": 100,
-        "infra": 72,
+        "infra": 100,
         "style": 100
       },
       "checks": [
@@ -16673,7 +16673,7 @@
           "label": "research companion",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -16705,16 +16705,9 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "research",
-          "label": "research companion",
-          "lost": 7,
-          "detail": ""
-        }
-      ],
+      "failed": [],
       "warnings": [],
-      "infraCount": 3,
+      "infraCount": 4,
       "citations": [
         "https://www.thetransmitter.org/neural-dynamics/neural-manifolds-latest-buzzword-or-pathway-to-understand-the-brain/"
       ],
@@ -16732,7 +16725,7 @@
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 93
+      "headline": 100
     },
     {
       "slug": "greimas-square-dynamics",
@@ -17949,7 +17942,7 @@
       "name": "Pettini tensor networks",
       "model": "Claude Opus 4.8",
       "modelKey": "claude opus 4.8",
-      "score": 94,
+      "score": 100,
       "byCat": {
         "build": {
           "earned": 25,
@@ -17968,7 +17961,7 @@
           "total": 25
         },
         "style": {
-          "earned": 9,
+          "earned": 15,
           "total": 15
         }
       },
@@ -17977,7 +17970,7 @@
         "meta": 100,
         "structure": 100,
         "infra": 100,
-        "style": 60
+        "style": 100
       },
       "checks": [
         {
@@ -18129,8 +18122,8 @@
           "label": "no em-dashes",
           "category": "style",
           "weight": 6,
-          "ratio": 0,
-          "detail": "in assumptions.ts, calibration.ts, components/Viewer/index.tsx",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -18152,14 +18145,7 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "no-emdash",
-          "label": "no em-dashes",
-          "lost": 6,
-          "detail": "in assumptions.ts, calibration.ts, components/Viewer/index.tsx"
-        }
-      ],
+      "failed": [],
       "warnings": [],
       "infraCount": 4,
       "citations": [
@@ -18179,7 +18165,7 @@
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 94
+      "headline": 100
     },
     {
       "slug": "trainable-gene-circuits",
@@ -18920,7 +18906,7 @@
       "name": "epistemic lensing",
       "model": "Claude Opus 4.8",
       "modelKey": "claude opus 4.8",
-      "score": 94,
+      "score": 100,
       "byCat": {
         "build": {
           "earned": 25,
@@ -18939,7 +18925,7 @@
           "total": 25
         },
         "style": {
-          "earned": 9,
+          "earned": 15,
           "total": 15
         }
       },
@@ -18948,7 +18934,7 @@
         "meta": 100,
         "structure": 100,
         "infra": 100,
-        "style": 60
+        "style": 100
       },
       "checks": [
         {
@@ -19100,8 +19086,8 @@
           "label": "no em-dashes",
           "category": "style",
           "weight": 6,
-          "ratio": 0,
-          "detail": "in assumptions.ts, calibration.ts, logic/index.ts",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -19123,14 +19109,7 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "no-emdash",
-          "label": "no em-dashes",
-          "lost": 6,
-          "detail": "in assumptions.ts, calibration.ts, logic/index.ts"
-        }
-      ],
+      "failed": [],
       "warnings": [],
       "infraCount": 4,
       "citations": [],
@@ -19148,7 +19127,7 @@
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 94
+      "headline": 100
     },
     {
       "slug": "moral-phase-space",
@@ -20859,10 +20838,10 @@
       "name": "audience attractor",
       "model": "Claude Opus 4.8",
       "modelKey": "claude opus 4.8",
-      "score": 95,
+      "score": 100,
       "byCat": {
         "build": {
-          "earned": 20,
+          "earned": 25,
           "total": 25
         },
         "meta": {
@@ -20883,7 +20862,7 @@
         }
       },
       "catPct": {
-        "build": 80,
+        "build": 100,
         "meta": 100,
         "structure": 100,
         "infra": 100,
@@ -20904,8 +20883,8 @@
           "label": "no `any`",
           "category": "build",
           "weight": 5,
-          "ratio": 0,
-          "detail": "1 occurrence(s)",
+          "ratio": 1,
+          "detail": "",
           "applicable": true
         },
         {
@@ -21062,14 +21041,7 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "no-any",
-          "label": "no `any`",
-          "lost": 5,
-          "detail": "1 occurrence(s)"
-        }
-      ],
+      "failed": [],
       "warnings": [],
       "infraCount": 4,
       "citations": [
@@ -21089,7 +21061,7 @@
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 95
+      "headline": 100
     },
     {
       "slug": "aura-space",
@@ -21344,7 +21316,7 @@
       "name": "fiscal compass",
       "model": "Claude Opus 4.8",
       "modelKey": "claude opus 4.8",
-      "score": 93,
+      "score": 100,
       "byCat": {
         "build": {
           "earned": 25,
@@ -21359,7 +21331,7 @@
           "total": 20
         },
         "infra": {
-          "earned": 18,
+          "earned": 25,
           "total": 25
         },
         "style": {
@@ -21371,7 +21343,7 @@
         "build": 100,
         "meta": 100,
         "structure": 100,
-        "infra": 72,
+        "infra": 100,
         "style": 100
       },
       "checks": [
@@ -21515,7 +21487,7 @@
           "label": "research companion",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -21547,16 +21519,9 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "research",
-          "label": "research companion",
-          "lost": 7,
-          "detail": ""
-        }
-      ],
+      "failed": [],
       "warnings": [],
-      "infraCount": 3,
+      "infraCount": 4,
       "citations": [
         "https://www.aeaweb.org/articles?id=10.1257/jep.25.4.165"
       ],
@@ -21574,7 +21539,7 @@
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 93
+      "headline": 100
     },
     {
       "slug": "forbidden-edges",
@@ -21587,7 +21552,7 @@
       "name": "forbidden edges",
       "model": "Claude Opus 4.8",
       "modelKey": "claude opus 4.8",
-      "score": 93,
+      "score": 100,
       "byCat": {
         "build": {
           "earned": 25,
@@ -21602,7 +21567,7 @@
           "total": 20
         },
         "infra": {
-          "earned": 18,
+          "earned": 25,
           "total": 25
         },
         "style": {
@@ -21614,7 +21579,7 @@
         "build": 100,
         "meta": 100,
         "structure": 100,
-        "infra": 72,
+        "infra": 100,
         "style": 100
       },
       "checks": [
@@ -21758,7 +21723,7 @@
           "label": "research companion",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -21790,16 +21755,9 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "research",
-          "label": "research companion",
-          "lost": 7,
-          "detail": ""
-        }
-      ],
+      "failed": [],
       "warnings": [],
-      "infraCount": 3,
+      "infraCount": 4,
       "citations": [
         "https://www.pnas.org/doi/10.1073/pnas.1408988111"
       ],
@@ -21817,7 +21775,7 @@
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 93
+      "headline": 100
     },
     {
       "slug": "kerr-causality",
@@ -22066,7 +22024,7 @@
       "name": "knife edge",
       "model": "Claude Opus 4.8",
       "modelKey": "claude opus 4.8",
-      "score": 93,
+      "score": 100,
       "byCat": {
         "build": {
           "earned": 25,
@@ -22081,7 +22039,7 @@
           "total": 20
         },
         "infra": {
-          "earned": 18,
+          "earned": 25,
           "total": 25
         },
         "style": {
@@ -22093,7 +22051,7 @@
         "build": 100,
         "meta": 100,
         "structure": 100,
-        "infra": 72,
+        "infra": 100,
         "style": 100
       },
       "checks": [
@@ -22237,7 +22195,7 @@
           "label": "research companion",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -22269,16 +22227,9 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "research",
-          "label": "research companion",
-          "lost": 7,
-          "detail": ""
-        }
-      ],
+      "failed": [],
       "warnings": [],
-      "infraCount": 3,
+      "infraCount": 4,
       "citations": [
         "https://www.jneurosci.org/content/23/35/11167"
       ],
@@ -22296,7 +22247,7 @@
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 93
+      "headline": 100
     },
     {
       "slug": "no-global-section",
@@ -22309,7 +22260,7 @@
       "name": "no global section",
       "model": "Claude Opus 4.8",
       "modelKey": "claude opus 4.8",
-      "score": 93,
+      "score": 100,
       "byCat": {
         "build": {
           "earned": 25,
@@ -22324,7 +22275,7 @@
           "total": 20
         },
         "infra": {
-          "earned": 18,
+          "earned": 25,
           "total": 25
         },
         "style": {
@@ -22336,7 +22287,7 @@
         "build": 100,
         "meta": 100,
         "structure": 100,
-        "infra": 72,
+        "infra": 100,
         "style": 100
       },
       "checks": [
@@ -22480,7 +22431,7 @@
           "label": "research companion",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -22512,16 +22463,9 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "research",
-          "label": "research companion",
-          "lost": 7,
-          "detail": ""
-        }
-      ],
+      "failed": [],
       "warnings": [],
-      "infraCount": 3,
+      "infraCount": 4,
       "citations": [
         "https://plato.stanford.edu/entries/category-theory/"
       ],
@@ -22539,7 +22483,7 @@
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 93
+      "headline": 100
     },
     {
       "slug": "salience-engine",
@@ -22788,7 +22732,7 @@
       "name": "the uncare engine",
       "model": "Claude Opus 4.8",
       "modelKey": "claude opus 4.8",
-      "score": 93,
+      "score": 100,
       "byCat": {
         "build": {
           "earned": 25,
@@ -22803,7 +22747,7 @@
           "total": 20
         },
         "infra": {
-          "earned": 18,
+          "earned": 25,
           "total": 25
         },
         "style": {
@@ -22815,7 +22759,7 @@
         "build": 100,
         "meta": 100,
         "structure": 100,
-        "infra": 72,
+        "infra": 100,
         "style": 100
       },
       "checks": [
@@ -22959,7 +22903,7 @@
           "label": "research companion",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -22991,16 +22935,9 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "research",
-          "label": "research companion",
-          "lost": 7,
-          "detail": ""
-        }
-      ],
+      "failed": [],
       "warnings": [],
-      "infraCount": 3,
+      "infraCount": 4,
       "citations": [
         "https://plato.stanford.edu/entries/nietzsche-moral-political/"
       ],
@@ -23018,7 +22955,7 @@
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 93
+      "headline": 100
     },
     {
       "slug": "arithmetic-dynamics",
