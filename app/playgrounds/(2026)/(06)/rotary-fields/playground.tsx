@@ -202,6 +202,7 @@ export default function RotaryFieldsPlayground({ sourceContext }: Props) {
                 </a>
             }
             sections={sections}
+            researchUrl="/playgrounds/rotary-fields/research"
             settings={
                 <Settings
                     params={params}

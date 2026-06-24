@@ -5,6 +5,10 @@ import { useState, useMemo } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
@@ -17,10 +21,15 @@ import {
     classifySedimentary,
     classifyMetamorphic,
 } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 
 export default function LithicGrammarPlayground() {
     const [params, setParams] = useState<Params>(DEFAULT_PARAMS);
+
+    const calibration = buildCalibration();
 
     const result = useMemo<ClassificationResult | null>(() => {
         if (params.viewMode !== 'classifier' && params.viewMode !== 'graph') {
@@ -104,7 +113,7 @@ export default function LithicGrammarPlayground() {
                         Rock names are discrete labels imposed on continuous geological manifolds.
                         The mineral composition, grain size, temperature, pressure, and formation
                         history of a rock all vary continuously, yet petrology assigns each specimen
-                        a discrete name. Three domains — igneous, sedimentary, metamorphic — each
+                        a discrete name. Three domains (igneous, sedimentary, metamorphic) each
                         use their own classification grammar: different axes, different boundaries,
                         different decision logic.
                     </p>
@@ -159,7 +168,7 @@ export default function LithicGrammarPlayground() {
 
                     <h3 className="text-lime-400 font-semibold mb-3">The Rock Cycle</h3>
                     <p>
-                        All three domains connect through geological processes — weathering breaks down
+                        All three domains connect through geological processes. Weathering breaks down
                         igneous and metamorphic rocks into sediment, lithification compresses sediment
                         into sedimentary rock, metamorphism transforms any rock under heat and pressure,
                         and melting returns material to magma. Every rock is potentially every other rock
@@ -173,8 +182,28 @@ export default function LithicGrammarPlayground() {
                         of alkali feldspar to plagioclase, which varies continuously. Still others
                         are purely conventional: the 63% SiO₂ line separating intermediate from felsic
                         is a human decision, not a physical discontinuity. The playground makes these
-                        different boundary types visible — nature is continuous, nomenclature is discrete.
+                        different boundary types visible: nature is continuous, nomenclature is discrete.
                     </p>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model version</h3>
+                        <VersionSelector versions={versions} active="claude-v1" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <CalibrationPanel results={calibration} outputLabel="correct derivation" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                        <AssumptionPanel assumptions={assumptions} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -204,6 +233,7 @@ export default function LithicGrammarPlayground() {
             }
             sections={sections}
             settings={settings}
+            researchUrl="/playgrounds/lithic-grammar/research"
         />
     );
 }

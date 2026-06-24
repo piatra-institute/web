@@ -209,11 +209,11 @@ export default function Settings({
                     </div>
                     <div className="flex justify-between">
                         <span>crossing number</span>
-                        <span className="text-gray-300 font-mono">{aC ?? '—'}</span>
+                        <span className="text-gray-300 font-mono">{aC ?? 'n/a'}</span>
                     </div>
                     <div className="flex justify-between">
                         <span>unknotting number</span>
-                        <span className="text-lime-400 font-mono">{aU ?? '—'}</span>
+                        <span className="text-lime-400 font-mono">{aU ?? 'n/a'}</span>
                     </div>
                 </div>
             </div>
@@ -287,11 +287,11 @@ export default function Settings({
                     </div>
                     <div className="flex justify-between">
                         <span>crossing number</span>
-                        <span className="text-gray-300 font-mono">{bC ?? '—'}</span>
+                        <span className="text-gray-300 font-mono">{bC ?? 'n/a'}</span>
                     </div>
                     <div className="flex justify-between">
                         <span>unknotting number</span>
-                        <span className="text-lime-400 font-mono">{bU ?? '—'}</span>
+                        <span className="text-lime-400 font-mono">{bU ?? 'n/a'}</span>
                     </div>
                 </div>
             </div>

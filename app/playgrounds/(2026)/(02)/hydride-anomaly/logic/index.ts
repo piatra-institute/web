@@ -1,4 +1,4 @@
-// Hydride Anomaly — substance data, families, anomaly computation
+// Hydride Anomaly: substance data, families, anomaly computation
 
 export type Property = 'bp' | 'mp' | 'dhVap' | 'dhFus' | 'liquidRange';
 
@@ -93,14 +93,14 @@ export const SUBSTANCES: Substance[] = [
   { id: 'geh4', name: 'Germane',            formula: 'GeH₄', molarMass: 76.64,  period: 4, familyId: 'group14', mpC: -165,   bpC: -88.5,  dhVap: 14.1,  dhFus: 0.84,  isAnomaly: false, tags: ['nonpolar'] },
   { id: 'snh4', name: 'Stannane',           formula: 'SnH₄', molarMass: 122.74, period: 5, familyId: 'group14', mpC: -146,   bpC: -52,    dhVap: 18.5,  dhFus: 1.27,  isAnomaly: false, tags: ['nonpolar'] },
 
-  // Noble gases (control family — no H-bonding)
+  // Noble gases (control family, no H-bonding)
   { id: 'he',   name: 'Helium',  formula: 'He', molarMass: 4.003,  period: 1, familyId: 'nobleGas', mpC: -272.2, bpC: -268.9, dhVap: 0.08,  dhFus: 0.01,  isAnomaly: false, tags: ['nonpolar', 'noble'] },
   { id: 'ne',   name: 'Neon',    formula: 'Ne', molarMass: 20.18,  period: 2, familyId: 'nobleGas', mpC: -248.6, bpC: -246.1, dhVap: 1.73,  dhFus: 0.34,  isAnomaly: false, tags: ['nonpolar', 'noble'] },
   { id: 'ar',   name: 'Argon',   formula: 'Ar', molarMass: 39.95,  period: 3, familyId: 'nobleGas', mpC: -189.4, bpC: -185.8, dhVap: 6.43,  dhFus: 1.18,  isAnomaly: false, tags: ['nonpolar', 'noble'] },
   { id: 'kr',   name: 'Krypton', formula: 'Kr', molarMass: 83.80,  period: 4, familyId: 'nobleGas', mpC: -157.4, bpC: -153.4, dhVap: 9.08,  dhFus: 1.64,  isAnomaly: false, tags: ['nonpolar', 'noble'] },
   { id: 'xe',   name: 'Xenon',   formula: 'Xe', molarMass: 131.29, period: 5, familyId: 'nobleGas', mpC: -111.8, bpC: -108.1, dhVap: 12.64, dhFus: 2.30,  isAnomaly: false, tags: ['nonpolar', 'noble'] },
 
-  // Alkanes (non-H-bonding molecular series — "mass-only" baseline)
+  // Alkanes (non-H-bonding molecular series, "mass-only" baseline)
   { id: 'methane',  name: 'Methane',  formula: 'CH₄',    molarMass: 16.04,  period: 0, familyId: 'alkane', mpC: -182.5, bpC: -161.5, dhVap: 8.19,  dhFus: 0.94,  isAnomaly: false, tags: ['nonpolar'] },
   { id: 'ethane',   name: 'Ethane',   formula: 'C₂H₆',   molarMass: 30.07,  period: 0, familyId: 'alkane', mpC: -182.8, bpC: -88.6,  dhVap: 14.7,  dhFus: 2.86,  isAnomaly: false, tags: ['nonpolar'] },
   { id: 'propane',  name: 'Propane',  formula: 'C₃H₈',   molarMass: 44.10,  period: 0, familyId: 'alkane', mpC: -187.7, bpC: -42.1,  dhVap: 19.0,  dhFus: 3.53,  isAnomaly: false, tags: ['nonpolar'] },
@@ -334,5 +334,5 @@ export const DEFAULT_PINNED: string[] = ['h2o', 'hf', 'nh3', 'ch4'];
 export const HYDRIDE_FAMILIES: FamilyId[] = ['group16', 'group17', 'group15', 'group14'];
 
 export function fmt(n: number, d = 1): string {
-  return Number.isFinite(n) ? n.toFixed(d) : '—';
+  return Number.isFinite(n) ? n.toFixed(d) : '-';
 }

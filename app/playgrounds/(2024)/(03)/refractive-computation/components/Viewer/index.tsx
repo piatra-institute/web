@@ -571,7 +571,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
             </div>
 
             {/* Information Panel */}
-            <div className="bg-black border border-lime-500/20 p-4 text-gray-300 font-serif text-sm leading-relaxed">
+            <div className="bg-black border border-lime-500/20 p-4 text-gray-300 text-sm leading-relaxed">
                 <h3 className="text-lg font-semibold text-lime-400 mb-3">Granular Polycomputation</h3>
                 <p className="mb-3">
                     This visualization shows how granular materials can perform multiple logical operations

@@ -5,7 +5,14 @@ import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Button from '@/components/Button';
 import Equation from '@/components/Equation';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 import Settings from './components/Settings';
 import Viewer, { ViewerRef } from './components/Viewer';
 import {
@@ -40,6 +47,8 @@ const defaults = {
 
 export default function UnknotStudioPlayground() {
     const viewerRef = useRef<ViewerRef>(null);
+
+    const calibration = buildCalibration();
 
     // Knot specs
     const [knotA, setKnotA] = useState<KnotSpec>(defaults.knotA);
@@ -209,7 +218,7 @@ export default function UnknotStudioPlayground() {
             id: 'about',
             type: 'outro' as const,
             content: (
-                <div className="space-y-6">
+                <div className="space-y-8 text-gray-300">
                     <div className="border-l-2 border-lime-500/50 pl-4">
                         <h4 className="text-lime-400 font-semibold mb-2">Torus Knots</h4>
                         <p className="text-gray-300">
@@ -264,6 +273,26 @@ export default function UnknotStudioPlayground() {
                             may require moving to a more complex diagram before making crossing changes.
                         </p>
                     </div>
+
+                    <div className="border-t border-lime-500/20 pt-8">
+                        <h3 className="text-lime-400 font-semibold mb-3">Model Version</h3>
+                        <VersionSelector versions={versions} active="claude-v1" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <CalibrationPanel results={calibration} outputLabel="invariant value" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                        <AssumptionPanel assumptions={assumptions} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model Changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -308,6 +337,7 @@ export default function UnknotStudioPlayground() {
             subtitle="torus knots, connected sums, and projection invariants"
             sections={sections}
             settings={settings}
+            researchUrl="/playgrounds/unknot-studio/research"
         />
     );
 }

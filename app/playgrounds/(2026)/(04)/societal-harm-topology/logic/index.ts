@@ -1,5 +1,5 @@
 /**
- * Societal Harm Topology — Core Logic
+ * Societal Harm Topology Core Logic
  *
  * Mathematical framework for quantifying distributed societal harm
  * from concentrated private power, following:
@@ -79,12 +79,12 @@ export const PRESET_DESCRIPTIONS: Record<PresetKey, { label: string; question: s
     'baseline': {
         label: 'baseline',
         question: 'What does moderate, balanced concentration of power look like?',
-        expectation: 'Harm distributed across sectors with no single dominant dimension. Sheaf consistency is relatively high — the local stories roughly cohere.',
+        expectation: 'Harm distributed across sectors with no single dominant dimension. Sheaf consistency is relatively high, so the local stories roughly cohere.',
     },
     'platform-monopoly': {
         label: 'platform monopoly',
         question: 'What happens when epistemic and political control concentrate in a platform actor?',
-        expectation: 'Epistemic harm dominates. Political voice is suppressed. Low sheaf consistency — the media narrative diverges sharply from labor and ecological realities.',
+        expectation: 'Epistemic harm dominates. Political voice is suppressed. Low sheaf consistency, because the media narrative diverges sharply from labor and ecological realities.',
     },
     'extractive-finance': {
         label: 'extractive finance',
@@ -469,9 +469,9 @@ export function computeNarrative(metrics: Metrics, params: Params): string {
 
     // Sheaf obstruction
     if (obstruction > 35) {
-        parts.push(`Local narratives are significantly incoherent (obstruction ${obstruction.toFixed(0)}%) — accountability structures are fragmented.`);
+        parts.push(`Local narratives are significantly incoherent (obstruction ${obstruction.toFixed(0)}%); accountability structures are fragmented.`);
     } else if (obstruction > 20) {
-        parts.push(`Moderate obstruction (${obstruction.toFixed(0)}%) — some local stories resist global narration.`);
+        parts.push(`Moderate obstruction (${obstruction.toFixed(0)}%); some local stories resist global narration.`);
     } else {
         parts.push(`Local sectors are relatively coherent (obstruction ${obstruction.toFixed(0)}%).`);
     }
@@ -479,12 +479,12 @@ export function computeNarrative(metrics: Metrics, params: Params): string {
     // Benefit ratio
     const benefitRatio = grossTotal > 0 ? (grossTotal - netTotal) / grossTotal : 0;
     if (benefitRatio > 0.3) {
-        parts.push(`Claimed benefits offset ${(benefitRatio * 100).toFixed(0)}% of gross harm — but this does not erase the underlying vector geometry.`);
+        parts.push(`Claimed benefits offset ${(benefitRatio * 100).toFixed(0)}% of gross harm, but this does not erase the underlying vector geometry.`);
     }
 
     // Fragility warning
     if (fragility > 200) {
-        parts.push('Warning: systemic fragility is critically high — tail risk and ecological damage are accumulating beyond repair capacity.');
+        parts.push('Warning: systemic fragility is critically high; tail risk and ecological damage are accumulating beyond repair capacity.');
     } else if (fragility > 120) {
         parts.push('Fragility is elevated. Tail risk and ecological exposure exceed comfortable margins.');
     }
@@ -595,7 +595,7 @@ export function vectorMagnitude(v: HarmVector): number {
 }
 
 /**
- * Gini coefficient of the harm vector — measures how concentrated
+ * Gini coefficient of the harm vector, measures how concentrated
  * harm is across dimensions (0 = perfectly spread, 1 = all in one).
  */
 export function vectorGini(v: HarmVector): number {

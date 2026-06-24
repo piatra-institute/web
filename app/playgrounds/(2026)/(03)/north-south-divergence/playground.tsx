@@ -6,6 +6,10 @@ import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import {
     Scenario,
     DEFAULT_SCENARIO,
@@ -13,9 +17,14 @@ import {
     computeRadarData,
     shapleyAttribution,
 } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 export default function NorthSouthDivergencePlayground() {
     const [scenario, setScenario] = useState<Scenario>({ ...DEFAULT_SCENARIO });
+
+    const calibration = useMemo(() => buildCalibration(), []);
 
     const selectedBin = useMemo(
         () => scenario.timeline.find((b) => b.id === scenario.selectedBinId) ?? scenario.timeline[0],
@@ -122,14 +131,14 @@ export default function NorthSouthDivergencePlayground() {
                     <div className="border-l-2 border-lime-500/50 pl-4">
                         <h3 className="text-lime-400 font-semibold mb-3">Accelerants</h3>
                         <ul className="list-disc pl-5 space-y-1 text-sm">
-                            <li><span className="text-lime-400">Energy</span>: scalable energy (coal, oil, electrification) &mdash; Pomeranz&apos;s coal + New World framing.</li>
-                            <li><span className="text-lime-400">Institutions</span>: property rights, credible commitment, contract enforcement &mdash; Acemoglu, Johnson &amp; Robinson.</li>
+                            <li><span className="text-lime-400">Energy</span>: scalable energy (coal, oil, electrification), Pomeranz&apos;s coal and New World framing.</li>
+                            <li><span className="text-lime-400">Institutions</span>: property rights, credible commitment, contract enforcement, after Acemoglu, Johnson &amp; Robinson.</li>
                             <li><span className="text-lime-400">State capacity</span>: tax, administration, infrastructure, public goods.</li>
                             <li><span className="text-lime-400">Human capital</span>: education, literacy, health, technology absorption.</li>
-                            <li><span className="text-lime-400">Innovation</span>: scientific ecosystems, diffusion, R&amp;D &mdash; Mokyr&apos;s &ldquo;culture of growth.&rdquo;</li>
+                            <li><span className="text-lime-400">Innovation</span>: scientific ecosystems, diffusion, R&amp;D, Mokyr&apos;s &ldquo;culture of growth.&rdquo;</li>
                             <li><span className="text-lime-400">Finance</span>: intermediation depth, risk-sharing, cost of capital.</li>
                             <li><span className="text-lime-400">Trade</span>: terms-of-trade, bargaining power, value-chain control.</li>
-                            <li><span className="text-lime-400">Empire</span>: coerced labor, colonial extraction, unequal exchange &mdash; Beckert&apos;s &ldquo;war capitalism.&rdquo;</li>
+                            <li><span className="text-lime-400">Empire</span>: coerced labor, colonial extraction, unequal exchange, Beckert&apos;s &ldquo;war capitalism.&rdquo;</li>
                             <li><span className="text-lime-400">Geography</span>: endowments, waterways, disease burdens, transport costs.</li>
                         </ul>
                     </div>
@@ -139,9 +148,22 @@ export default function NorthSouthDivergencePlayground() {
                         <ul className="list-disc pl-5 space-y-1 text-sm">
                             <li>All values are illustrative placeholders, not authoritative historical data. Replace with your own estimates.</li>
                             <li>Attribution is model-conditioned: changing the aggregator changes the credit split.</li>
-                            <li>Factors are endogenous and interactive &mdash; there is no model-free, uniquely correct &ldquo;credit split.&rdquo;</li>
+                            <li>Factors are endogenous and interactive, so there is no model-free, uniquely correct &ldquo;credit split.&rdquo;</li>
                             <li>The gap between North and South is not explained by any single accelerant; the interaction structure matters.</li>
                         </ul>
+                    </div>
+
+                    <div className="border-t border-lime-500/20 pt-8">
+                        <VersionSelector versions={versions} active="claude-v1" />
+                    </div>
+
+                    <CalibrationPanel results={calibration} outputLabel="aggregation identity" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
                     </div>
                 </div>
             ),
@@ -153,6 +175,7 @@ export default function NorthSouthDivergencePlayground() {
             title="north-south divergence"
             subtitle="accelerants, aggregation models, and Shapley attribution across historical time bins"
             sections={sections}
+            researchUrl="/playgrounds/north-south-divergence/research"
             settings={
                 <Settings
                     scenario={scenario}

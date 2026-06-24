@@ -3,8 +3,17 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer, { ViewerRef } from './components/Viewer';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
+import { buildCalibration } from './calibration';
+
+const calibration = buildCalibration();
 
 export default function BerkshireEnginePlayground() {
     const [currentLevel, setCurrentLevel] = useState(1); // Always active
@@ -111,9 +120,9 @@ export default function BerkshireEnginePlayground() {
             type: 'intro' as const,
             content: (
                 <p className="text-white/80">
-                    The Berkshire Engine demonstrates Warren Buffett&apos;s revolutionary approach to
-                    insurance: using &ldquo;float&rdquo; — premiums collected before claims are paid — as
-                    a permanent source of investment capital. Watch how even modest underwriting profits
+                    The Berkshire Engine demonstrates Warren Buffett&apos;s approach to
+                    insurance: using &ldquo;float&rdquo; (premiums collected before claims are paid) as
+                    a source of investment capital. Watch how even modest underwriting profits
                     combined with investment returns compound into extraordinary wealth over 30 years.
                 </p>
             ),
@@ -140,26 +149,43 @@ export default function BerkshireEnginePlayground() {
             id: 'outro',
             type: 'outro' as const,
             content: (
-                <>
-                    <p>
-                        The insurance float model leverages the temporal mismatch between premium collection 
-                        and claim payments. This creates a persistent pool of investable capital with 
-                        negative cost of carry when underwriting operations achieve profitability. The 
-                        economic dynamics resemble leveraged investing without traditional debt obligations.
-                    </p>
-                    <p>
-                        The visualization tracks three metrics: cumulative portfolio value, investable float 
-                        magnitude, and aggregate underwriting performance. The model demonstrates how even 
-                        marginal underwriting margins (0-2%) generate substantial value through the 
-                        compounding of float-derived investment returns over extended time horizons.
-                    </p>
-                    <p>
-                        Key parameters: float growth rate equals annual premium volume; investment returns 
-                        compound on the entire float balance; underwriting margin directly impacts cost of 
-                        capital. The model assumes stable premium flow and consistent investment returns, 
-                        abstracting from insurance cycle volatility and market fluctuations.
-                    </p>
-                </>
+                <div className="space-y-8 text-gray-300">
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">The float mechanism</h3>
+                        <p className="leading-relaxed text-sm">
+                            The insurance float model leverages the temporal mismatch between premium collection
+                            and claim payments. This creates a persistent pool of investable capital with
+                            negative cost of carry when underwriting operations achieve profitability. The
+                            economic dynamics resemble leveraged investing without traditional debt obligations.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">What the chart tracks</h3>
+                        <p className="leading-relaxed text-sm">
+                            The visualization tracks three metrics: cumulative portfolio value, investable float
+                            magnitude, and aggregate underwriting performance. The model demonstrates how even
+                            marginal underwriting margins (0 to 2 percent) generate substantial value through the
+                            compounding of float-derived investment returns over extended time horizons.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Key parameters</h3>
+                        <p className="leading-relaxed text-sm">
+                            Float growth rate equals annual premium volume; investment returns compound on the
+                            entire float balance; underwriting margin directly impacts cost of capital. The model
+                            assumes stable premium flow and consistent investment returns, abstracting from
+                            insurance cycle volatility and market fluctuations.
+                        </p>
+                    </div>
+
+                    <VersionSelector versions={versions} active="claude-v1" />
+
+                    <CalibrationPanel results={calibration} outputLabel="financial identities" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <ModelChangelog entries={changelog} />
+                </div>
             ),
         },
     ];
@@ -184,6 +210,7 @@ export default function BerkshireEnginePlayground() {
             subtitle="insurance float as investment capital"
             sections={sections}
             settings={settings}
+            researchUrl="/playgrounds/berkshire-engine/research"
         />
     );
 }

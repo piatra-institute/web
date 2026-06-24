@@ -44,7 +44,7 @@ export const PRESET_DESCRIPTIONS: Record<
     'meme-relic': {
         label: 'meme relic',
         question: 'Can mass repetition produce its own aura attractor?',
-        expectation: 'Meme basin dominates. Sheaf tension is high — communities disagree about its meaning.',
+        expectation: 'Meme basin dominates. Sheaf tension is high; communities disagree about its meaning.',
     },
     'luxury-object': {
         label: 'luxury commodity',
@@ -224,7 +224,7 @@ const TRANSPORT_TARGETS: Record<TransportCost['key'], AuraVector> = {
  *   weights chosen so each fiber peaks under a recognizable cultural condition.
  * - benjaminDistance is the additive "distance" component of Benjamin's aura,
  *   weighted toward ritual and history with reproduction as a subtractive term.
- * - curvature is the sigmoid of an interaction polynomial — pure-additive
+ * - curvature is the sigmoid of an interaction polynomial; pure-additive
  *   weighted sums miss the way scarcity × authority bends perception.
  * - sheafTension measures community disagreement as L1 distance between
  *   attribute pairs that index different interpretive regimes.
@@ -412,7 +412,7 @@ export function computeNarrative(metrics: Metrics, params: Params): string {
 
     if (dominantBasin.value - secondBasin.value < 0.08) {
         parts.push(
-            `It is competing closely with the ${secondBasin.name} basin — the object is on a regime boundary.`,
+            `It is competing closely with the ${secondBasin.name} basin; the object is on a regime boundary.`,
         );
     }
 
@@ -424,13 +424,13 @@ export function computeNarrative(metrics: Metrics, params: Params): string {
 
     if (metrics.holonomy > 0.6) {
         parts.push(
-            `Holonomy is large (${(metrics.holonomy * 100).toFixed(0)}%) — much of the aura is path-dependent, accrued through history, crisis, or ritual.`,
+            `Holonomy is large (${(metrics.holonomy * 100).toFixed(0)}%); much of the aura is path-dependent, accrued through history, crisis, or ritual.`,
         );
     }
 
     if (metrics.curvature > 0.65) {
         parts.push(
-            `Curvature is high — institution, scarcity, and history bend perception strongly around this object.`,
+            `Curvature is high; institution, scarcity, and history bend perception strongly around this object.`,
         );
     }
 

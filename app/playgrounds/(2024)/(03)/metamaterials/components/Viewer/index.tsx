@@ -478,7 +478,7 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>((props, ref
                 />
             </div>
 
-            <div className="bg-black border border-gray-800 p-4 text-gray-300 font-serif text-sm leading-relaxed">
+            <div className="bg-black border border-gray-800 p-4 text-gray-300 text-sm leading-relaxed">
                 <h3 className="text-lg font-semibold text-lime-400 mb-3">Metamaterial Simulation</h3>
                 <p>
                     This visualization shows how metamaterials can exhibit life-like properties through their 

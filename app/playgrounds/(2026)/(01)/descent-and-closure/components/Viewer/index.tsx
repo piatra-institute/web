@@ -366,7 +366,7 @@ export default function Viewer({
                                     ))}
                                 </dl>
                             ) : (
-                                <div className="text-lime-200/60 italic">—</div>
+                                <div className="text-lime-200/60 italic">none</div>
                             )}
                         </div>
                         <div>
@@ -381,7 +381,7 @@ export default function Viewer({
                                     ))}
                                 </dl>
                             ) : (
-                                <div className="text-lime-200/60 italic">—</div>
+                                <div className="text-lime-200/60 italic">none</div>
                             )}
                         </div>
                     </div>

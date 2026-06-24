@@ -414,8 +414,8 @@ export default function Viewer({
                 />
                 <ComparisonCard
                     title="Locality"
-                    classicalText="Differential — look at t+dt."
-                    tqftText="Fully local — cut spacetime into points, total = product of values."
+                    classicalText="Differential: look at t+dt."
+                    tqftText="Fully local: cut spacetime into points, total = product of values."
                 />
                 <ComparisonCard
                     title="The Answer"

@@ -110,8 +110,8 @@ export default function Viewer({
 /**
  * 2D color: hue from absolute avgFinalX (green→red), lightness from
  * normalized avgPathX (how the trajectory got there).
- * - Hue: 120 (green, inclusive) → 0 (red, exclusionary) — absolute scale
- * - Lightness: 20% (dark) → 60% (bright) — normalized to data range
+ * - Hue: 120 (green, inclusive) to 0 (red, exclusionary), absolute scale
+ * - Lightness: 20% (dark) to 60% (bright), normalized to data range
  */
 function basinCellColor(absX: number, normPath: number): string {
     const hue = 120 * (1 - Math.max(0, Math.min(1, absX)));
@@ -171,7 +171,7 @@ function BasinMap({
         ctx.fillStyle = '#0a0a0a';
         ctx.fillRect(0, 0, canvasSize, canvasSize);
 
-        // Draw cells — hue from absolute avgFinalX, brightness from normalized avgPathX
+        // Draw cells: hue from absolute avgFinalX, brightness from normalized avgPathX
         const cellW = plotSize / safeGrid;
         const cellH = plotSize / safeGrid;
 

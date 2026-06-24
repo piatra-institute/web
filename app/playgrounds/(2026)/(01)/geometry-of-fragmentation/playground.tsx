@@ -1,11 +1,18 @@
 'use client';
 
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayout';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings, { SimulationParams, DEFAULT_PARAMS } from './components/Settings';
 import Viewer, { ViewerRef } from './components/Viewer';
 import Equation from '@/components/Equation';
 import { generateMosaic, computeStats, MosaicStats, HistoryPoint } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 export default function Playground() {
     const viewerRef = useRef<ViewerRef>(null);
@@ -18,6 +25,8 @@ export default function Playground() {
     const [animationFrame, setAnimationFrame] = useState(-1); // -1 = show final
     const [history, setHistory] = useState<HistoryPoint[]>([]);
     const [animationSpeed, setAnimationSpeed] = useState(100); // ms per frame
+
+    const calibration = useMemo(() => buildCalibration(), []);
 
     useEffect(() => {
         const result = generateMosaic({
@@ -175,7 +184,7 @@ export default function Playground() {
                         <h4 className="text-lime-400 font-semibold mb-2">Plato&apos;s Cube</h4>
                         <p className="text-gray-300">
                             When solids fragment randomly, the resulting pieces tend toward a statistical attractor:
-                            on average, fragments have approximately 6 faces and 8 vertices&mdash;the topology of a cube.
+                            on average, fragments have approximately 6 faces and 8 vertices, the topology of a cube.
                             As Gábor Domokos and Douglas Jerolmack showed, this isn&apos;t about physics; it&apos;s pure geometry.
                         </p>
                     </div>
@@ -245,6 +254,34 @@ export default function Playground() {
                             or repeated cracking cycles.
                         </p>
                     </div>
+
+                    <div className="space-y-8 text-gray-300 border-t border-lime-500/20 pt-8">
+                        <div>
+                            <h3 className="text-lime-400 font-semibold mb-3">Model version</h3>
+                            <VersionSelector versions={versions} active="claude-v1" />
+                        </div>
+
+                        <div>
+                            <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                            <p className="leading-relaxed text-sm mb-3">
+                                The simulation is stochastic, so only the deterministic geometric core is checked:
+                                area conservation under splitting, cell-count bookkeeping, Voronoi tiling, and the
+                                mean-sides-to-4 attractor. Each predicted value is computed by running the same logic
+                                the live view uses.
+                            </p>
+                            <CalibrationPanel results={calibration} outputLabel="geometric quantity" />
+                        </div>
+
+                        <div>
+                            <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                            <AssumptionPanel assumptions={assumptions} />
+                        </div>
+
+                        <div>
+                            <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                            <ModelChangelog entries={changelog} />
+                        </div>
+                    </div>
                 </div>
             ),
         },
@@ -266,6 +303,7 @@ export default function Playground() {
             sections={sections}
             settings={<Settings params={params} onParamsChange={handleParamsChange} onRegenerate={handleRegenerate} />}
             onSettingsToggle={setSettingsOpen}
+            researchUrl="/playgrounds/geometry-of-fragmentation/research"
         />
     );
 }

@@ -1,7 +1,20 @@
 import { Metadata } from 'next';
 import { defaultOpenGraph } from '@/data/metadata';
+import { readPlaygroundSource } from '@/lib/readPlaygroundSource';
 
 import Playground from './playground';
+
+
+const sourceContext = readPlaygroundSource(
+    'app/playgrounds/(2026)/(03)/co2-metabolism-hypothesis',
+    {
+        name: 'co2-metabolism-hypothesis',
+        title: 'co2 metabolism hypothesis',
+        description: 'proto-metabolic threshold behavior in alkaline hydrothermal vent chemistry',
+        topics: ['biology', 'chemistry'],
+        operations: ['threshold', 'landscape'],
+    },
+);
 
 export const metadata: Metadata = {
     title: 'co₂-metabolism hypothesis · playgrounds',
@@ -20,5 +33,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-    return <Playground />;
+    return <Playground sourceContext={sourceContext} />;
 }

@@ -146,7 +146,11 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>(({
         }
     ];
 
-    const CustomTooltip = ({ active, payload, label }: any) => {
+    const CustomTooltip = ({ active, payload, label }: {
+        active?: boolean;
+        payload?: { value: number }[];
+        label?: string;
+    }) => {
         if (active && payload && payload.length) {
             return (
                 <div className="bg-black p-3 shadow-lg border border-gray-800" style={{ backgroundColor: '#000000' }}>

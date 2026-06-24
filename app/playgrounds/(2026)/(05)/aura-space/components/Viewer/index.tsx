@@ -302,7 +302,7 @@ export default function Viewer({
                 <div className="space-y-3">
                     <div className="text-xs text-lime-200/60 font-mono">
                         connection and holonomy · the same object after moving through
-                        studio, market, archive, crisis, and institutional return — the
+                        studio, market, archive, crisis, and institutional return; the
                         return value depends on the path, not just the destination
                     </div>
                     <div style={{ width: '100%', height: 320 }}>

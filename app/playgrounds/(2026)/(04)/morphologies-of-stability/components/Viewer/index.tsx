@@ -76,7 +76,7 @@ function PointAttractorView({ simState, params }: { simState: SimulationState; p
     return (
         <div className="space-y-4">
             <div>
-                <div className="text-xs text-lime-200/50 mb-2">State line — restoring flow toward target</div>
+                <div className="text-xs text-lime-200/50 mb-2">State line, restoring flow toward target</div>
                 <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ background: '#0a0a0a' }}>
                     <line x1="32" y1="100" x2={W - 32} y2="100" stroke="rgb(132 204 22)" strokeWidth="1" strokeOpacity="0.2" />
                     {arrows.map((a, idx) => {
@@ -96,7 +96,7 @@ function PointAttractorView({ simState, params }: { simState: SimulationState; p
                 </svg>
             </div>
             <div>
-                <div className="text-xs text-lime-200/50 mb-2">History — error decay over time</div>
+                <div className="text-xs text-lime-200/50 mb-2">History, error decay over time</div>
                 <svg viewBox={`0 0 ${W} ${histH}`} className="w-full" style={{ background: '#0a0a0a' }}>
                     <line x1="16" y1={histH / 2} x2={W - 16} y2={histH / 2} stroke="rgb(132 204 22)" strokeDasharray="6 6" strokeOpacity="0.2" />
                     <path d={historyPath} fill="none" stroke="rgb(163 230 53)" strokeWidth="2" />
@@ -134,7 +134,7 @@ function BistableView({ simState, params }: { simState: SimulationState; params:
     return (
         <div className="space-y-4">
             <div>
-                <div className="text-xs text-lime-200/50 mb-2">Potential landscape — two wells separated by a ridge</div>
+                <div className="text-xs text-lime-200/50 mb-2">Potential landscape, two wells separated by a ridge</div>
                 <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ background: '#0a0a0a' }}>
                     <path d={curve} fill="none" stroke="rgb(132 204 22)" strokeWidth="2" strokeOpacity="0.6" />
                     <circle cx={ballX} cy={ballY} r="8" fill="rgb(163 230 53)" />
@@ -143,7 +143,7 @@ function BistableView({ simState, params }: { simState: SimulationState; params:
                 </svg>
             </div>
             <div>
-                <div className="text-xs text-lime-200/50 mb-2">State trace — which basin is winning?</div>
+                <div className="text-xs text-lime-200/50 mb-2">State trace, which basin is winning?</div>
                 <svg viewBox={`0 0 ${W} ${histH}`} className="w-full" style={{ background: '#0a0a0a' }}>
                     <line x1="16" y1={histH / 2} x2={W - 16} y2={histH / 2} stroke="rgb(132 204 22)" strokeDasharray="6 6" strokeOpacity="0.2" />
                     <path d={histPath} fill="none" stroke="rgb(163 230 53)" strokeWidth="2" />
@@ -169,7 +169,7 @@ function LimitCycleView({ simState, params }: { simState: SimulationState; param
     return (
         <div className="space-y-4">
             <div>
-                <div className="text-xs text-lime-200/50 mb-2">Phase portrait — rhythm as stabilized motion</div>
+                <div className="text-xs text-lime-200/50 mb-2">Phase portrait, rhythm as stabilized motion</div>
                 <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ background: '#0a0a0a' }}>
                     <line x1="16" y1={H / 2} x2={W - 16} y2={H / 2} stroke="rgb(132 204 22)" strokeOpacity="0.15" />
                     <line x1={W / 2} y1="16" x2={W / 2} y2={H - 16} stroke="rgb(132 204 22)" strokeOpacity="0.15" />
@@ -221,7 +221,7 @@ function ConsensusView({ simState, params }: { simState: SimulationState; params
     return (
         <div className="space-y-4">
             <div>
-                <div className="text-xs text-lime-200/50 mb-2">Network state — distributed stabilization</div>
+                <div className="text-xs text-lime-200/50 mb-2">Network state, distributed stabilization</div>
                 <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ background: '#0a0a0a' }}>
                     {points.map((p, i) =>
                         points.slice(i + 1).map((q, j) => (

@@ -258,6 +258,7 @@ export default function FrontierGovernancePlayground({ sourceContext }: Props) {
                 </>
             }
             sections={sections}
+            researchUrl="/playgrounds/frontier-governance/research"
             settings={
                 <Settings
                     params={params}

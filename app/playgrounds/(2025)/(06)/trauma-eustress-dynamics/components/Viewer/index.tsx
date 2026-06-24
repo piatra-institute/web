@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef, MutableRefObject } from 'react';
-import type { MechanismData } from '../../playground';
+import type { MechanismData } from '../../logic';
 import { 
     drawAxes, 
     drawNode, 

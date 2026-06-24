@@ -7,6 +7,7 @@ import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Button from '@/components/Button';
 import Equation from '@/components/Equation';
 import ModelChangelog from '@/components/ModelChangelog';
+import CalibrationPanel from '@/components/CalibrationPanel';
 import ResearchPromptButton from '@/components/ResearchPromptButton';
 import { PlaygroundSourceContext } from '@/lib/readPlaygroundSource';
 
@@ -30,6 +31,7 @@ import {
 } from './logic';
 import { assumptions } from './assumptions';
 import { versions, changelog } from './versions';
+import { buildCalibration } from './calibration';
 
 
 interface Props {
@@ -53,6 +55,7 @@ export default function PhotosyntheticStateSpacePlayground({ sourceContext }: Pr
     const narrative = useMemo(() => computeNarrative(metrics, params), [metrics, params]);
     const sweep = useMemo(() => computeSweep(params, sweepParam), [params, sweepParam]);
     const sensitivityBars = useMemo(() => computeSensitivity(params), [params]);
+    const calibration = useMemo(() => buildCalibration(), []);
 
     const visibleTrajectorySteps = useMemo(
         () => Math.max(1, Math.ceil(easeInOutCubic(animTime) * trajectory.length)),
@@ -155,7 +158,7 @@ export default function PhotosyntheticStateSpacePlayground({ sourceContext }: Pr
                             (<Equation math="E^\circ = +0.82\text{ V}" />) to
                             NADP+ (<Equation math="E^\circ = -0.32\text{ V}" />) is
                             about 1.14 V. A single photon at 680 nm provides
-                            ~1.82 eV — enough in principle, but not enough in practice
+                            ~1.82 eV, enough in principle but not enough in practice
                             because each step in the chain dissipates energy. Two
                             photosystems in series solve this by providing two energy
                             boosts, each smaller but collectively sufficient.
@@ -208,7 +211,7 @@ export default function PhotosyntheticStateSpacePlayground({ sourceContext }: Pr
                             a high-light pulse may behave differently from one that
                             reached the same nominal conditions gradually. When ROS
                             production persistently outruns repair, the system can
-                            bifurcate into a photoinhibited regime — an attractor from
+                            bifurcate into a photoinhibited regime, an attractor from
                             which recovery requires reducing light or increasing repair.
                         </p>
                     </div>
@@ -226,6 +229,19 @@ export default function PhotosyntheticStateSpacePlayground({ sourceContext }: Pr
                             proton motive fluctuations. These are prompts for
                             systems thinking, not established mechanisms.
                         </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <p className="leading-relaxed text-sm mb-3">
+                            The deterministic core is checked against the textbook
+                            diagnostic points of a photosynthesis-irradiance (P-I)
+                            curve: the dark point, light saturation, the
+                            half-saturation irradiance, and the photoinhibition basin
+                            under extreme stress. Each predicted value is computed by
+                            the model at run time.
+                        </p>
+                        <CalibrationPanel results={calibration} outputLabel="P-I diagnostics" />
                     </div>
 
                     <div>
@@ -259,6 +275,7 @@ export default function PhotosyntheticStateSpacePlayground({ sourceContext }: Pr
                 </>
             }
             sections={sections}
+            researchUrl="/playgrounds/photosynthetic-state-space/research"
             settings={
                 <Settings
                     params={params}

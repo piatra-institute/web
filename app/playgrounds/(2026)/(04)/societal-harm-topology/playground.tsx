@@ -7,6 +7,7 @@ import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Button from '@/components/Button';
 import Equation from '@/components/Equation';
 import ModelChangelog from '@/components/ModelChangelog';
+import CalibrationPanel from '@/components/CalibrationPanel';
 import ResearchPromptButton from '@/components/ResearchPromptButton';
 import { PlaygroundSourceContext } from '@/lib/readPlaygroundSource';
 
@@ -30,6 +31,7 @@ import {
 } from './logic';
 import { assumptions } from './assumptions';
 import { versions, changelog } from './versions';
+import { buildCalibration } from './calibration';
 
 
 interface Props {
@@ -50,6 +52,7 @@ export default function SocietalHarmTopologyPlayground({ sourceContext }: Props)
     const narrative = useMemo(() => computeNarrative(metrics, params), [metrics, params]);
     const sweep = useMemo(() => computeSweep(params, sweepParam), [params, sweepParam]);
     const sensitivityBars = useMemo(() => computeSensitivity(params), [params]);
+    const calibration = useMemo(() => buildCalibration(), []);
 
     // Initial vector (zero) for animation
     const zeroVector = useMemo((): HarmVector => {
@@ -230,7 +233,7 @@ export default function SocietalHarmTopologyPlayground({ sourceContext }: Props)
                     <div className="border-l-2 border-lime-500/40 pl-4">
                         <h3 className="text-lime-400 font-semibold mb-3">Sheaf coherence and obstruction</h3>
                         <p className="leading-relaxed text-sm">
-                            Society is covered by overlapping local contexts — labor, housing,
+                            Society is covered by overlapping local contexts, namely labor, housing,
                             politics, media, environment, supply chains. On each patch{' '}
                             <Equation math="U_\alpha" />, a local harm section{' '}
                             <Equation math="\mathcal{F}(U_\alpha)" /> can be constructed.
@@ -239,7 +242,7 @@ export default function SocietalHarmTopologyPlayground({ sourceContext }: Props)
                         </p>
                         <p className="leading-relaxed text-sm mt-2">
                             When they do not, the obstruction lives in{' '}
-                            <Equation math="H^1" /> of the cover — a topological measure
+                            <Equation math="H^1" /> of the cover, a topological measure
                             of how accountability structures fragment. Offshore ownership,
                             subcontracting chains, and platform opacity create loops where
                             local responsibility exists everywhere but global responsibility
@@ -264,7 +267,7 @@ export default function SocietalHarmTopologyPlayground({ sourceContext }: Props)
                     <div>
                         <h3 className="text-lime-400 font-semibold mb-3">Open questions</h3>
                         <p className="leading-relaxed text-sm">
-                            The hardest problems are not technical. What is the baseline — no
+                            The hardest problems are not technical. What is the baseline, no
                             actor, a regulated version, a cooperative alternative? Should future
                             generations get equal weight? Is consent meaningful under structural
                             dependency? How do you model epistemic harm mathematically? These
@@ -272,6 +275,11 @@ export default function SocietalHarmTopologyPlayground({ sourceContext }: Props)
                             rather than hiding them.
                         </p>
                     </div>
+
+                    <CalibrationPanel
+                        results={calibration}
+                        outputLabel="invariant check"
+                    />
 
                     <ModelChangelog entries={changelog} />
 
@@ -290,6 +298,7 @@ export default function SocietalHarmTopologyPlayground({ sourceContext }: Props)
             title="societal harm topology"
             subtitle="counterfactual, distributed, multi-domain harm from concentrated private power"
             sections={sections}
+            researchUrl="/playgrounds/societal-harm-topology/research"
             settings={
                 <Settings
                     params={params}

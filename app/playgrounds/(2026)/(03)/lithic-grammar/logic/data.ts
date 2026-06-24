@@ -12,7 +12,7 @@ export interface Rock {
 
 export const ROCKS: Rock[] = [
     // ────────────────────────────────────────────────────────────────
-    // IGNEOUS — Ultramafic
+    // IGNEOUS - Ultramafic
     // ────────────────────────────────────────────────────────────────
     {
         id: 'dunite',
@@ -115,7 +115,7 @@ export const ROCKS: Rock[] = [
     },
 
     // ────────────────────────────────────────────────────────────────
-    // IGNEOUS — Mafic
+    // IGNEOUS - Mafic
     // ────────────────────────────────────────────────────────────────
     {
         id: 'gabbro',
@@ -158,7 +158,7 @@ export const ROCKS: Rock[] = [
     },
 
     // ────────────────────────────────────────────────────────────────
-    // IGNEOUS — Intermediate
+    // IGNEOUS - Intermediate
     // ────────────────────────────────────────────────────────────────
     {
         id: 'diorite',
@@ -206,7 +206,7 @@ export const ROCKS: Rock[] = [
     },
 
     // ────────────────────────────────────────────────────────────────
-    // IGNEOUS — Felsic
+    // IGNEOUS - Felsic
     // ────────────────────────────────────────────────────────────────
     {
         id: 'granite',
@@ -268,7 +268,7 @@ export const ROCKS: Rock[] = [
     },
 
     // ────────────────────────────────────────────────────────────────
-    // IGNEOUS — Special
+    // IGNEOUS - Special
     // ────────────────────────────────────────────────────────────────
     {
         id: 'obsidian',
@@ -305,7 +305,7 @@ export const ROCKS: Rock[] = [
     },
 
     // ────────────────────────────────────────────────────────────────
-    // SEDIMENTARY — Clastic
+    // SEDIMENTARY - Clastic
     // ────────────────────────────────────────────────────────────────
     {
         id: 'claystone',
@@ -419,7 +419,7 @@ export const ROCKS: Rock[] = [
     },
 
     // ────────────────────────────────────────────────────────────────
-    // SEDIMENTARY — Chemical
+    // SEDIMENTARY - Chemical
     // ────────────────────────────────────────────────────────────────
     {
         id: 'limestone',
@@ -500,7 +500,7 @@ export const ROCKS: Rock[] = [
     },
 
     // ────────────────────────────────────────────────────────────────
-    // SEDIMENTARY — Organic
+    // SEDIMENTARY - Organic
     // ────────────────────────────────────────────────────────────────
     {
         id: 'coal',
@@ -537,7 +537,7 @@ export const ROCKS: Rock[] = [
     },
 
     // ────────────────────────────────────────────────────────────────
-    // METAMORPHIC — Foliated
+    // METAMORPHIC - Foliated
     // ────────────────────────────────────────────────────────────────
     {
         id: 'slate',
@@ -588,7 +588,7 @@ export const ROCKS: Rock[] = [
         name: 'Migmatite',
         domain: 'metamorphic',
         subdomain: 'foliated',
-        description: 'Part metamorphic, part igneous — "mixed rock" with melt veins.',
+        description: 'Part metamorphic, part igneous - "mixed rock" with melt veins.',
         formation: 'Ultra-high-grade metamorphism with partial melting.',
         minerals: ['feldspar', 'quartz', 'biotite', 'garnet'],
         neighbors: ['gneiss', 'granite'],
@@ -596,7 +596,7 @@ export const ROCKS: Rock[] = [
     },
 
     // ────────────────────────────────────────────────────────────────
-    // METAMORPHIC — Mafic pathway
+    // METAMORPHIC - Mafic pathway
     // ────────────────────────────────────────────────────────────────
     {
         id: 'greenschist',
@@ -655,7 +655,7 @@ export const ROCKS: Rock[] = [
     },
 
     // ────────────────────────────────────────────────────────────────
-    // METAMORPHIC — Non-foliated
+    // METAMORPHIC - Non-foliated
     // ────────────────────────────────────────────────────────────────
     {
         id: 'quartzite',
@@ -692,7 +692,7 @@ export const ROCKS: Rock[] = [
     },
 
     // ────────────────────────────────────────────────────────────────
-    // METAMORPHIC — Ultramafic
+    // METAMORPHIC - Ultramafic
     // ────────────────────────────────────────────────────────────────
     {
         id: 'serpentinite',
@@ -718,7 +718,7 @@ export const ROCKS: Rock[] = [
     },
 
     // ────────────────────────────────────────────────────────────────
-    // METAMORPHIC — Other
+    // METAMORPHIC - Other
     // ────────────────────────────────────────────────────────────────
     {
         id: 'mylonite',

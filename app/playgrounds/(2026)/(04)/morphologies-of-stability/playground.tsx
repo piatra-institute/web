@@ -7,6 +7,7 @@ import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
 import ModelChangelog from '@/components/ModelChangelog';
 import ResearchPromptButton from '@/components/ResearchPromptButton';
+import CalibrationPanel from '@/components/CalibrationPanel';
 import { PlaygroundSourceContext } from '@/lib/readPlaygroundSource';
 
 import Settings from './components/Settings';
@@ -27,6 +28,7 @@ import {
 } from './logic';
 import { assumptions } from './assumptions';
 import { versions, changelog } from './versions';
+import { buildCalibration } from './calibration';
 
 
 interface Props {
@@ -51,6 +53,7 @@ export default function MorphologiesOfStabilityPlayground({ sourceContext }: Pro
     const narrative = useMemo(() => computeNarrative(metrics, params), [metrics, params]);
     const sweep = useMemo(() => computeSweep(params, sweepParam), [params, sweepParam]);
     const sensitivityBars = useMemo(() => computeSensitivity(params), [params]);
+    const calibration = useMemo(() => buildCalibration(), []);
 
     // Simulation loop
     useEffect(() => {
@@ -148,7 +151,7 @@ export default function MorphologiesOfStabilityPlayground({ sourceContext }: Pro
                             returning to rest. A bistable switch holds form by occupying one
                             of two valleys. A limit cycle holds form by sustaining a rhythm.
                             A consensus network holds form by coordinating many units into
-                            agreement. These are not the same kind of stability — they are
+                            agreement. These are not the same kind of stability. They are
                             different <em>morphologies</em> of stability.
                         </p>
                     </div>
@@ -164,7 +167,7 @@ export default function MorphologiesOfStabilityPlayground({ sourceContext }: Pro
                             The Lyapunov function <Equation math="V = \tfrac{1}{2}k(x - x^*)^2" /> decreases
                             monotonically along trajectories. The decay is exponential with
                             time constant <Equation math="\tau = 1/k" />. This is
-                            stability as <em>convergence to rest</em> — the system has a
+                            stability as <em>convergence to rest</em>. The system has a
                             single equilibrium and every initial condition flows toward it.
                         </p>
                     </div>
@@ -181,7 +184,7 @@ export default function MorphologiesOfStabilityPlayground({ sourceContext }: Pro
                             wells: <Equation math="\text{rate} \propto \exp(-2\Delta V / \sigma^2)" />,
                             where <Equation math="\Delta V" /> is the barrier height
                             and <Equation math="\sigma^2" /> the noise intensity. This
-                            is stability as <em>basin selection</em> — the system has
+                            is stability as <em>basin selection</em>. The system has
                             multiple stable states, and identity depends on which valley
                             you occupy.
                         </p>
@@ -200,7 +203,7 @@ export default function MorphologiesOfStabilityPlayground({ sourceContext }: Pro
                             The Floquet exponent for radial
                             perturbations is <Equation math="\lambda_r = -2\mu" />,
                             governing how fast the system returns to the orbit after
-                            a kick. This is stability as <em>rhythm</em> — the system
+                            a kick. This is stability as <em>rhythm</em>. The system
                             never rests, but its pattern of motion is self-restoring.
                         </p>
                     </div>
@@ -217,7 +220,7 @@ export default function MorphologiesOfStabilityPlayground({ sourceContext }: Pro
                             toward an anchor <Equation math="a" /> with
                             stubbornness <Equation math="s" />. The effective convergence
                             rate is <Equation math="\lambda = c(1 - 1/N) + s" />.
-                            This is stability as <em>coordination</em> — the stable
+                            This is stability as <em>coordination</em>. The stable
                             object is a collective configuration, not any single unit.
                         </p>
                     </div>
@@ -237,7 +240,7 @@ export default function MorphologiesOfStabilityPlayground({ sourceContext }: Pro
                             The four patterns here represent four ways a system can
                             achieve this: by relaxing to a point, by selecting a basin,
                             by sustaining a rhythm, or by coordinating across units.
-                            Each is a morphology of stability — a distinct way that
+                            Each is a morphology of stability, a distinct way that
                             &ldquo;holding form&rdquo; can be realized in a dynamical system.
                         </p>
                     </div>
@@ -254,6 +257,18 @@ export default function MorphologiesOfStabilityPlayground({ sourceContext }: Pro
                             actively reconstruct their own boundary). Each deserves its own
                             exploration.
                         </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <p className="leading-relaxed text-sm mb-3">
+                            Each case drives the noise-free core of one morphology and checks
+                            it against a textbook result: a fixed point stays put, a displaced
+                            state relaxes to its target, the Hopf orbit settles at radius
+                            <Equation math="\sqrt{\mu}" />, the subcritical regime collapses to
+                            the origin, and the consensus network reaches agreement.
+                        </p>
+                        <CalibrationPanel results={calibration} outputLabel="stability prediction" />
                     </div>
 
                     <div>
@@ -287,6 +302,7 @@ export default function MorphologiesOfStabilityPlayground({ sourceContext }: Pro
                 </>
             }
             sections={sections}
+            researchUrl="/playgrounds/morphologies-of-stability/research"
             settings={
                 <Settings
                     params={params}

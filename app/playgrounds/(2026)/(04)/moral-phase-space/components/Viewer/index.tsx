@@ -350,7 +350,7 @@ export default function Viewer({
             {activeTab === 'sweep' && (
                 <div className="space-y-4">
                     <div className="text-xs text-lime-200/50 mb-2">
-                        Sweep one parameter 0{'\u2013'}100 and compare how each framework responds.
+                        Sweep one parameter 0 to 100 and compare how each framework responds.
                     </div>
                     <div className="flex flex-wrap gap-2 mb-2">
                         {SWEEP_PARAM_SPECS.map(spec => (

@@ -3,20 +3,7 @@
 import { useState } from 'react';
 import Button from '@/components/Button';
 import SliderInput from '@/components/SliderInput';
-import { SimulationParams } from '../../playground';
-
-const DEFAULT_PARAMS: SimulationParams = {
-    priorPrecision: 2.0,
-    sensoryPrecision: 1.5,
-    attention: 0.0,
-    rOpioid: 1.0,
-    rCB1: 0.8,
-    rCCK: 0.8,
-    conditioning: 0.7,
-    naloxone: 0.0,
-    rimonabant: 0.0,
-    proglumide: 0.0,
-};
+import { SimulationParams, DEFAULT_PARAMS, priorWeight } from '../../logic';
 
 interface SettingsProps {
     onParamsChange: (params: SimulationParams) => void;
@@ -38,7 +25,7 @@ export default function Settings({ onParamsChange, onReset }: SettingsProps) {
         onReset();
     };
 
-    const priorWeight = params.priorPrecision / (params.priorPrecision + params.sensoryPrecision * (1 + params.attention));
+    const w = priorWeight(params);
 
     return (
         <div className="space-y-6">
@@ -86,7 +73,7 @@ export default function Settings({ onParamsChange, onReset }: SettingsProps) {
                 </div>
 
                 <div className="text-xs text-lime-400 bg-black border border-lime-500/20 p-3">
-                    Prior weight w = {priorWeight.toFixed(3)}
+                    Prior weight w = {w.toFixed(3)}
                 </div>
             </div>
 

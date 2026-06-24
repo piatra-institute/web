@@ -2,10 +2,18 @@
 
 import { useRef, useState, useCallback } from 'react';
 import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayout';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Settings from './components/Settings';
 import Viewer, { ViewerRef } from './components/Viewer';
 import Equation from '@/components/Equation';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import { Spec, BuiltinType, defaultSpec, uid, BUILTINS } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 export default function Playground() {
     const viewerRef = useRef<ViewerRef>(null);
@@ -18,6 +26,10 @@ export default function Playground() {
 
     // Active overlay IDs
     const [activeOverlayIds, setActiveOverlayIds] = useState<string[]>([]);
+
+    // PiatraBench infrastructure
+    const calibration = buildCalibration();
+    const [activeVersion, setActiveVersion] = useState(versions[0].id);
 
     // Plot settings
     const [showDerivative, setShowDerivative] = useState(true);
@@ -74,7 +86,7 @@ export default function Playground() {
             id: 'canvas',
             type: 'canvas',
             content: (
-                <div className="w-full h-full flex items-center justify-center">
+                <PlaygroundViewer>
                     <Viewer
                         ref={viewerRef}
                         spec={spec}
@@ -86,14 +98,14 @@ export default function Playground() {
                         invertChart={invertChart}
                         onSelectActivation={handleSelectActivation}
                     />
-                </div>
+                </PlaygroundViewer>
             ),
         },
         {
             id: 'outro',
             type: 'outro',
             content: (
-                <div className="space-y-6">
+                <div className="space-y-8 text-gray-300">
                     <div className="border-l-2 border-lime-500/50 pl-4">
                         <h4 className="text-lime-400 font-semibold mb-2">Activation Functions</h4>
                         <p className="text-gray-300">
@@ -169,6 +181,30 @@ export default function Playground() {
                             <a href="https://arxiv.org/abs/1502.01852" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">PReLU (He et al. 2015)</a> introduced learnable negative slopes. <a href="https://arxiv.org/abs/1710.05941" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">Swish (Ramachandran et al. 2017)</a> popularized self-gated activations. <a href="https://arxiv.org/abs/1606.08415" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">GELU (Hendrycks &amp; Gimpel 2016)</a> is now standard in transformers. Gated architectures appear in <a href="https://arxiv.org/abs/1612.08083" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">GLU (Dauphin et al. 2017)</a> and <a href="https://arxiv.org/abs/2002.05202" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">SwiGLU (Shazeer 2020)</a>. The expression parser enables exploring the full design space of differentiable activation functions.
                         </p>
                     </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model version</h3>
+                        <VersionSelector
+                            versions={versions}
+                            active={activeVersion}
+                            onSelect={setActiveVersion}
+                        />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <CalibrationPanel results={calibration} outputLabel="exact identity" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                        <AssumptionPanel assumptions={assumptions} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -202,6 +238,7 @@ export default function Playground() {
                     onToggleInvertChart={() => setInvertChart((prev) => !prev)}
                 />
             }
+            researchUrl="/playgrounds/activation-functions-lab/research"
         />
     );
 }

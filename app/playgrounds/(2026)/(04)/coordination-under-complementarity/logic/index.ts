@@ -368,7 +368,7 @@ export function computeNarrative(step: StepState, params: Params): string {
     if (step.regime === 'Adaptive') {
         parts.push('Scales are mostly aligned; demand is being absorbed into coordinated capacity.');
     } else if (step.regime === 'Rigid lock-in') {
-        parts.push('The system appears stable but is locked \u2014 vetoes and incumbent capture prevent adaptation despite demand pressure.');
+        parts.push('The system appears stable but is locked: vetoes and incumbent capture prevent adaptation despite demand pressure.');
     } else if (step.regime === 'Chaotic drift') {
         parts.push('Scales are acting on contradictory signals; the system oscillates without settling into coordinated behavior.');
     } else {
@@ -376,7 +376,7 @@ export function computeNarrative(step: StepState, params: Params): string {
     }
 
     if (step.basinStability < 0.3) {
-        parts.push(`Basin stability is dangerously low (${(step.basinStability * 100).toFixed(0)}%) \u2014 a small demand shock could trigger a regime transition.`);
+        parts.push(`Basin stability is dangerously low (${(step.basinStability * 100).toFixed(0)}%); a small demand shock could trigger a regime transition.`);
     }
 
     if (step.effectiveSignalFidelity < params.signalFidelity - 0.05) {

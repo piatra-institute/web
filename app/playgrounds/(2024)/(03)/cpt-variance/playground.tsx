@@ -4,10 +4,19 @@ import { useState } from 'react';
 
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 export default function CptVariancePlayground() {
+    const calibration = buildCalibration();
+
     // Individual symmetry violations
     const [chargeViolation, setChargeViolation] = useState(0.1);
     const [parityViolation, setParityViolation] = useState(0.2);
@@ -63,29 +72,54 @@ export default function CptVariancePlayground() {
             id: 'about',
             type: 'outro' as const,
             content: (
-                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
-                    <p>
-                        The CPT theorem is one of the most fundamental principles in particle physics,
-                        stating that all physical processes remain invariant under the combined
-                        operation of charge conjugation (C), parity inversion (P), and time reversal (T).
-                        This theorem emerges from the structure of quantum field theory and special relativity.
-                    </p>
-                    <p>
-                        While individual C, P, and T symmetries can be violated (as observed in weak
-                        interactions and CP violation in kaon decay), the combined CPT symmetry
-                        has never been observed to break. Any violation would have profound implications
-                        for our understanding of spacetime and matter-antimatter asymmetry.
-                    </p>
-                    <p>
-                        This visualization explores these symmetries and their hypothetical violations,
-                        showing how they might manifest in particle interactions, Feynman diagram
-                        transformations, and the cosmic matter-antimatter imbalance that led to our
-                        matter-dominated universe.
-                    </p>
-                    <p>
-                        Key concepts: discrete symmetries, quantum field theory, kaon oscillations,
-                        CP violation, baryogenesis, and tests of fundamental physics principles.
-                    </p>
+                <div className="space-y-8 text-gray-300">
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">The CPT theorem</h3>
+                        <p className="leading-relaxed text-sm">
+                            The CPT theorem is one of the most fundamental principles in particle physics,
+                            stating that all physical processes remain invariant under the combined
+                            operation of charge conjugation (C), parity inversion (P), and time reversal (T).
+                            This result emerges from the structure of quantum field theory and special relativity,
+                            so every local, Lorentz-invariant theory with a Hermitian Hamiltonian must respect it.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Individual breaking, combined protection</h3>
+                        <p className="leading-relaxed text-sm">
+                            Individual C, P, and the pair CP are all violated in the weak interaction, observed
+                            in cobalt-60 beta decay and in neutral kaon decay. The combined CPT symmetry, however,
+                            has never been observed to break. Any violation would overturn locality or Lorentz
+                            invariance and would carry profound implications for spacetime and the
+                            matter-antimatter asymmetry of the universe.
+                        </p>
+                        <div className="border-l-2 border-lime-500/40 pl-4 mt-3">
+                            <p className="text-lime-200/80 mb-2">
+                                In this toy, C, P, and T are exact involutions. CPT sends a particle to its
+                                antiparticle with inverted position and unchanged momentum, and it preserves a
+                                scalar invariant the calibration panel checks to zero error.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">What the model captures</h3>
+                        <p className="leading-relaxed text-sm">
+                            The companion logic extracts the group-theoretic skeleton: the involution property of
+                            each operator, the CPT composition law, a protected invariant, and the linear
+                            matter-antimatter asymmetry that vanishes at exact CPT. The violation sliders are
+                            illustrative controls with no direct empirical counterpart; the established physics is
+                            kept apart from these toy dials in the assumptions below.
+                        </p>
+                    </div>
+
+                    <VersionSelector versions={versions} active="claude-v1" />
+
+                    <CalibrationPanel results={calibration} outputLabel="symmetry identity" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <ModelChangelog entries={changelog} />
                 </div>
             ),
         },
@@ -120,6 +154,7 @@ export default function CptVariancePlayground() {
             subtitle="Discrete Symmetries in Particle Physics"
             sections={sections}
             settings={settings}
+            researchUrl="/playgrounds/cpt-variance/research"
         />
     );
 }

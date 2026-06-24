@@ -21,6 +21,8 @@ export const changelog: ChangelogEntry[] = [
             'Interactive filtering by field, mode, search, and sort order',
             'Four curated presets: full atlas, universal templates, action hierarchy, topological surgery',
             'Detail panel with intuition, use-when conditions, comparison, and nearby constructions',
+            'Calibration suite of five exact counting invariants over the atlas',
+            'Research companion, assumption panel, and model changelog',
         ],
     },
 ];

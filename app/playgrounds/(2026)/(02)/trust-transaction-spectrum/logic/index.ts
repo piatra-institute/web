@@ -151,7 +151,7 @@ function norm10(v: number): number {
  * Factor selection draws on the small-state diplomacy literature (Thorhallsson's
  * shelter theory, Kuik's hedging framework, Walt's balance-of-threat theory,
  * Hirschman's dependency concentration). Weights are elicited rather than
- * regression-derived — comparable in methodology to the Fragile States Index.
+ * regression-derived, comparable in methodology to the Fragile States Index.
  *
  * Key design choices grounded in the literature:
  *
@@ -177,7 +177,7 @@ function norm10(v: number): number {
 export function computeModel(inputs: Inputs): ModelResult {
     // Base weights sum to 1.0. Domestic cohesion elevated per Kuik;
     // sanctions reduced (endogeneity: partly consequence of posture).
-    // "Short planning horizon" replaces "temporal discounting" — the
+    // "Short planning horizon" replaces "temporal discounting"; the
     // concept of horizon-dependent strategy is standard in foreign policy
     // analysis, though not formalised under that name in IR theory.
     const baseWeights = {
@@ -194,7 +194,7 @@ export function computeModel(inputs: Inputs): ModelResult {
 
     // Crisis regime: Thorhallsson-corrected reallocation.
     // Institutional shelter deficit weight INCREASES (shelter is most critical
-    // during crises — Thorhallsson 2011). Reputational capital weight DECREASES
+    // during crises, Thorhallsson 2011). Reputational capital weight DECREASES
     // (short-term survival overrides reputation investment under acute threat).
     const weights = inputs.crisis
         ? {
@@ -240,7 +240,7 @@ export function computeModel(inputs: Inputs): ModelResult {
 
     // Interaction terms (Walt, Thorhallsson): the linear model alone misses
     // that threat without credible alliance, or rivalry without institutional
-    // shelter, produces compounding pressure — not merely additive.
+    // shelter, produces compounding pressure, not merely additive.
     const interactThreatAlliance = n.threat * (1 - n.alliance);
     const interactRivalryInstitutions = n.rivalry * (1 - n.institutions);
 
@@ -266,7 +266,7 @@ export function computeModel(inputs: Inputs): ModelResult {
     // Convex leverage adjustment: the penalty for very low autonomy is
     // disproportionately large because partners discount unreliable small
     // actors faster (nonlinear reputation erosion). The boost for high
-    // autonomy is linear — having resources makes transactionalism feasible
+    // autonomy is linear, since having resources makes transactionalism feasible
     // but not exponentially so.
     const leveragePenalty = Math.pow(1 - n.leverage, 1.5) * 10;
     const leverageBoost = n.leverage * 5;

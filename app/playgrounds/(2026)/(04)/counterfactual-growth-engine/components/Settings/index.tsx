@@ -73,7 +73,7 @@ export default function Settings({ params, onParamsChange, kpis, narrative }: Se
                 <Dropdown
                     name="target"
                     selected={params.target}
-                    selectables={allCountries.map(c => `${c} — ${COUNTRIES[c].name}`)}
+                    selectables={allCountries.map(c => `${c} · ${COUNTRIES[c].name}`)}
                     atSelect={(v: string) => onParamsChange({ ...params, target: v.split(' ')[0] as CountryCode })}
                 />
             ),
@@ -101,7 +101,7 @@ export default function Settings({ params, onParamsChange, kpis, narrative }: Se
                                     className="flex-1 h-1 accent-lime-500 cursor-pointer"
                                 />
                                 <div className="w-10 text-right text-xs font-mono text-lime-200/60">
-                                    {norm > 0 ? `${Math.round(norm * 100)}%` : '—'}
+                                    {norm > 0 ? `${Math.round(norm * 100)}%` : '0%'}
                                 </div>
                             </div>
                         );

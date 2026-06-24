@@ -17,7 +17,7 @@ const sourceContext = readPlaygroundSource(
 
 export const metadata: Metadata = {
     title: 'modes of combination · playgrounds',
-    description: 'Atlas of product constructions — explore how mathematical objects combine across algebra, category theory, and topology',
+    description: 'Atlas of product constructions; explore how mathematical objects combine across algebra, category theory, and topology',
 
     openGraph: {
         ...defaultOpenGraph,

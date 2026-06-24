@@ -1,4 +1,4 @@
-// Ontogenic Engine — logic module
+// Ontogenic Engine logic module
 //
 // Models entityhood as an achievement of adaptive self-maintenance,
 // drawing on Simondon's individuation, Maturana & Varela's autopoiesis,
@@ -6,7 +6,7 @@
 //
 // Six control parameters modulate five coupled dynamic variables
 // that track how a system holds itself together while remaining
-// open enough to transform. The key output is the "becoming index" —
+// open enough to transform. The key output is the "becoming index",
 // a composite measure of whether the system is genuinely individuating
 // or merely persisting, rigidifying, drifting, or dissolving.
 

@@ -2,8 +2,19 @@
 
 import { useRef } from 'react';
 import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayout';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
+import ResearchPromptButton from '@/components/ResearchPromptButton';
+import { PlaygroundSourceContext } from '@/lib/readPlaygroundSource';
+
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 export interface ViewerRef {
     updateSimulation: (params: SimulationParams, mechanics: Mechanics) => void;
@@ -35,8 +46,14 @@ export interface SimulationParams {
     seed: number;
 }
 
-export default function Playground() {
+interface Props {
+    sourceContext?: PlaygroundSourceContext;
+}
+
+export default function Playground({ sourceContext }: Props) {
     const viewerRef = useRef<ViewerRef>(null);
+
+    const calibration = buildCalibration();
 
     const handleParamsChange = (params: SimulationParams, mechanics: Mechanics) => {
         viewerRef.current?.updateSimulation(params, mechanics);
@@ -55,70 +72,103 @@ export default function Playground() {
             id: 'canvas',
             type: 'canvas',
             content: (
-                <div className="w-full h-full flex items-center justify-center p-8">
+                <PlaygroundViewer>
                     <Viewer ref={viewerRef} />
-                </div>
+                </PlaygroundViewer>
             ),
         },
         {
             id: 'outro',
             type: 'outro',
             content: (
-                <div className="space-y-6">
-                    <div className="border-l-2 border-lime-500/50 pl-4">
-                        <h4 className="text-lime-400 font-semibold mb-2">Mean-Field Propagation Model</h4>
-                        <p className="text-gray-300">
-                            This simulator employs a mean-field (aggregated) approach to model viral content propagation
-                            across large-scale social networks. Rather than tracking individual agents, the model
-                            maintains aggregate state variables for active shares, cumulative reach, and manipulation
-                            exposure, evolving them through discrete time steps with branching dynamics modulated by
-                            policy interventions. The baseline scenario represents unrestricted propagation, while the
-                            policy scenario applies friction mechanisms designed to suppress coordination attacks and
-                            reduce the political manipulation surface.
+                <div className="space-y-8 text-gray-300">
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Mean-field propagation model</h3>
+                        <p className="leading-relaxed text-sm">
+                            This simulator uses a mean-field (aggregated) branching process to model viral content
+                            propagation across a large social network. Rather than tracking individual accounts, it
+                            carries aggregate state for active shares, cumulative reach, and manipulation exposure,
+                            evolving them in discrete one-minute steps. Growth follows active shares times the effective
+                            reproduction number times the susceptible fraction, plus seed ingress. The baseline scenario
+                            is unrestricted propagation; the policy scenario applies friction mechanisms designed to
+                            suppress coordination attacks and shrink the political manipulation surface.
                         </p>
                     </div>
 
-                    <div className="border-l-2 border-lime-500/50 pl-4">
-                        <h4 className="text-lime-400 font-semibold mb-2">Policy Mechanics</h4>
-                        <p className="text-gray-300">
-                            Seven distinct policy levers modulate propagation dynamics: (1) 10-hour cooldown restricts
-                            accounts to ~2.4 posts per day; (2) 10-hour coolup delays content visibility, dampening
-                            ignition; (3) 1-hour daily posting windows further constrain election-period activity; (4)
-                            forward caps reduce effective fan-out by halving the degree; (5) question-gating and
-                            prebunking mechanisms lower both share probability and conversion rates; (6) identity tiers
-                            impose stricter friction on new/low-trust accounts; (7) per-thread slow mode applies temporal
-                            smoothing to growth rates. These interventions collectively reduce the effective reproduction
-                            number R_eff, delay cascades, and diminish manipulation impact.
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Reproduction number and threshold</h3>
+                        <p className="leading-relaxed text-sm">
+                            The basic reproduction number is the product of fan-out, reshare probability, and
+                            amplification, R0 = avgDegree times shareProb times amplification. Policy levers act as
+                            multipliers that pull it down to an effective R_eff. The epidemic threshold theorem decides
+                            the outcome: a cascade is supercritical (self-sustaining, growing) when R_eff is above 1 and
+                            subcritical (fading) when it is at or below 1. Above threshold a finite fraction of the
+                            audience is eventually reached, the final-size fraction one minus one over R_eff.
                         </p>
                     </div>
 
-                    <div className="border-l-2 border-lime-500/50 pl-4">
-                        <h4 className="text-lime-400 font-semibold mb-2">Political Manipulation Impact (PMI)</h4>
-                        <p className="text-gray-300">
-                            The PMI metric quantifies expected successful manipulations by accumulating the product of
-                            new exposures, per-exposure conversion probability, and attention/skepticism factors at each
-                            time step. Conversion probability decays with content age using an attention half-life,
-                            penalizing delayed exposure. Question-gating applies an additional skepticism reduction.
-                            The model reports absolute PMI for both scenarios and computes percentage reduction under
-                            policy, providing a direct measure of manipulation suppression effectiveness. This metric
-                            captures not just reach reduction but also the qualitative degradation of manipulation
-                            potency due to delays and friction.
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Policy mechanics</h3>
+                        <p className="leading-relaxed text-sm">
+                            Seven levers modulate the dynamics. A 10-hour cooldown restricts accounts to about 2.4 posts
+                            per day; a 10-hour coolup delays visibility and damps ignition; a 1-hour daily window further
+                            constrains election-period posting; forward caps halve effective fan-out; question-gating and
+                            prebunking lower both reshare probability and conversion; identity tiers impose stricter
+                            friction on new or low-trust accounts; per-thread slow mode applies temporal smoothing. Each
+                            is encoded as an independent multiplier on rate, visibility, fan-out, or conversion, and they
+                            compose to reduce R_eff, delay cascades, and diminish manipulation impact.
                         </p>
                     </div>
 
-                    <div className="border-l-2 border-lime-500/50 pl-4">
-                        <h4 className="text-lime-400 font-semibold mb-2">Methodological Notes</h4>
-                        <p className="text-gray-300">
-                            The mean-field approximation trades agent-level fidelity for computational tractability,
-                            enabling multi-day simulations with minute-scale resolution. The model uses logistic
-                            saturation to cap reach at audience size and applies a small moderation leak to represent
-                            content removal. Slow mode employs exponential moving average smoothing rather than direct
-                            R modification. Parameters are calibrated for pedagogical visibility of policy effects
-                            rather than quantitative prediction. Real-world dynamics involve heterogeneous agents,
-                            network topology, adaptive adversaries, and enforcement imperfections not captured here.
-                            Results illustrate comparative trends and mechanism interactions rather than precise forecasts.
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Political manipulation impact</h3>
+                        <p className="leading-relaxed text-sm">
+                            The PMI index accumulates, at each step, new exposures times the effective per-exposure
+                            conversion probability. Conversion decays with content age through an attention half-life, so
+                            delayed content lands with diminished potency, and question-gating applies an extra skepticism
+                            reduction. The model reports absolute PMI for both scenarios and the percentage reduction
+                            under policy, capturing not just lower reach but the qualitative degradation of manipulation
+                            potency due to delay and friction.
                         </p>
                     </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">What it is not</h3>
+                        <p className="leading-relaxed text-sm">
+                            The mean-field approximation trades agent-level fidelity for tractability. It assumes
+                            well-mixed contact, simple contagion, static multiplier policies, and a proxy conversion
+                            count, none of which hold exactly in real graphs with hubs, complex contagion, adaptive
+                            adversaries, and heterogeneous persuasion. Parameters are tuned for pedagogical visibility of
+                            policy effects, not quantitative forecasting. Results illustrate comparative trends and
+                            mechanism interactions rather than precise predictions.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Implementation</h3>
+                        <VersionSelector versions={versions} active="claude-v1" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <CalibrationPanel results={calibration} outputLabel="epidemic / cascade target" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                        <AssumptionPanel assumptions={assumptions} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
+
+                    {sourceContext && (
+                        <div className="border-t border-lime-500/20 pt-8">
+                            <ResearchPromptButton context={sourceContext} />
+                        </div>
+                    )}
                 </div>
             ),
         },
@@ -127,9 +177,11 @@ export default function Playground() {
     return (
         <PlaygroundLayout
             title="social propagation"
-            description="comparing free-for-all vs policy-based social networks to measure political manipulation reduction"
+            subtitle="comparing free-for-all versus policy-based social networks to measure political manipulation reduction"
+            description="contagion, reproduction numbers, and the epidemic threshold applied to viral political manipulation"
             sections={sections}
             settings={<Settings onParamsChange={handleParamsChange} onReset={handleReset} />}
+            researchUrl="/playgrounds/social-propagation/research"
         />
     );
 }

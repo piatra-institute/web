@@ -60,6 +60,47 @@ export function softmaxDotKernel(xq: number, xi: number, tau: number): number {
     return Math.exp((xq * xi) / tau);
 }
 
+/**
+ * Standard-normal (unit-bandwidth) Gaussian density used as a probability
+ * kernel: K(u) = (1 / sqrt(2 pi)) exp(-u^2 / 2). Its peak value K(0) = 0.3989
+ * and its integral over the real line is exactly 1. This is the proper density
+ * form (used for kernel density estimation), distinct from the unnormalized
+ * similarity weight gaussianKernel returns.
+ */
+export function gaussianDensity(u: number): number {
+    return Math.exp(-(u * u) / 2) / Math.sqrt(2 * Math.PI);
+}
+
+/**
+ * Epanechnikov kernel: K(u) = 0.75 (1 - u^2) for |u| <= 1, else 0. It has
+ * compact support and is the asymptotically optimal kernel (minimum mean
+ * integrated squared error). Returns 0 outside [-1, 1].
+ */
+export function epanechnikovKernel(u: number): number {
+    return Math.abs(u) <= 1 ? 0.75 * (1 - u * u) : 0;
+}
+
+/**
+ * Nadaraya-Watson estimator: yHat(xq) = sum_i K(xq, xi) y_i / sum_i K(xq, xi),
+ * using the unnormalized Gaussian similarity weight with bandwidth h.
+ * Returns 0 when the normalizer is 0 (query infinitely far from all points).
+ */
+export function nadarayaWatson(
+    xq: number,
+    xs: number[],
+    ys: number[],
+    h: number,
+): number {
+    let num = 0;
+    let den = 0;
+    for (let i = 0; i < xs.length; i++) {
+        const k = gaussianKernel(xq, xs[i], h);
+        num += k * ys[i];
+        den += k;
+    }
+    return den > 0 ? num / den : 0;
+}
+
 export function computeKernel(
     xq: number,
     xi: number,
@@ -76,7 +117,7 @@ export function clamp(n: number, lo: number, hi: number): number {
 }
 
 export function fmt(x: number, d: number = 6): string {
-    if (!Number.isFinite(x)) return '—';
+    if (!Number.isFinite(x)) return 'n/a';
     const s = x.toFixed(d);
     return s.replace(/\.0+$/, '').replace(/(\.\d*[1-9])0+$/, '$1');
 }

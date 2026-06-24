@@ -4,6 +4,10 @@ import React, { useState, useMemo } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import {
@@ -13,9 +17,13 @@ import {
     inferNarrative,
     computeStats,
 } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 export default function TrainableGeneCircuitsPlayground() {
     const [params, setParams] = useState<Params>(() => presetParams('associative'));
+    const calibration = buildCalibration();
 
     const { data, phases } = useMemo(() => simulate(params), [params]);
     const narrative = useMemo(() => inferNarrative(data, params), [data, params]);
@@ -117,6 +125,25 @@ export default function TrainableGeneCircuitsPlayground() {
                             <li>Values are illustrative. Replace coupling weights and timing to test specific biological circuits.</li>
                         </ul>
                     </div>
+
+                    <div>
+                        <VersionSelector versions={versions} active="claude-v1" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <CalibrationPanel results={calibration} outputLabel="model output" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                        <AssumptionPanel assumptions={assumptions} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -145,6 +172,7 @@ export default function TrainableGeneCircuitsPlayground() {
                     stats={stats}
                 />
             }
+            researchUrl="/playgrounds/trainable-gene-circuits/research"
         />
     );
 }

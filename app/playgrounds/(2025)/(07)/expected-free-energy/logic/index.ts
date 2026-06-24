@@ -21,11 +21,88 @@ function randomNormal(): number {
     return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
 }
 
-function klDivergenceGaussian(mu1: number, var1: number, mu2: number, var2: number): number {
+export function klDivergenceGaussian(mu1: number, var1: number, mu2: number, var2: number): number {
     if (var1 <= 0 || var2 <= 0) return 0;
     const term1 = 0.5 * Math.log(var2 / var1);
     const term2 = (var1 + Math.pow(mu1 - mu2, 2)) / (2 * var2);
     return term1 + term2 - 0.5;
+}
+
+/**
+ * Discrete Kullback-Leibler divergence D_KL(p || q) in nats. Both inputs are
+ * treated as probability vectors over the same support. Terms where p_i is zero
+ * contribute nothing (0 * log 0 := 0). This is the exact information-theoretic
+ * core that the EFE risk term reduces to in the discrete setting, and it
+ * satisfies D_KL(p || p) = 0 for any p.
+ */
+export function klDivergence(p: number[], q: number[]): number {
+    let sum = 0;
+    for (let i = 0; i < p.length; i++) {
+        if (p[i] > 0 && q[i] > 0) {
+            sum += p[i] * Math.log(p[i] / q[i]);
+        }
+    }
+    return sum;
+}
+
+/**
+ * Shannon entropy H(p) = -sum p_i log p_i in nats. For a uniform distribution
+ * over n outcomes this equals log(n). It is the ambiguity-style quantity that
+ * an active-inference agent reduces when it seeks informative observations.
+ */
+export function entropy(p: number[]): number {
+    let sum = 0;
+    for (const pi of p) {
+        if (pi > 0) sum -= pi * Math.log(pi);
+    }
+    return sum;
+}
+
+/**
+ * Softmax over a logit vector, returning a normalised probability vector. In
+ * active inference the policy posterior is sigma(-gamma * G), the softmax of the
+ * negative expected free energies. The output always sums to 1.
+ */
+export function softmax(logits: number[], temperature: number = 1): number[] {
+    const scaled = logits.map((x) => x / temperature);
+    const max = Math.max(...scaled);
+    const exps = scaled.map((x) => Math.exp(x - max));
+    const total = exps.reduce((a, b) => a + b, 0);
+    return exps.map((e) => e / total);
+}
+
+/**
+ * Differential entropy of a 1D Gaussian observation channel with the given
+ * variance, in nats: 0.5 * log(2 pi e variance). This is the per-step ambiguity
+ * (expected conditional entropy of observations given states) used by the
+ * Monte Carlo simulation above.
+ */
+export function gaussianAmbiguity(variance: number): number {
+    return 0.5 * Math.log(2 * Math.PI * Math.E * variance);
+}
+
+/**
+ * Closed-form expected free energy decomposition for one policy in the Gaussian
+ * setting used by this playground. The agent integrates a state from 0 under a
+ * random walk with per-step variance stateNoiseStd^2; the risk term is the
+ * squared deviation of the expected observation from the goal summed over the
+ * horizon, weighted by riskWeight; the ambiguity term is the per-step
+ * observation entropy times the horizon. With expected observation mean equal to
+ * the integrated state mean (0 under a zero-drift walk), the deterministic risk
+ * is riskWeight * horizon * goal^2.
+ */
+export function expectedFreeEnergy(
+    horizon: number,
+    riskWeight: number,
+    observationNoiseStd: number,
+    goalState: number,
+): { risk: number; ambiguity: number; efe: number } {
+    const ambiguityPerStep = gaussianAmbiguity(Math.pow(observationNoiseStd, 2));
+    const ambiguity = horizon * ambiguityPerStep;
+    // Expected hidden-state mean is 0 (zero-drift random walk), so the expected
+    // observation deviation from the goal is (0 - goalState).
+    const risk = riskWeight * horizon * Math.pow(0 - goalState, 2);
+    return { risk, ambiguity, efe: risk + ambiguity };
 }
 
 export function runSimulation(
@@ -48,7 +125,7 @@ export function runSimulation(
     const MAX_TRAJ_TO_DRAW = 200;
 
     const obs_variance = Math.pow(obs_noise_std, 2);
-    const ambiguity_per_step = 0.5 * Math.log(2 * Math.PI * Math.E * obs_variance);
+    const ambiguity_per_step = gaussianAmbiguity(obs_variance);
     const total_ambiguity = horizon * ambiguity_per_step;
 
     for (let i = 0; i < samples; i++) {

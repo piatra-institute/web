@@ -3,8 +3,17 @@
 import { useState, useRef } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
+
+const calibration = buildCalibration();
 
 export default function MetamaterialsPlayground() {
     // Lattice parameters
@@ -91,7 +100,7 @@ export default function MetamaterialsPlayground() {
                     id: 'intro',
                     type: 'intro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-4">Life-Like Metamaterials</h2>
                             <p>
                                 Metamaterials gain their extraordinary properties not from their chemical composition, 
@@ -158,7 +167,7 @@ export default function MetamaterialsPlayground() {
                     id: 'outro',
                     type: 'outro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-6">Engineering Life Into Matter</h2>
                             
                             <div className="space-y-6">
@@ -231,10 +240,38 @@ export default function MetamaterialsPlayground() {
                                     </ul>
                                 </div>
                             </div>
+
+                            <div className="space-y-8 text-gray-300 border-t border-lime-500/20 pt-8">
+                                <div>
+                                    <h3 className="text-lime-400 font-semibold mb-3">Model Provenance</h3>
+                                    <VersionSelector versions={versions} active="claude-v1" />
+                                </div>
+
+                                <div>
+                                    <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                                    <p className="leading-relaxed text-sm mb-3">
+                                        The deterministic spring core is checked against closed-form
+                                        Hooke and auxetic stiffness values. Each predicted number is
+                                        recomputed by the same logic the viewer uses.
+                                    </p>
+                                    <CalibrationPanel results={calibration} outputLabel="spring mechanics" />
+                                </div>
+
+                                <div>
+                                    <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                                    <AssumptionPanel assumptions={assumptions} />
+                                </div>
+
+                                <div>
+                                    <h3 className="text-lime-400 font-semibold mb-3">Model Changelog</h3>
+                                    <ModelChangelog entries={changelog} />
+                                </div>
+                            </div>
                         </div>
                     )
                 }
             ]}
+            researchUrl="/playgrounds/metamaterials/research"
             settings={
                 <Settings
                     latticeType={latticeType}

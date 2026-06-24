@@ -5,6 +5,12 @@ import { useState, useMemo, useCallback } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
+import ResearchPromptButton from '@/components/ResearchPromptButton';
+import { PlaygroundSourceContext } from '@/lib/readPlaygroundSource';
 
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
@@ -19,9 +25,16 @@ import {
     buildCompartmentWitness,
     estimateSinglePoint,
 } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 
-export default function CO2MetabolismPlayground() {
+interface PlaygroundProps {
+    sourceContext?: PlaygroundSourceContext;
+}
+
+export default function CO2MetabolismPlayground({ sourceContext }: PlaygroundProps) {
     const [params, setParams] = useState<Params>(DEFAULT_PARAMS);
     const [runNonce, setRunNonce] = useState(0);
     const [witnessNonce, setWitnessNonce] = useState(0);
@@ -80,6 +93,8 @@ export default function CO2MetabolismPlayground() {
     const handleRun = useCallback(() => setRunNonce((n) => n + 1), []);
     const handleNewWitness = useCallback(() => setWitnessNonce((n) => n + 1), []);
 
+    const calibration = useMemo(() => buildCalibration(), []);
+
     const sections = [
         {
             id: 'intro',
@@ -111,13 +126,13 @@ export default function CO2MetabolismPlayground() {
                         Nick Lane&apos;s hypothesis proposes that life originated not from a prebiotic soup
                         but from the geochemistry of alkaline hydrothermal vents. Where hydrogen-rich
                         fluids from serpentinizing rock met CO₂-laden ocean water, a natural
-                        electrochemical gradient drove carbon fixation — the same reaction that
+                        electrochemical gradient drove carbon fixation, the same reaction that
                         powers the acetyl-CoA pathway in modern methanogens and acetogens.
                     </p>
 
                     <div className="border-l-2 border-lime-500/40 pl-4 my-4">
                         <p className="text-lime-200/80 mb-2">
-                            The 4-reaction Lane motif — a minimal proto-metabolic core:
+                            The 4-reaction Lane motif, a minimal proto-metabolic core:
                         </p>
                         <div className="space-y-1 font-mono text-sm text-lime-200/70">
                             <Equation mode="block" math="\text{r1: } \text{CO}_2 + \text{H}_2 \xrightarrow{M^*} A" />
@@ -135,7 +150,7 @@ export default function CO2MetabolismPlayground() {
                         This playground models a threshold question: molecules are randomly assigned
                         roles (A, C, B) and distributed across vent pore compartments. Each
                         compartment is checked for a Lane-like motif. The central parameter is
-                        catalytic density λ — the probability that any given molecular interaction
+                        catalytic density λ, the probability that any given molecular interaction
                         actually catalyzes a reaction.
                     </p>
 
@@ -148,7 +163,7 @@ export default function CO2MetabolismPlayground() {
                             math="\mu \approx p_A \cdot p_C \cdot p_B \cdot \frac{N^3 \cdot \lambda^4}{q^2}"
                         />
                         <p className="text-lime-200/60 text-sm mt-2">
-                            As N grows, proto-cores become probabilistically inevitable — not guaranteed
+                            As N grows, proto-cores become probabilistically inevitable, not guaranteed
                             in any single compartment, but increasingly hard to avoid across the ensemble.
                         </p>
                     </div>
@@ -173,17 +188,43 @@ export default function CO2MetabolismPlayground() {
                     <p>
                         Compartmentalization matters: vent pores act as natural reaction vessels.
                         More pores (higher q) dilute molecules across compartments, pushing
-                        thresholds upward. But each pore provides an independent trial — a
+                        thresholds upward. But each pore provides an independent trial, a
                         tradeoff between concentration and combinatorial opportunity.
                     </p>
 
                     <p className="text-lime-200/60 text-sm">
-                        This is a toy model — no stoichiometry, kinetics, or thermodynamics.
+                        This is a toy model with no stoichiometry, kinetics, or thermodynamics.
                         It captures threshold behavior, not chemistry. The point is that
                         the transition from &quot;possible&quot; to &quot;nearly forced&quot; can be sharp,
                         and that sharpness does not depend on any one lucky compartment
                         but on the statistics of the entire vent system.
                     </p>
+
+                    <div className="border-t border-lime-500/20 pt-8">
+                        <h3 className="text-lime-400 font-semibold mb-3">Implementation</h3>
+                        <VersionSelector versions={versions} active="claude-v1" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <CalibrationPanel results={calibration} outputLabel="expected motif count" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                        <AssumptionPanel assumptions={assumptions} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
+
+                    {sourceContext && (
+                        <div className="border-t border-lime-500/20 pt-8">
+                            <ResearchPromptButton context={sourceContext} />
+                        </div>
+                    )}
                 </div>
             ),
         },
@@ -215,6 +256,7 @@ export default function CO2MetabolismPlayground() {
             }
             sections={sections}
             settings={settings}
+            researchUrl="/playgrounds/co2-metabolism-hypothesis/research"
         />
     );
 }

@@ -4,28 +4,21 @@ import { useState, useCallback, useRef } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Button from '@/components/Button';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
-import Legend from './components/Legend';
+import { defaultMechanisms } from './logic';
+import type { MechanismData } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
-export interface MechanismData {
-    name: string;
-    color: string;
-    inf: {
-        res: number;
-        rec: number;
-        chronic: number;
-        growth: number;
-    };
-    weight: number;
-}
+export type { MechanismData } from './logic';
 
-const defaultMechanisms: MechanismData[] = [
-    { name: 'Appraisal', color: '#ff5252', inf: { res: -0.10, rec: 0, chronic: 0.15, growth: -0.10 }, weight: 1 },
-    { name: 'Rumination', color: '#ffb300', inf: { res: 0, rec: 0.08, chronic: 0.20, growth: 0 }, weight: 1 },
-    { name: 'Social', color: '#64b5f6', inf: { res: -0.13, rec: -0.08, chronic: 0, growth: 0 }, weight: 1 },
-    { name: 'NeuroFlex', color: '#4db6ac', inf: { res: 0, rec: 0, chronic: 0, growth: -0.18 }, weight: 1 }
-];
+const calibration = buildCalibration();
 
 export default function TraumaEustressDynamicsPlayground() {
     const [constriction, setConstriction] = useState(0.30);
@@ -103,25 +96,58 @@ export default function TraumaEustressDynamicsPlayground() {
             id: 'about',
             type: 'outro' as const,
             content: (
-                <>
-                    <p>
-                        This visualization explores how individuals respond to trauma through
-                        different psychological and physiological mechanisms. The model
-                        distinguishes between constriction (defensive narrowing) and expansion
-                        (growth-oriented opening) as fundamental response patterns.
-                    </p>
-                    <p>
-                        Four key mechanisms shape post-trauma trajectories: resilience
-                        (maintaining stability), recovery (returning to baseline), chronic
-                        narrowing (persistent constriction), and post-traumatic growth
-                        (expansion beyond previous functioning levels).
-                    </p>
-                    <p>
-                        Key concepts include: trauma response patterns, resilience theory,
-                        post-traumatic growth, stress adaptation, eustress versus distress,
-                        and the dynamics of psychological constriction and expansion.
-                    </p>
-                </>
+                <div className="space-y-8 text-gray-300">
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">What the model does</h3>
+                        <p className="leading-relaxed text-sm">
+                            This visualization explores how individuals respond to a stressful event
+                            through different psychological and physiological mechanisms. The model
+                            distinguishes between constriction (defensive narrowing) and expansion
+                            (growth-oriented opening) as the two poles of a single bandwidth axis. A
+                            constriction value above zero reads as distress; below zero reads as
+                            eustress, the activating good stress that widens rather than narrows
+                            attentional and behavioural bandwidth.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">The four trajectories</h3>
+                        <p className="leading-relaxed text-sm">
+                            Four post-event paths branch from the event node: resilience (minimal
+                            disturbance, holding near baseline), recovery (a delayed rebound that
+                            first dips below baseline and returns), chronic narrowing (persistent
+                            constriction), and post-traumatic growth (expansion beyond previous
+                            functioning). Each trajectory&apos;s vertical position is a weighted sum of
+                            four mechanism contributions, scaled by the slider weights, added to a
+                            baseline offset set by the constriction value.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">How to read it honestly</h3>
+                        <div className="border-l-2 border-lime-500/40 pl-4">
+                            <p className="text-lime-200/80 mb-2">
+                                This is a transparent linear sandbox, not a validated clinical
+                                predictor. It encodes the sign and rough magnitude of well-attested
+                                effects (threat appraisal and rumination push toward chronic
+                                narrowing; social support and neuro-flexibility push away from it),
+                                but the exact coefficients are illustrative. The calibration panel
+                                below verifies only what is genuinely verifiable: that the model
+                                reproduces its own stated bandwidth values and threshold structure.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="border-t border-lime-500/20 pt-8">
+                        <VersionSelector versions={versions} active="claude-v1" />
+                    </div>
+
+                    <CalibrationPanel results={calibration} outputLabel="bandwidth (narrowing +, expansion -)" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <ModelChangelog entries={changelog} />
+                </div>
             ),
         },
     ];
@@ -152,6 +178,7 @@ export default function TraumaEustressDynamicsPlayground() {
             }
             sections={sections}
             settings={settings}
+            researchUrl="/playgrounds/trauma-eustress-dynamics/research"
         />
     );
 }

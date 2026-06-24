@@ -1,11 +1,18 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import Equation from '@/components/Equation';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import { Context, Weights, DEFAULT_CONTEXT, DEFAULT_WEIGHTS, POLICY_SPECS } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 export default function GaitGambitPlayground() {
   const [context, setContext] = useState<Context>(DEFAULT_CONTEXT);
@@ -14,6 +21,8 @@ export default function GaitGambitPlayground() {
   const [axisY, setAxisY] = useState<keyof Context>('normPressure');
   const [crossoverAxis, setCrossoverAxis] = useState<keyof Context>('mastery');
   const [showAllPolicies, setShowAllPolicies] = useState(true);
+
+  const calibration = useMemo(() => buildCalibration(), []);
 
   const handleReset = useCallback(() => {
     setContext({ ...DEFAULT_CONTEXT });
@@ -115,6 +124,26 @@ export default function GaitGambitPlayground() {
               <li>Sensitivity is measured by perturbing each context parameter by ±0.05 and checking whether the winner changes.</li>
             </ul>
           </div>
+
+          <div>
+            <h3 className="text-lime-400 font-semibold mb-3">Model provenance</h3>
+            <VersionSelector versions={versions} active="claude-v1" />
+          </div>
+
+          <div>
+            <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+            <CalibrationPanel results={calibration} outputLabel="EFE component" />
+          </div>
+
+          <div>
+            <h3 className="text-lime-400 font-semibold mb-3">Modeling assumptions</h3>
+            <AssumptionPanel assumptions={assumptions} />
+          </div>
+
+          <div>
+            <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+            <ModelChangelog entries={changelog} />
+          </div>
         </div>
       ),
     },
@@ -142,6 +171,7 @@ export default function GaitGambitPlayground() {
           onReset={handleReset}
         />
       }
+      researchUrl="/playgrounds/gait-gambit/research"
     />
   );
 }

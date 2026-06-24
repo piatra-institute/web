@@ -49,11 +49,11 @@ export const PRESET_DESCRIPTIONS: Record<PresetKey, { label: string; question: s
     'universal-templates': {
         label: 'Universal templates',
         question: 'What are the four fundamental categorical shapes?',
-        expectation: 'Product, coproduct, pullback, and pushout — the master patterns most constructions specialize.',
+        expectation: 'Product, coproduct, pullback, and pushout, the master patterns most constructions specialize.',
     },
     'action-hierarchy': {
         label: 'Action hierarchy',
-        question: 'How does control complexity increase from semidirect to wreath to Zappa–Szép?',
+        question: 'How does control complexity increase from semidirect to wreath to Zappa-Szép?',
         expectation: 'Three levels: one-sided control, distributed repetition, and mutual reshaping.',
     },
     'topology-surgery': {
@@ -151,7 +151,7 @@ export const products: Product[] = [
     },
     {
         id: 'zappa-szep',
-        name: 'Zappa–Szép product',
+        name: 'Zappa-Szép product',
         notation: 'G ⋈ H',
         field: ['Group theory'],
         mode: ['mutual-action'],
@@ -203,7 +203,7 @@ export const products: Product[] = [
         intuition: 'Take a free merger, then identify a common overlap so the two sides share a spine.',
         useWhen: ['Two structures share a meaningful common part', 'You want to encode gluing rather than independent coexistence'],
         compareTo: 'Free product plus an overlap constraint.',
-        example: 'A basic construction in Bass–Serre theory.',
+        example: 'A basic construction in Bass-Serre theory.',
     },
     {
         id: 'hnn-extension',
@@ -217,7 +217,7 @@ export const products: Product[] = [
         intuition: 'Instead of gluing two different groups together, you build a bridge inside a single group between two matching regions.',
         useWhen: ['One structure must be glued to itself internally', 'Recursive or self-similar structure appears'],
         compareTo: 'The self-gluing analogue of amalgamated free products.',
-        example: 'Baumslag–Solitar groups arise this way.',
+        example: 'Baumslag-Solitar groups arise this way.',
     },
     {
         id: 'central-product',
@@ -296,7 +296,7 @@ export const products: Product[] = [
         field: ['Ring / algebra'],
         mode: ['mutual-action'],
         difficulty: 'Advanced',
-        summary: 'A Hopf-algebraic mutual-action construction analogous to Zappa–Szép products.',
+        summary: 'A Hopf-algebraic mutual-action construction analogous to Zappa-Szép products.',
         oneLiner: 'Mutual deformation in Hopf form.',
         intuition: 'Each side acts on the other, and the combined object encodes that reciprocal structure.',
         useWhen: ['A one-sided action is too weak', 'Hopf-algebraic symmetry must be treated on both sides'],
@@ -312,7 +312,7 @@ export const products: Product[] = [
         difficulty: 'Foundational',
         summary: 'The universal object equipped with projections to both factors.',
         oneLiner: 'Best object mapping to both.',
-        intuition: 'Not defined by internal elements but by a universal property: any other object mapping to both factors factors uniquely through it.',
+        intuition: 'Not defined by internal elements but by a universal property, so every other object mapping to both factors factors uniquely through it.',
         useWhen: ['You want a field-agnostic notion of product', 'Universal properties matter more than coordinates'],
         compareTo: 'Abstracts the direct product across categories.',
         example: 'In sets it is the Cartesian product; in groups it is the direct product.',
@@ -520,7 +520,7 @@ export function computeNarrative(params: Params, filtered: Product[]): string {
     }
     if (params.selectedMode !== 'all') {
         const m = modes.find(m => m.key === params.selectedMode);
-        if (m) parts.push(`Mode: ${m.label} — ${m.summary.toLowerCase()}`);
+        if (m) parts.push(`Mode: ${m.label}, ${m.summary.toLowerCase()}`);
     }
     if (params.search) {
         parts.push(`Search: “${params.search}”.`);

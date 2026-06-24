@@ -7,6 +7,7 @@ import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Button from '@/components/Button';
 import Equation from '@/components/Equation';
 import ModelChangelog from '@/components/ModelChangelog';
+import CalibrationPanel from '@/components/CalibrationPanel';
 import ResearchPromptButton from '@/components/ResearchPromptButton';
 import { PlaygroundSourceContext } from '@/lib/readPlaygroundSource';
 
@@ -19,6 +20,7 @@ import {
 } from './logic';
 import { assumptions } from './assumptions';
 import { versions, changelog } from './versions';
+import { buildCalibration } from './calibration';
 
 
 interface Props {
@@ -36,6 +38,7 @@ export default function CoordinationUnderComplementarityPlayground({ sourceConte
     const currentStep = steps[Math.min(tick, Math.max(steps.length - 1, 0))];
     const sensitivityBars = useMemo(() => computeSensitivity(params), [params]);
     const narrative = useMemo(() => computeNarrative(currentStep, params), [currentStep, params]);
+    const calibration = useMemo(() => buildCalibration(), []);
 
     // Auto-advance playhead
     useEffect(() => {
@@ -125,7 +128,7 @@ export default function CoordinationUnderComplementarityPlayground({ sourceConte
                     <div className="border-l-2 border-lime-500/40 pl-4">
                         <h3 className="text-lime-400 font-semibold mb-3">Sheaf-like gluing</h3>
                         <p className="leading-relaxed text-sm">
-                            Each scale has a local section &mdash; its desired state and
+                            Each scale has a local section: its desired state and
                             perceived signal. The system is coherent only when adjacent
                             scales&apos; sections glue into a consistent global section.
                             Failure to glue produces a <em>cohomology defect</em>: a
@@ -144,7 +147,7 @@ export default function CoordinationUnderComplementarityPlayground({ sourceConte
                             higher-level tissue patterns when repair and signaling remain
                             intact. In this simulator, the metro-scale goal pulls
                             lower scales toward coordinated behavior through a
-                            morphogenetic term &mdash; but only when repair capacity and
+                            morphogenetic term, but only when repair capacity and
                             gluing strength are sufficient. When these break down, lower
                             scales drift or lock in, producing the housing equivalents of
                             developmental malformation.
@@ -166,7 +169,7 @@ export default function CoordinationUnderComplementarityPlayground({ sourceConte
                             <strong className="text-lime-200">Collapse</strong>: gluing
                             breaks down entirely and the system cannot organize a
                             coherent response. Basin stability measures how much shock
-                            the current regime can absorb before transitioning &mdash;
+                            the current regime can absorb before transitioning, so
                             a rigidly locked system in a narrow basin is paradoxically
                             fragile.
                         </p>
@@ -201,6 +204,19 @@ export default function CoordinationUnderComplementarityPlayground({ sourceConte
                     </div>
 
                     <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <p className="leading-relaxed text-sm mb-3">
+                            Each case reruns the deterministic simulator and compares a
+                            computed metric against the band the housing literature
+                            predicts. Scalar cases check absorption; boolean cases check
+                            directional laws (supply suppression raises prices, regional
+                            steering raises absorption, finance misalignment is the
+                            dominant lever).
+                        </p>
+                        <CalibrationPanel results={calibration} outputLabel="FAR and ordering checks" />
+                    </div>
+
+                    <div>
                         <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
                         <ModelChangelog entries={changelog} />
                     </div>
@@ -231,6 +247,7 @@ export default function CoordinationUnderComplementarityPlayground({ sourceConte
                 </>
             }
             sections={sections}
+            researchUrl="/playgrounds/coordination-under-complementarity/research"
             settings={
                 <Settings
                     params={params}

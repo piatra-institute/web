@@ -3,10 +3,20 @@
 import { useState, useRef } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
+import Equation from '@/components/Equation';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 export default function NeuralCellularAutomatonPlayground() {
+    const calibration = buildCalibration();
+
     const [gridSize, setGridSize] = useState(64);
     const [rule, setRule] = useState(30);
     const [dimensions, setDimensions] = useState(2);
@@ -70,11 +80,11 @@ export default function NeuralCellularAutomatonPlayground() {
                     id: 'intro',
                     type: 'intro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
                             <h2 className="text-2xl font-bold text-white mb-4">Neural Cellular Automata</h2>
                             <p>
-                                This playground explores the fusion of <strong className="font-semibold text-lime-400">neural networks</strong> and 
-                                <strong className="font-semibold text-lime-400"> cellular automata</strong>, creating self-organizing computational 
+                                This playground explores the fusion of <strong className="font-semibold text-lime-400">neural networks</strong> and
+                                <strong className="font-semibold text-lime-400"> cellular automata</strong>, creating self-organizing computational
                                 structures that evolve through local interactions and learning rules.
                             </p>
                             <p>
@@ -130,66 +140,65 @@ export default function NeuralCellularAutomatonPlayground() {
                     id: 'outro',
                     type: 'outro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
-                            <h2 className="text-2xl font-bold text-white mb-6">The Mathematics of Neural CA</h2>
-                            
-                            <div className="space-y-6">
-                                <div className="bg-black border border-gray-800 p-6">
-                                    <h3 className="text-lg font-semibold text-lime-400 mb-3">Cell Neural Architecture</h3>
-                                    <p className="mb-3">
-                                        Each cell contains a feedforward neural network that processes neighbor states:
+                        <div className="space-y-8 text-gray-300">
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">A learned rule, not a lookup table</h3>
+                                <p className="leading-relaxed text-sm">
+                                    A classical cellular automaton maps each neighbourhood to a next state through a fixed table.
+                                    A neural cellular automaton replaces that table with a small network shared by every cell.
+                                    Here each cell reads the binary states of its eight Moore neighbours, runs them through a stack
+                                    of dense layers, and thresholds the first output channel to decide whether it lives or dies.
+                                    From this purely local rule, iterated across the toroidal grid, global texture grows and shifts.
+                                </p>
+                                <div className="my-3">
+                                    <Equation
+                                        mode="block"
+                                        math="a^{(l)}_n = \phi\!\left(b_n + \sum_i a^{(l-1)}_i\, w^{(l)}_{n i}\right), \qquad s' = \mathbb{1}\big[a^{(L)}_0 > 0.5\big]"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Local learning, no global target</h3>
+                                <p className="leading-relaxed text-sm">
+                                    Unlike the trained Growing-NCA of Mordvintsev and colleagues, this grid is not optimised by
+                                    backpropagation to draw a target image. Its weights drift through a local Hebbian rule,
+                                    strengthening connections between co-active units, optionally perturbed by a random mutation
+                                    mask. Order, where it appears, is emergent rather than fitted. The reported fitness readouts
+                                    (complexity, stability, oscillation, diversity) describe the grid; they do not steer it.
+                                </p>
+                                <div className="border-l-2 border-lime-500/40 pl-4 mt-3">
+                                    <p className="text-lime-200/80 text-sm">
+                                        The only stochastic ingredients are the random initial weights and the mutation mask.
+                                        Between a fixed neighbourhood and fixed weights, the update is fully deterministic, which is
+                                        exactly what the calibration panel pins down.
                                     </p>
-                                    <ul className="space-y-2 text-sm">
-                                        <li>• <strong>Input Layer:</strong> Receives neighbor cell activations</li>
-                                        <li>• <strong>Hidden Layers:</strong> Process information through nonlinear transformations</li>
-                                        <li>• <strong>Output Layer:</strong> Determines new cell state and signals</li>
-                                        <li>• <strong>Weight Evolution:</strong> Synaptic plasticity based on local activity</li>
-                                    </ul>
                                 </div>
-                                
-                                <div className="bg-black border border-gray-800 p-6">
-                                    <h3 className="text-lg font-semibold text-lime-400 mb-3">Learning Rules</h3>
-                                    <div className="space-y-3">
-                                        <div>
-                                            <h4 className="font-semibold text-white mb-1">Hebbian Learning</h4>
-                                            <p className="text-sm">Neurons that fire together wire together - strengthening correlated connections</p>
-                                        </div>
-                                        <div>
-                                            <h4 className="font-semibold text-white mb-1">Spike-Timing Dependent Plasticity</h4>
-                                            <p className="text-sm">Temporal order of activation determines synaptic changes</p>
-                                        </div>
-                                        <div>
-                                            <h4 className="font-semibold text-white mb-1">Homeostatic Plasticity</h4>
-                                            <p className="text-sm">Maintains stable activity levels through regulatory mechanisms</p>
-                                        </div>
-                                        <div>
-                                            <h4 className="font-semibold text-white mb-1">Evolutionary Selection</h4>
-                                            <p className="text-sm">Networks compete and reproduce based on fitness criteria</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div className="bg-black border border-gray-800 p-6">
-                                    <h3 className="text-lg font-semibold text-lime-400 mb-3">Emergent Behaviors</h3>
-                                    <p className="mb-3">Complex computational patterns emerge from simple rules:</p>
-                                    <ul className="space-y-2 text-sm">
-                                        <li>• <strong>Pattern Recognition:</strong> Networks learn to detect spatial configurations</li>
-                                        <li>• <strong>Signal Propagation:</strong> Information waves through the cellular medium</li>
-                                        <li>• <strong>Memory Formation:</strong> Stable attractor states store information</li>
-                                        <li>• <strong>Computation Islands:</strong> Specialized regions for different tasks</li>
-                                        <li>• <strong>Adaptive Response:</strong> Networks adjust to changing input patterns</li>
-                                    </ul>
-                                </div>
-                                
-                                <div className="mt-8 p-6 border border-gray-800">
-                                    <h3 className="text-lg font-semibold text-white mb-3">References & Inspiration</h3>
-                                    <ul className="space-y-1 text-sm text-gray-400">
-                                        <li>• Mordvintsev et al. - &quot;Growing Neural Cellular Automata&quot;</li>
-                                        <li>• Randazzo et al. - &quot;Self-classifying MNIST Digits&quot;</li>
-                                        <li>• Miller & Downing - &quot;Evolution of Digital Organisms&quot;</li>
-                                        <li>• Wolfram - &quot;A New Kind of Science&quot;</li>
-                                    </ul>
-                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Generating model</h3>
+                                <VersionSelector versions={versions} active="claude-v1" />
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                                <p className="leading-relaxed text-sm mb-3">
+                                    These cases pin the deterministic forward-pass core against hand-computed values. Each
+                                    predicted number is produced by the same activation, layer, and threshold functions the live
+                                    grid uses, so the suite tests the running arithmetic rather than restating constants.
+                                </p>
+                                <CalibrationPanel results={calibration} outputLabel="cell update value" />
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                                <AssumptionPanel assumptions={assumptions} />
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                                <ModelChangelog entries={changelog} />
                             </div>
                         </div>
                     )
@@ -239,6 +248,7 @@ export default function NeuralCellularAutomatonPlayground() {
                     onExport={handleExport}
                 />
             }
+            researchUrl="/playgrounds/neural-cellular-automaton/research"
         />
     );
 }

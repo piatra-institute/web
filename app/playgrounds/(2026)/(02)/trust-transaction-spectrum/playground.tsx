@@ -3,7 +3,12 @@
 import { useState, useMemo, useCallback } from 'react';
 
 import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayout';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
@@ -14,6 +19,9 @@ import {
     computeModel,
     computeComparison,
 } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 
 export default function Playground() {
@@ -23,6 +31,7 @@ export default function Playground() {
     const [compareId, setCompareId] = useState<string | null>(null);
 
     const model = useMemo(() => computeModel(inputs), [inputs]);
+    const calibration = buildCalibration();
     const compare = useMemo(
         () => computeComparison(inputs, scenarios, compareId),
         [inputs, scenarios, compareId],
@@ -55,22 +64,22 @@ export default function Playground() {
             id: 'canvas',
             type: 'canvas',
             content: (
-                <div className="w-full h-full flex items-center justify-center">
+                <PlaygroundViewer>
                     <Viewer
                         model={model}
                         compare={compare}
                         crisis={inputs.crisis}
                     />
-                </div>
+                </PlaygroundViewer>
             ),
         },
         {
             id: 'outro',
             type: 'outro',
             content: (
-                <div className="space-y-6">
-                    <div className="border-l-2 border-lime-500/50 pl-4">
-                        <h4 className="text-lime-400 font-semibold mb-2">Model Structure</h4>
+                <div className="space-y-8 text-gray-300">
+                    <div className="border-l-2 border-lime-500/40 pl-4">
+                        <h3 className="text-lime-400 font-semibold mb-3">Model Structure</h3>
                         <p className="text-gray-300">
                             The transactionality index combines nine normalised input variables{' '}
                             <Equation math="\tilde{x}_i = x_i / 10" /> with expert-elicited weights{' '}
@@ -91,12 +100,12 @@ export default function Playground() {
                         </ul>
                     </div>
 
-                    <div className="border-l-2 border-lime-500/50 pl-4">
-                        <h4 className="text-lime-400 font-semibold mb-2">Interaction Terms</h4>
+                    <div className="border-l-2 border-lime-500/40 pl-4">
+                        <h3 className="text-lime-400 font-semibold mb-3">Interaction Terms</h3>
                         <p className="text-gray-300">
                             A purely additive model misses crucial conditional dynamics. Walt&apos;s
                             balance-of-threat theory implies that high threat with a credible alliance
-                            is qualitatively different from high threat without one — the interaction
+                            is qualitatively different from high threat without one, and the interaction
                             term <Equation math="\tilde{x}_{\text{thr}} \cdot (1 - \tilde{x}_{\text{all}})" /> captures
                             this compounding effect. Similarly, Thorhallsson&apos;s shelter theory
                             predicts that great-power rivalry in a region without institutional cover
@@ -104,22 +113,22 @@ export default function Playground() {
                         </p>
                     </div>
 
-                    <div className="border-l-2 border-lime-500/50 pl-4">
-                        <h4 className="text-lime-400 font-semibold mb-2">Crisis Regime</h4>
+                    <div className="border-l-2 border-lime-500/40 pl-4">
+                        <h3 className="text-lime-400 font-semibold mb-3">Crisis Regime</h3>
                         <p className="text-gray-300">
                             Under the crisis regime, weight mass is reallocated so that the institutional
                             shelter deficit weight <em>increases</em> (+0.02). This follows Thorhallsson (2011),
-                            who argues that shelter is most critical precisely during crises — a shelter
+                            who argues that shelter is most critical precisely during crises, since a shelter
                             deficit is costlier when the threat is acute. Conversely, reputational capital
                             weight decreases (&minus;0.03) because short-term survival overrides reputation
                             investment under acute threat.
                         </p>
                     </div>
 
-                    <div className="border-l-2 border-lime-500/50 pl-4">
-                        <h4 className="text-lime-400 font-semibold mb-2">Theoretical Sources</h4>
+                    <div className="border-l-2 border-lime-500/40 pl-4">
+                        <h3 className="text-lime-400 font-semibold mb-3">Theoretical Sources</h3>
                         <p className="text-gray-300">
-                            Factor selection draws on established IR concepts:
+                            Factor selection draws on established IR concepts.
                             Thorhallsson&apos;s <em>institutional shelter theory</em> (political, economic,
                             and societal shelter dimensions); Kuik&apos;s <em>hedging framework</em> (structural
                             uncertainty as scope condition, domestic legitimation as primary variation driver);
@@ -129,17 +138,17 @@ export default function Playground() {
                         </p>
                         <p className="text-gray-300 mt-2">
                             Note: the reputational capital factor reflects the Weisiger/Yarhi-Milo position
-                            that reputations matter in IR. This is actively contested — Press and Mercer argue
+                            that reputations matter in IR. This is actively contested, since Press and Mercer argue
                             reputations matter less than commonly assumed. The model implicitly takes a side
                             in this ongoing debate.
                         </p>
                     </div>
 
-                    <div className="border-l-2 border-lime-500/50 pl-4">
-                        <h4 className="text-lime-400 font-semibold mb-2">Limitations</h4>
+                    <div className="border-l-2 border-lime-500/40 pl-4">
+                        <h3 className="text-lime-400 font-semibold mb-3">Limitations</h3>
                         <p className="text-gray-300">
                             This is an expert-judgment heuristic, not an empirically calibrated model.
-                            The specific weights are elicited rather than regression-derived —
+                            The specific weights are elicited rather than regression-derived,
                             comparable in methodology to the Fragile States Index. The posture
                             thresholds (25/45/65) are decision-theoretic boundaries, not
                             empirically observed cutpoints.
@@ -148,12 +157,23 @@ export default function Playground() {
                             Missing factors include geographic proximity (Walt), regime type
                             (democratic vs authoritarian states hedge differently per Kuik),
                             economic structure (resource-rich vs service economies), and normative
-                            identity. Sanctions exposure presents an endogeneity concern — it is
+                            identity. Sanctions exposure presents an endogeneity concern, since it is
                             partly a consequence of posture rather than purely an input to it.
                             Domain-specific posture variation (a state may be transactional on
                             energy security while rules-first on border norms) would require
                             sector-weighted extensions.
                         </p>
+                    </div>
+
+                    <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+
+                    <CalibrationPanel results={calibration} outputLabel="transactionality index" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
                     </div>
                 </div>
             ),

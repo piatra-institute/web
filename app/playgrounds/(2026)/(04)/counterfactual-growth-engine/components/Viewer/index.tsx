@@ -335,7 +335,7 @@ export default function Viewer({
                             ))}
                             {policyDecomp.filter(d => d.gap > 0).length === 0 && (
                                 <div className="text-xs text-lime-200/50 border border-lime-500/20 p-3">
-                                    No positive policy gap detected — the model does not outperform the target on any dimension.
+                                    No positive policy gap detected. The model does not outperform the target on any dimension.
                                 </div>
                             )}
                         </div>

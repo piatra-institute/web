@@ -2,9 +2,17 @@
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 import {
     ClassicalParams,
     ClassicalState,
@@ -34,6 +42,8 @@ export default function BordismToActionPlayground() {
         velocity: 0,
     });
     const [initialVelocity, setInitialVelocity] = useState(DEFAULT_INITIAL_VELOCITY);
+
+    const calibration = useMemo(() => buildCalibration(), []);
 
     const rafRef = useRef<number>(0);
     const lastTimeRef = useRef<number>(0);
@@ -122,14 +132,16 @@ export default function BordismToActionPlayground() {
                 id: 'canvas',
                 type: 'canvas' as const,
                 content: (
-                    <Viewer
-                        classical={classical}
-                        tqft={effectiveTqft}
-                        isPlaying={isPlaying}
-                        classicalState={classicalState}
-                        tqftResult={tqftResult}
-                        direction={classical.direction}
-                    />
+                    <PlaygroundViewer>
+                        <Viewer
+                            classical={classical}
+                            tqft={effectiveTqft}
+                            isPlaying={isPlaying}
+                            classicalState={classicalState}
+                            tqftResult={tqftResult}
+                            direction={classical.direction}
+                        />
+                    </PlaygroundViewer>
                 ),
             },
             {
@@ -163,9 +175,9 @@ export default function BordismToActionPlayground() {
                             </h3>
                             <p className="leading-relaxed text-sm mb-3">
                                 On the right side, we stop looking at snapshots and start looking at
-                                bordisms &mdash; the &ldquo;shape&rdquo; of time. In TQFT, we
+                                bordisms, the &ldquo;shape&rdquo; of time. In TQFT, we
                                 don&apos;t care about velocity at a given moment. We care about
-                                the worldline &mdash; the 1D string a particle leaves behind in 3D
+                                the worldline, the 1D string a particle leaves behind in 3D
                                 space.
                             </p>
                             <Equation
@@ -278,16 +290,31 @@ export default function BordismToActionPlayground() {
                                 </li>
                                 <li>
                                     The R-matrix in this playground is the mathematical version of
-                                    a quantum gate &mdash; braiding anyons to create logic gates
+                                    a quantum gate: braiding anyons to create logic gates
                                     is the basis of topological quantum computing.
                                 </li>
                             </ul>
+                        </div>
+
+                        <div className="border-t border-lime-500/20 pt-8 space-y-6">
+                            <VersionSelector versions={versions} active="claude-v1" />
+                            <CalibrationPanel
+                                results={calibration}
+                                outputLabel="exact identities"
+                            />
+                            <AssumptionPanel assumptions={assumptions} />
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">
+                                    Model Changelog
+                                </h3>
+                                <ModelChangelog entries={changelog} />
+                            </div>
                         </div>
                     </div>
                 ),
             },
         ],
-        [classical, effectiveTqft, isPlaying, classicalState, tqftResult],
+        [classical, effectiveTqft, isPlaying, classicalState, tqftResult, calibration],
     );
 
     return (
@@ -295,6 +322,7 @@ export default function BordismToActionPlayground() {
             title="bordism to action"
             subtitle="comparing classical mechanics with fully local TQFT"
             sections={sections}
+            researchUrl="/playgrounds/bordism-to-action/research"
             settings={
                 <Settings
                     classical={classical}

@@ -1,3 +1,87 @@
+export type ActivationName = 'sigmoid' | 'tanh' | 'relu' | 'leaky_relu';
+
+
+/**
+ * Pure, deterministic activation function shared by the live class and the
+ * calibration suite. This is the exact same arithmetic the running automaton
+ * uses; it carries no random state, so it can be checked against hand-computed
+ * values.
+ */
+export function activate(x: number, fn: ActivationName = 'sigmoid'): number {
+    switch (fn) {
+        case 'sigmoid':
+            return 1 / (1 + Math.exp(-x));
+        case 'tanh':
+            return Math.tanh(x);
+        case 'relu':
+            return Math.max(0, x);
+        case 'leaky_relu':
+            return x > 0 ? x : 0.01 * x;
+        default:
+            return 1 / (1 + Math.exp(-x));
+    }
+}
+
+
+/**
+ * One dense layer: for each neuron n compute bias[n] + sum_i input[i] * w[n][i],
+ * then apply the activation. Weights are [neuron][input]. Deterministic.
+ */
+export function denseLayer(
+    input: number[],
+    weights: number[][],
+    bias: number[],
+    fn: ActivationName = 'sigmoid',
+): number[] {
+    return weights.map((row, n) => {
+        let sum = bias[n] ?? 0;
+        for (let i = 0; i < input.length; i++) {
+            sum += input[i] * row[i];
+        }
+        return activate(sum, fn);
+    });
+}
+
+
+/**
+ * Forward pass of a per-cell feedforward network over a fixed neighbour vector.
+ * `layerWeights[layer][neuron][input]` and `bias[neuron]`, exactly matching the
+ * class. Deterministic given fixed weights, so it can be calibrated.
+ */
+export function forwardPass(
+    neighborStates: number[],
+    layerWeights: number[][][],
+    bias: number[],
+    fn: ActivationName = 'sigmoid',
+): number[] {
+    let activation = neighborStates.slice();
+    for (let layer = 0; layer < layerWeights.length; layer++) {
+        activation = denseLayer(activation, layerWeights[layer], bias, fn);
+    }
+    return activation;
+}
+
+
+/**
+ * The discrete state rule applied to the network output: the cell is alive (1)
+ * when its first output channel exceeds 0.5, dead (0) otherwise.
+ */
+export function stateFromOutput(output: number[]): number {
+    return output[0] > 0.5 ? 1 : 0;
+}
+
+
+/**
+ * The complexity fitness density for a single deterministic Moore neighbourhood:
+ * the fraction of the eight surrounding cells whose state differs from the
+ * centre cell. This is the per-cell summand of the class's complexity fitness.
+ */
+export function complexityDensity(centerState: number, neighborStates: number[]): number {
+    const differing = neighborStates.filter((s) => s !== centerState).length;
+    return differing / neighborStates.length;
+}
+
+
 export interface NeuralCell {
     state: number;
     activation: number[];
@@ -85,18 +169,7 @@ export class NeuralCellularAutomaton {
     }
     
     private activate(x: number): number {
-        switch (this.activationFunction) {
-            case 'sigmoid':
-                return 1 / (1 + Math.exp(-x));
-            case 'tanh':
-                return Math.tanh(x);
-            case 'relu':
-                return Math.max(0, x);
-            case 'leaky_relu':
-                return x > 0 ? x : 0.01 * x;
-            default:
-                return 1 / (1 + Math.exp(-x));
-        }
+        return activate(x, this.activationFunction as ActivationName);
     }
     
     private processNeuralNetwork(cell: NeuralCell, neighbors: NeuralCell[]): number[] {

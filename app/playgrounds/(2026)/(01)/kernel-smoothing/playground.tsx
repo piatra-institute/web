@@ -3,7 +3,12 @@
 import { useState, useMemo } from 'react';
 
 import PlaygroundLayout from '@/components/PlaygroundLayout';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
@@ -15,6 +20,9 @@ import {
     DEFAULT_POINTS,
     computeDerivedData,
 } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 export default function Playground() {
     const [params, setParams] = useState<SimulationParams>(DEFAULT_PARAMS);
@@ -23,6 +31,8 @@ export default function Playground() {
     const derived = useMemo(() => {
         return computeDerivedData(points, params);
     }, [points, params]);
+
+    const calibration = buildCalibration();
 
     const sections = [
         {
@@ -33,22 +43,24 @@ export default function Playground() {
             id: 'canvas',
             type: 'canvas' as const,
             content: (
-                <Viewer
-                    params={params}
-                    derivedPoints={derived.pts}
-                    grid={derived.grid}
-                    lo={derived.lo}
-                    hi={derived.hi}
-                    Z={derived.Z}
-                    yHat={derived.yHat}
-                />
+                <PlaygroundViewer>
+                    <Viewer
+                        params={params}
+                        derivedPoints={derived.pts}
+                        grid={derived.grid}
+                        lo={derived.lo}
+                        hi={derived.hi}
+                        Z={derived.Z}
+                        yHat={derived.yHat}
+                    />
+                </PlaygroundViewer>
             ),
         },
         {
             id: 'outro',
             type: 'outro' as const,
             content: (
-                <div className="space-y-8">
+                <div className="space-y-8 text-gray-300">
                     <h2 className="text-lime-400 text-xl font-semibold">
                         Attention as Kernel Smoothing
                     </h2>
@@ -159,6 +171,13 @@ export default function Playground() {
                         <li>Change <Equation math="x_i" /> positions to cluster points: observe how <Equation math="\alpha" /> redistributes.</li>
                         <li>Compare Gaussian vs Softmax-dot: note how softmax-dot prefers points with same sign as <Equation math="x_q" />.</li>
                     </ul>
+
+                    <div className="border-t border-lime-500/20 pt-8 space-y-8">
+                        <VersionSelector versions={versions} active="claude-v1" />
+                        <CalibrationPanel results={calibration} outputLabel="kernel value" />
+                        <AssumptionPanel assumptions={assumptions} />
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -179,6 +198,7 @@ export default function Playground() {
                 </a>
             }
             sections={sections}
+            researchUrl="/playgrounds/kernel-smoothing/research"
             settings={
                 <Settings
                     params={params}

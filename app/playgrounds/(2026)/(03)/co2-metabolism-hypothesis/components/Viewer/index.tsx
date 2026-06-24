@@ -65,7 +65,7 @@ export default function Viewer({
             <div className="w-[90vw] h-[90vh] overflow-y-auto outline-none [&_*]:outline-none">
                 <div className="text-center mb-1">
                     <h2 className="text-lime-400 text-sm font-semibold">
-                        P(H<sub>L</sub>) vs N — probability of a Lane-like proto-core
+                        P(H<sub>L</sub>) vs N, probability of a Lane-like proto-core
                     </h2>
                 </div>
                 <div className="bg-black/40 border border-lime-500/25 p-2">
@@ -232,7 +232,7 @@ export default function Viewer({
         <div className="w-[90vw] h-[90vh] overflow-y-auto outline-none [&_*]:outline-none">
             <div className="text-center mb-1">
                 <h2 className="text-lime-400 text-sm font-semibold">
-                    Witness draw — vent compartments
+                    Witness draw, vent compartments
                 </h2>
             </div>
 

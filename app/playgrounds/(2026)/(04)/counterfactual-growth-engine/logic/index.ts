@@ -1,13 +1,13 @@
 // ── Counterfactual Growth Engine ─────────────────────────────────
 // Explore how countries might have evolved under another country's
-// economic path. Not a literal causal estimate — a framework for
+// economic path. Not a literal causal estimate, but a framework for
 // counterfactual exploration. The target country keeps its own
 // starting conditions and population; we transfer part of the
 // model country's growth trajectory or policy basket.
 //
 // Beyond the original ideation:
 //  * 13 countries (not 6)
-//  * Synthetic control — blend multiple model countries
+//  * Synthetic control, blending multiple model countries
 //  * Confidence bands (transfer uncertainty)
 //  * Event markers on timeline
 //  * Gap decomposition by policy dimension
@@ -192,7 +192,7 @@ export interface Params {
     populationMode: PopulationMode;
     convergenceDrag: number;      // pp/year
     policyOverride: number;       // 30..90, used in 'basket' mode
-    uncertaintyPct: number;       // 0..25 — confidence band width
+    uncertaintyPct: number;       // 0..25, confidence band width
     reverseFraming: boolean;      // swap which country gets whose path (symmetric check)
     analysisStart: number;        // chart zoom start year
     analysisEnd: number;          // chart zoom end year
@@ -207,7 +207,7 @@ export type PresetKey =
     | 'est-under-kor' | 'ro-under-kor' | 'ua-early-reform' | 'de-under-ro';
 
 export const PRESET_DESCRIPTIONS: Record<PresetKey, { label: string; question: string; expectation: string }> = {
-    // — Eastern European transition —
+    // Eastern European transition
     'ro-under-pl': {
         label: 'Romania under Poland',
         question: 'What if Romania had matched Poland’s post-1990 growth path?',
@@ -226,7 +226,7 @@ export const PRESET_DESCRIPTIONS: Record<PresetKey, { label: string; question: s
     'ua-under-pl': {
         label: 'Ukraine under Poland',
         question: 'What would Ukraine look like if it had embarked on Polish-style reform in 1991?',
-        expectation: 'Very large cumulative gap, bounded by a wide uncertainty band — deep regime change cannot be cheaply counterfactualized.',
+        expectation: 'Very large cumulative gap, bounded by a wide uncertainty band, deep regime change cannot be cheaply counterfactualized.',
     },
     'ro-under-synth': {
         label: 'Romania: synthetic control (CEE)',
@@ -235,20 +235,20 @@ export const PRESET_DESCRIPTIONS: Record<PresetKey, { label: string; question: s
     },
     'sk-under-cze': {
         label: 'Slovakia under Czechia',
-        question: 'How much did the 1993 Czechoslovak split cost Slovakia — or did the flat-tax reforms close the gap?',
+        question: 'How much did the 1993 Czechoslovak split cost Slovakia, or did the flat-tax reforms close the gap?',
         expectation: 'Small gap; Slovakia’s 2004 reforms and export-led growth largely matched Czech trajectory.',
     },
     'si-under-at-synth': {
         label: 'Slovenia under DE+PRT synth',
         question: 'Would Slovenia have converged faster under a Germany + Portugal blend than its own gradualist path?',
-        expectation: 'Modest negative gap — Slovenia’s gradualism performed well, the synthetic shows mild underperformance.',
+        expectation: 'Modest negative gap, Slovenia’s gradualism performed well, the synthetic shows mild underperformance.',
     },
 
-    // — Southern European convergence —
+    // Southern European convergence
     'pt-under-ie': {
         label: 'Portugal under Ireland',
         question: 'What if Portugal had pursued an Irish-style FDI-driven export strategy from 1990?',
-        expectation: 'Dramatic cumulative gap — Ireland’s growth was extraordinary. Wide uncertainty band reflects how much depends on tax/regulatory specifics.',
+        expectation: 'Dramatic cumulative gap, Ireland’s growth was extraordinary. Wide uncertainty band reflects how much depends on tax/regulatory specifics.',
     },
     'es-under-de': {
         label: 'Spain under Germany',
@@ -256,30 +256,30 @@ export const PRESET_DESCRIPTIONS: Record<PresetKey, { label: string; question: s
         expectation: 'Positive gap in the 2000s, widening after the 2008 crash exposed Spain’s dependence on construction.',
     },
 
-    // — East Asian comparisons —
+    // East Asian comparisons
     'est-under-kor': {
         label: 'Estonia under South Korea',
         question: 'What if Estonia had pursued Korean-style industrial policy and export complexity?',
-        expectation: 'Large cumulative gap — Korea’s trajectory is steeper than any CEE country. Sensitive to adoption lag.',
+        expectation: 'Large cumulative gap, Korea’s trajectory is steeper than any CEE country. Sensitive to adoption lag.',
     },
     'ro-under-kor': {
         label: 'Romania under South Korea',
         question: 'A stretch test: what if Romania had taken the developmental-state path Korea took after 1990?',
-        expectation: 'Very large gap but wide uncertainty — implausible without major institutional preconditions.',
+        expectation: 'Very large gap but wide uncertainty, implausible without major institutional preconditions.',
     },
 
-    // — Reform-timing —
+    // Reform-timing
     'ua-early-reform': {
         label: 'Ukraine: early reform + EU absorption',
         question: 'What if Ukraine had started reform in 1991 and gained EU-style absorption capacity, as a synthetic blend of Poland + Estonia?',
         expectation: 'Largest gap in the playground. Illustrates how much is at stake when institutional convergence is delayed by a decade.',
     },
 
-    // — Symmetric / reverse —
+    // Symmetric / reverse
     'de-under-ro': {
         label: 'Germany under Romania (reverse)',
         question: 'Symmetric check: what if Germany had experienced Romania’s post-socialist trajectory?',
-        expectation: 'Large negative cumulative gap. Demonstrates the framework works both directions — prosperity is not inevitable.',
+        expectation: 'Large negative cumulative gap. Demonstrates the framework works both directions, prosperity is not inevitable.',
     },
 };
 
@@ -661,7 +661,7 @@ export function computeNarrative(kpis: Kpis, params: Params): string {
     const parts: string[] = [];
 
     if (!modelNames) {
-        parts.push(`No model country selected — the counterfactual reduces to ${target.name}’s own trajectory.`);
+        parts.push(`No model country selected, the counterfactual reduces to ${target.name}’s own trajectory.`);
         return parts.join(' ');
     }
 
@@ -677,13 +677,13 @@ export function computeNarrative(kpis: Kpis, params: Params): string {
         parts.push(`Late reform start (${params.startYear}) means most compounding gains are foregone.`);
     }
     if (params.endYear < YEAR_END) {
-        parts.push(`Reform truncated at ${params.endYear} — the counterfactual reverts to the target’s native trajectory after that year.`);
+        parts.push(`Reform truncated at ${params.endYear}, the counterfactual reverts to the target’s native trajectory after that year.`);
     }
     if (params.phaseInYears > 5) {
         parts.push(`Long phase-in (${params.phaseInYears} years) reflects slow institutional adoption; early-period gains are damped.`);
     }
     if (params.reverseFraming) {
-        parts.push('Reverse framing active — this shows the symmetric version: what if the model country had the target’s path instead?');
+        parts.push('Reverse framing active, this shows the symmetric version: what if the model country had the target’s path instead?');
     }
 
     return parts.join(' ');

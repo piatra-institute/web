@@ -1,6 +1,19 @@
 import type { Metadata } from 'next';
 import { defaultOpenGraph } from '@/data/metadata';
+import { readPlaygroundSource } from '@/lib/readPlaygroundSource';
 import ClientPlayground from './ClientPlayground';
+
+const sourceContext = readPlaygroundSource(
+  'app/playgrounds/(2025)/(06)/open-source-sustainability',
+  {
+    name: 'open-source-sustainability',
+    title: 'open source sustainability',
+    description:
+      'pressure dynamics in open source license transitions',
+    topics: ['economics', 'computer-science'],
+    operations: ['tension', 'threshold'],
+  },
+);
 
 export const metadata: Metadata = {
   title: 'open source sustainability · playgrounds',
@@ -19,5 +32,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <ClientPlayground />;
+  return <ClientPlayground sourceContext={sourceContext} />;
 }

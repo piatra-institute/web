@@ -15,8 +15,17 @@ import {
     computeChaosStats,
 } from './logic';
 
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
+
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 const SVG_W = 800;
 const SVG_H = 600;
@@ -45,6 +54,8 @@ export default function Playground() {
         () => computeChaosStats(params.nodeCount, edges, params.colors, params.cliqueSize),
         [params.nodeCount, edges, params.colors, params.cliqueSize],
     );
+
+    const calibration = buildCalibration();
 
     const sections = [
         {
@@ -108,7 +119,7 @@ export default function Playground() {
                         <p className="leading-relaxed text-sm">
                             Chaos is expensive because it requires suppression. To prevent structure from
                             emerging in a large system, you must reduce elements, sever connections,
-                            fragment relations, enforce separations. The cost is not energetic - it is
+                            fragment relations, enforce separations. The cost is not energetic; it is
                             {' '}<em>combinatorial</em>.
                         </p>
                         <p className="leading-relaxed text-sm mt-3">
@@ -128,22 +139,43 @@ export default function Playground() {
                             best effort to resist structure.
                         </p>
                         <p className="leading-relaxed text-sm mt-3">
-                            Below the Ramsey threshold, the adversarial strategy succeeds - zero
-                            monochromatic cliques. Above it, even the optimal resistance fails.
-                            Try increasing vertices from 5 to 6 with 2 colors and clique size 3
-                            to cross the <Equation math="R(3,3) = 6" /> threshold and watch structure
-                            become inevitable.
+                            Below the Ramsey threshold a clique-free coloring exists, but this greedy
+                            heuristic does not always find it, so a stray monochromatic clique can still
+                            appear. Above the threshold even an optimal resistance must fail. Try
+                            increasing vertices from 5 to 6 with 2 colors and clique size 3 to cross the{' '}
+                            <Equation math="R(3,3) = 6" /> threshold and watch structure become
+                            inevitable rather than merely heuristic.
                         </p>
                     </div>
 
                     <div className="border-l-2 border-lime-500/50 pl-4">
                         <h3 className="text-lime-400 font-semibold mb-3">Notes</h3>
                         <ul className="list-disc pl-5 space-y-1 text-sm">
-                            <li>Vertices are draggable - sculpt your own layout.</li>
+                            <li>Vertices are draggable, so you can sculpt your own layout.</li>
                             <li>Hover a color layer in the legend to isolate its geometry.</li>
                             <li>The adversarial coloring is a greedy heuristic, not a global optimum.</li>
                             <li>Ramsey thresholds are shown for 2-color symmetric cases R(s,s).</li>
                         </ul>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model version</h3>
+                        <VersionSelector versions={versions} active="claude-v1" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <CalibrationPanel results={calibration} outputLabel="combinatorial count" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                        <AssumptionPanel assumptions={assumptions} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
                     </div>
                 </div>
             ),
@@ -165,6 +197,7 @@ export default function Playground() {
                 </a>
             }
             sections={sections}
+            researchUrl="/playgrounds/cost-of-chaos/research"
             settings={
                 <Settings
                     params={params}

@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import Button from '@/components/Button';
-import type { MechanismData } from '../../playground';
+import type { MechanismData } from '../../logic';
 
 
 
@@ -69,7 +69,7 @@ const Settings: FC<SettingsProps> = ({
 
                     <div className="pt-4 border-t border-gray-700 mt-4">
                         <h3 className="text-sm font-medium text-gray-300 mb-3">
-                            Mechanisms (β-scaled, 0-1)
+                            Mechanisms (beta-scaled, 0-1)
                         </h3>
                         <div className="space-y-3">
                             {mechanisms.map((mechanism, index) => (
@@ -102,27 +102,27 @@ const Settings: FC<SettingsProps> = ({
                     <h4 className="text-[#03dac6] font-semibold mb-3 text-sm">Axis Meaning</h4>
                     <p className="text-gray-300 mb-4 text-sm">
                         Vertical represents <strong>bandwidth change</strong>: +1 = full threat-narrowing;
-                        –1 = max eustress bandwidth. Horizontal represents <strong>time</strong> from
-                        Pre-event to multiple post‑trauma trajectories.
+                        -1 = max eustress bandwidth. Horizontal represents <strong>time</strong> from
+                        pre-event to multiple post-trauma trajectories.
                     </p>
 
                     <h4 className="text-[#03dac6] font-semibold mb-3 text-sm">Outcome Trajectories</h4>
                     <div className="space-y-2 mb-4">
                         <div className="flex items-center">
                             <span className="w-2.5 h-2.5 rounded-full bg-[#2196f3] mr-2 shrink-0" />
-                            <span className="text-sm text-gray-300"><strong>Resilience</strong> – minimal disturbance</span>
+                            <span className="text-sm text-gray-300"><strong>Resilience</strong>: minimal disturbance</span>
                         </div>
                         <div className="flex items-center">
                             <span className="w-2.5 h-2.5 rounded-full bg-[#ff9800] mr-2 shrink-0" />
-                            <span className="text-sm text-gray-300"><strong>Recovery</strong> – delayed rebound</span>
+                            <span className="text-sm text-gray-300"><strong>Recovery</strong>: delayed rebound</span>
                         </div>
                         <div className="flex items-center">
                             <span className="w-2.5 h-2.5 rounded-full bg-[#9c27b0] mr-2 shrink-0" />
-                            <span className="text-sm text-gray-300"><strong>Chronic</strong> – sustained narrowing</span>
+                            <span className="text-sm text-gray-300"><strong>Chronic</strong>: sustained narrowing</span>
                         </div>
                         <div className="flex items-center">
                             <span className="w-2.5 h-2.5 rounded-full bg-[#009688] mr-2 shrink-0" />
-                            <span className="text-sm text-gray-300"><strong>Growth</strong> – exploratory expansion</span>
+                            <span className="text-sm text-gray-300"><strong>Growth</strong>: exploratory expansion</span>
                         </div>
                     </div>
 
@@ -131,11 +131,11 @@ const Settings: FC<SettingsProps> = ({
                     <div className="space-y-2 mb-4">
                         <div className="flex items-center">
                             <span className="w-2.5 h-2.5 rounded-full bg-[#ff5252] mr-2 shrink-0" />
-                            <span className="text-sm text-gray-300">Appraisal (threat ↔ meaning)</span>
+                            <span className="text-sm text-gray-300">Appraisal (threat vs meaning)</span>
                         </div>
                         <div className="flex items-center">
                             <span className="w-2.5 h-2.5 rounded-full bg-[#ffb300] mr-2 shrink-0" />
-                            <span className="text-sm text-gray-300">Rumination (intrusive ↔ deliberate)</span>
+                            <span className="text-sm text-gray-300">Rumination (intrusive vs deliberate)</span>
                         </div>
                         <div className="flex items-center">
                             <span className="w-2.5 h-2.5 rounded-full bg-[#64b5f6] mr-2 shrink-0" />
@@ -143,7 +143,7 @@ const Settings: FC<SettingsProps> = ({
                         </div>
                         <div className="flex items-center">
                             <span className="w-2.5 h-2.5 rounded-full bg-[#4db6ac] mr-2 shrink-0" />
-                            <span className="text-sm text-gray-300">Neuro‑flexibility</span>
+                            <span className="text-sm text-gray-300">Neuro-flexibility</span>
                         </div>
                     </div>
 
@@ -154,7 +154,7 @@ const Settings: FC<SettingsProps> = ({
                     </p>
 
                     <div className="text-gray-500 text-xs pt-3 border-t border-gray-800">
-                        β‑weights from Tedeschi & Calhoun 1996; Cann 2011; Bonanno 2007; Kalisch 2015.
+                        beta-weights from Tedeschi and Calhoun 1996; Cann 2011; Bonanno 2007; Kalisch 2015.
                     </div>
                 </div>
             </div>

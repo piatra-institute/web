@@ -5,6 +5,9 @@ import { useMemo, useState, useCallback } from 'react';
 import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import ModelChangelog from '@/components/ModelChangelog';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
 import Equation from '@/components/Equation';
 
 import Settings from './components/Settings';
@@ -21,6 +24,7 @@ import {
 
 import { assumptions } from './assumptions';
 import { versions, changelog } from './versions';
+import { buildCalibration } from './calibration';
 
 import { PlaygroundSourceContext } from '@/lib/readPlaygroundSource';
 import ResearchPromptButton from '@/components/ResearchPromptButton';
@@ -33,6 +37,7 @@ export default function Playground({ sourceContext }: { sourceContext?: Playgrou
     const filtered = useMemo(() => filterProducts(params), [params]);
     const matrix = useMemo(() => computeMatrix(), []);
     const narrative = useMemo(() => computeNarrative(params, filtered), [params, filtered]);
+    const calibration = buildCalibration();
 
     const selected = useMemo(
         () => filtered.find(p => p.id === selectedId) ?? filtered[0] ?? null,
@@ -85,19 +90,19 @@ export default function Playground({ sourceContext }: { sourceContext?: Playgrou
                         <div className="mt-3 space-y-2">
                             <p className="leading-relaxed text-sm">
                                 <strong className="text-lime-400">Product</strong>{' '}
-                                <Equation math="A \times B" /> &mdash; remember both objects independently.
+                                <Equation math="A \times B" />, remembering both objects independently.
                             </p>
                             <p className="leading-relaxed text-sm">
                                 <strong className="text-lime-400">Coproduct</strong>{' '}
-                                <Equation math="A \amalg B" /> &mdash; freely contain both objects.
+                                <Equation math="A \amalg B" />, freely containing both objects.
                             </p>
                             <p className="leading-relaxed text-sm">
                                 <strong className="text-lime-400">Pullback</strong>{' '}
-                                <Equation math="A \times_C B" /> &mdash; keep only compatible pairs.
+                                <Equation math="A \times_C B" />, keeping only compatible pairs.
                             </p>
                             <p className="leading-relaxed text-sm">
                                 <strong className="text-lime-400">Pushout</strong>{' '}
-                                <Equation math="A \amalg_C B" /> &mdash; glue along shared structure.
+                                <Equation math="A \amalg_C B" />, gluing along shared structure.
                             </p>
                         </div>
                         <p className="leading-relaxed text-sm mt-3">
@@ -109,7 +114,7 @@ export default function Playground({ sourceContext }: { sourceContext?: Playgrou
                     <div className="border-l-2 border-lime-500/40 pl-4">
                         <h3 className="text-lime-400 font-semibold mb-3">From independence to freedom</h3>
                         <p className="leading-relaxed text-sm">
-                            The direct product <Equation math="G \times H" /> keeps two groups independent &mdash;
+                            The direct product <Equation math="G \times H" /> keeps two groups independent, so
                             every element of one commutes with every element of the other. The free product{' '}
                             <Equation math="G * H" /> does the opposite: it merges with maximal freedom,
                             imposing no new relations beyond those already present in each factor. The graph
@@ -125,7 +130,7 @@ export default function Playground({ sourceContext }: { sourceContext?: Playgrou
                             on <Equation math="N" /> but not vice versa. The <strong className="text-lime-400">wreath product</strong>{' '}
                             <Equation math="G \wr H \cong G^{(X)} \rtimes H" /> distributes many copies of{' '}
                             <Equation math="G" /> across an index set and lets <Equation math="H" /> coordinate them.
-                            The <strong className="text-lime-400">Zappa&ndash;Sz&eacute;p product</strong> drops the
+                            The <strong className="text-lime-400">Zappa-Szep product</strong> drops the
                             asymmetry entirely: both sides act on each other and co-determine the multiplication.
                         </p>
                     </div>
@@ -146,7 +151,7 @@ export default function Playground({ sourceContext }: { sourceContext?: Playgrou
                         <p className="leading-relaxed text-sm">
                             Where the direct product stores independent coordinates, the tensor product{' '}
                             <Equation math="V \otimes W" /> universalizes bilinear interaction. It turns
-                            structured interaction into an object in its own right &mdash; this is why
+                            structured interaction into an object in its own right, which is why
                             it feels deeper than mere pairing. The monoidal product generalizes this
                             to any category with a distinguished way of combining objects.
                         </p>
@@ -162,6 +167,15 @@ export default function Playground({ sourceContext }: { sourceContext?: Playgrou
                             twisted. This tension between local product structure and global obstruction
                             is one of the deepest themes in topology and geometry.
                         </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model provenance and validation</h3>
+                        <div className="space-y-4">
+                            <VersionSelector versions={versions} active={versions[0]?.id ?? ''} />
+                            <CalibrationPanel results={calibration} outputLabel="atlas counts" />
+                            <AssumptionPanel assumptions={assumptions} />
+                        </div>
                     </div>
 
                     <ModelChangelog entries={changelog} />
@@ -181,6 +195,7 @@ export default function Playground({ sourceContext }: { sourceContext?: Playgrou
             title="modes of combination"
             subtitle="atlas of product constructions across group theory, ring theory, category theory, and topology"
             sections={sections}
+            researchUrl="/playgrounds/modes-of-combination/research"
             settings={
                 <Settings
                     params={params}

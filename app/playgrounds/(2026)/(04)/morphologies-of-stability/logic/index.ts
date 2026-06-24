@@ -1,10 +1,10 @@
-// Morphologies of Stability — logic module
+// Morphologies of Stability, logic module
 //
 // Four canonical stabilizing patterns from dynamical systems theory:
-//   1. Point attractor — relaxation toward a fixed point
-//   2. Bistable switch — double-well potential with two stable states
-//   3. Limit cycle — Hopf normal form producing stable oscillation
-//   4. Consensus network — DeGroot-style opinion dynamics
+//   1. Point attractor, relaxation toward a fixed point
+//   2. Bistable switch, double-well potential with two stable states
+//   3. Limit cycle, Hopf normal form producing stable oscillation
+//   4. Consensus network, DeGroot-style opinion dynamics
 //
 // Each pattern demonstrates a distinct morphology of stability:
 // what it means for a system to "hold form" differs fundamentally
@@ -152,7 +152,7 @@ export const PATTERN_META: Record<PatternType, {
         title: 'Limit cycle',
         subtitle: 'Stability as rhythm, not rest',
         equation: 'dz/dt = (μ - |z|²)z + iωz + ξ(t)',
-        idea: 'Not all stability is stillness. Some systems stabilize into recurring motion — a rhythm that reforms after disturbance. The attractor is an orbit, not a point.',
+        idea: 'Not all stability is stillness. Some systems stabilize into recurring motion, a rhythm that reforms after disturbance. The attractor is an orbit, not a point.',
     },
     consensus: {
         title: 'Consensus network',
@@ -193,7 +193,7 @@ export const PRESET_DESCRIPTIONS: Record<PresetKey, {
     'near-bifurcation': {
         label: 'near bifurcation',
         question: 'What happens at the edge of stability?',
-        expectation: 'Limit cycle with μ near zero — on the boundary between point attractor and oscillation. Critical slowing down visible.',
+        expectation: 'Limit cycle with μ near zero, on the boundary between point attractor and oscillation. Critical slowing down visible.',
     },
 };
 
@@ -532,9 +532,9 @@ export function computeMetrics(params: Params, simState: SimulationState): Metri
                 : 0;
 
             if (params.limitMu <= 0) {
-                interpretation = `Below the Hopf bifurcation (μ = ${params.limitMu.toFixed(2)} ≤ 0). The origin is a stable spiral — no sustained oscillation.`;
+                interpretation = `Below the Hopf bifurcation (μ = ${params.limitMu.toFixed(2)} ≤ 0). The origin is a stable spiral, no sustained oscillation.`;
             } else if (params.limitMu < 0.15) {
-                interpretation = `Near the Hopf bifurcation (μ = ${params.limitMu.toFixed(2)}). The limit cycle exists but is fragile — critical slowing down makes recovery from perturbation slow.`;
+                interpretation = `Near the Hopf bifurcation (μ = ${params.limitMu.toFixed(2)}). The limit cycle exists but is fragile, critical slowing down makes recovery from perturbation slow.`;
             } else {
                 interpretation = `Stable limit cycle with radius √μ = ${limitTargetRadius.toFixed(2)}. Current orbit radius = ${limitRadius.toFixed(2)}. Angular frequency ω = ${params.limitOmega.toFixed(1)}.`;
             }
@@ -594,7 +594,7 @@ export function computeNarrative(metrics: Metrics, params: Params): string {
     } else if (metrics.stabilityIndex > 0.5) {
         parts.push('The system is moderately stable.');
     } else if (metrics.stabilityIndex > 0.2) {
-        parts.push('Stability is weak — the system is sensitive to perturbation.');
+        parts.push('Stability is weak, the system is sensitive to perturbation.');
     } else {
         parts.push('The system is near the edge of instability.');
     }
@@ -605,7 +605,7 @@ export function computeNarrative(metrics: Metrics, params: Params): string {
     } else if (metrics.lyapunovEstimate < -0.1) {
         parts.push(`Perturbations decay at a moderate rate (λ ≈ ${metrics.lyapunovEstimate.toFixed(2)}).`);
     } else if (metrics.lyapunovEstimate < 0) {
-        parts.push(`Recovery is slow — the Lyapunov exponent (λ ≈ ${metrics.lyapunovEstimate.toFixed(2)}) is barely negative.`);
+        parts.push(`Recovery is slow, the Lyapunov exponent (λ ≈ ${metrics.lyapunovEstimate.toFixed(2)}) is barely negative.`);
     }
 
     // Noise assessment

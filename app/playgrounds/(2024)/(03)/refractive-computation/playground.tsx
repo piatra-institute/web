@@ -3,8 +3,15 @@
 import { useState, useRef } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 export default function RefractiveComputationPlayground() {
     // Granular system parameters
@@ -40,7 +47,8 @@ export default function RefractiveComputationPlayground() {
     const [refreshKey, setRefreshKey] = useState(0);
     
     const viewerRef = useRef<{ exportCanvas: () => void }>(null);
-    
+    const calibration = buildCalibration();
+
     const handleReset = () => {
         setGrainCount(50);
         setPackingFraction(0.64);
@@ -77,12 +85,12 @@ export default function RefractiveComputationPlayground() {
                     id: 'intro',
                     type: 'intro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
-                            <h2 className="text-2xl font-bold text-white mb-4">Universal Mechanical Polycomputation</h2>
+                        <div className="text-gray-300 text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
+                            <h2 className="text-2xl font-bold text-lime-400 mb-4">Universal Mechanical Polycomputation</h2>
                             <p>
-                                Based on groundbreaking work by <strong className="font-semibold text-lime-400">Atoosa Parsa, Josh Bongard, Michael Levin</strong> and colleagues, 
-                                this playground explores how granular materials can perform multiple logical operations simultaneously 
-                                at different frequencies - without quantum effects.
+                                Based on groundbreaking work by <strong className="font-semibold text-lime-400">Atoosa Parsa, Josh Bongard, Michael Levin</strong> and colleagues,
+                                this playground explores how granular materials can perform multiple logical operations simultaneously
+                                at different frequencies, without quantum effects.
                             </p>
                             <p>
                                 A single grain within an evolved granular assembly can act as multiple NAND gates at different 
@@ -138,85 +146,106 @@ export default function RefractiveComputationPlayground() {
                     id: 'outro',
                     type: 'outro',
                     content: (
-                        <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
-                            <h2 className="text-2xl font-bold text-white mb-6">Understanding Polycomputation</h2>
-                            
-                            <div className="space-y-6">
-                                <div className="bg-black border border-lime-500/20 p-6">
-                                    <h3 className="text-lg font-semibold text-lime-400 mb-3">How It Works</h3>
-                                    <p className="mb-3">
-                                        Vibrations at different frequencies propagate through the granular material differently, 
-                                        creating frequency-dependent force networks. By evolving the grain arrangement and properties:
-                                    </p>
-                                    <ul className="space-y-2 text-sm">
-                                        <li>• <strong>Frequency 1:</strong> Creates force chains implementing one NAND gate</li>
-                                        <li>• <strong>Frequency 2:</strong> Creates different force chains for another NAND gate</li>
-                                        <li>• <strong>Output Grain:</strong> Reports different logical results at each frequency</li>
-                                        <li>• <strong>Nonlinearity:</strong> Contact mechanics provide necessary logical nonlinearity</li>
-                                    </ul>
+                        <div className="space-y-8 text-gray-300">
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">How it works</h3>
+                                <p className="leading-relaxed text-sm">
+                                    Vibrations at different frequencies propagate through the granular material differently,
+                                    creating frequency-dependent force networks. By evolving the grain arrangement and stiffnesses,
+                                    frequency 1 builds force chains that implement one NAND gate, frequency 2 builds different chains
+                                    for a second NAND gate, and the output grain reports a separate logical result on each channel.
+                                    The nonlinearity needed for logic comes from the contact mechanics: force is transmitted only
+                                    when grains actually overlap.
+                                </p>
+                            </div>
+
+                            <div className="border-l-2 border-lime-500/40 pl-4">
+                                <h3 className="text-lime-400 font-semibold mb-3">The refraction metaphor</h3>
+                                <p className="text-lime-200/80 mb-2">
+                                    One medium, many frequency channels, computed at once.
+                                </p>
+                                <p className="leading-relaxed text-sm">
+                                    A prism bends red and blue light by different angles because the refractive index depends on
+                                    frequency. An evolved grain bends incoming vibration energy differently at different
+                                    frequencies in the same way, so one physical element can play distinct roles in two
+                                    computations at the same time. That shared structure, one passive body routing many channels,
+                                    is why this mechanical system is framed as refractive computation.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">NAND completeness</h3>
+                                <p className="leading-relaxed text-sm mb-3">
+                                    NAND is functionally complete; every Boolean circuit can be built from NAND gates alone, so a
+                                    material that robustly computes NAND is in principle a universal logic substrate.
+                                </p>
+                                <div className="border border-lime-500/20 p-3 font-mono text-sm">
+                                    <table className="w-full">
+                                        <thead>
+                                            <tr className="border-b border-lime-500/20">
+                                                <th className="text-left p-2">A</th>
+                                                <th className="text-left p-2">B</th>
+                                                <th className="text-left p-2">NAND(A,B)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td className="p-2">0</td><td className="p-2">0</td><td className="p-2 text-lime-400">1</td></tr>
+                                            <tr><td className="p-2">0</td><td className="p-2">1</td><td className="p-2 text-lime-400">1</td></tr>
+                                            <tr><td className="p-2">1</td><td className="p-2">0</td><td className="p-2 text-lime-400">1</td></tr>
+                                            <tr><td className="p-2">1</td><td className="p-2">1</td><td className="p-2 text-lime-400">0</td></tr>
+                                        </tbody>
+                                    </table>
                                 </div>
-                                
-                                <div className="bg-black border border-lime-500/20 p-6">
-                                    <h3 className="text-lg font-semibold text-lime-400 mb-3">NAND Gate Universality</h3>
-                                    <p className="mb-3">
-                                        NAND gates are functionally complete - any logical circuit can be built using only NAND gates:
-                                    </p>
-                                    <div className="bg-black border border-lime-500/20 p-3 font-mono text-sm">
-                                        <table className="w-full">
-                                            <thead>
-                                                <tr className="border-b border-lime-500/20">
-                                                    <th className="text-left p-2">A</th>
-                                                    <th className="text-left p-2">B</th>
-                                                    <th className="text-left p-2">NAND(A,B)</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr><td className="p-2">0</td><td className="p-2">0</td><td className="p-2 text-lime-400">1</td></tr>
-                                                <tr><td className="p-2">0</td><td className="p-2">1</td><td className="p-2 text-lime-400">1</td></tr>
-                                                <tr><td className="p-2">1</td><td className="p-2">0</td><td className="p-2 text-lime-400">1</td></tr>
-                                                <tr><td className="p-2">1</td><td className="p-2">1</td><td className="p-2 text-lime-400">0</td></tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                
-                                <div className="bg-black border border-lime-500/20 p-6">
-                                    <h3 className="text-lg font-semibold text-lime-400 mb-3">Material Evolution</h3>
-                                    <div className="space-y-3">
-                                        <p>
-                                            The granular assembly is evolved using genetic algorithms to discover configurations 
-                                            that perform desired computations:
-                                        </p>
-                                        <ol className="space-y-2 text-sm list-decimal list-inside">
-                                            <li>Initialize random grain configurations</li>
-                                            <li>Apply vibrations at multiple frequencies with input signals</li>
-                                            <li>Measure output grain responses</li>
-                                            <li>Select configurations closest to target logic functions</li>
-                                            <li>Mutate and crossover to create next generation</li>
-                                            <li>Repeat until convergence</li>
-                                        </ol>
-                                    </div>
-                                </div>
-                                
-                                <div className="bg-black border border-lime-500/20 p-6">
-                                    <h3 className="text-lg font-semibold text-lime-400 mb-3">Applications & Implications</h3>
-                                    <ul className="space-y-2 text-sm">
-                                        <li>• <strong>Harsh Environments:</strong> Mechanical computers for extreme conditions</li>
-                                        <li>• <strong>Soft Robotics:</strong> Computation embedded in compliant materials</li>
-                                        <li>• <strong>Energy Harvesting:</strong> Computing powered by environmental vibrations</li>
-                                        <li>• <strong>Parallel Processing:</strong> Many computations in single material</li>
-                                        <li>• <strong>Fault Tolerance:</strong> Distributed computation provides robustness</li>
-                                    </ul>
-                                </div>
-                                
-                                <div className="mt-8 p-6 border border-lime-500/20">
-                                    <h3 className="text-lg font-semibold text-white mb-3">References</h3>
-                                    <ul className="space-y-1 text-sm text-lime-200/60">
-                                        <li>• Parsa et al. - &quot;Universal Mechanical Polycomputation in Granular Matter&quot;</li>
-                                        <li>• Bongard & Levin - &quot;Living Things Are Not (20th Century) Machines&quot;</li>
-                                        <li>• Wright & Flecker - &quot;Mechanical Computing: The Computational Complexity of Physical Devices&quot;</li>
-                                    </ul>
-                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Material evolution</h3>
+                                <p className="leading-relaxed text-sm mb-3">
+                                    A gate-performing packing is discovered offline by a genetic algorithm, not in real time. The
+                                    live canvas animates one fixed packing and its frequency response; the evolution controls
+                                    describe how such a packing would be found, by initialising random configurations, applying
+                                    vibrations with input signals, measuring the output grain, selecting the configurations closest
+                                    to the target logic, and mutating across generations until convergence.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Where it could go</h3>
+                                <p className="leading-relaxed text-sm">
+                                    Mechanical logic embedded in materials suggests computers for harsh environments, computation
+                                    inside compliant soft robots, processing powered by ambient vibration, many gates multiplexed in
+                                    one body, and fault tolerance from distributed force chains. The open obstacle is cascadability:
+                                    whether the noisy output of one mechanical gate can drive the next without degrading the signal.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Implementation</h3>
+                                <VersionSelector versions={versions} active="claude-v1" />
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                                <CalibrationPanel results={calibration} outputLabel="deterministic core" />
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                                <AssumptionPanel assumptions={assumptions} />
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                                <ModelChangelog entries={changelog} />
+                            </div>
+
+                            <div>
+                                <h3 className="text-lime-400 font-semibold mb-3">References</h3>
+                                <ul className="space-y-1 text-sm text-lime-200/60">
+                                    <li>Parsa et al., &quot;Universal Mechanical Polycomputation in Granular Matter&quot;</li>
+                                    <li>Bongard and Levin, &quot;Living Things Are Not (20th Century) Machines&quot;</li>
+                                    <li>Sheffer (1913), the NAND as a sole sufficient operator for Boolean algebra</li>
+                                </ul>
                             </div>
                         </div>
                     )
@@ -266,6 +295,7 @@ export default function RefractiveComputationPlayground() {
                     onExport={handleExport}
                 />
             }
+            researchUrl="/playgrounds/refractive-computation/research"
         />
     );
 }

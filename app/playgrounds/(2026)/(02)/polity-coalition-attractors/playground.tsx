@@ -3,6 +3,10 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import Equation from '@/components/Equation';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import {
@@ -16,6 +20,9 @@ import {
     DEFAULT_BASIN,
     PRESETS,
 } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 export default function PolityCoalitionAttractorsPlayground() {
     const [params, setParams] = useState<ModelParams>({ ...DEFAULT_PARAMS });
@@ -23,6 +30,7 @@ export default function PolityCoalitionAttractorsPlayground() {
     const [init, setInit] = useState<InitialConditions>({ ...DEFAULT_INIT });
     const [basin, setBasin] = useState<BasinSettings>({ ...DEFAULT_BASIN });
     const [presetId, setPresetId] = useState('baseline');
+    const calibration = buildCalibration();
 
     const handlePresetChange = useCallback((id: string) => {
         const preset = PRESETS.find((p) => p.id === id) ?? PRESETS[0];
@@ -96,15 +104,15 @@ export default function PolityCoalitionAttractorsPlayground() {
                         <h3 className="text-lime-400 font-semibold mb-3">Attractor Classes</h3>
                         <ul className="list-disc pl-5 space-y-1 text-sm">
                             <li>
-                                <span className="text-green-400 font-semibold">Inclusive</span> (<Equation math="x < 0.2" />) — exclusionary
+                                <span className="text-green-400 font-semibold">Inclusive</span> (<Equation math="x < 0.2" />): exclusionary
                                 support is marginal; trust-building feedbacks dominate.
                             </li>
                             <li>
-                                <span className="text-yellow-400 font-semibold">Mixed</span> (<Equation math="0.2 \leq x \leq 0.8" />) — neither
+                                <span className="text-yellow-400 font-semibold">Mixed</span> (<Equation math="0.2 \leq x \leq 0.8" />): neither
                                 coalition dominates; system is in a contested or transitional zone.
                             </li>
                             <li>
-                                <span className="text-red-400 font-semibold">Exclusionary</span> (<Equation math="x > 0.8" />) — exclusionary
+                                <span className="text-red-400 font-semibold">Exclusionary</span> (<Equation math="x > 0.8" />): exclusionary
                                 politics dominate; trust erodes in a self-reinforcing cycle.
                             </li>
                         </ul>
@@ -113,13 +121,13 @@ export default function PolityCoalitionAttractorsPlayground() {
                     <div className="border-l-2 border-lime-500/50 pl-4">
                         <h3 className="text-lime-400 font-semibold mb-3">Parameters</h3>
                         <ul className="list-disc pl-5 space-y-1 text-sm">
-                            <li><span className="text-lime-100 font-semibold">S</span> (Stress) — economic/security shocks that raise threat salience.</li>
-                            <li><span className="text-lime-100 font-semibold">D</span> (Diversity) — salience of group boundaries in this toy model.</li>
-                            <li><span className="text-lime-100 font-semibold">P</span> (Polarization) — fragmented information space; amplifies perceived threat.</li>
-                            <li><span className="text-lime-100 font-semibold">N</span> (Norms) — rule-of-law / rights constraints that raise the cost of exclusion.</li>
-                            <li><span className="text-lime-100 font-semibold">C</span> (Contact) — bridging social capital; reduces perceived threat.</li>
-                            <li><span className="text-lime-100 font-semibold">R</span> (Redistribution) — material inclusion; increases trust and inclusive payoff.</li>
-                            <li><span className="text-lime-100 font-semibold">O</span> (Opportunism) — elite identity entrepreneurship; strengthens exclusionary narrative feedback.</li>
+                            <li><span className="text-lime-100 font-semibold">S</span> (Stress): economic/security shocks that raise threat salience.</li>
+                            <li><span className="text-lime-100 font-semibold">D</span> (Diversity): salience of group boundaries in this toy model.</li>
+                            <li><span className="text-lime-100 font-semibold">P</span> (Polarization): fragmented information space; amplifies perceived threat.</li>
+                            <li><span className="text-lime-100 font-semibold">N</span> (Norms): rule-of-law / rights constraints that raise the cost of exclusion.</li>
+                            <li><span className="text-lime-100 font-semibold">C</span> (Contact): bridging social capital; reduces perceived threat.</li>
+                            <li><span className="text-lime-100 font-semibold">R</span> (Redistribution): material inclusion; increases trust and inclusive payoff.</li>
+                            <li><span className="text-lime-100 font-semibold">O</span> (Opportunism): elite identity entrepreneurship; strengthens exclusionary narrative feedback.</li>
                         </ul>
                     </div>
 
@@ -131,16 +139,37 @@ export default function PolityCoalitionAttractorsPlayground() {
                             <li>The basin map can be computationally expensive at high grid resolutions. Lower the grid setting if interaction feels slow.</li>
                         </ul>
                     </div>
+
+                    <div className="border-t border-lime-500/20 pt-8">
+                        <h3 className="text-lime-400 font-semibold mb-3">Model Version</h3>
+                        <VersionSelector versions={versions} active="claude-v1" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <CalibrationPanel results={calibration} outputLabel="structural check" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                        <AssumptionPanel assumptions={assumptions} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model Changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
-    ], [params, sim, init, basin]);
+    ], [params, sim, init, basin, calibration]);
 
     return (
         <PlaygroundLayout
             title="polity coalition attractors"
             subtitle="basins of inclusion versus exclusion under stress, norms, and contact"
             sections={sections}
+            researchUrl="/playgrounds/polity-coalition-attractors/research"
             settings={
                 <Settings
                     params={params}

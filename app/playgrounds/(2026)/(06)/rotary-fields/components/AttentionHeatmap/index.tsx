@@ -160,7 +160,7 @@ export default function AttentionHeatmap({ matrix, tokenI, tokenJ, snapshotMatri
             </svg>
             <div className="flex items-center justify-between text-[10px] font-mono">
                 <div className="text-lime-200/50">
-                    selected score: <span className="text-lime-400">{vals[tokenI]?.[tokenJ]?.toFixed(3) ?? '—'}</span>
+                    selected score: <span className="text-lime-400">{vals[tokenI]?.[tokenJ]?.toFixed(3) ?? 'n/a'}</span>
                 </div>
                 <div className="text-lime-200/40">|range| ≤ {range.toFixed(2)}</div>
             </div>

@@ -6,8 +6,15 @@ import PlaygroundViewer from '@/components/PlaygroundViewer';
 import PlaygroundSettings from '@/components/PlaygroundSettings';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import Viewer from './components/Viewer';
 import { calculateMetrics, CorruptionType, getQualitativeAssessment, getZoneDescription } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 
 
@@ -32,6 +39,7 @@ export default function StochasticJusticePlayground() {
     const viewerRef = useRef<{ exportImage: () => void }>(null);
 
     const metrics = calculateMetrics(corruption, randomness, corruptionType);
+    const calibration = buildCalibration();
 
     const handleReset = useCallback(() => {
         setCorruption(DEFAULT_CORRUPTION);
@@ -106,25 +114,57 @@ export default function StochasticJusticePlayground() {
             id: 'about',
             type: 'outro' as const,
             content: (
-                <>
-                    <p>
-                        Stochastic Justice explores when randomness can serve as a better proxy
-                        for fairness than biased deterministic rules. Using information theory
-                        and decision science, this playground models the complex relationship
-                        between institutional corruption and procedural randomness.
-                    </p>
-                    <p>
-                        The visualization shows how different types of corruption (directional bias,
-                        increased variance, systematic error) respond differently to randomness.
-                        In some corrupt systems, strategic randomness can counteract bias more
-                        effectively than deterministic reforms.
-                    </p>
-                    <p>
-                        Key concepts include: information theory, institutional corruption,
-                        procedural fairness, decision science, entropy measures, and the
-                        trade-offs between fairness and efficiency in governance systems.
-                    </p>
-                </>
+                <div className="space-y-8 text-gray-300">
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">The argument and the demonstration</h3>
+                        <p className="leading-relaxed text-sm">
+                            Stochastic Justice asks whether deliberate randomness can make an institution fairer
+                            than a deterministic rule that is open to capture. The substantive idea, allocation by
+                            lottery as a defence against bias, is a real and defended position in political theory.
+                            The demonstration here is more modest than it looks, and the assumptions below keep the
+                            two apart.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">What the model actually does</h3>
+                        <p className="leading-relaxed text-sm">
+                            Each decision becomes a binary outcome distribution, scored against the uniform ideal by
+                            Shannon entropy, KL divergence, total variation, Jensen-Shannon divergence, and
+                            demographic parity. Three corruption types (directional bias, increased variance,
+                            systematic error) respond differently as the randomness dial blends the biased
+                            distribution toward uniform.
+                        </p>
+                    </div>
+
+                    <div className="border-l-2 border-lime-500/40 pl-4">
+                        <p className="text-lime-200/80 mb-2">
+                            For directional corruption the observed distribution is a convex blend
+                            preservation * biased + (1 - preservation) * uniform with preservation = exp(-2R).
+                            Increasing randomness must move the distribution toward uniform, so the headline
+                            result is built into the formula rather than discovered.
+                        </p>
+                    </div>
+
+                    <div>
+                        <VersionSelector versions={versions} active="claude-v1" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <CalibrationPanel results={calibration} outputLabel="information-theory value" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                        <AssumptionPanel assumptions={assumptions} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
+                </div>
             ),
         },
     ];
@@ -309,6 +349,7 @@ export default function StochasticJusticePlayground() {
             subtitle="exploring fairness through randomness in corrupt systems; drag marker to explore regimes where randomness counteracts corruption"
             sections={sections}
             settings={settings}
+            researchUrl="/playgrounds/stochastic-justice/research"
         />
     );
 }

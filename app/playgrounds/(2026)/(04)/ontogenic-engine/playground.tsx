@@ -7,6 +7,7 @@ import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Button from '@/components/Button';
 import Equation from '@/components/Equation';
 import ModelChangelog from '@/components/ModelChangelog';
+import CalibrationPanel from '@/components/CalibrationPanel';
 import ResearchPromptButton from '@/components/ResearchPromptButton';
 import { PlaygroundSourceContext } from '@/lib/readPlaygroundSource';
 
@@ -26,6 +27,10 @@ import {
 } from './logic';
 import { assumptions } from './assumptions';
 import { versions, changelog } from './versions';
+import { buildCalibration } from './calibration';
+
+
+const calibration = buildCalibration();
 
 
 interface Props {
@@ -187,16 +192,16 @@ export default function OntogenicEnginePlayground({ sourceContext }: Props) {
                             lock together:
                         </p>
                         <p className="leading-relaxed text-sm mt-2">
-                            <strong className="text-lime-200">Self-production</strong> — it
+                            <strong className="text-lime-200">Self-production</strong>: it
                             regenerates the components and relations that constitute it
                             (Maturana &amp; Varela&rsquo;s autopoiesis).{' '}
-                            <strong className="text-lime-200">Sensorimotor coupling</strong> — it
+                            <strong className="text-lime-200">Sensorimotor coupling</strong>: it
                             maintains itself through active engagement with the world, not
                             passive isolation (the enactivist move).{' '}
-                            <strong className="text-lime-200">Plasticity / memory</strong> — past
+                            <strong className="text-lime-200">Plasticity / memory</strong>: past
                             interactions sediment into changed structure, so future regulation
                             improves.{' '}
-                            <strong className="text-lime-200">Boundary</strong> — it
+                            <strong className="text-lime-200">Boundary</strong>: it
                             continually re-establishes the distinction between internal and
                             external states.
                         </p>
@@ -218,7 +223,7 @@ export default function OntogenicEnginePlayground({ sourceContext }: Props) {
                             configuration, and <Equation math="\theta" /> the adaptive
                             parameters. The system counts as an entity when its dynamics
                             actively keep it within a viability
-                            set <Equation math="V" /> — or restore it after perturbation — by
+                            set <Equation math="V" /> (or restore it after perturbation) by
                             changing not just outputs but its own organization.
                         </p>
                     </div>
@@ -235,7 +240,7 @@ export default function OntogenicEnginePlayground({ sourceContext }: Props) {
                             flux (penalized for deviation from moderate openness),
                             and <Equation math="T" /> tension (penalized when high).
                             The key insight is that becoming is not any single variable
-                            but their joint satisfaction — viability without coherence is
+                            but their joint satisfaction. Viability without coherence is
                             mere persistence; novelty without viability is drift.
                         </p>
                     </div>
@@ -246,18 +251,18 @@ export default function OntogenicEnginePlayground({ sourceContext }: Props) {
                             The parameter space contains four qualitative regimes:
                         </p>
                         <p className="leading-relaxed text-sm mt-2">
-                            <strong className="text-lime-200">World-Oriented Becoming</strong> — the
+                            <strong className="text-lime-200">World-Oriented Becoming</strong>: the
                             highest-functioning regime. The system individuates by engaging
                             the world without losing itself.{' '}
-                            <strong className="text-lime-200">Metastable Individuation</strong> — the
+                            <strong className="text-lime-200">Metastable Individuation</strong>: the
                             default &ldquo;interesting&rdquo; zone. Not frozen, not dissolved.{' '}
-                            <strong className="text-lime-200">Rigid Closure</strong> — identity
+                            <strong className="text-lime-200">Rigid Closure</strong>: identity
                             preserved by over-constraining transformation. High boundary and
                             memory, low plasticity.{' '}
-                            <strong className="text-lime-200">Chaotic Drift</strong> — change
+                            <strong className="text-lime-200">Chaotic Drift</strong>: change
                             without enough self-maintaining organization to count as
                             individuation. And at the extreme,{' '}
-                            <strong className="text-lime-200">Dissolution</strong> — the
+                            <strong className="text-lime-200">Dissolution</strong>: the
                             boundary and repair loops fail entirely.
                         </p>
                     </div>
@@ -288,12 +293,24 @@ export default function OntogenicEnginePlayground({ sourceContext }: Props) {
                             Simondon&rsquo;s ontogenetic grammar, Maturana and Varela&rsquo;s
                             autopoiesis, the enactivist tradition, and Friston&rsquo;s active
                             inference. The five-variable model here is a pedagogical
-                            reduction — real individuation involves vastly more dimensions,
+                            reduction. Real individuation involves vastly more dimensions,
                             nonlinear interactions, and nested timescales. Extensions could
                             include: metastability with multiple coexisting attractors,
                             hierarchical boundary formation, and genuine parameter learning
                             (where the update rule itself adapts).
                         </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <p className="leading-relaxed text-sm mb-3">
+                            The full nonlinear trajectory tends to saturate, so the
+                            verifiable part of the model is its algebraic core: the two
+                            derived diagnostics (rigidity, exposure risk) and the rule-based
+                            phase classifier. Each predicted value below is computed by the
+                            model and checked against its closed form.
+                        </p>
+                        <CalibrationPanel results={calibration} outputLabel="diagnostic value" />
                     </div>
 
                     <div>
@@ -327,6 +344,7 @@ export default function OntogenicEnginePlayground({ sourceContext }: Props) {
                 </>
             }
             sections={sections}
+            researchUrl="/playgrounds/ontogenic-engine/research"
             settings={
                 <Settings
                     params={params}

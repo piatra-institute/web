@@ -448,7 +448,7 @@ export function computeNarrative(metrics: Metrics, params: Params): string {
     if (d.forbidden) {
         parts.push(`This scenario is deontic-forbidden: ${d.violations.length} hard constraint${d.violations.length > 1 ? 's are' : ' is'} breached (severity ${d.severity.toFixed(0)}).`);
         if (params.futureWelfarePromise > 50) {
-            parts.push('The high future-welfare promise does not override these prohibitions \u2014 rights enter as side-constraints, not terms in a utility sum.');
+            parts.push('The high future-welfare promise does not override these prohibitions; rights enter as side-constraints, not terms in a utility sum.');
         }
     } else {
         parts.push(`The scenario passes deontic admissibility (severity ${d.severity.toFixed(0)}).`);
@@ -464,7 +464,7 @@ export function computeNarrative(metrics: Metrics, params: Params): string {
 
     const u = metrics.utility;
     if (d.forbidden && u > 40) {
-        parts.push(`Note: naive utility scores this at ${u.toFixed(0)} \u2014 demonstrating why single-scalar optimization is dangerous. It rates a rights-violating scenario as tolerable.`);
+        parts.push(`Note: naive utility scores this at ${u.toFixed(0)}, demonstrating why single-scalar optimization is dangerous. It rates a rights-violating scenario as tolerable.`);
     }
 
     return parts.join(' ');

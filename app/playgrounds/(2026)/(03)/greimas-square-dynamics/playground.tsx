@@ -4,8 +4,15 @@ import React, { useState, useMemo, useCallback, useRef } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer, { ViewerRef } from './components/Viewer';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 import {
     SimulationParams,
     Edge,
@@ -29,6 +36,8 @@ export default function GreimasSquareDynamicsPlayground() {
     const [groupBits, setGroupBits] = useState<[0 | 1, 0 | 1]>(BITMAP.S1);
 
     const viewerRef = useRef<ViewerRef>(null);
+
+    const calibration = useMemo(() => buildCalibration(), []);
 
     const groupNode = useMemo(() => bitsToNode(groupBits[0], groupBits[1]), [groupBits]);
 
@@ -116,7 +125,7 @@ export default function GreimasSquareDynamicsPlayground() {
                             The four relation types capture distinct logical constraints:
                         </p>
                         <ul className="list-disc pl-5 space-y-1 text-sm">
-                            <li><span className="text-lime-400">Contradiction</span>: mutually exclusive truth values. <Equation math="S_1 \leftrightarrow \neg S_1" /> &mdash; one must hold, the other must not.</li>
+                            <li><span className="text-lime-400">Contradiction</span>: mutually exclusive truth values. <Equation math="S_1 \leftrightarrow \neg S_1" />, where one must hold and the other must not.</li>
                             <li><span className="text-lime-400">Contrariety</span>: cannot both be true. <Equation math="S_1" /> and <Equation math="S_2" /> may both fail, but cannot both hold.</li>
                             <li><span className="text-lime-400">Sub-contrariety</span>: cannot both be false. <Equation math="\neg S_1" /> and <Equation math="\neg S_2" /> may co-exist, but at least one must hold.</li>
                             <li><span className="text-lime-400">Implication</span>: directed deixis. <Equation math="S_1 \to \neg S_2" /> and <Equation math="S_2 \to \neg S_1" /> define the diagonal channels.</li>
@@ -133,7 +142,7 @@ export default function GreimasSquareDynamicsPlayground() {
                             math="V_4 \cong \mathbb{Z}_2 \times \mathbb{Z}_2 = \{(0,0),\,(1,0),\,(0,1),\,(1,1)\}"
                         />
                         <p className="leading-relaxed text-sm mt-3">
-                            Generator <Equation math="a" /> flips the first bit (contradiction axis), <Equation math="b" /> flips the second (contrariety axis), and <Equation math="ab" /> flips both (diagonal). Each generator is its own inverse &mdash; applying it twice returns to the origin &mdash; making the group an involution lattice.
+                            Generator <Equation math="a" /> flips the first bit (contradiction axis), <Equation math="b" /> flips the second (contrariety axis), and <Equation math="ab" /> flips both (diagonal). Each generator is its own inverse, so applying it twice returns to the origin, making the group an involution lattice.
                         </p>
                     </div>
 
@@ -153,6 +162,26 @@ export default function GreimasSquareDynamicsPlayground() {
                             <li>The adjacency matrix in settings shows the enabled structure as a typed graph.</li>
                         </ul>
                     </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model version</h3>
+                        <VersionSelector versions={versions} active="claude-v1" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <CalibrationPanel results={calibration} outputLabel="structural fact holds" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                        <AssumptionPanel assumptions={assumptions} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -163,6 +192,7 @@ export default function GreimasSquareDynamicsPlayground() {
             title="Greimas square dynamics"
             subtitle="the semiotic square as typed opposition structure and Klein four-group"
             sections={sections}
+            researchUrl="/playgrounds/greimas-square-dynamics/research"
             settings={
                 <Settings
                     params={params}

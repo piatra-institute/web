@@ -612,7 +612,7 @@ export default function Viewer({
       {/* ── Row 4: Waterfall + Sensitivity ────────────────────── */}
       <div className="bg-black/30 border border-lime-500/20 p-4">
         <h3 className="text-lime-400 text-sm font-semibold mb-3">
-          EFE Breakdown — {POLICY_LABELS[waterfallResult.winner]} (G = {waterfallResult.totalG.toFixed(2)})
+          EFE Breakdown: {POLICY_LABELS[waterfallResult.winner]} (G = {waterfallResult.totalG.toFixed(2)})
         </h3>
         <div style={{ width: '100%', height: 220 }}>
           <ResponsiveContainer width="100%" height={220}>

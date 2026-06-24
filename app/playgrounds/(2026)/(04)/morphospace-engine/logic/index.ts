@@ -154,7 +154,7 @@ export const TYPE_META: Record<NodeType, TypeMeta> = {
     seed: {
         label: 'Seed',
         accent: 'border-cyan-500/40 bg-cyan-500/8',
-        description: 'A local generative impulse \u2014 a morphogenetic invitation.',
+        description: 'A local generative impulse, a morphogenetic invitation.',
     },
     field: {
         label: 'Field',
@@ -864,7 +864,7 @@ export function computeNarrative(field: FieldResult, graph: Graph): string {
     parts.push(`The current morphology is classified as "${field.morphologyLabel}".`);
 
     if (m.energy < 0.15) {
-        parts.push('The field is near quiescent \u2014 few nodes are actively shaping the space.');
+        parts.push('The field is near quiescent, few nodes are actively shaping the space.');
     } else if (m.energy > 0.45) {
         parts.push('The field is energetically dense, with multiple nodes competing for dominance.');
     }
@@ -878,9 +878,9 @@ export function computeNarrative(field: FieldResult, graph: Graph): string {
     const eMit = 1 - m.eLeakage;
     const dMit = 1 - m.dLeakage;
     if (eMit > 0.7) {
-        parts.push(`e-mitigation is strong (${(eMit * 100).toFixed(0)}%) \u2014 constraint nodes are successfully channeling the constant's influence.`);
+        parts.push(`e-mitigation is strong (${(eMit * 100).toFixed(0)}%), constraint nodes are successfully channeling the constant's influence.`);
     } else if (eMit < 0.4) {
-        parts.push(`e-mitigation is weak (${(eMit * 100).toFixed(0)}%) \u2014 the mathematical constant is leaking broadly into the morphology.`);
+        parts.push(`e-mitigation is weak (${(eMit * 100).toFixed(0)}%), the mathematical constant is leaking broadly into the morphology.`);
     }
 
     if (dMit > 0.7) {
@@ -894,7 +894,7 @@ export function computeNarrative(field: FieldResult, graph: Graph): string {
     const nConstants = graph.nodes.filter(n => n.type === 'constant').length;
     const nConstraints = graph.nodes.filter(n => n.type === 'constraint').length;
     if (nConstants > 0 && nConstraints === 0) {
-        parts.push('No constraints are present to channel the mathematical forcing terms \u2014 consider adding a constraint node.');
+        parts.push('No constraints are present to channel the mathematical forcing terms, consider adding a constraint node.');
     }
 
     return parts.join(' ');

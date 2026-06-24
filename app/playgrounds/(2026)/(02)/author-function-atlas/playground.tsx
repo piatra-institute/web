@@ -4,6 +4,10 @@ import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import {
@@ -19,6 +23,9 @@ import {
     initializePopulation,
     stepPopulation,
 } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 export default function AuthorFunctionAtlasPlayground() {
     const [author, setAuthor] = useState<AuthorName>('Harari');
@@ -28,6 +35,8 @@ export default function AuthorFunctionAtlasPlayground() {
     const [running, setRunning] = useState<boolean>(false);
     const [query, setQuery] = useState<string>('');
     const [selectedId, setSelectedId] = useState<string | null>(null);
+
+    const calibration = useMemo(() => buildCalibration(), []);
 
     const rngRef = useRef<() => number>(() => Math.random());
     const [population, setPopulation] = useState<Variant[]>(() => {
@@ -187,6 +196,29 @@ export default function AuthorFunctionAtlasPlayground() {
                             <li>The three entanglement buckets (Low, Mid, High) split variants by their name-minus-source surplus.</li>
                         </ul>
                     </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model provenance</h3>
+                        <VersionSelector versions={versions} active="claude-v1" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <p className="leading-relaxed text-sm mb-3">
+                            The live population is stochastic, so only the noise-free core is checked. Each predicted value is computed by calling the model functions on a hand-built variant, never hardcoded to match its target.
+                        </p>
+                        <CalibrationPanel results={calibration} outputLabel="score" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                        <AssumptionPanel assumptions={assumptions} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -218,6 +250,7 @@ export default function AuthorFunctionAtlasPlayground() {
                     onSelectId={setSelectedId}
                 />
             }
+            researchUrl="/playgrounds/author-function-atlas/research"
         />
     );
 }

@@ -6,6 +6,7 @@ import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayo
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
 import ModelChangelog from '@/components/ModelChangelog';
+import CalibrationPanel from '@/components/CalibrationPanel';
 import ResearchPromptButton from '@/components/ResearchPromptButton';
 import { PlaygroundSourceContext } from '@/lib/readPlaygroundSource';
 
@@ -18,6 +19,7 @@ import {
 } from './logic';
 import { assumptions } from './assumptions';
 import { versions, changelog } from './versions';
+import { buildCalibration } from './calibration';
 
 
 interface Props {
@@ -30,6 +32,7 @@ export default function OntometricsPlayground({ sourceContext }: Props) {
     const metrics = useMemo(() => computeMetrics(state), [state]);
     const sensitivityBars = useMemo(() => computeSensitivity(state), [state]);
     const narrative = useMemo(() => computeNarrative(metrics, state), [metrics, state]);
+    const calibration = useMemo(() => buildCalibration(), []);
 
     const loadPreset = useCallback((key: PresetKey) => {
         setState(buildPreset(key));
@@ -62,9 +65,9 @@ export default function OntometricsPlayground({ sourceContext }: Props) {
                         <p className="leading-relaxed text-sm">
                             Medieval scholars are mocked for asking how many angels
                             fit on a needle&apos;s tip. But the mockery misses the
-                            point: they were probing real problems &mdash; occupancy,
-                            individuation, locality, causation for non-material agents
-                            &mdash; with the only concepts available to them. &ldquo;Angel
+                            point: they were probing real problems (occupancy,
+                            individuation, locality, causation for non-material agents)
+                            with the only concepts available to them. &ldquo;Angel
                             questions&rdquo; are what inquiry looks like when a culture has
                             problem-sensitivity but lacks clean abstractions. The
                             vocabulary may be wrong; the underlying pressure may be
@@ -77,11 +80,11 @@ export default function OntometricsPlayground({ sourceContext }: Props) {
                         <p className="leading-relaxed text-sm">
                             An ontology can fail in two opposite directions, mirroring
                             CAD sketch constraints. An <em>underdeveloped</em> ontology
-                            has too few concepts to carve reality well &mdash; like an
+                            has too few concepts to carve reality well, like an
                             underconstrained sketch where many shapes satisfy the
                             dimensions. An <em>overdetermined</em> ontology has too many
                             categories, constraints, or distinctions relative to what the
-                            phenomena warrant &mdash; like an overconstrained sketch that
+                            phenomena warrant, like an overconstrained sketch that
                             locks up or becomes brittle. Good ontology sits in the middle:
                             enough distinctions to track reality, not so many that it
                             becomes baroque.
@@ -117,7 +120,7 @@ export default function OntometricsPlayground({ sourceContext }: Props) {
                             These are orthogonal to the underdeveloped/overdetermined
                             axis: an ontology can be underdeveloped AND overmining, or
                             overdetermined AND undermining. The playground estimates a
-                            Harman index from axiom type distribution &mdash;
+                            Harman index from axiom type distribution:
                             subtype-heavy axioms lean toward overmining, dependsOn-heavy
                             axioms lean toward undermining.
                         </p>
@@ -129,8 +132,8 @@ export default function OntometricsPlayground({ sourceContext }: Props) {
                             The Minimum Description Length principle says: the best model
                             minimizes the sum of the model&apos;s description length{' '}
                             <Equation math="L(O)" /> and the residual surprise{' '}
-                            <Equation math="L(D|O)" /> &mdash; how much the phenomena
-                            remain unexplained. An underdeveloped ontology has low{' '}
+                            <Equation math="L(D|O)" />, which captures how much the
+                            phenomena remain unexplained. An underdeveloped ontology has low{' '}
                             <Equation math="L(O)" /> but high{' '}
                             <Equation math="L(D|O)" />. An overdetermined ontology has
                             bloated <Equation math="L(O)" /> while{' '}
@@ -147,6 +150,17 @@ export default function OntometricsPlayground({ sourceContext }: Props) {
                             categories beyond independent necessity? That is probably the
                             closest thing to an engineering criterion for ontology.
                         </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <p className="leading-relaxed text-sm mb-3">
+                            The model is fully deterministic, so calibration checks
+                            that the implemented formulas reproduce values derivable
+                            by hand on small ontologies. Each predicted value is
+                            computed by the live metric functions.
+                        </p>
+                        <CalibrationPanel results={calibration} outputLabel="metric value" />
                     </div>
 
                     <div>
@@ -180,6 +194,7 @@ export default function OntometricsPlayground({ sourceContext }: Props) {
                 </>
             }
             sections={sections}
+            researchUrl="/playgrounds/ontometrics/research"
             settings={
                 <Settings
                     state={state}

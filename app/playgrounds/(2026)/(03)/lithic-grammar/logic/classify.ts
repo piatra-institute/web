@@ -71,7 +71,7 @@ export function classifyIgneous(params: IgneousParams): ClassificationResult {
             return { rock, why: `SiO₂ = ${sio2}% (ultramafic) with volcanic texture. Very hot mantle-derived eruption forming komatiite.`, neighbors: getNeighbors(rock) };
         }
 
-        // Plutonic ultramafic — use ternary classification
+        // Plutonic ultramafic - use ternary classification
         const norm = normalizeTernary(ol, opx, cpx);
 
         if (norm.ol >= 90) {
@@ -82,28 +82,28 @@ export function classifyIgneous(params: IgneousParams): ClassificationResult {
         if (norm.ol >= 40) {
             if (norm.opx > norm.cpx * 1.3) {
                 const rock = findRock('harzburgite');
-                return { rock, why: `SiO₂ = ${sio2}% (ultramafic). Ol = ${norm.ol.toFixed(0)}% with Opx > Cpx — a harzburgite, the residual mantle peridotite.`, neighbors: getNeighbors(rock) };
+                return { rock, why: `SiO₂ = ${sio2}% (ultramafic). Ol = ${norm.ol.toFixed(0)}% with Opx > Cpx - a harzburgite, the residual mantle peridotite.`, neighbors: getNeighbors(rock) };
             }
             if (norm.cpx > norm.opx * 1.3) {
                 const rock = findRock('wehrlite');
-                return { rock, why: `SiO₂ = ${sio2}% (ultramafic). Ol = ${norm.ol.toFixed(0)}% with Cpx > Opx — a wehrlite, a clinopyroxene-bearing peridotite.`, neighbors: getNeighbors(rock) };
+                return { rock, why: `SiO₂ = ${sio2}% (ultramafic). Ol = ${norm.ol.toFixed(0)}% with Cpx > Opx - a wehrlite, a clinopyroxene-bearing peridotite.`, neighbors: getNeighbors(rock) };
             }
             const rock = findRock('lherzolite');
-            return { rock, why: `SiO₂ = ${sio2}% (ultramafic). Ol = ${norm.ol.toFixed(0)}% with both pyroxenes present — lherzolite, the "fertile" mantle rock.`, neighbors: getNeighbors(rock) };
+            return { rock, why: `SiO₂ = ${sio2}% (ultramafic). Ol = ${norm.ol.toFixed(0)}% with both pyroxenes present - lherzolite, the "fertile" mantle rock.`, neighbors: getNeighbors(rock) };
         }
 
         if (norm.opx >= 70) {
             const rock = findRock('orthopyroxenite');
-            return { rock, why: `SiO₂ = ${sio2}% (ultramafic). Low olivine with Opx = ${norm.opx.toFixed(0)}% dominant — an orthopyroxenite.`, neighbors: getNeighbors(rock) };
+            return { rock, why: `SiO₂ = ${sio2}% (ultramafic). Low olivine with Opx = ${norm.opx.toFixed(0)}% dominant - an orthopyroxenite.`, neighbors: getNeighbors(rock) };
         }
 
         if (norm.cpx >= 70) {
             const rock = findRock('clinopyroxenite');
-            return { rock, why: `SiO₂ = ${sio2}% (ultramafic). Low olivine with Cpx = ${norm.cpx.toFixed(0)}% dominant — a clinopyroxenite.`, neighbors: getNeighbors(rock) };
+            return { rock, why: `SiO₂ = ${sio2}% (ultramafic). Low olivine with Cpx = ${norm.cpx.toFixed(0)}% dominant - a clinopyroxenite.`, neighbors: getNeighbors(rock) };
         }
 
         const rock = findRock('websterite');
-        return { rock, why: `SiO₂ = ${sio2}% (ultramafic). Low olivine with both pyroxenes roughly equal — a websterite.`, neighbors: getNeighbors(rock) };
+        return { rock, why: `SiO₂ = ${sio2}% (ultramafic). Low olivine with both pyroxenes roughly equal - a websterite.`, neighbors: getNeighbors(rock) };
     }
 
     // Mafic (45-52%)
@@ -306,7 +306,7 @@ export function classifyMetamorphic(params: MetamorphicParams): ClassificationRe
         }
         if (grade < 40) {
             const rock = findRock('phyllite');
-            return { rock, why: `Grade = ${grade} (low-medium). Fine micas grow larger, giving a silky sheen — phyllite.`, neighbors: getNeighbors(rock) };
+            return { rock, why: `Grade = ${grade} (low-medium). Fine micas grow larger, giving a silky sheen - phyllite.`, neighbors: getNeighbors(rock) };
         }
         if (grade < 65) {
             const rock = findRock('schist');
@@ -317,7 +317,7 @@ export function classifyMetamorphic(params: MetamorphicParams): ClassificationRe
             return { rock, why: `Grade = ${grade} (high). Compositional banding of light (feldspar/quartz) and dark (biotite/hornblende) layers defines gneiss.`, neighbors: getNeighbors(rock) };
         }
         const rock = findRock('migmatite');
-        return { rock, why: `Grade = ${grade} (ultra-high). Partial melting begins — the rock is part metamorphic, part igneous. Migmatite.`, neighbors: getNeighbors(rock) };
+        return { rock, why: `Grade = ${grade} (ultra-high). Partial melting begins - the rock is part metamorphic, part igneous. Migmatite.`, neighbors: getNeighbors(rock) };
     }
 
     // ── Mafic (basalt/gabbro) ──
@@ -325,21 +325,21 @@ export function classifyMetamorphic(params: MetamorphicParams): ClassificationRe
         if (pressure === 'high') {
             if (grade < 40) {
                 const rock = findRock('blueschist');
-                return { rock, why: `Mafic protolith at high pressure, grade = ${grade} (low). Cold, fast subduction produces blue amphibole — blueschist.`, neighbors: getNeighbors(rock) };
+                return { rock, why: `Mafic protolith at high pressure, grade = ${grade} (low). Cold, fast subduction produces blue amphibole - blueschist.`, neighbors: getNeighbors(rock) };
             }
             const rock = findRock('eclogite');
-            return { rock, why: `Mafic protolith at high pressure, grade = ${grade} (high). Deep subduction produces red garnet + green omphacite — eclogite.`, neighbors: getNeighbors(rock) };
+            return { rock, why: `Mafic protolith at high pressure, grade = ${grade} (high). Deep subduction produces red garnet + green omphacite - eclogite.`, neighbors: getNeighbors(rock) };
         }
         if (grade < 35) {
             const rock = findRock('greenschist');
-            return { rock, why: `Mafic protolith, grade = ${grade} (low). Chlorite + epidote + actinolite give the characteristic green color — greenschist.`, neighbors: getNeighbors(rock) };
+            return { rock, why: `Mafic protolith, grade = ${grade} (low). Chlorite + epidote + actinolite give the characteristic green color - greenschist.`, neighbors: getNeighbors(rock) };
         }
         if (grade < 70) {
             const rock = findRock('amphibolite');
-            return { rock, why: `Mafic protolith, grade = ${grade} (medium-high). Hornblende + plagioclase dominate — amphibolite.`, neighbors: getNeighbors(rock) };
+            return { rock, why: `Mafic protolith, grade = ${grade} (medium-high). Hornblende + plagioclase dominate - amphibolite.`, neighbors: getNeighbors(rock) };
         }
         const rock = findRock('granulite');
-        return { rock, why: `Mafic protolith, grade = ${grade} (very high). Anhydrous minerals and granular texture — granulite facies.`, neighbors: getNeighbors(rock) };
+        return { rock, why: `Mafic protolith, grade = ${grade} (very high). Anhydrous minerals and granular texture - granulite facies.`, neighbors: getNeighbors(rock) };
     }
 
     // ── Quartzose (sandstone) ──
@@ -351,17 +351,17 @@ export function classifyMetamorphic(params: MetamorphicParams): ClassificationRe
     // ── Calcareous (limestone) ──
     if (protolith === 'calcareous') {
         const rock = findRock('marble');
-        return { rock, why: `Calcareous protolith at grade = ${grade}. Calcite recrystallizes into interlocking crystals — marble.`, neighbors: getNeighbors(rock) };
+        return { rock, why: `Calcareous protolith at grade = ${grade}. Calcite recrystallizes into interlocking crystals - marble.`, neighbors: getNeighbors(rock) };
     }
 
     // ── Ultramafic (peridotite) ──
     if (protolith === 'ultramafic') {
         if (grade < 50) {
             const rock = findRock('serpentinite');
-            return { rock, why: `Ultramafic protolith, grade = ${grade} (low-medium). Hydration of olivine produces serpentine minerals — serpentinite.`, neighbors: getNeighbors(rock) };
+            return { rock, why: `Ultramafic protolith, grade = ${grade} (low-medium). Hydration of olivine produces serpentine minerals - serpentinite.`, neighbors: getNeighbors(rock) };
         }
         const rock = findRock('soapstone');
-        return { rock, why: `Ultramafic protolith, grade = ${grade} (higher). CO₂ metasomatism converts serpentine to talc — soapstone.`, neighbors: getNeighbors(rock) };
+        return { rock, why: `Ultramafic protolith, grade = ${grade} (higher). CO₂ metasomatism converts serpentine to talc - soapstone.`, neighbors: getNeighbors(rock) };
     }
 
     // ── Felsic (granite) ──

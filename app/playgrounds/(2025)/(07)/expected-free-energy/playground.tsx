@@ -3,8 +3,15 @@
 import { useState, useRef, useCallback } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import Viewer from './components/Viewer';
 import Settings from './components/Settings';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 
 
@@ -18,6 +25,7 @@ export default function Playground() {
     const [goalState, setGoalState] = useState(0.0);
 
     const viewerRef = useRef<{ exportCanvas: () => void }>(null);
+    const calibration = buildCalibration();
 
     const handleReset = useCallback(() => {
         setHorizon(50);
@@ -71,26 +79,43 @@ export default function Playground() {
             id: 'about',
             type: 'outro' as const,
             content: (
-                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
-                    <p>
-                        This visualization demonstrates how agents under the free energy principle balance
-                        exploration and exploitation. The <strong className="font-semibold text-lime-400">Expected Free Energy</strong> combines
-                        risk (divergence from preferred outcomes) and ambiguity (uncertainty about observations).
-                    </p>
-                    <p>
-                        <strong className="font-semibold text-lime-400">Risk Term:</strong> Measures how far observations
-                        deviate from the agent&apos;s preferences, weighted by λ (risk weight). Higher λ values make the
-                        agent more goal-directed.
-                    </p>
-                    <p>
-                        <strong className="font-semibold text-lime-400">Ambiguity Term:</strong> Quantifies uncertainty
-                        in observations given states. The agent seeks to minimize ambiguity by preferring predictable
-                        trajectories.
-                    </p>
-                    <p>
-                        The visualization compares EFE with KL divergence, showing how active inference differs from
-                        pure information-theoretic measures in guiding adaptive behavior.
-                    </p>
+                <div className="space-y-8 text-gray-300">
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Balancing exploration and exploitation</h3>
+                        <p className="leading-relaxed text-sm">
+                            This visualization demonstrates how agents under the free energy principle balance
+                            exploration and exploitation. The expected free energy combines risk (divergence from
+                            preferred outcomes) and ambiguity (uncertainty about observations).
+                        </p>
+                    </div>
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Risk term (pragmatic value)</h3>
+                        <p className="leading-relaxed text-sm">
+                            Measures how far observations deviate from the agent&apos;s preferences, weighted by the
+                            risk weight lambda. Higher lambda values make the agent more goal-directed.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Ambiguity term (epistemic value)</h3>
+                        <p className="leading-relaxed text-sm">
+                            Quantifies uncertainty in observations given states. The agent seeks to minimize ambiguity
+                            by preferring informative, predictable trajectories.
+                        </p>
+                    </div>
+                    <div className="border-l-2 border-lime-500/40 pl-4">
+                        <p className="text-lime-200/80 mb-2">
+                            The visualization compares EFE with KL divergence, showing how active inference adds an
+                            information-seeking term that pure divergence measures lack.
+                        </p>
+                    </div>
+
+                    <VersionSelector versions={versions} active="claude-v1" />
+
+                    <CalibrationPanel results={calibration} outputLabel="information measure (nats)" />
+
+                    <AssumptionPanel assumptions={assumptions} />
+
+                    <ModelChangelog entries={changelog} />
                 </div>
             ),
         },
@@ -109,6 +134,7 @@ export default function Playground() {
                 </a>
             }
             sections={sections}
+            researchUrl="/playgrounds/expected-free-energy/research"
             settings={
                 <Settings
                     horizon={horizon}

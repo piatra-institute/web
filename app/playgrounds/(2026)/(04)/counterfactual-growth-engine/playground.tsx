@@ -6,6 +6,7 @@ import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayo
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
 import ModelChangelog from '@/components/ModelChangelog';
+import CalibrationPanel from '@/components/CalibrationPanel';
 import ResearchPromptButton from '@/components/ResearchPromptButton';
 import { PlaygroundSourceContext } from '@/lib/readPlaygroundSource';
 
@@ -17,6 +18,7 @@ import {
 } from './logic';
 import { assumptions } from './assumptions';
 import { versions, changelog } from './versions';
+import { buildCalibration } from './calibration';
 
 
 interface Props {
@@ -31,6 +33,7 @@ export default function CounterfactualGrowthEnginePlayground({ sourceContext }: 
     const policyDecomp = useMemo(() => decomposePolicy(params), [params]);
     const sensitivityBars = useMemo(() => computeSensitivity(params), [params]);
     const narrative = useMemo(() => computeNarrative(kpis, params), [kpis, params]);
+    const calibration = useMemo(() => buildCalibration(), []);
 
     const handleParamsChange = useCallback((p: Params) => {
         setParams(p);
@@ -70,7 +73,7 @@ export default function CounterfactualGrowthEnginePlayground({ sourceContext }: 
                             keeps its own 1990 starting conditions and population path,
                             while inheriting a fraction of Poland&apos;s annual growth
                             trajectory. That framing prevents the shortcut of simply
-                            copying Poland&apos;s aggregate GDP onto Romania &mdash; which
+                            copying Poland&apos;s aggregate GDP onto Romania, which
                             conflates population size with per-person growth.
                         </p>
                     </div>
@@ -108,7 +111,7 @@ export default function CounterfactualGrowthEnginePlayground({ sourceContext }: 
                         <h3 className="text-lime-400 font-semibold mb-3">Confidence bands</h3>
                         <p className="leading-relaxed text-sm">
                             Counterfactuals should not be reported as single-point
-                            estimates. Uncertainty compounds over time &mdash; a
+                            estimates. Uncertainty compounds over time, so a
                             projection for 2024 based on 1990 assumptions has far more
                             degrees of freedom than a projection for 1992. The engine
                             models this with square-root uncertainty growth:
@@ -124,8 +127,8 @@ export default function CounterfactualGrowthEnginePlayground({ sourceContext }: 
                             investment, education, export complexity, macro stability,
                             state capacity, EU absorption). The gap decomposition shows
                             which dimensions contribute most to the overall difference.
-                            This is a cleaner answer than &ldquo;Poland grew more&rdquo;
-                            &mdash; it lets you say &ldquo;the biggest gap was in export
+                            This is a cleaner answer than &ldquo;Poland grew more&rdquo;,
+                            because it lets you say &ldquo;the biggest gap was in export
                             complexity and institutions.&rdquo;
                         </p>
                     </div>
@@ -151,9 +154,23 @@ export default function CounterfactualGrowthEnginePlayground({ sourceContext }: 
                             luck. The counterfactual gap is an outcome-proxy, not a
                             courtroom damages figure. The value of the framework is that
                             it makes the comparison precise enough to examine, debate,
-                            and improve &mdash; not that it delivers a single true
+                            and improve, not that it delivers a single true
                             number.
                         </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <p className="leading-relaxed text-sm mb-3">
+                            Each case recomputes a model output and checks it against an
+                            independently derived target: closed-form compounding, a
+                            structural identity, a weighted average, or a normalization
+                            closure. Because the growth model is deterministic, the whole
+                            engine is calibratable, and every case closes to floating-point
+                            error. This verifies internal consistency, not agreement with
+                            real national accounts.
+                        </p>
+                        <CalibrationPanel results={calibration} outputLabel="model output" />
                     </div>
 
                     <div>
@@ -187,6 +204,7 @@ export default function CounterfactualGrowthEnginePlayground({ sourceContext }: 
                 </>
             }
             sections={sections}
+            researchUrl="/playgrounds/counterfactual-growth-engine/research"
             settings={
                 <Settings
                     params={params}

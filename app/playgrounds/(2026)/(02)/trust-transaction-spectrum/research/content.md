@@ -1,10 +1,10 @@
 ## Introduction: when should a small state “trust the rules” versus “make the deal”?
 
-The **trust–transaction spectrum** playground is an interactive model of a classic strategic dilemma in international relations (IR) and political economy: **when should a small state lean on rules, institutions, and reputation—and when should it behave more transactionally (or “cynically”) under pressure?**
+The **trust–transaction spectrum** playground is an interactive model of a classic strategic dilemma in international relations (IR) and political economy: **when should a small state lean on rules, institutions, and reputation, and when should it behave more transactionally (or “cynically”) under pressure?**
 
 “Cynicism” here is not a moral judgment. It is shorthand for a **transactional posture**: narrower promises, tougher bargaining, reversible commitments, and a baseline expectation that enforcement is weak and partners may defect. On the other end of the spectrum is a **rules-first posture**: greater reliance on multilateral institutions, legal commitments, and the long-run returns to being seen as a reliable partner.
 
-Small states—defined less by territory than by **limited ability to coerce**—often face higher stakes in this tradeoff. Without the capacity to unilaterally shape outcomes, they must constantly decide how much to invest in **credibility**, **institutional shelter**, and **coalitions**, versus how much to keep everything contingent and negotiable.
+Small states, defined less by territory than by **limited ability to coerce**, often face higher stakes in this tradeoff. Without the capacity to unilaterally shape outcomes, they must constantly decide how much to invest in **credibility**, **institutional shelter**, and **coalitions**, versus how much to keep everything contingent and negotiable.
 
 The playground operationalizes that dilemma with:
 - A **Transactionality Index** (0–100) built from weighted inputs (threat, rivalry, alliance credibility, institutional shelter, dependence concentration, sanctions exposure, domestic cohesion, reputational capital, planning horizon, and relative autonomy/leverage),
@@ -18,15 +18,15 @@ This companion document explains the theoretical foundations behind those design
 
 ## Conceptual foundations: why small states sit on a spectrum
 
-Small-state strategy is often presented as a binary—*idealism vs realism*, *bandwagon vs balance*, *neutrality vs alliance*. But research suggests small states typically operate on a **continuum of postures** because they simultaneously face:
+Small-state strategy is often presented as a binary, *idealism vs realism*, *bandwagon vs balance*, *neutrality vs alliance*. But research suggests small states typically operate on a **continuum of postures** because they simultaneously face:
 
 1. **Security constraints** (military threats, coercion risks)
 2. **Economic constraints** (trade, finance, energy, supply chains)
-3. **Institutional constraints** (rules that can protect—or fail to protect)
+3. **Institutional constraints** (rules that can protect, or fail to protect)
 4. **Domestic constraints** (cohesion, legitimacy, planning horizon)
 5. **Information constraints** (uncertainty about others’ intentions and reliability)
 
-The playground’s central claim is practical: *small states do best not with permanent cynicism, but with calibrated skepticism—“hard to fool, easy to trust”—and the ability to slide along the spectrum as conditions change.*
+The playground’s central claim is practical: *small states do best not with permanent cynicism, but with calibrated skepticism, “hard to fool, easy to trust”, and the ability to slide along the spectrum as conditions change.*
 
 To justify that claim, we can anchor the model in four major research programs:
 
@@ -41,7 +41,7 @@ To justify that claim, we can anchor the model in four major research programs:
 
 ### Balance-of-threat: why threat is not just “power”
 
-Stephen Walt’s balance-of-threat theory argues states align not simply against power, but against *threat*, shaped by **capabilities, proximity, offensive capacity, and perceived intentions**. For small states, the key implication is that **threat salience** (how immediate and severe coercion feels) is a dominant driver of posture—often more than ideological preference.
+Stephen Walt’s balance-of-threat theory argues states align not simply against power, but against *threat*, shaped by **capabilities, proximity, offensive capacity, and perceived intentions**. For small states, the key implication is that **threat salience** (how immediate and severe coercion feels) is a dominant driver of posture, often more than ideological preference.
 
 In the playground, this appears as the **threat input** and, crucially, as an interaction:
 - **Threat × Alliance deficit** (high threat becomes qualitatively different when credible allies are missing)
@@ -94,7 +94,7 @@ This matters because rivalry often increases:
 - pressure to “choose sides,”
 - the payoff to coercion (both military and economic).
 
-Regional institutions (or powerful legal-economic blocs) can dampen rivalry’s effects by creating **shared constraints** and **collective responses**. When those are absent, small states become more exposed to bilateral pressure—and a transactional posture becomes more tempting (and sometimes necessary).
+Regional institutions (or powerful legal-economic blocs) can dampen rivalry’s effects by creating **shared constraints** and **collective responses**. When those are absent, small states become more exposed to bilateral pressure, and a transactional posture becomes more tempting (and sometimes necessary).
 
 ---
 
@@ -108,14 +108,14 @@ Hedging is central to the playground’s posture taxonomy:
 - It explains why many small states do not jump directly from rules-first to hard transactionalism.
 - It clarifies the logic of **optionality**: diversify dependencies, keep channels open, and avoid irreversible commitments until uncertainty collapses.
 
-### Threshold logic: why hedging can persist—until it can’t
+### Threshold logic: why hedging can persist, until it can’t
 
 Hedging theory predicts that this middle posture is stable as long as:
 - rivalry does not escalate to direct war,
 - major powers remain engaged (no full abandonment),
 - domestic legitimacy can tolerate ambiguity.
 
-But when uncertainty collapses—e.g., war becomes imminent, or a patron clearly withdraws—states often shift abruptly toward either:
+But when uncertainty collapses, e.g., war becomes imminent, or a patron clearly withdraws, states often shift abruptly toward either:
 - clearer alignment (balancing in a bloc), or
 - transactional accommodation (bandwagoning/appeasement).
 
@@ -137,9 +137,9 @@ These critiques are synthesized and debated in the International Organization li
 
 ### The revisionists: reputations can predict future challenges
 
-Alex Weisiger and Keren Yarhi-Milo re-examine historical patterns and find evidence that past behavior—especially **backing down**—can increase the likelihood of future challenges, even controlling for other factors ([same IO article](https://www.cambridge.org/core/journals/international-organization/article/revisiting-reputation-how-past-actions-matter-in-international-politics/8BF54EA849FC4925FDC4C43FB9A810C4)).
+Alex Weisiger and Keren Yarhi-Milo re-examine historical patterns and find evidence that past behavior, especially **backing down**, can increase the likelihood of future challenges, even controlling for other factors ([same IO article](https://www.cambridge.org/core/journals/international-organization/article/revisiting-reputation-how-past-actions-matter-in-international-politics/8BF54EA849FC4925FDC4C43FB9A810C4)).
 
-**Model implication:** Reputational capital becomes a genuine strategic asset—especially for small states that must deter opportunism and attract coalition support.
+**Model implication:** Reputational capital becomes a genuine strategic asset, especially for small states that must deter opportunism and attract coalition support.
 
 ### Alliance reliability evidence: treaties are imperfect, but not meaningless
 
@@ -166,7 +166,7 @@ Security theories often privilege military threat, but since 2015 the IR literat
 
 ### Weaponized interdependence: networks create leverage and vulnerability
 
-Henry Farrell and Abraham Newman argue that global economic networks are not neutral; they are structured around hubs and chokepoints that powerful states can exploit for coercion—through:
+Henry Farrell and Abraham Newman argue that global economic networks are not neutral; they are structured around hubs and chokepoints that powerful states can exploit for coercion, through:
 - financial messaging systems,
 - sanctions and secondary sanctions,
 - export controls,
@@ -178,9 +178,9 @@ This is the core idea of **weaponized interdependence** ([Farrell & Newman 2019]
 
 ### Outcasting and exclusion: the “club goods” logic of institutions
 
-A related mechanism is **outcasting**: institutionalized exclusion from participation (e.g., being pushed out of clubs or denied access). This has been discussed as a distinct sanction mechanism—punishment through nonparticipation—especially under blatant norm violations ([AJIL on outcasting](https://www.cambridge.org/core/journals/american-journal-of-international-law/article/outcasting-the-aggressor-the-deployment-of-the-sanction-of-nonparticipation/16962C4F5600155D48244313ABD801D1)).
+A related mechanism is **outcasting**: institutionalized exclusion from participation (e.g., being pushed out of clubs or denied access). This has been discussed as a distinct sanction mechanism, punishment through nonparticipation, especially under blatant norm violations ([AJIL on outcasting](https://www.cambridge.org/core/journals/american-journal-of-international-law/article/outcasting-the-aggressor-the-deployment-of-the-sanction-of-nonparticipation/16962C4F5600155D48244313ABD801D1)).
 
-**Model mapping:** high transactionality can be rational under acute threat, but in a networked world it can also increase the probability of long-run exclusion—raising future vulnerability.
+**Model mapping:** high transactionality can be rational under acute threat, but in a networked world it can also increase the probability of long-run exclusion, raising future vulnerability.
 
 ### Empirical pattern (2015–2026): short-run “wins” versus long-run constraints
 
@@ -367,9 +367,9 @@ Shelter is not the count of memberships; it is the presence of **credible enforc
    Weaponized interdependence implies new coercion pathways; how should small states prioritize resilience investments?
 
 5. **What is the “optimal” level of transactionality?**  
-   Is there a stable interior optimum—disciplined realism—where skepticism is targeted but commitments remain legible?
+   Is there a stable interior optimum, disciplined realism, where skepticism is targeted but commitments remain legible?
 
-These are precisely the kinds of questions interactive models can help users explore—if the tool is transparent about what is assumed and what remains uncertain.
+These are precisely the kinds of questions interactive models can help users explore, if the tool is transparent about what is assumed and what remains uncertain.
 
 ---
 
@@ -401,7 +401,7 @@ A research-informed roadmap for evolving the playground:
    - rule compliance for institutions/markets.
 
 6. **Decision-theoretic framing**  
-   Translate posture choice into an explicit objective: maximize survival probability, growth, autonomy, or regime security—then show how different objectives select different postures.
+   Translate posture choice into an explicit objective: maximize survival probability, growth, autonomy, or regime security, then show how different objectives select different postures.
 
 ---
 
@@ -414,7 +414,7 @@ The best-supported synthesis across small-state diplomacy, shelter theory, hedgi
 - Diversify dependencies, because networks can be weaponized.
 - Hedge under uncertainty, but recognize hedging collapses when rivalry becomes war or shelters fail.
 
-The trust–transaction spectrum playground is most valuable when it helps users see **which constraints are pushing a small state toward transactionality**, and which **policy levers** (diversification, institutional integration, credibility investments, cohesion, horizon) can move the state back toward sustainable trust-based strategies—especially once acute crises subside.
+The trust–transaction spectrum playground is most valuable when it helps users see **which constraints are pushing a small state toward transactionality**, and which **policy levers** (diversification, institutional integration, credibility investments, cohesion, horizon) can move the state back toward sustainable trust-based strategies, especially once acute crises subside.
 
 ---
 

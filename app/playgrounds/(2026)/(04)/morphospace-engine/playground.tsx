@@ -7,6 +7,7 @@ import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Button from '@/components/Button';
 import Equation from '@/components/Equation';
 import ModelChangelog from '@/components/ModelChangelog';
+import CalibrationPanel from '@/components/CalibrationPanel';
 import ResearchPromptButton from '@/components/ResearchPromptButton';
 import { PlaygroundSourceContext } from '@/lib/readPlaygroundSource';
 
@@ -20,6 +21,7 @@ import {
 } from './logic';
 import { assumptions } from './assumptions';
 import { versions, changelog } from './versions';
+import { buildCalibration } from './calibration';
 
 
 interface Props {
@@ -59,6 +61,7 @@ export default function MorphospaceEnginePlayground({ sourceContext }: Props) {
     const field = useMemo(() => computeField(graph, time), [graph, time]);
     const narrative = useMemo(() => computeNarrative(field, graph), [field, graph]);
     const sensitivityBars = useMemo(() => computeSensitivity(graph, time), [graph, time]);
+    const calibration = useMemo(() => buildCalibration(), []);
 
     const loadPreset = useCallback((key: PresetKey) => {
         resetUid();
@@ -135,7 +138,7 @@ export default function MorphospaceEnginePlayground({ sourceContext }: Props) {
                             Michael Levin proposes that biological form is best understood
                             not as a bottom-up consequence of molecular interactions, but
                             as navigation through a pre-existing space of possible forms
-                            {' '}&mdash; a morphospace. In this view, developmental programs
+                            {', '}a morphospace. In this view, developmental programs
                             are goal-directed searches through an abstract landscape where
                             attractors correspond to viable anatomies. The morphospace
                             engine takes this idea literally: nodes define forces,
@@ -152,7 +155,7 @@ export default function MorphospaceEnginePlayground({ sourceContext }: Props) {
                             framework, enabling constraints{' '}
                             <em>create</em> the possibility space within which
                             morphogenesis occurs. A ring constraint in this playground
-                            does not merely limit the field &mdash; it channels and
+                            does not merely limit the field, it channels and
                             sculpts it, creating patterns that would not exist without
                             the constraint. This is analogous to how a riverbank does
                             not merely contain water but shapes the flow into meanders,
@@ -167,7 +170,7 @@ export default function MorphospaceEnginePlayground({ sourceContext }: Props) {
                             <Equation math="e" />, <Equation math="\pi" />,{' '}
                             <Equation math="\varphi" />, Feigenbaum{' '}
                             <Equation math="\delta" />, silver ratio) as
-                            &ldquo;trans-real&rdquo; forcing terms &mdash; structures
+                            &ldquo;trans-real&rdquo; forcing terms, structures
                             from an abstract realm that leave fingerprints on physical
                             morphology when projected into the field. The mitigation
                             parameter controls how much a constraint node absorbs or
@@ -187,7 +190,7 @@ export default function MorphospaceEnginePlayground({ sourceContext }: Props) {
                         <h3 className="text-lime-400 font-semibold mb-3">Node types</h3>
                         <p className="leading-relaxed text-sm">
                             <strong className="text-lime-200">Seeds</strong> are local
-                            generative impulses &mdash; point sources of morphogenetic
+                            generative impulses, point sources of morphogenetic
                             potential with controllable frequency and polarity.{' '}
                             <strong className="text-lime-200">Fields</strong> distribute
                             tendencies across the whole space along radial, horizontal,
@@ -216,6 +219,17 @@ export default function MorphospaceEnginePlayground({ sourceContext }: Props) {
                             are not predefined patterns but categories that emerge from
                             the spatial statistics of the computed field.
                         </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <p className="leading-relaxed text-sm mb-3">
+                            The field generator is deterministic, so calibration
+                            checks closed-form invariants of the engine rather
+                            than a biological dataset. Each predicted value is
+                            computed by the model&apos;s own functions.
+                        </p>
+                        <CalibrationPanel results={calibration} outputLabel="engine invariant" />
                     </div>
 
                     <div>
@@ -249,6 +263,7 @@ export default function MorphospaceEnginePlayground({ sourceContext }: Props) {
                 </>
             }
             sections={sections}
+            researchUrl="/playgrounds/morphospace-engine/research"
             settings={
                 <Settings
                     graph={graph}

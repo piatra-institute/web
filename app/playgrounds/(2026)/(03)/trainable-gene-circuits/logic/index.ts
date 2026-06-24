@@ -73,13 +73,13 @@ export type Narrative = {
 
 const clamp = (x: number, lo = 0, hi = 3) => Math.max(lo, Math.min(hi, x));
 
-const hillAct = (x: number, K: number, n: number) =>
+export const hillAct = (x: number, K: number, n: number) =>
     Math.pow(Math.max(x, 0), n) / (Math.pow(K, n) + Math.pow(Math.max(x, 0), n) + 1e-9);
 
-const hillRep = (x: number, K: number, n: number) =>
+export const hillRep = (x: number, K: number, n: number) =>
     Math.pow(K, n) / (Math.pow(K, n) + Math.pow(Math.max(x, 0), n) + 1e-9);
 
-const signedHill = (x: number, w: number, K: number, n: number) => {
+export const signedHill = (x: number, w: number, K: number, n: number) => {
     const mag = Math.abs(w);
     if (mag < 1e-6) return 1;
     const base = w >= 0 ? hillAct(x, K, n) : hillRep(x, K, n);

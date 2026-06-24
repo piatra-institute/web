@@ -287,7 +287,7 @@ export default function Viewer({
 
                     {connectFromId && (
                         <div className="border border-lime-500/30 bg-lime-500/5 p-2 text-xs text-lime-400">
-                            Connecting from &ldquo;{graph.nodes.find(n => n.id === connectFromId)?.label}&rdquo; {'\u2014'} click a target node&apos;s input port
+                            Connecting from &ldquo;{graph.nodes.find(n => n.id === connectFromId)?.label}&rdquo;, then click a target node&apos;s input port
                         </div>
                     )}
                 </div>

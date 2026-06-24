@@ -3,7 +3,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 import PlaygroundLayout from '@/components/PlaygroundLayout';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
@@ -19,6 +24,9 @@ import {
     createInitialState,
     stepSimulation,
 } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 export default function Playground() {
     const [params, setParams] = useState<SimulationParams>(DEFAULT_PARAMS);
@@ -33,6 +41,8 @@ export default function Playground() {
     const [series, setSeries] = useState<TimeSeriesPoint[]>([]);
     const [running, setRunning] = useState(false);
     const [showTimeSeries, setShowTimeSeries] = useState(true);
+
+    const calibration = buildCalibration();
 
     const t0Ref = useRef<number>(performance.now());
     const lastTickRef = useRef<number>(performance.now());
@@ -115,22 +125,24 @@ export default function Playground() {
             id: 'canvas',
             type: 'canvas' as const,
             content: (
-                <Viewer
-                    state={state}
-                    metrics={metrics}
-                    series={series}
-                    showTimeSeries={showTimeSeries}
-                />
+                <PlaygroundViewer>
+                    <Viewer
+                        state={state}
+                        metrics={metrics}
+                        series={series}
+                        showTimeSeries={showTimeSeries}
+                    />
+                </PlaygroundViewer>
             ),
         },
         {
             id: 'outro',
             type: 'outro' as const,
             content: (
-                <div className="space-y-8">
-                    <h2 className="text-lime-400 text-xl font-semibold">
+                <div className="space-y-8 text-gray-300">
+                    <h3 className="text-lime-400 font-semibold mb-3">
                         Nested Observer Windows (NOW)
-                    </h2>
+                    </h3>
 
                     <p className="text-gray-300">
                         The <strong className="text-lime-400">NOW model</strong> (Riddle & Schooler, 2024)
@@ -230,6 +242,26 @@ export default function Playground() {
                             Watch how all three mechanisms must work together for stable apex report.
                         </li>
                     </ul>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model provenance</h3>
+                        <VersionSelector versions={versions} active="claude-v1" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <CalibrationPanel results={calibration} outputLabel="deterministic core" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                        <AssumptionPanel assumptions={assumptions} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -264,6 +296,7 @@ export default function Playground() {
                     onShowTimeSeriesChange={setShowTimeSeries}
                 />
             }
+            researchUrl="/playgrounds/nested-observer-windows/research"
         />
     );
 }

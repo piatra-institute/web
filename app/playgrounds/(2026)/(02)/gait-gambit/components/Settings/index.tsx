@@ -78,7 +78,7 @@ export default function Settings({
 }: SettingsProps) {
   return (
     <div className="space-y-6">
-      {/* Context Sliders — grouped */}
+      {/* Context Sliders, grouped */}
       {CONTEXT_GROUPS.map((group) => (
         <div key={group.label} className="space-y-3">
           <h3 className="text-lime-400 font-semibold text-sm">{group.label}</h3>

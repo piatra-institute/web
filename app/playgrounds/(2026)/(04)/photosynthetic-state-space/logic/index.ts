@@ -1,4 +1,4 @@
-// Photosynthetic State Space — logic module
+// Photosynthetic State Space - logic module
 //
 // Models the Z-scheme light reactions as a controllable landscape
 // with species presets (C3, C4, CAM, Cyanobacteria, Red Algae),

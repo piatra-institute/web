@@ -6,6 +6,7 @@ import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayo
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
 import ModelChangelog from '@/components/ModelChangelog';
+import CalibrationPanel from '@/components/CalibrationPanel';
 import ResearchPromptButton from '@/components/ResearchPromptButton';
 import { PlaygroundSourceContext } from '@/lib/readPlaygroundSource';
 
@@ -18,6 +19,7 @@ import {
 } from './logic';
 import { assumptions } from './assumptions';
 import { versions, changelog } from './versions';
+import { buildCalibration } from './calibration';
 
 
 interface Props {
@@ -31,6 +33,7 @@ export default function MoaralPhaseSpacePlayground({ sourceContext }: Props) {
     const metrics = useMemo(() => computeMetrics(params), [params]);
     const sensitivityBars = useMemo(() => computeSensitivity(params), [params]);
     const narrative = useMemo(() => computeNarrative(metrics, params), [metrics, params]);
+    const calibration = buildCalibration();
 
     const sections: PlaygroundSection[] = [
         { id: 'intro', type: 'intro' },
@@ -92,9 +95,9 @@ export default function MoaralPhaseSpacePlayground({ sourceContext }: Props) {
                             The capability approach, developed by Amartya Sen and Martha
                             Nussbaum, evaluates social states not by reported satisfaction
                             or resource holdings, but by what persons are actually able to
-                            do and be. The seven capabilities measured here &mdash; bodily
+                            do and be. The seven capabilities measured here (bodily
                             integrity, mobility, speech, participation, education, health,
-                            and contestation &mdash; form a partial order, not a single
+                            and contestation) form a partial order, not a single
                             scalar. Two states can be incomparable: one may improve
                             education while worsening political voice. The capability
                             floor matters because a society with one collapsed freedom is
@@ -123,7 +126,7 @@ export default function MoaralPhaseSpacePlayground({ sourceContext }: Props) {
                         <p className="leading-relaxed text-sm">
                             A crude utilitarian machine compresses moral reality into one
                             scalar: <Equation math="\max \sum_i U_i" />. This playground
-                            includes a naive utility score as a deliberate foil &mdash; to
+                            includes a naive utility score as a deliberate foil, to
                             show how single-number optimization can rate a
                             rights-violating, coercive system as tolerable when
                             future-welfare rhetoric is high. The other three frameworks
@@ -161,6 +164,20 @@ export default function MoaralPhaseSpacePlayground({ sourceContext }: Props) {
                     </div>
 
                     <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <p className="leading-relaxed text-sm mb-3">
+                            The model is deterministic, so each case runs the real
+                            scoring functions against the playground&rsquo;s own thesis:
+                            segregation is deontic-forbidden, the naive utility foil
+                            overrates the emergency state, the reparative order is
+                            admissible and repairing, and the capability floor reproduces
+                            exactly. These verify internal coherence, not empirical
+                            accuracy of any real polity.
+                        </p>
+                        <CalibrationPanel results={calibration} outputLabel="framework verdict" />
+                    </div>
+
+                    <div>
                         <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
                         <ModelChangelog entries={changelog} />
                     </div>
@@ -191,6 +208,7 @@ export default function MoaralPhaseSpacePlayground({ sourceContext }: Props) {
                 </>
             }
             sections={sections}
+            researchUrl="/playgrounds/moral-phase-space/research"
             settings={
                 <Settings
                     params={params}

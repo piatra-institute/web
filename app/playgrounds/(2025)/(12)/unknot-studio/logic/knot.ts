@@ -440,6 +440,6 @@ export function isBHCounterexample(a: KnotSpec, b: KnotSpec): boolean {
 // ============================================
 
 export function fmt(n: number, digits = 3): string {
-    if (!Number.isFinite(n)) return "—";
+    if (!Number.isFinite(n)) return "n/a";
     return n.toFixed(digits);
 }

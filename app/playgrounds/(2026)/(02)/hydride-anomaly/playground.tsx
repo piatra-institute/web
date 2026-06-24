@@ -5,9 +5,16 @@ import { useState, useMemo, useCallback } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 import {
     type Property,
     type Unit,
@@ -42,6 +49,8 @@ export default function HydrideAnomalyPlayground() {
         () => computeAnomalies(property, unit, enabledFamilies),
         [property, unit, enabledFamilies],
     );
+
+    const calibration = buildCalibration();
 
     const handleToggleFamily = useCallback((id: FamilyId) => {
         setEnabledFamilies((prev) => {
@@ -128,65 +137,79 @@ export default function HydrideAnomalyPlayground() {
             id: 'about',
             type: 'outro' as const,
             content: (
-                <div className="text-gray-300 font-serif text-base leading-relaxed space-y-6 max-w-3xl mx-auto text-left">
-                    <p>
-                        Within each hydride family the heavier members follow a predictable
-                        trend: as you go down the periodic table, molar mass rises and so
-                        does the boiling point, melting point, and latent heat. A least-squares
-                        line through periods 3-5 extends smoothly to period 2 for most
-                        properties.
-                    </p>
-
-                    <div className="border-l-2 border-lime-500/40 pl-4 my-4">
-                        <p className="text-lime-200/80 mb-2">
-                            The anomaly residual is computed as:
+                <div className="space-y-8 text-gray-300">
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">The trend and the gap</h3>
+                        <p className="leading-relaxed text-sm">
+                            Within each hydride family the heavier members follow a predictable
+                            trend: as you go down the periodic table, molar mass rises and so
+                            does the boiling point, melting point, and latent heat. A least-squares
+                            line through periods 3 to 5 extends smoothly to period 2 for most
+                            properties.
                         </p>
-                        <Equation
-                            mode="block"
-                            math="\Delta = y_{\text{obs}} - \hat{y}_{\text{trend}}"
-                        />
-                        <p className="text-lime-200/60 text-sm mt-2">
-                            where the trend is a linear fit through periods 3, 4, and 5.
+                        <div className="border-l-2 border-lime-500/40 pl-4 mt-4">
+                            <p className="text-lime-200/80 mb-2">
+                                The anomaly residual is computed as:
+                            </p>
+                            <Equation
+                                mode="block"
+                                math="\Delta = y_{\text{obs}} - \hat{y}_{\text{trend}}"
+                            />
+                            <p className="text-lime-200/60 text-sm mt-2">
+                                where the trend is a linear fit through periods 3, 4, and 5.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Why water breaks the line</h3>
+                        <p className="leading-relaxed text-sm">
+                            Water, hydrogen fluoride, and ammonia all break this
+                            extrapolation. Their boiling points, melting points, and enthalpies
+                            of vaporisation lie far above the predicted value. The common explanation
+                            is hydrogen bonding: the high electronegativity of
+                            O, F, and N creates strong intermolecular attractions that
+                            require more energy to overcome.
+                        </p>
+                        <div className="border-l-2 border-lime-500/40 pl-4 mt-4">
+                            <p className="text-lime-200/80 mb-2">
+                                London dispersion forces scale roughly with molar mass:
+                            </p>
+                            <Equation
+                                mode="block"
+                                math="F_{\text{dispersion}} \propto \alpha^2 \propto M"
+                            />
+                            <p className="text-lime-200/60 text-sm mt-2">
+                                but hydrogen bonds add a term that dominates in small, electronegative hydrides.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Two more lenses</h3>
+                        <p className="leading-relaxed text-sm">
+                            The scatter view plots melting point against boiling point for all
+                            enabled substances. A reference line fits boiling point against
+                            ln(molar mass) on non-H-bonding substances, and water and HF jump
+                            well above it. Enable the alkane and diatomic families for a
+                            pure-dispersion baseline.
+                        </p>
+                        <p className="leading-relaxed text-sm mt-3">
+                            The phase lens shows a complementary view: at room temperature
+                            water is a liquid while every other hydride in groups 14 to 17 is
+                            a gas. Slide the temperature to watch phase boundaries shift
+                            and pin substances to keep them in a comparison table across
+                            all views.
                         </p>
                     </div>
 
-                    <p>
-                        Water, hydrogen fluoride, and ammonia all break this
-                        extrapolation. Their boiling points, melting points, and enthalpies
-                        of vaporization lie far above the predicted value. The common explanation
-                        is hydrogen bonding: the anomalously high electronegativity of
-                        O, F, and N creates strong intermolecular attractions that
-                        require more energy to overcome.
-                    </p>
+                    <VersionSelector versions={versions} active="claude-v1" />
 
-                    <div className="border-l-2 border-lime-500/40 pl-4 my-4">
-                        <p className="text-lime-200/80 mb-2">
-                            London dispersion forces scale roughly with molar mass:
-                        </p>
-                        <Equation
-                            mode="block"
-                            math="F_{\text{dispersion}} \propto \alpha^2 \propto M"
-                        />
-                        <p className="text-lime-200/60 text-sm mt-2">
-                            but hydrogen bonds add a term that dominates in small, electronegative hydrides.
-                        </p>
-                    </div>
+                    <CalibrationPanel results={calibration} outputLabel="temperature (C)" />
 
-                    <p>
-                        The scatter view plots melting point against boiling point for all
-                        enabled substances. A reference line fits boiling point against
-                        ln(molar mass) on non-H-bonding substances — water and HF jump
-                        well above it. Enable the alkane and diatomic families for a
-                        pure-dispersion baseline.
-                    </p>
+                    <AssumptionPanel assumptions={assumptions} />
 
-                    <p>
-                        The phase lens shows a complementary view: at room temperature
-                        water is a liquid while every other hydride in groups 14-17 is
-                        a gas. Slide the temperature to watch phase boundaries shift
-                        and pin substances to keep them in a comparison table across
-                        all views.
-                    </p>
+                    <ModelChangelog entries={changelog} />
                 </div>
             ),
         },
@@ -221,6 +244,7 @@ export default function HydrideAnomalyPlayground() {
             subtitle="hydrogen bonding and the anomalous thermodynamics of water"
             sections={sections}
             settings={settings}
+            researchUrl="/playgrounds/hydride-anomaly/research"
         />
     );
 }

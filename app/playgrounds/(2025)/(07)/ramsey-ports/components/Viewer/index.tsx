@@ -45,14 +45,26 @@ const Viewer = forwardRef<{ exportCanvas: () => void }, ViewerProps>(({
         }
     ];
 
-    const CustomTooltip = ({ active, payload, label }: any) => {
+    interface TooltipEntry {
+        name?: string;
+        value?: number;
+        color?: string;
+    }
+
+    interface CustomTooltipProps {
+        active?: boolean;
+        payload?: TooltipEntry[];
+        label?: string;
+    }
+
+    const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
         if (active && payload && payload.length) {
             return (
                 <div className="bg-black p-3 shadow-lg border border-gray-800">
                     <p className="text-white font-semibold mb-2">{label}</p>
-                    {payload.map((entry: any, index: number) => (
+                    {payload.map((entry, index) => (
                         <p key={index} className="text-sm" style={{ color: entry.color }}>
-                            {entry.name}: {formatValue(entry.value)}M
+                            {entry.name}: {formatValue(entry.value ?? 0)}M
                         </p>
                     ))}
                 </div>

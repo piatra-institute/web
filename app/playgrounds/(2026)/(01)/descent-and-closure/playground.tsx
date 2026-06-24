@@ -4,10 +4,17 @@ import { useState, useMemo, useEffect, useCallback } from 'react';
 
 import PlaygroundLayout, { PlaygroundSection } from '@/components/PlaygroundLayout';
 import Equation from '@/components/Equation';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 
 import Settings, { PresetKey } from './components/Settings';
 import Viewer, { PlaybackState } from './components/Viewer';
 import { runSimulation, DEFAULT_PARAMS, SimulationParams } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
 export default function Playground() {
     const [params, setParams] = useState<SimulationParams>(DEFAULT_PARAMS);
@@ -21,6 +28,7 @@ export default function Playground() {
     const [activePreset, setActivePreset] = useState<PresetKey>(null);
 
     const simulation = useMemo(() => runSimulation(params), [params]);
+    const calibration = buildCalibration();
 
     // Reset playback when T changes
     useEffect(() => {
@@ -107,9 +115,9 @@ export default function Playground() {
             id: 'outro',
             type: 'outro',
             content: (
-                <div className="space-y-8">
+                <div className="space-y-8 text-gray-300">
                     <div className="border-l-2 border-lime-500/50 pl-4">
-                        <h4 className="text-lime-400 font-semibold mb-2">The event → process boundary</h4>
+                        <h4 className="text-lime-400 font-semibold mb-2">The event to process boundary</h4>
                         <p className="text-gray-300 mb-4">
                             When does a collection of local micro-events become a coherent process?
                             This playground instantiates a sheaf-theoretic answer: a <em>process</em> is
@@ -216,6 +224,13 @@ export default function Playground() {
                             </li>
                         </ol>
                     </div>
+
+                    <div className="border-t border-lime-500/20 pt-8 space-y-8">
+                        <VersionSelector versions={versions} active="claude-v1" />
+                        <CalibrationPanel results={calibration} outputLabel="value" />
+                        <AssumptionPanel assumptions={assumptions} />
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -238,6 +253,7 @@ export default function Playground() {
                 />
             }
             onSettingsToggle={setSettingsOpen}
+            researchUrl="/playgrounds/descent-and-closure/research"
         />
     );
 }

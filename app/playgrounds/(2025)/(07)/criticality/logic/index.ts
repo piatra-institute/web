@@ -97,3 +97,57 @@ export function getRegime(sigma: number): string {
     if (sigma > 1.05) return "Super-critical";
     return "Critical";
 }
+
+// --- Closed-form / deterministic core of the branching process ---
+// These are the exact analytic facts the stochastic simulation samples,
+// and are what the calibration panel verifies (the Monte-Carlo run itself
+// is not deterministic, so it is not calibrated directly).
+
+// Expected total avalanche size for a subcritical Galton-Watson process
+// started from a single active site with mean offspring sigma:
+//   E[S] = 1 / (1 - sigma),  for sigma < 1.
+// Diverges at the critical point sigma = 1.
+export function expectedAvalancheSize(sigma: number): number {
+    if (sigma >= 1) return Infinity;
+    return 1 / (1 - sigma);
+}
+
+// Mean activity after one branching step from k active sites, where each
+// site independently produces an offspring with probability sigma:
+//   E[next] = sigma * k.
+// The branching ratio (mean multiplicative growth per step) is therefore
+// exactly sigma; criticality is sigma = 1.
+export function branchingRatio(sigma: number): number {
+    return sigma;
+}
+
+// Probability that an avalanche started from one site is finite (does not
+// run away). For sigma <= 1 every avalanche terminates almost surely, so the
+// extinction probability is 1. For sigma > 1 it is the smaller root of the
+// fixed-point equation q = 1 - sigma + sigma * q for Bernoulli offspring,
+// which gives q = (1 - sigma) / sigma ... clamped: for sigma > 1,
+//   q = (1 - sigma) / sigma is negative, so extinction prob = max(0, ...).
+// With Bernoulli (0/1) offspring the generating function is f(q) = 1 - sigma + sigma*q,
+// whose only fixed point is q = 1; a pure Bernoulli branch never explodes
+// super-critically in the runaway sense, but the seeded simulation grows
+// without bound once sigma > 1 because activity can only stay flat or grow.
+// We expose the mean-field extinction certainty as a regime indicator instead.
+export function extinctionCertain(sigma: number): boolean {
+    return sigma <= 1;
+}
+
+// Theoretical avalanche-size exponent at criticality. A critical
+// Galton-Watson branching process has size distribution P(S = s) ~ s^(-3/2)
+// (mean-field directed-percolation / branching universality), so a log-log
+// slope estimate of an exact power law with this exponent must return -3/2.
+export const CRITICAL_EXPONENT = -1.5;
+
+// Build an exact (noise-free) power-law avalanche distribution
+// freq(s) = C * s^(exponent) so slopeEstimate is verified against a known slope.
+export function exactPowerLaw(exponent: number, sMax: number = 200): AvalancheData[] {
+    const data: AvalancheData[] = [];
+    for (let s = 1; s <= sMax; s++) {
+        data.push({ size: s, freq: Math.pow(s, exponent) });
+    }
+    return data;
+}

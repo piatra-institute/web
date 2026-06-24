@@ -294,6 +294,35 @@ export function stepSimulation(
 }
 
 /**
+ * Deterministic report-stability law, factored out of stepSimulation so the
+ * calibration panel can exercise the noise-free core directly.
+ *
+ *   reportStability = clamp01( syncApex * (0.55 + 0.45*apexBandwidth) * (0.6 + 0.4*avgCoh) )
+ */
+export function reportStabilityLaw(
+    syncApex: number,
+    apexBandwidth: number,
+    avgCoh: number,
+): number {
+    return clamp01(syncApex * (0.55 + 0.45 * apexBandwidth) * (0.6 + 0.4 * avgCoh));
+}
+
+/**
+ * Generate N phases evenly spaced around the circle. Their Kuramoto order is 0
+ * exactly (for N >= 2) because the unit vectors cancel by symmetry.
+ */
+export function evenlySpacedPhases(n: number): number[] {
+    return Array.from({ length: n }, (_, i) => (2 * Math.PI * i) / n);
+}
+
+/**
+ * Generate N identical (perfectly aligned) phases. Kuramoto order is 1 exactly.
+ */
+export function alignedPhases(n: number, phase = 0): number[] {
+    return Array.from({ length: n }, () => phase);
+}
+
+/**
  * Get level name for display
  */
 export function getLevelName(levelIndex: number, totalLevels: number): string {

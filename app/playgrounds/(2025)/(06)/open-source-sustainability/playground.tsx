@@ -1,21 +1,35 @@
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
 import PlaygroundViewer from '@/components/PlaygroundViewer';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
+import ResearchPromptButton from '@/components/ResearchPromptButton';
+import { PlaygroundSourceContext } from '@/lib/readPlaygroundSource';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
 import {
   calculatePhaseCoordinates,
   CaseStudy,
   caseStudies,
-  SimulationState,
   TimelineEvent,
   FormulaCoefficients,
   defaultCoefficients,
 } from './logic';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 
-export default function Playground() {
+interface PlaygroundProps {
+  sourceContext?: PlaygroundSourceContext;
+}
+
+export default function Playground({ sourceContext }: PlaygroundProps) {
+  const calibration = useMemo(() => buildCalibration(), []);
+  const [activeVersion, setActiveVersion] = useState(versions[0].id);
   const viewerRef = useRef<{ exportCanvas: () => void }>(null);
 
   // Core state
@@ -252,8 +266,9 @@ export default function Playground() {
       id: 'about',
       type: 'outro' as const,
       content: (
-        <div className="space-y-3 text-sm">
-          <p>
+        <div className="space-y-8 text-gray-300">
+          <div className="space-y-3 text-sm">
+            <p>
             This model reveals how open-source sustainability emerges from the complex interplay of four forces:&nbsp;
             <span className="text-purple-400">maturity</span>, <span className="text-green-400">community</span>,&nbsp;
             <span className="text-blue-400">funding</span>, and <span className="text-red-400">commercial pressure</span>.&nbsp;
@@ -264,7 +279,7 @@ export default function Playground() {
             <strong className="text-lime-400">Non-Linear Dynamics:</strong>
             <p className="text-xs mt-1">
               Support isn&apos;t just community + donations. It emerges from their synergy, amplified by maturity.
-              Pressure isn&apos;t just cloud competition—it&apos;s modulated by the multiplicative resistance of all three positive forces.
+              Pressure isn&apos;t just cloud competition; it is modulated by the multiplicative resistance of all three positive forces.
               Small changes can trigger cascading effects.
             </p>
           </div>
@@ -272,7 +287,7 @@ export default function Playground() {
           <div>
             <strong className="text-yellow-400">The Phase Boundary:</strong>
             <p className="text-xs mt-1">
-              The dashed line isn&apos;t fixed—it shifts based on your resource configuration. High community, funding, and maturity
+              The dashed line isn&apos;t fixed; it shifts based on your resource configuration. High community, funding, and maturity
               push it right (more pressure tolerated). Low resources pull it left (earlier crisis). This captures how
               well-resourced projects like PostgreSQL remain permissive despite pressure.
             </p>
@@ -283,24 +298,59 @@ export default function Playground() {
             <p className="text-xs mt-1">
               Enable stalks to see how strategies vary across the space. In high-support zones: expand, invest, optimize.
               Near boundaries: stabilize, adapt. Under pressure: monetize, pivot, survive. The same position yields different
-              strategies based on your underlying resources—true contextualization.
+              strategies based on your underlying resources, a genuine contextualization.
             </p>
           </div>
 
           <div>
             <strong className="text-orange-400">Real-World Validation:</strong>
             <p className="text-xs mt-1">
-              Case studies show actual trajectories: Redis and Elastic crossed into restrictive licensing when pressure
-              overwhelmed support. PostgreSQL&apos;s strong community keeps it permissive. MinIO found a sustainable AGPL model.
-              The model predicts these outcomes from first principles.
+              The case studies replay the documented trajectories of Redis, Elastic, MongoDB, MinIO, Sentry, and
+              PostgreSQL. The model separates the resource extremes cleanly, but it does not reproduce the mid-range
+              commercial relicensings of Redis, Elastic, and MongoDB: at their actual endpoints they are well-resourced
+              enough to score permissive. Those moves were driven by ownership and revenue capture, which this
+              four-variable state cannot represent. The calibration panel below is explicit about this.
             </p>
           </div>
 
-          <p className="text-xs text-gray-400 italic">
-            Mathematical foundation: Sheaf theory, where local data (the four variables at each point) coheres into
-            global behavior (license decisions). The phase space is a projection of a 4D manifold onto 2D, preserving
-            the essential dynamics of open-source sustainability.
-          </p>
+            <p className="text-xs text-gray-400 italic">
+              Framing note: the playground borrows sheaf language loosely, the idea that local data (the four variables
+              at each point) coheres into global behavior (license decisions). The phase space is a 2D projection of the
+              four-variable state. This is an evocative analogy, not a formal sheaf construction.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-lime-400 font-semibold mb-3">Implementation</h3>
+            <VersionSelector versions={versions} active={activeVersion} onSelect={setActiveVersion} />
+          </div>
+
+          <div>
+            <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+            <p className="leading-relaxed text-sm mb-4">
+              The stochastic sandbox is not calibratable, so only the deterministic core is verified: the closed-form
+              support and pressure scores and the license verdict. The boolean cases pass for the resource extremes; the
+              float cases pin exact outputs. The model does not reproduce the mid-range commercial relicensings, and the
+              calibration does not pretend otherwise.
+            </p>
+            <CalibrationPanel results={calibration} outputLabel="score / verdict" />
+          </div>
+
+          <div>
+            <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+            <AssumptionPanel assumptions={assumptions} />
+          </div>
+
+          <div>
+            <h3 className="text-lime-400 font-semibold mb-3">Model changelog</h3>
+            <ModelChangelog entries={changelog} />
+          </div>
+
+          {sourceContext && (
+            <div className="border-t border-lime-500/20 pt-8">
+              <ResearchPromptButton context={sourceContext} />
+            </div>
+          )}
         </div>
       ),
     },
@@ -337,6 +387,7 @@ export default function Playground() {
           onCoefficientsChange={setCoefficients}
         />
       }
+      researchUrl="/playgrounds/open-source-sustainability/research"
     />
   );
 }

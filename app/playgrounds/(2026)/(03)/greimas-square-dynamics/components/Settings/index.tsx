@@ -331,10 +331,10 @@ export default function Settings({
             <div className="border border-lime-500/20 p-3 text-xs text-lime-200/60">
                 <div className="font-semibold text-lime-400 mb-2">relation types</div>
                 <ul className="space-y-1">
-                    <li><span className="text-lime-400">contradiction</span> &mdash; mutually exclusive (S &harr; &not;S)</li>
-                    <li><span className="text-lime-400">contrariety</span> &mdash; cannot both hold (S1 vs S2)</li>
-                    <li><span className="text-lime-400">sub-contrariety</span> &mdash; cannot both fail (&not;S1 vs &not;S2)</li>
-                    <li><span className="text-lime-400">implication</span> &mdash; deixis channel (S1 &rarr; &not;S2)</li>
+                    <li><span className="text-lime-400">contradiction</span>: mutually exclusive (S &harr; &not;S)</li>
+                    <li><span className="text-lime-400">contrariety</span>: cannot both hold (S1 vs S2)</li>
+                    <li><span className="text-lime-400">sub-contrariety</span>: cannot both fail (&not;S1 vs &not;S2)</li>
+                    <li><span className="text-lime-400">implication</span>: deixis channel (S1 &rarr; &not;S2)</li>
                 </ul>
             </div>
         </div>

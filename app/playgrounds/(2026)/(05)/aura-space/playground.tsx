@@ -7,6 +7,7 @@ import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
 import ModelChangelog from '@/components/ModelChangelog';
 import ResearchPromptButton from '@/components/ResearchPromptButton';
+import CalibrationPanel from '@/components/CalibrationPanel';
 import { PlaygroundSourceContext } from '@/lib/readPlaygroundSource';
 
 import Settings from './components/Settings';
@@ -23,6 +24,7 @@ import {
     computeHolonomyPath,
     computeEnergyField,
 } from './logic';
+import { buildCalibration } from './calibration';
 import { assumptions } from './assumptions';
 import { versions, changelog } from './versions';
 
@@ -42,6 +44,7 @@ export default function AuraSpacePlayground({ sourceContext }: Props) {
     const sweep = useMemo(() => computeSweep(params, sweepParam), [params, sweepParam]);
     const holonomyPath = useMemo(() => computeHolonomyPath(params, metrics), [params, metrics]);
     const energyField = useMemo(() => computeEnergyField(params, metrics), [params, metrics]);
+    const calibration = useMemo(() => buildCalibration(), []);
 
     const saveSnapshot = useCallback(() => {
         setSnapshot({
@@ -157,7 +160,7 @@ export default function AuraSpacePlayground({ sourceContext }: Props) {
                             Sheaf tension is the failure of local aura assignments to
                             glue into a coherent global one. Collectors, locals, critics,
                             the state, the internet, and the artist often inhabit
-                            incompatible aura sheaves over the same object — Confederate
+                            incompatible aura sheaves over the same object. Confederate
                             statues, colonial artifacts, and AI artworks all carry
                             nontrivial sheaf cohomology.
                         </p>
@@ -187,15 +190,27 @@ export default function AuraSpacePlayground({ sourceContext }: Props) {
                         <p className="leading-relaxed text-sm">
                             Benjamin&rsquo;s relational characterization of aura and
                             Bourdieu&rsquo;s account of cultural consecration are
-                            well-supported in the humanities. The geometric machinery —
-                            fiber bundles, holonomy, sheaves, optimal transport — is
+                            well-supported in the humanities. The geometric machinery
+                            (fiber bundles, holonomy, sheaves, optimal transport) is
                             here as <em>structural metaphor</em>, not as calibrated
                             empirical model. The thirteen input parameters and eight
                             output fibers are stipulated, not measured. The substantive
                             claim is that aura behaves like a relational field with
-                            curvature and path dependence — not that this particular set
+                            curvature and path dependence, not that this particular set
                             of weights is the true one.
                         </p>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <p className="leading-relaxed text-sm mb-3">
+                            There is no external dataset for aura, so calibration
+                            here checks internal consistency: that the deterministic
+                            core reproduces the closed-form identities the model
+                            documents (the distance fiber, the intensity sigmoid, the
+                            meme basin, the transport distance, the flat-field floor).
+                        </p>
+                        <CalibrationPanel results={calibration} outputLabel="aura quantity" />
                     </div>
 
                     <div>
@@ -232,6 +247,7 @@ export default function AuraSpacePlayground({ sourceContext }: Props) {
                 </>
             }
             sections={sections}
+            researchUrl="/playgrounds/aura-space/research"
             settings={
                 <Settings
                     params={params}

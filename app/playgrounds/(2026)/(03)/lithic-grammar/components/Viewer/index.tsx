@@ -163,7 +163,7 @@ function TernaryDiagram({ ol, opx, cpx, resultId }: { ol: number; opx: number; c
 
     return (
         <div className="w-full max-w-lg">
-            <div className="text-lime-200/40 text-xs text-center mb-2">Ultramafic Ternary — Ol / Opx / Cpx</div>
+            <div className="text-lime-200/40 text-xs text-center mb-2">Ultramafic Ternary - Ol / Opx / Cpx</div>
             <svg viewBox={`0 0 ${W} ${H}`} className="w-full">
                 {/* Triangle */}
                 <polygon
@@ -246,7 +246,7 @@ function SiO2BarDiagram({ sio2, texture, highAlkali, resultId }: { sio2: number;
 
     return (
         <div className="w-full max-w-2xl">
-            <div className="text-lime-200/40 text-xs text-center mb-2">SiO₂ Classification — Plutonic (top) / Volcanic (bottom)</div>
+            <div className="text-lime-200/40 text-xs text-center mb-2">SiO₂ Classification - Plutonic (top) / Volcanic (bottom)</div>
             <svg viewBox={`0 0 ${W} ${H}`} className="w-full">
                 {/* Zones */}
                 {zones.map((z) => (
@@ -481,7 +481,7 @@ function PTDiagram({ grade, pressure, protolith, contact, resultId }: { grade: n
 
     return (
         <div className="w-full max-w-xl">
-            <div className="text-lime-200/40 text-xs text-center mb-2">P–T Space — Metamorphic Facies</div>
+            <div className="text-lime-200/40 text-xs text-center mb-2">P–T Space - Metamorphic Facies</div>
             <svg viewBox={`0 0 ${W} ${H}`} className="w-full">
                 {/* Facies regions */}
                 {facies.map((f) => (
@@ -686,7 +686,7 @@ function GraphView({ params, result }: { params: Params; result: ClassificationR
 
     return (
         <div className="py-8">
-            <div className="text-lime-200/40 text-xs text-center mb-2">Rock Cycle — Igneous (top) · Sedimentary (left) · Metamorphic (right)</div>
+            <div className="text-lime-200/40 text-xs text-center mb-2">Rock Cycle - Igneous (top) · Sedimentary (left) · Metamorphic (right)</div>
             <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-3xl mx-auto">
                 <defs>
                     <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">

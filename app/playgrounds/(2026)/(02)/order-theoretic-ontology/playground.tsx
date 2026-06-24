@@ -2,9 +2,17 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import PlaygroundLayout from '@/components/PlaygroundLayout';
+import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Equation from '@/components/Equation';
+import VersionSelector from '@/components/VersionSelector';
+import CalibrationPanel from '@/components/CalibrationPanel';
+import AssumptionPanel from '@/components/AssumptionPanel';
+import ModelChangelog from '@/components/ModelChangelog';
 import Settings from './components/Settings';
 import Viewer from './components/Viewer';
+import { buildCalibration } from './calibration';
+import { assumptions } from './assumptions';
+import { versions, changelog } from './versions';
 import {
     DEFAULT_EDITOR_DRAFT,
     DEFAULT_VIEW_FILTERS,
@@ -51,6 +59,8 @@ function snapshotLabel(snapshotId: string, snapshots: SnapshotRecord[]): string 
     }
     return record.name;
 }
+
+const calibration = buildCalibration();
 
 export default function OrderTheoreticOntologyPlayground() {
     const [dataset, setDataset] = useState(() => cloneDataset(PRESETS[0].data));
@@ -558,7 +568,8 @@ export default function OrderTheoreticOntologyPlayground() {
             id: 'canvas',
             type: 'canvas' as const,
             content: (
-                <Viewer
+                <PlaygroundViewer>
+                    <Viewer
                     dataset={dataset}
                     filters={filters}
                     selectedKind={selectedKind}
@@ -574,7 +585,8 @@ export default function OrderTheoreticOntologyPlayground() {
                     snapshotDiff={snapshotDiff}
                     leftSnapshotLabel={leftSnapshotLabel}
                     rightSnapshotLabel={rightSnapshotLabel}
-                />
+                    />
+                </PlaygroundViewer>
             ),
         },
         {
@@ -623,6 +635,26 @@ export default function OrderTheoreticOntologyPlayground() {
                             <li>Switch layout mode between layered and force-directed graph views.</li>
                         </ul>
                     </div>
+
+                    <div className="border-t border-lime-500/20 pt-8">
+                        <h3 className="text-lime-400 font-semibold mb-3">Model Version</h3>
+                        <VersionSelector versions={versions} active="claude-v1" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <CalibrationPanel results={calibration} outputLabel="structural value" />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Assumptions</h3>
+                        <AssumptionPanel assumptions={assumptions} />
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Model Changelog</h3>
+                        <ModelChangelog entries={changelog} />
+                    </div>
                 </div>
             ),
         },
@@ -648,6 +680,7 @@ export default function OrderTheoreticOntologyPlayground() {
         <PlaygroundLayout
             title="order-theoretic ontology"
             subtitle="build ontologies as posets and see where they leak"
+            researchUrl="/playgrounds/order-theoretic-ontology/research"
             sections={sections}
             settings={
                 <Settings
