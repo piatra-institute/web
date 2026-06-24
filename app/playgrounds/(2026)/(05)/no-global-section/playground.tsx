@@ -193,6 +193,7 @@ export default function NoGlobalSectionPlayground({ sourceContext }: Props) {
                 </>
             }
             sections={sections}
+            researchUrl="/playgrounds/no-global-section/research"
             settings={
                 <Settings
                     params={params}

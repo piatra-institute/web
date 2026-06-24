@@ -331,6 +331,7 @@ export default function ForbiddenEdgesPlayground({ sourceContext }: Props) {
                 </>
             }
             sections={sections}
+            researchUrl="/playgrounds/forbidden-edges/research"
             settings={
                 <Settings
                     params={params}

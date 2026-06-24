@@ -195,6 +195,7 @@ export default function FiscalCompassPlayground({ sourceContext }: Props) {
                 </>
             }
             sections={sections}
+            researchUrl="/playgrounds/fiscal-compass/research"
             settings={
                 <Settings
                     params={params}

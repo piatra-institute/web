@@ -193,6 +193,7 @@ export default function UncareEnginePlayground({ sourceContext }: Props) {
                 </a>
             }
             sections={sections}
+            researchUrl="/playgrounds/uncare-engine/research"
             settings={
                 <Settings
                     params={params}

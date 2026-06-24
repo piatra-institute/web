@@ -248,6 +248,7 @@ export default function Playground({ sourceContext }: { sourceContext?: Playgrou
                 </a>
             }
             sections={sections}
+            researchUrl="/playgrounds/geometries-of-action/research"
             settings={
                 <Settings
                     params={params}

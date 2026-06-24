@@ -333,6 +333,7 @@ export default function KnifeEdgePlayground({ sourceContext }: Props) {
                 </>
             }
             sections={sections}
+            researchUrl="/playgrounds/knife-edge/research"
             settings={
                 <Settings
                     params={params}
