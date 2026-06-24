@@ -199,7 +199,7 @@ export default function PettiniTensorNetworksPlayground({ sourceContext }: Props
                         <p className="leading-relaxed text-sm">
                             A generic quantum state of a chain of{' '}
                             <Equation math="N" /> sites has{' '}
-                            <Equation math="d^N" /> coefficients — exponentially
+                            <Equation math="d^N" /> coefficients, exponentially
                             large data. Frank Verstraete&rsquo;s key insight is that
                             physically relevant states can be encoded by multiplying
                             small local matrices:
@@ -210,7 +210,7 @@ export default function PettiniTensorNetworksPlayground({ sourceContext }: Props
                             the local state at site <Equation math="k" />. The hidden
                             matrix dimension (bond dimension <Equation math="\chi" />)
                             stores the nontrivial correlations. This is a matrix
-                            product state (MPS) — the simplest tensor network.
+                            product state (MPS), the simplest tensor network.
                         </p>
                     </div>
 
@@ -283,9 +283,9 @@ export default function PettiniTensorNetworksPlayground({ sourceContext }: Props
                             is credible today.
                         </p>
                         <p className="leading-relaxed text-sm mt-2">
-                            The Pettini-style electrodynamic mechanism — sustained
+                            The Pettini-style electrodynamic mechanism, sustained
                             low-frequency collective modes biasing molecular encounters
-                            over long distances — remains an open research question.
+                            over long distances, remains an open research question.
                             The evidence is stronger in controlled in vitro settings
                             than in living cells, where crowding, ionic screening, and
                             thermal noise present significant challenges.

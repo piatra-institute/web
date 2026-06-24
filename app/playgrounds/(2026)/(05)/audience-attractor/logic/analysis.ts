@@ -96,7 +96,7 @@ export function computeNarrative(p: Params, m: Metrics): string {
     }
 
     if (m.coreShare > 0.7) {
-        parts.push('core audience dominates the final mix: any future drop hits casuals first.');
+        parts.push('core audience dominates the final mix, so any future drop hits casuals first.');
     } else if (m.coreShare < 0.3) {
         parts.push('the audience is mostly casuals at the end; the floor is thin under any new shock.');
     }

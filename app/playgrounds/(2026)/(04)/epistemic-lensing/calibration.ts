@@ -48,7 +48,7 @@ export const calibrationCases: CalibrationCase[] = [
             priorStrength: 30, trustInChannel: 70, motivatedReasoning: 0,
         },
         expected: 0.12,
-        source: 'Levendusky, 2013 — partisan media increases polarization and confident miscalibration',
+        source: 'Levendusky, 2013, partisan media increases polarization and confident miscalibration',
     },
     {
         name: 'algorithmic feed',
@@ -59,7 +59,7 @@ export const calibrationCases: CalibrationCase[] = [
             priorStrength: 30, trustInChannel: 70, motivatedReasoning: 20,
         },
         expected: 0.15,
-        source: 'Pariser, 2011; Bail et al., 2018 — filter bubbles and echo chamber dynamics',
+        source: 'Pariser, 2011; Bail et al., 2018, filter bubbles and echo chamber dynamics',
     },
     {
         name: 'high trust + motivated reasoning',
@@ -70,6 +70,6 @@ export const calibrationCases: CalibrationCase[] = [
             priorStrength: 50, trustInChannel: 90, motivatedReasoning: 70,
         },
         expected: 0.18,
-        source: 'Kahan et al., 2017 — identity-protective cognition amplifies channel distortion',
+        source: 'Kahan et al., 2017, identity-protective cognition amplifies channel distortion',
     },
 ];

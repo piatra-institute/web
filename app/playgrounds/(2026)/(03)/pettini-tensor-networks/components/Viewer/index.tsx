@@ -305,7 +305,7 @@ export default function Viewer({
 
             <CalibrationPanel results={calibrationResults} outputLabel="search time" onLoadCase={onLoadCalibrationCase} />
             <div className="text-xs text-lime-200/30 -mt-4 px-1">
-                Qualitative toy model — calibration error reflects intentional simplifications (no crowding, no DNA packaging, no conformational states).
+                Qualitative toy model, calibration error reflects intentional simplifications (no crowding, no DNA packaging, no conformational states).
             </div>
         </div>
     );

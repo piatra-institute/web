@@ -1,4 +1,4 @@
-// Epistemic Lensing — computation engine
+// Epistemic Lensing, computation engine
 // Based on: PAPER.md Section 5 (Toy Model)
 
 // --- Types ---
