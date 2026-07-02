@@ -10,6 +10,13 @@ import {
 } from './logic';
 
 
+// `expected` values are external targets (full regeneration = 100% after Levin's
+// associative-memory account), independent of the relaxation code that produces
+// `predicted`, so this is declared a validation. The rigid-scar case is a genuine
+// non-trivial miss, reported honestly. See CLAUDE.md.
+export const calibrationMeta = { kind: 'validation' as const };
+
+
 interface RegenCase {
     name: string;
     template: TemplateKey;

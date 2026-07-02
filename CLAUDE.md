@@ -43,7 +43,7 @@ app/playgrounds/(year)/[playground-name]/
 └── playground.tsx     # Main playground component
 ```
 
-**Reference implementation:** `app/playgrounds/(2026)/(03)/pettini-tensor-networks/` implements every pattern documented below — presets, animation, snapshot comparison, parameter sweep, sensitivity analysis, narrative generation, all scientific panels, a custom domain-specific visualization, and a research companion page. Use it as the concrete model for how these pieces fit together.
+**Reference implementation:** `app/playgrounds/(2026)/(03)/pettini-tensor-networks/` implements every pattern documented below: presets, animation, snapshot comparison, parameter sweep, sensitivity analysis, narrative generation, all scientific panels, a custom domain-specific visualization, and a research companion page. Use it as the concrete model for how these pieces fit together.
 
 ## Creating a New Playground from Ideation
 
@@ -62,11 +62,11 @@ When an ideation folder exists with demo.tsx and/or info.md:
    - Keep all state at the playground.tsx level (Settings and Viewer are controlled components)
    - Use useImperativeHandle for Viewer methods (e.g., updateMosaic)
    - Use the `Equation` component for mathematical notation instead of plain text
-   - Derive all computed values via `useMemo` from params — never store derived state (metrics, distributions, sweeps) in `useState`
+   - Derive all computed values via `useMemo` from params; never store derived state (metrics, distributions, sweeps) in `useState`
 4. **Register in index**: Add entry to `/app/playgrounds/data.ts` with name, link, description, date, topics, and operations (see Playground Classification below)
-5. **Add scientific infrastructure** (optional but recommended):
-   - `assumptions.ts`: List modeling assumptions with citations, confidence levels (established/contested/speculative), and falsifiability conditions. Render via `AssumptionPanel` in Viewer.
-   - `calibration.ts`: Known empirical cases with expected outputs. Render via `CalibrationPanel` in Viewer.
+5. **Add scientific infrastructure** (scored by PiatraBench: `assumptions.ts` + `calibration.ts` + `versions.ts` + `research/` are ~28 of the 100 conformance points, so they are effectively required for a full score, not optional). Each file must also be **wired into the rendered tree** (imported/rendered), not just present, and carry the expected shape:
+   - `assumptions.ts`: List modeling assumptions with citations, confidence levels (established/contested/speculative), and falsifiability conditions. Render via `AssumptionPanel` in Viewer. (Scored on: exists, rendered, and each entry has `confidence`/`falsifiability`/`citation`.)
+   - `calibration.ts`: Known empirical cases with expected outputs. Render via `CalibrationPanel` in Viewer. **Executed and honesty-graded** by PiatraBench, see [Calibration honesty](#calibration-honesty-scored-by-piatrabench). (Scored on: exists and rendered/wired.)
    - `versions.ts`: LLM version metadata and model changelog. Render `VersionSelector` in Viewer and `ModelChangelog` in outro.
    - Add `computeSensitivity` to `logic/` to generate tornado chart data. Render via `SensitivityAnalysis` in Viewer.
    - `research/`: Optional deep research companion page. See [Research Companion Page](#research-companion-page).
@@ -98,14 +98,14 @@ Choose from: mathematics, physics, chemistry, biology, neuroscience, computer-sc
 ### Operations (1-2)
 Choose from: landscape, threshold, symmetry, morphogenesis, anatomy, tension
 
-- **landscape**: maps a possibility/state/configuration space — "what does the terrain look like?"
-- **threshold**: finds where a system changes regime — "when does it flip?"
-- **symmetry**: identifies invariance under transformation — "what is preserved?"
-- **morphogenesis**: shows macro pattern arising from micro process — "how does form arise?"
-- **anatomy**: reveals internal structure by decomposition — "what's inside?"
-- **tension**: shows opposing forces acting on a system — "what pulls against what?"
+- **landscape**: maps a possibility/state/configuration space: "what does the terrain look like?"
+- **threshold**: finds where a system changes regime: "when does it flip?"
+- **symmetry**: identifies invariance under transformation: "what is preserved?"
+- **morphogenesis**: shows macro pattern arising from micro process: "how does form arise?"
+- **anatomy**: reveals internal structure by decomposition: "what's inside?"
+- **tension**: shows opposing forces acting on a system: "what pulls against what?"
 
-Ask: "what intellectual move does this playground make?" — not "what field is it in?"
+Ask: "what intellectual move does this playground make?", not "what field is it in?"
 Most playgrounds get 1-2 operations. Primary operation listed first.
 
 See `docs/PLAYGROUND_CLASSIFICATION.md` for the full rationale and mapping of all playgrounds.
@@ -187,7 +187,7 @@ Props:
 
 ### Outro Section Styling
 
-The outro section wrapper and headers follow a specific pattern — do not use `font-serif` or `font-sans`:
+The outro section wrapper and headers follow a specific pattern; do not use `font-serif` or `font-sans`:
 
 ```tsx
 // Wrapper div:
@@ -423,7 +423,7 @@ const assumptions: Assumption[] = [
     {
         id: 'unique-id',
         statement: 'The assumption in plain language.',
-        citation: 'Author, Year — supporting evidence',
+        citation: 'Author, Year, supporting evidence',
         confidence: 'established',  // | 'contested' | 'speculative'
         falsifiability: 'What observation would invalidate this.',
     },
@@ -465,8 +465,24 @@ import CalibrationPanel, { CalibrationResult } from '@/components/CalibrationPan
 ```
 
 Props:
-- `results`: `CalibrationResult[]` - array of `{ name, description, predicted, expected, source }`
+- `results`: `CalibrationResult[]` - array of `{ name, description, predicted, expected, source }`, plus optional per-case `tolerance?: number` and `showcase?: boolean` (see Calibration honesty below)
 - `outputLabel`: string - label for the output metric
+
+### Calibration honesty (scored by PiatraBench)
+
+`calibration.ts` is not just rendered; PiatraBench **executes** it headlessly and grades it (`piatrabench/run-calibration.cjs` + `scorer.mjs`). Understand the gate before writing one:
+
+- **`predicted` must be genuinely computed**, never a literal or a literal stashed in a `const` and wrapped (`const X = 0.61; predicted: round4(X)` is detected as laundering). Import your model from `./logic` and call it: `predicted: round4(computeMetric(params))`. `expected` may be a literal (a hand-derived or literature target).
+- **`predicted` and `expected` must be independent.** An identical expression on both sides (`predicted: f(x)` and `expected: f(x)`) is a self-comparison that checks nothing and fails the gate. Calling the same `./logic` function with *different* arguments is fine and encouraged: that is an invariance/symmetry test (e.g. `S(x,y;m,n)` vs `S(x,y;n,m)`).
+- **Fit is gated** above a generous threshold (100% relative error). An honest but imperfect model is fine; an undeclared blowup is not.
+- **Declare what the calibration is** with an optional module-level export (default `reproduction`):
+  ```ts
+  export const calibrationMeta = { kind: 'reproduction' | 'validation' | 'showcase' as const };
+  ```
+  - `reproduction` (default): `expected` are derived identities or independent recomputations; agreement confirms the engine math. Badge `cal ✓`.
+  - `validation`: `expected` come from external empirical/literature targets and `predicted` imports from `./logic`; a claimed validation that misfits fails. Badge `cal ✓✓`.
+  - `showcase`: the model is deliberately poor (e.g. `lexical-liar`); fit is exempt from gating. Badge `cal ~`. A per-case `showcase: true` exempts a single row; a per-case `tolerance` overrides the default band for that row.
+- Calibrations that expose only `params` + `expected` (prediction computed in-component, as in `pettini-tensor-networks`) yield no pairs and are reported not-auto-verifiable, never failed.
 
 ### VersionSelector
 
@@ -498,7 +514,7 @@ Props:
 
 ### ResearchPromptButton
 
-Expandable section in the outro that generates structured deep research prompts. Each prompt includes the full playground source code as context. 6 steps: historical context, scientific accuracy, related concepts, pedagogical framing, assumption validation, synthesis. Optional focus field lets users steer the research angle. No API keys needed — user copies prompts into ChatGPT Deep Research / Gemini manually.
+Expandable section in the outro that generates structured deep research prompts. Each prompt includes the full playground source code as context. 6 steps: historical context, scientific accuracy, related concepts, pedagogical framing, assumption validation, synthesis. Optional focus field lets users steer the research angle. No API keys needed; the user copies prompts into ChatGPT Deep Research / Gemini manually.
 
 Requires `sourceContext` from `readPlaygroundSource()` (server-side utility that reads source files at build time).
 
@@ -557,6 +573,7 @@ Use the black and lime color scheme consistently:
 **Avoid:**
 - Pure gray text in settings panels (use lime-tinted whites instead)
 - Rounded corners on main containers or buttons
+- Em-dashes (U+2014) anywhere in `.ts`/`.tsx`/`.md` files. PiatraBench's style check fails any playground that contains one; use a colon, semicolon, comma, or hyphen instead. (This applies to playground files; the rule is enforced by the scorer.)
 
 ## State Management
 
@@ -671,7 +688,7 @@ const saveSnapshot = useCallback(() => {
 }, [params, metrics, distribution]);
 ```
 
-In Settings, show a `MetricDelta` component when a snapshot exists — displays current vs. saved values with delta arrows. Color-code: lime for improvements, orange for regressions, muted for unchanged.
+In Settings, show a `MetricDelta` component when a snapshot exists; it displays current vs. saved values with delta arrows. Color-code: lime for improvements, orange for regressions, muted for unchanged.
 
 ```tsx
 function MetricDelta({ label, current, saved }: { label: string; current: number; saved: number }) {

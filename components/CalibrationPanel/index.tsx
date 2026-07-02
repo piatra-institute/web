@@ -9,6 +9,12 @@ export interface CalibrationResult {
     predicted: number;
     expected: number;
     source: string;
+    // Optional honesty-gate hints (read by piatrabench/run-calibration.cjs; ignored here).
+    // tolerance: per-case relative-error band that overrides the default gate for this row.
+    tolerance?: number;
+    // showcase: this row intentionally demonstrates a poor or failing model, so its fit
+    // is exempt from gating (e.g. lexical-liar shows a deliberately weak keyword scorer).
+    showcase?: boolean;
 }
 
 interface CalibrationPanelProps {

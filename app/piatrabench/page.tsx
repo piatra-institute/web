@@ -38,9 +38,11 @@ function loadReport(): BenchData | null {
                 era: string; year: number | null; month: number | null;
                 model: string | null; score: number; headline: number;
                 catPct: Record<string, number | null>;
+                stubbed?: boolean;
                 honesty: {
                     calibration: string;
-                    fit: { mean: number; worst: number } | null;
+                    kind: string | null;
+                    fit: { mean: number; worst: number; worstGating?: number | null } | null;
                     citations: string;
                     verdict: string;
                     flags: string[];
@@ -56,6 +58,7 @@ function loadReport(): BenchData | null {
                 headline: r.headline,
                 catPct: r.catPct,
                 honesty: r.honesty,
+                stubbed: r.stubbed ?? false,
             })),
         };
     } catch {

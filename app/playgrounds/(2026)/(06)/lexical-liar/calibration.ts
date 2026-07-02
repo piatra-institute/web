@@ -2,6 +2,13 @@ import { CONTRONYMS, keywordScore, type ContronymKey } from './logic';
 import type { CalibrationResult } from '@/components/CalibrationPanel';
 
 
+// This calibration deliberately displays a WEAK model: a context-free keyword scorer
+// judged against human contextual labels. The large error is the whole point (a
+// bag-of-words reading cannot recover contronym polarity), so it is declared a
+// showcase and exempt from fit-gating. See CLAUDE.md, calibration honesty.
+export const calibrationMeta = { kind: 'showcase' as const };
+
+
 export interface CalibrationCase {
     key: ContronymKey;
     /** the sentence the keyword scorer reads, with context erased from the controls. */

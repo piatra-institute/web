@@ -87,34 +87,159 @@ function aggregateModels(results) {
     })).sort((a, b) => b.mean - a.mean);
 }
 
-// honesty: execute calibration.ts headlessly (child process) and decide whether
-// its predicted values are genuinely computed (reproduced) vs hardcoded.
+// honesty gate on calibration FIT: only errors above this (100%) gate. Far looser
+// than the 0.35 display band, so an honest-but-imperfect model is never punished;
+// only an undeclared blowup (e.g. a rigged or broken calibration) trips it.
+const FIT_GATE = 1.0;
+
+// strip comments before source analysis so a `// predicted: ...` note or a big
+// header block never registers as a real value. The `[^:]` guard keeps `://` in
+// URLs (which live in `source` strings) from being mistaken for a line comment.
+function stripComments(s) {
+    return s
+        .replace(/\/\*[\s\S]*?\*\//g, '')
+        .replace(/(^|[^:])\/\/[^\n]*/g, '$1');
+}
+
+// identifiers imported from ./logic — a proxy for "predicted actually runs the model".
+function logicImports(src) {
+    const ids = new Set();
+    const re = /import\s*(?:type\s+)?(?:\{([^}]*)\}|\*\s*as\s+([A-Za-z_$][\w$]*)|([A-Za-z_$][\w$]*))\s*from\s*['"`]\.\/logic/g;
+    let m;
+    while ((m = re.exec(src)) !== null) {
+        if (m[1]) for (const part of m[1].split(',')) {
+            const name = part.trim().split(/\s+as\s+/).pop().trim();
+            if (name) ids.add(name);
+        }
+        if (m[2]) ids.add(m[2]);
+        if (m[3]) ids.add(m[3]);
+    }
+    return ids;
+}
+
+// module-scope `const X = <numeric literal>` — the laundering vehicle: a literal
+// stashed in a const and then wrapped so `predicted:` no longer starts with a digit.
+function numericConsts(src) {
+    const set = new Set();
+    const re = /\bconst\s+([A-Za-z_$][\w$]*)\s*=\s*-?\d+(?:\.\d+)?(?:e-?\d+)?\s*;?/g;
+    let m;
+    while ((m = re.exec(src)) !== null) set.add(m[1]);
+    return set;
+}
+
+// for each `key:` in src, the object-property RHS expression (balanced through
+// parens/brackets/strings, ending at the top-level comma/semicolon/closing brace),
+// normalized to single spaces. Type annotations (`let predicted: number`, interface
+// fields) are skipped so they are never mistaken for a value.
+function extractRhs(src, key) {
+    const out = [];
+    const re = new RegExp(`\\b${key}\\s*:`, 'g');
+    let m;
+    while ((m = re.exec(src)) !== null) {
+        // skip declarations: `let/const/var/readonly predicted: number`
+        if (/(?:let|const|var|readonly)\s+$/.test(src.slice(Math.max(0, m.index - 12), m.index))) continue;
+        let i = re.lastIndex;
+        while (i < src.length && /\s/.test(src[i])) i++;
+        const start = i;
+        let depth = 0, inStr = false, q = '', esc = false;
+        for (; i < src.length; i++) {
+            const c = src[i];
+            if (inStr) {
+                if (esc) { esc = false; continue; }
+                if (c === '\\') { esc = true; continue; }
+                if (c === q) inStr = false;
+                continue;
+            }
+            if (c === '"' || c === "'" || c === '`') { inStr = true; q = c; continue; }
+            if (c === '(' || c === '[' || c === '{') depth++;
+            else if (c === ')' || c === ']' || c === '}') { if (depth === 0) break; depth--; }
+            else if ((c === ',' || c === ';') && depth === 0) break;
+        }
+        const text = src.slice(start, i).trim().replace(/\s+/g, ' ');
+        // skip bare TS primitive type annotations (interface/type fields)
+        if (/^(?:number|string|boolean)\b/.test(text)) continue;
+        out.push({ pos: m.index, text });
+    }
+    return out;
+}
+
+function escapeReg(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+// a `predicted` RHS that is a bare numeric literal, or a numeric-literal const wrapped
+// in round*/Number/toFixed — i.e. no genuine computation. A call into ./logic is never
+// literalish (that IS the computation), so real model output is safe.
+function isLiteralish(text, numConsts, logicIds) {
+    for (const id of logicIds) if (new RegExp(`\\b${escapeReg(id)}\\b`).test(text)) return false;
+    let t = text.trim()
+        .replace(/\bNumber\s*\(/g, '(')
+        .replace(/\.toFixed\s*\([^)]*\)/g, '')
+        .replace(/\bround\d*\s*\(/gi, '(')
+        .trim();
+    while (t.startsWith('(') && t.endsWith(')')) t = t.slice(1, -1).trim();
+    if (/^-?\d+(?:\.\d+)?(?:e-?\d+)?$/.test(t)) return true;
+    if (/^[A-Za-z_$][\w$]*$/.test(t) && numConsts.has(t)) return true;
+    return false;
+}
+
+// honesty: execute calibration.ts headlessly (child process), then judge it on three
+// axes — is `predicted` genuinely computed (not hardcoded/laundered), is it independent
+// of `expected` (not circular), and does the declared fit hold (not miscalibrated)?
 function runCalibration(dir) {
     const file = path.join(dir, 'calibration.ts');
-    if (!exists(file)) return { status: 'na', fit: null };
-    if (!DO_CALIBRATION) return { status: 'skipped', fit: null };
+    if (!exists(file)) return { status: 'na', fit: null, kind: null };
+    if (!DO_CALIBRATION) return { status: 'skipped', fit: null, kind: null };
     const res = spawnSync('node', [path.join(OUT_DIR, 'run-calibration.cjs'), file], {
         cwd: ROOT, encoding: 'utf8', timeout: 30000, maxBuffer: 8 * 1024 * 1024,
     });
     let parsed;
     try { parsed = JSON.parse((res.stdout || '').trim()); } catch { parsed = { status: 'error', message: 'unparseable output' }; }
 
-    // a fabricated calibration hardcodes predicted to match expected; a genuine
-    // one computes it. detect literals in source.
-    const src = read(file);
-    const totalPred = (src.match(/predicted:/g) || []).length;
-    const litPred = (src.match(/predicted:\s*-?[0-9]/g) || []).length;
-    const hardcoded = totalPred > 0 && litPred === totalPred;
+    // --- source-level analysis (comments stripped) ---
+    const src = stripComments(read(file));
+    const logicIds = logicImports(src);
+    const importsLogic = /from\s+['"`]\.\/logic/.test(src);
+    const numConsts = numericConsts(src);
+    const preds = extractRhs(src, 'predicted');
+    const exps = extractRhs(src, 'expected');
+
+    // laundering: every `predicted` is a literal or a wrapped numeric-literal const.
+    const predLit = preds.filter((p) => isLiteralish(p.text, numConsts, logicIds)).length;
+    const hardcoded = preds.length > 0 && predLit === preds.length;
+
+    // circularity: pair each `predicted` with its neighbouring `expected` by source
+    // position and flag an identical expression on both sides — a self-comparison that
+    // checks nothing. A shared ./logic callee with DIFFERENT args is deliberately NOT
+    // flagged: that is an invariance/symmetry test (e.g. chladni S(x,y;m,n) == S(x,y;n,m)),
+    // a legitimate and encouraged calibration pattern.
+    const marks = [...preds.map((p) => ({ ...p, k: 'p' })), ...exps.map((e) => ({ ...e, k: 'e' }))]
+        .sort((a, b) => a.pos - b.pos);
+    let circularExact = false;
+    for (let i = 0; i < marks.length - 1; i++) {
+        const a = marks[i], b = marks[i + 1];
+        if (a.k === b.k) continue;
+        const p = a.k === 'p' ? a : b;
+        const e = a.k === 'e' ? a : b;
+        if (p.text && /[A-Za-z_$]/.test(p.text) && p.text === e.text) { circularExact = true; break; }
+    }
+
+    const worstGating = (typeof parsed.worstGating === 'number') ? parsed.worstGating : null;
+    const kind = parsed.kind || null;
 
     let status;
     if (parsed.status === 'na') status = 'na';
     else if (parsed.status === 'error') status = 'unverified';
-    else status = hardcoded ? 'hardcoded' : 'verified';
+    else if (hardcoded) status = 'hardcoded';
+    else if (circularExact) status = 'circular-exact';
+    else if (kind === 'showcase' || worstGating == null) status = 'showcase';
+    else if (kind === 'validation' && importsLogic && worstGating <= FIT_GATE) status = 'validated';
+    else if (worstGating > FIT_GATE) status = 'miscalibrated';
+    else status = 'reproduces';
 
     return {
         status,
         n: parsed.n || 0,
-        fit: parsed.status === 'ok' ? { mean: parsed.mean, worst: parsed.worst } : null,
+        kind,
+        fit: parsed.status === 'ok' ? { mean: parsed.mean, worst: parsed.worst, worstGating } : null,
         message: parsed.message || null,
     };
 }
@@ -126,9 +251,12 @@ function honestyFlags(source) {
     return flags;
 }
 
-// honesty is a GATE, not a deduction: a failed check caps the headline score so
-// polish can never buy back fabrication. A dead citation or a hardcoded
-// calibration fails; not-auto-verifiable (na) and a deliberately poor fit do not.
+// honesty is a GATE, not a deduction: a failing check caps the headline score so
+// polish can never buy back fabrication. Gating calibration states are hardcoded,
+// circular-exact (predicted === expected), and miscalibrated (an undeclared fit
+// blowup or a claimed validation that misses); a dead citation gates too. A stub
+// (placeholder playground) caps separately. `showcase`, `reproduces`, `validated`,
+// and not-auto-verifiable (`na`) never gate.
 function finalize(r) {
     let citations = 'unchecked';
     if (DO_LINKS) {
@@ -138,15 +266,18 @@ function finalize(r) {
         citations = dead.length ? 'fail' : (hasCite ? 'pass' : 'na');
     }
     const calStatus = r.calibration ? r.calibration.status : 'na';
-    const fail = citations === 'fail' || calStatus === 'hardcoded';
+    const GATING_CAL = ['hardcoded', 'circular-exact', 'miscalibrated'];
+    const honestyFail = citations === 'fail' || GATING_CAL.includes(calStatus);
+    r.stubbed = r.stub === true;
     r.honesty = {
         calibration: calStatus,
+        kind: r.calibration?.kind || null,
         fit: r.calibration?.fit || null,
         citations,
         flags: r.honestyWarnings || [],
-        verdict: fail ? 'fail' : 'ok',
+        verdict: honestyFail ? 'fail' : 'ok',
     };
-    r.headline = fail ? Math.min(r.score, 40) : r.score;
+    r.headline = (honestyFail || r.stubbed) ? Math.min(r.score, 40) : r.score;
 }
 
 function walk(dir, { skip = [] } = {}) {
@@ -275,6 +406,14 @@ function scorePlayground(pg, registryBySlug, build) {
     const codeAndMd = src;
     const joinedCode = code.map((s) => s.text).join('\n');
 
+    // substance helpers: is a module actually imported anywhere in the rendered tree,
+    // and is a panel component actually mounted? (catches orphan infra files.)
+    const usesModule = (name) => new RegExp(`from\\s+['"\`]\\./${name}(?:['"\`/])`).test(joinedCode);
+    const rendersComponent = (C) => joinedCode.includes(`<${C}`);
+    // stub: a placeholder playground that renders "coming soon" rather than a real
+    // visualization. Comments are stripped so a stray note never trips it.
+    const stub = /coming soon|will be visualized here|under construction|not yet implemented/i.test(stripComments(playgroundTsx));
+
     const checks = [];
     const add = (id, label, category, weight, value, detail = '') => {
         // value: true|false|number(0..1)
@@ -317,20 +456,61 @@ function scorePlayground(pg, registryBySlug, build) {
 
     // --- Structure (20) ---
     add('layout', 'PlaygroundLayout', 'structure', 6, playgroundTsx.includes('PlaygroundLayout'));
-    add('viewer', 'PlaygroundViewer', 'structure', 4, playgroundTsx.includes('PlaygroundViewer'));
+    // a real visualization: the shared PlaygroundViewer wrapper OR a domain-named
+    // viewer component (crystallographic-groups' Wallpaper2D/, halley-window's Fractal/, ...),
+    // imported either relatively (./components/X) or via the playground-local alias
+    // (@/app/playgrounds/.../components/X). Shared UI under @/components/ does not count.
+    const rendersViewer = playgroundTsx.includes('PlaygroundViewer')
+        || /from\s+['"](?:\.\/|@\/app\/playgrounds\/[^'"]*\/)components\/(?!Settings\b)/.test(playgroundTsx);
+    add('viewer', 'renders a viewer', 'structure', 4, rendersViewer,
+        rendersViewer ? '' : 'no PlaygroundViewer or domain viewer component');
     add('playground-file', 'playground.tsx', 'structure', 3, !!playgroundTsx);
+    // component subdirs with an index.tsx (Settings plus at least one visualizer,
+    // whatever it is named).
+    let componentDirs = [];
+    try {
+        componentDirs = fs.readdirSync(f('components'), { withFileTypes: true })
+            .filter((e) => e.isDirectory() && exists(path.join(f('components'), e.name, 'index.tsx')))
+            .map((e) => e.name);
+    } catch { /* no components dir */ }
     const settings = has('components/Settings/index.tsx');
-    const viewer = has('components/Viewer/index.tsx');
-    add('settings-viewer', 'Settings + Viewer split', 'structure', 4, (settings ? 0.5 : 0) + (viewer ? 0.5 : 0),
-        [settings ? '' : 'no Settings', viewer ? '' : 'no Viewer'].filter(Boolean).join(', '));
+    const viewerLike = componentDirs.some((d) => d !== 'Settings');
+    add('settings-viewer', 'Settings + viewer split', 'structure', 4, (settings ? 0.5 : 0) + (viewerLike ? 0.5 : 0),
+        [settings ? '' : 'no Settings', viewerLike ? '' : 'no viewer component'].filter(Boolean).join(', '));
     const hasLogic = has('logic') || has('logic.ts') || has('logic/index.ts');
     add('logic', 'logic/ module', 'structure', 3, hasLogic);
 
-    // --- Scientific infrastructure (25) — template maturity ---
-    add('assumptions', 'assumptions.ts', 'infra', 7, has('assumptions.ts'));
-    add('calibration', 'calibration.ts', 'infra', 7, has('calibration.ts'));
-    add('versions', 'versions.ts', 'infra', 4, has('versions.ts'));
-    add('research', 'research companion', 'infra', 7, has('research/content.md'));
+    // --- Scientific infrastructure (25) — the file must exist AND be wired into the
+    // rendered tree AND carry the expected shape. Existence alone is the orphan-file
+    // gaming shape; these sub-scores fold into the same weights (subtotal still 25).
+    const aExists = has('assumptions.ts');
+    const aSrc = read(f('assumptions.ts'));
+    const aWired = usesModule('assumptions') || rendersComponent('AssumptionPanel');
+    const aShape = aExists && /confidence:\s*['"`](?:established|contested|speculative)['"`]/.test(aSrc)
+        && /falsifiability:/.test(aSrc) && /citation:/.test(aSrc);
+    add('assumptions', 'assumptions.ts', 'infra', 7,
+        (aExists ? 0.5 : 0) + (aWired ? 0.2 : 0) + (aShape ? 0.3 : 0),
+        !aExists ? 'missing' : [aWired ? '' : 'not rendered/wired', aShape ? '' : 'thin shape'].filter(Boolean).join(', '));
+
+    const cExists = has('calibration.ts');
+    const cWired = usesModule('calibration') || rendersComponent('CalibrationPanel');
+    add('calibration', 'calibration.ts', 'infra', 7,
+        (cExists ? 0.6 : 0) + (cWired ? 0.4 : 0),
+        !cExists ? 'missing' : (cWired ? '' : 'not rendered/wired'));
+
+    const vExists = has('versions.ts');
+    const vSrc = read(f('versions.ts'));
+    const vWired = usesModule('versions') || rendersComponent('VersionSelector') || rendersComponent('ModelChangelog');
+    const vShape = vExists && /llm:/.test(vSrc) && /date:/.test(vSrc);
+    add('versions', 'versions.ts', 'infra', 4,
+        (vExists ? 0.5 : 0) + (vWired ? 0.2 : 0) + (vShape ? 0.3 : 0),
+        !vExists ? 'missing' : [vWired ? '' : 'not rendered/wired', vShape ? '' : 'thin shape'].filter(Boolean).join(', '));
+
+    const rExists = has('research/content.md');
+    const rLinked = /researchUrl/.test(playgroundTsx);
+    add('research', 'research companion', 'infra', 7,
+        (rExists ? 0.7 : 0) + (rLinked ? 0.3 : 0),
+        !rExists ? 'missing' : (rLinked ? '' : 'not linked (no researchUrl)'));
 
     // --- Style / house rules (15) ---
     const emFiles = codeAndMd.filter((s) => s.text.includes(EM_DASH)).map((s) => s.rel);
@@ -398,7 +578,7 @@ function scorePlayground(pg, registryBySlug, build) {
         year: pg.year, month: pg.month, name: reg?.name || pg.slug,
         model: model?.label || null, modelKey: model?.key || null,
         score, byCat, catPct, checks, failed, warnings, infraCount, citations,
-        calibration, honestyWarnings,
+        calibration, honestyWarnings, stub,
     };
 }
 
@@ -452,11 +632,16 @@ function buildReports(results, registry, pgs, build) {
     const models = aggregateModels(results);
     const unattributed = results.filter((r) => !r.modelKey).length;
     const honestyCounts = {
-        verified: results.filter((r) => r.honesty.calibration === 'verified').length,
+        validated: results.filter((r) => r.honesty.calibration === 'validated').length,
+        reproduces: results.filter((r) => r.honesty.calibration === 'reproduces').length,
+        showcase: results.filter((r) => r.honesty.calibration === 'showcase').length,
+        miscalibrated: results.filter((r) => r.honesty.calibration === 'miscalibrated').length,
         notAutoVerifiable: results.filter((r) => ['na', 'skipped'].includes(r.honesty.calibration)).length,
         failed: results.filter((r) => r.honesty.verdict === 'fail').length,
+        stubbed: results.filter((r) => r.stubbed).length,
         flagged: results.filter((r) => r.honesty.flags.length > 0).length,
     };
+    const stubs = results.filter((r) => r.stubbed).map((r) => r.slug);
     const fitted = results.filter((r) => r.honesty.fit).sort((a, b) => b.honesty.fit.worst - a.honesty.fit.worst);
 
     // spec drift by era
@@ -500,7 +685,8 @@ function buildReports(results, registry, pgs, build) {
     const perfect = results.filter((r) => r.headline >= 99).length;
     L.push('');
     L.push(`  ${perfect} at >=99/100 · ${results.filter((r) => r.headline >= 90).length} at >=90 · ${results.filter((r) => r.headline < 60).length} below 60`);
-    L.push(`  honesty: ${honestyCounts.verified} calibration verified · ${honestyCounts.notAutoVerifiable} not auto-verifiable · ${honestyCounts.failed} failed${DO_LINKS ? '' : ' · (citations unchecked, run --links)'}`);
+    L.push(`  honesty: ${honestyCounts.validated} validated · ${honestyCounts.reproduces} reproduces · ${honestyCounts.showcase} showcase · ${honestyCounts.notAutoVerifiable} not auto-verifiable · ${honestyCounts.failed} failed${DO_LINKS ? '' : ' · (citations unchecked, run --links)'}`);
+    if (stubs.length) L.push(`  ! stub playgrounds (capped): ${stubs.join(', ')}`);
     if (unregistered.length) L.push(`  ! unregistered in data.ts: ${unregistered.join(', ')}`);
     if (ghosts.length) L.push(`  ! registry entries with no folder: ${ghosts.join(', ')}`);
     L.push('');
@@ -546,11 +732,14 @@ function buildReports(results, registry, pgs, build) {
 
     md.push('## Honesty');
     md.push('');
-    md.push('Honesty is a gate, not a deduction: a failed check caps the headline score so polish cannot buy back fabrication. Calibration is executed headlessly; **verified** means the displayed `predicted` values are genuinely computed by the engine, not hardcoded to match `expected`. Fit (predicted vs expected error) is reported but never gates, because an honest playground may deliberately show a poorly-fitting model (e.g. lexical-liar).');
+    md.push('Honesty is a gate, not a deduction: a failing check caps the headline score so polish cannot buy back fabrication. Calibration is executed headlessly and graded on three axes — is `predicted` genuinely computed (not a hardcoded or laundered literal), is it independent of `expected` (not circular), and does the declared fit hold. Calibrations declare their kind via `calibrationMeta` (see CLAUDE.md): **reproduction** (default; `expected` are derived identities), **validation** (`expected` from external/literature targets), or **showcase** (a deliberately poor model, exempt from fit-gating).');
     md.push('');
-    md.push(`- calibration verified (reproduces): **${honestyCounts.verified}**`);
+    md.push(`- **validated** (computed, independent, fits an external target): **${honestyCounts.validated}**`);
+    md.push(`- **reproduces** (computed and independent; self-consistency target): ${honestyCounts.reproduces}`);
+    md.push(`- **showcase** (intentionally poor fit, declared): ${honestyCounts.showcase}`);
     md.push(`- not auto-verifiable (no calibration, or prediction computed in-component): ${honestyCounts.notAutoVerifiable}`);
-    md.push(`- failed (dead citation or hardcoded calibration): ${honestyCounts.failed}`);
+    md.push(`- **failed** (dead citation, hardcoded, self-identical, or miscalibrated fit, all capped): ${honestyCounts.failed}`);
+    md.push(`- stub playgrounds (placeholder, capped): ${honestyCounts.stubbed}`);
     md.push(`- flagged for review: ${honestyCounts.flagged}`);
     md.push(`- citations: ${DO_LINKS ? 'resolved over the network' : 'not checked (run with --links)'}`);
     md.push('');
@@ -577,11 +766,12 @@ function buildReports(results, registry, pgs, build) {
         md.push('');
     }
 
-    if (unregistered.length || ghosts.length) {
+    if (unregistered.length || ghosts.length || stubs.length) {
         md.push('## Data integrity');
         md.push('');
         if (unregistered.length) md.push(`- **Unregistered** (folder exists, not in data.ts): ${unregistered.map((s) => `\`${s}\``).join(', ')}`);
         if (ghosts.length) md.push(`- **Ghost entries** (in data.ts, no folder): ${ghosts.map((s) => `\`${s}\``).join(', ')}`);
+        if (stubs.length) md.push(`- **Stubs** (placeholder playground, headline capped): ${stubs.map((s) => `\`${s}\``).join(', ')}`);
         md.push('');
     }
 
@@ -612,9 +802,13 @@ function buildReports(results, registry, pgs, build) {
     md.push('| --- | --- | --- | --- | --- | --- | --- | --- | --- |');
     const pct = (c) => c && c.total ? `${Math.round((c.earned / c.total) * 100)}%` : '–';
     const honCell = (r) => {
-        if (r.honesty.verdict === 'fail') return 'FAIL';
+        if (r.stubbed) return 'STUB';
+        if (r.honesty.verdict === 'fail') return r.honesty.calibration === 'miscalibrated' ? 'FAIL (fit)' : 'FAIL';
         const c = r.honesty.calibration;
-        if (c === 'verified') return r.honesty.fit ? `cal ✓ (fit ${(r.honesty.fit.worst * 100).toFixed(0)}%)` : 'cal ✓';
+        const fit = r.honesty.fit ? ` (fit ${(r.honesty.fit.worst * 100).toFixed(0)}%)` : '';
+        if (c === 'validated') return `cal ✓✓${fit}`;
+        if (c === 'reproduces') return `cal ✓${fit}`;
+        if (c === 'showcase') return 'cal ~ (showcase)';
         if (c === 'unverified') return 'cal ?';
         return '–';
     };
@@ -627,7 +821,7 @@ function buildReports(results, registry, pgs, build) {
     fs.writeFileSync(path.join(OUT_DIR, 'report.md'), md.join('\n'));
     fs.writeFileSync(path.join(OUT_DIR, 'report.json'), JSON.stringify({
         generated: new Date().toISOString(), n, avg, build: build.ran, links: DO_LINKS,
-        eras, models, honestyCounts, unattributed, unregistered, ghosts, results,
+        eras, models, honestyCounts, unattributed, unregistered, ghosts, stubs, results,
     }, null, 2));
 }
 
@@ -738,9 +932,12 @@ function runReports(results) {
     console.log(L.join('\n'));
 
     const cm = (v) => (v == null ? '–' : `${v}%`);
-    const honCell = (r) => r.honesty.verdict === 'fail' ? 'FAIL'
-        : r.honesty.calibration === 'verified' ? 'cal ✓'
-            : r.honesty.calibration === 'unverified' ? 'cal ?' : '–';
+    const honCell = (r) => r.stubbed ? 'STUB'
+        : r.honesty.verdict === 'fail' ? 'FAIL'
+            : r.honesty.calibration === 'validated' ? 'cal ✓✓'
+                : r.honesty.calibration === 'reproduces' ? 'cal ✓'
+                    : r.honesty.calibration === 'showcase' ? 'cal ~'
+                        : r.honesty.calibration === 'unverified' ? 'cal ?' : '–';
 
     const md = [];
     md.push('# PiatraBench — runs report');

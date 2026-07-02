@@ -17,7 +17,8 @@ export interface ModelRow {
 
 export interface Honesty {
     calibration: string;
-    fit: { mean: number; worst: number } | null;
+    kind: string | null;
+    fit: { mean: number; worst: number; worstGating?: number | null } | null;
     citations: string;
     verdict: string;
     flags: string[];
@@ -34,6 +35,7 @@ export interface PgRow {
     headline: number;
     catPct: Record<string, number | null>;
     honesty: Honesty;
+    stubbed?: boolean;
 }
 
 export interface BenchData {
@@ -41,7 +43,10 @@ export interface BenchData {
     n: number;
     avg: number;
     unattributed: number;
-    honestyCounts: { verified: number; notAutoVerifiable: number; failed: number; flagged: number };
+    honestyCounts: {
+        validated: number; reproduces: number; showcase: number;
+        miscalibrated: number; notAutoVerifiable: number; failed: number; stubbed: number; flagged: number;
+    };
     links: boolean;
     models: ModelRow[];
     playgrounds: PgRow[];
@@ -67,13 +72,26 @@ const scoreText = (s: number) =>
 const barFill = (s: number) =>
     s >= 90 ? 'bg-lime-500' : s >= 70 ? 'bg-lime-600' : s >= 50 ? 'bg-yellow-600' : 'bg-orange-500';
 
-function honestyBadge(h: Honesty): { text: string; cls: string; title: string } {
-    if (h.verdict === 'fail') {
-        return { text: 'fail', cls: 'text-orange-400', title: `honesty gate failed (calibration ${h.calibration}, citations ${h.citations})` };
+function honestyBadge(h: Honesty, stubbed?: boolean): { text: string; cls: string; title: string } {
+    if (stubbed) {
+        return { text: 'stub', cls: 'text-orange-400', title: 'placeholder playground with no real visualization; headline capped' };
     }
-    if (h.calibration === 'verified') {
-        const fit = h.fit ? ` worst fit ${(h.fit.worst * 100).toFixed(0)}%` : '';
+    if (h.verdict === 'fail') {
+        const why = h.calibration === 'miscalibrated' ? 'calibration fit exceeds the honesty gate'
+            : h.calibration === 'hardcoded' ? 'calibration values are hardcoded literals'
+                : h.calibration === 'circular-exact' ? 'predicted and expected are the same expression'
+                    : `citations ${h.citations}`;
+        return { text: 'fail', cls: 'text-orange-400', title: `honesty gate failed (${why})` };
+    }
+    const fit = h.fit ? ` worst fit ${(h.fit.worst * 100).toFixed(0)}%` : '';
+    if (h.calibration === 'validated') {
+        return { text: 'cal ✓✓', cls: 'text-gray-200', title: `calibration computes its values independently and matches an external/literature target.${fit}` };
+    }
+    if (h.calibration === 'reproduces') {
         return { text: 'cal ✓', cls: 'text-gray-400', title: `calibration executes and reproduces its displayed values.${fit}` };
+    }
+    if (h.calibration === 'showcase') {
+        return { text: 'cal ~', cls: 'text-gray-400', title: 'calibration intentionally demonstrates a poor-fitting model (declared showcase); fit is not gated' };
     }
     if (h.calibration === 'unverified') {
         return { text: 'cal ?', cls: 'text-yellow-500', title: 'calibration present but could not be executed headlessly' };
@@ -148,7 +166,7 @@ export default function PiatraBenchView({ data }: Props) {
                 {/* summary */}
                 <div className="text-xs text-gray-500 mb-4 text-center">
                     {data.n} playgrounds · mean {data.avg}/100 ·{' '}
-                    {data.honestyCounts.verified} calibrations verified · {data.honestyCounts.failed} honesty failures
+                    {data.honestyCounts.validated} validated · {data.honestyCounts.reproduces} reproduce · {data.honestyCounts.failed} honesty failures
                     {!data.links && ' · citations not checked'} ·{' '}
                     <Link href="/playgrounds" className="underline hover:text-gray-300">back to playgrounds</Link>
                 </div>
@@ -158,8 +176,9 @@ export default function PiatraBenchView({ data }: Props) {
                     <span className="text-gray-400">score</span> is one 0 to 100 number: how well a playground conforms
                     to the template, weighting build, registration, structure, scientific infrastructure and house rules
                     into a single figure. hover a score for the per-category breakdown.{' '}
-                    <span className="text-gray-400">honesty</span> <span className="font-mono">cal ✓</span> means the
-                    calibration runs and reproduces its own numbers; a failure caps the score.
+                    <span className="text-gray-400">honesty</span>: <span className="font-mono">cal ✓✓</span> validated
+                    against an external target, <span className="font-mono">cal ✓</span> computes and reproduces its own
+                    numbers, <span className="font-mono">cal ~</span> a declared showcase of a poor model; a failure caps the score.
                 </div>
 
                 {/* model leaderboard */}
@@ -242,7 +261,7 @@ export default function PiatraBenchView({ data }: Props) {
                                         <span className={scoreText(p.headline)}>{p.headline}</span>
                                     </td>
                                     <td className="px-2 py-2 whitespace-nowrap">
-                                        {(() => { const b = honestyBadge(p.honesty); return <span className={b.cls} title={b.title}>{b.text}</span>; })()}
+                                        {(() => { const b = honestyBadge(p.honesty, p.stubbed); return <span className={b.cls} title={b.title}>{b.text}</span>; })()}
                                     </td>
                                 </tr>
                             ))}

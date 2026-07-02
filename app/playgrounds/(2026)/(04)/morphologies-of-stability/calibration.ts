@@ -11,6 +11,12 @@ import {
 } from './logic';
 
 
+// `expected` values are external analytic/empirical targets (Hopf 1942;
+// Guckenheimer & Holmes 1983, r* = sqrt(mu); DeGroot 1974), not identities derived
+// from the same code, so this is declared a validation. See CLAUDE.md.
+export const calibrationMeta = { kind: 'validation' as const };
+
+
 // ── Deterministic settling helper ────────────────────────────────
 //
 // Every case here drives the noise-free core of one morphology from a chosen

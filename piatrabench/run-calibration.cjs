@@ -69,13 +69,29 @@ function collect(arr, into) {
         if (it && typeof it === 'object'
             && typeof it.predicted === 'number' && Number.isFinite(it.predicted)
             && typeof it.expected === 'number' && Number.isFinite(it.expected)) {
-            into.push({ name: String(it.name ?? ''), predicted: it.predicted, expected: it.expected });
+            into.push({
+                name: String(it.name ?? ''),
+                predicted: it.predicted,
+                expected: it.expected,
+                tolerance: (typeof it.tolerance === 'number' && Number.isFinite(it.tolerance)) ? it.tolerance : null,
+                showcase: it.showcase === true,
+            });
         }
     }
 }
 
 try {
     const mod = require(target);
+
+    // optional file-level declaration of what the calibration is (see CLAUDE.md):
+    //   reproduction (default) — expected are derived identities / independent recomputations
+    //   validation            — expected come from external empirical/literature targets
+    //   showcase              — the model is deliberately poor; fit is not a pass/fail
+    const KINDS = ['reproduction', 'validation', 'showcase'];
+    const rawKind = mod.calibrationMeta && mod.calibrationMeta.kind;
+    const kind = KINDS.includes(rawKind) ? rawKind : null;
+    const fileShowcase = kind === 'showcase';
+
     const pairs = [];
     for (const [key, val] of Object.entries(mod)) {
         if (Array.isArray(val)) collect(val, pairs);
@@ -96,17 +112,23 @@ try {
     const results = unique.map((p) => {
         const absExp = Math.abs(p.expected);
         const error = absExp < 1e-9 ? Math.abs(p.predicted) : Math.abs(p.predicted - p.expected) / absExp;
-        return { name: p.name, predicted: p.predicted, expected: p.expected, error, withinTol: error <= TOLERANCE };
+        const tol = p.tolerance != null ? p.tolerance : TOLERANCE;
+        const showcase = fileShowcase || p.showcase;
+        return { name: p.name, predicted: p.predicted, expected: p.expected, error, withinTol: error <= tol, showcase };
     });
 
     // `status` is about EXECUTION/reproduction only: did the code run and yield
-    // computed predicted/expected pairs? Fit (error vs expected) is reported
-    // separately and is NOT a pass/fail, because an honest playground may
-    // deliberately show a poorly-fitting model (e.g. lexical-liar).
+    // computed predicted/expected pairs? Overall fit is still reported, but the
+    // gate now judges `worstGating` — the worst error over cases NOT flagged as an
+    // intentional showcase — so a deliberately poor model (lexical-liar) is exempt
+    // while an undeclared blowup is not. null worstGating = every case is a showcase.
     const status = results.length === 0 ? 'na' : 'ok';
     const worst = results.reduce((m, r) => Math.max(m, r.error), 0);
     const mean = results.length ? results.reduce((s, r) => s + r.error, 0) / results.length : 0;
-    process.stdout.write(JSON.stringify({ status, n: results.length, mean, worst, results }));
+    const gating = results.filter((r) => !r.showcase);
+    const worstGating = gating.length ? gating.reduce((m, r) => Math.max(m, r.error), 0) : null;
+    const nShowcase = results.filter((r) => r.showcase).length;
+    process.stdout.write(JSON.stringify({ status, n: results.length, mean, worst, worstGating, kind, nShowcase, results }));
 } catch (err) {
     process.stdout.write(JSON.stringify({ status: 'error', message: String(err && err.message || err).slice(0, 200) }));
 }

@@ -2,9 +2,9 @@
 
 Deterministic conformance of all playgrounds to the current template (CLAUDE.md). No model judgement.
 
-- Generated: 2026-07-02T04:26:17.847Z
+- Generated: 2026-07-02T05:22:57.755Z
 - Playgrounds: **101**
-- Mean score: **98.6/100**
+- Mean score: **98.8/100**
 - Build check: enabled (tsc --noEmit, attributed per-playground)
 - Citation resolution: disabled (run with --links)
 
@@ -15,8 +15,8 @@ Scoring categories (weights): build & types 25, registration & metadata 15, stru
 | era | playgrounds | mean score | mean infra (/4) |
 | --- | --- | --- | --- |
 | 2024 | 13 | 91.7 | 3.4 |
-| 2025 | 39 | 99.4 | 4.0 |
-| 2026 | 49 | 99.8 | 4.0 |
+| 2025 | 39 | 100.0 | 4.0 |
+| 2026 | 49 | 100.0 | 4.0 |
 
 ## Model leaderboard
 
@@ -24,16 +24,19 @@ Mean Layer 0 conformance per generating model (from each playground's versions.t
 
 | model | playgrounds | mean score | build | meta | structure | infra | style | best |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Claude Opus 4.8 | 99 | **99.7** | 100% | 100% | 98.4% | 100% | 100% | self-sorted-arrays (100) |
+| Claude Opus 4.8 | 99 | **100** | 100% | 100% | 100% | 100% | 100% | self-sorted-arrays (100) |
 | _(unattributed)_ | 2 | – | | | | | | |
 
 ## Honesty
 
-Honesty is a gate, not a deduction: a failed check caps the headline score so polish cannot buy back fabrication. Calibration is executed headlessly; **verified** means the displayed `predicted` values are genuinely computed by the engine, not hardcoded to match `expected`. Fit (predicted vs expected error) is reported but never gates, because an honest playground may deliberately show a poorly-fitting model (e.g. lexical-liar).
+Honesty is a gate, not a deduction: a failing check caps the headline score so polish cannot buy back fabrication. Calibration is executed headlessly and graded on three axes — is `predicted` genuinely computed (not a hardcoded or laundered literal), is it independent of `expected` (not circular), and does the declared fit hold. Calibrations declare their kind via `calibrationMeta` (see CLAUDE.md): **reproduction** (default; `expected` are derived identities), **validation** (`expected` from external/literature targets), or **showcase** (a deliberately poor model, exempt from fit-gating).
 
-- calibration verified (reproduces): **85**
+- **validated** (computed, independent, fits an external target): **2**
+- **reproduces** (computed and independent; self-consistency target): 82
+- **showcase** (intentionally poor fit, declared): 1
 - not auto-verifiable (no calibration, or prediction computed in-component): 16
-- failed (dead citation or hardcoded calibration): 0
+- **failed** (dead citation, hardcoded, self-identical, or miscalibrated fit, all capped): 0
+- stub playgrounds (placeholder, capped): 2
 - flagged for review: 0
 - citations: not checked (run with --links)
 
@@ -130,20 +133,14 @@ Calibration fit, where `predicted` is verifiable (high error is not necessarily 
 ## Data integrity
 
 - **Unregistered** (folder exists, not in data.ts): `artificial-death`, `byte-birth`
+- **Stubs** (placeholder playground, headline capped): `artificial-death`, `byte-birth`
 
 ## Needs updating
 
 Sorted by ascending conformance. "Top losses" are the highest-weight failing checks — the fastest points to recover.
 
-- **artificial-death** — 46/100 · June 2024 · assumptions.ts; calibration.ts; research companion; in data.ts (not registered); lime palette; valid topics/operations (no registry entry) · 1 `rounded` className(s) — verify none are on main containers/buttons
-- **byte-birth** — 46/100 · June 2024 · assumptions.ts; calibration.ts; research companion; in data.ts (not registered); lime palette; valid topics/operations (no registry entry) · 1 `rounded` className(s) — verify none are on main containers/buttons
-- **halley-window** — 94/100 · February 2025 · PlaygroundViewer; Settings + Viewer split (no Viewer) · 2 `rounded` className(s) — verify none are on main containers/buttons
-- **crystallographic-groups** — 94/100 · July 2025 · PlaygroundViewer; Settings + Viewer split (no Viewer)
-- **hsp90-canalization** — 96/100 · April 2025 · PlaygroundViewer · 1 `rounded` className(s) — verify none are on main containers/buttons
-- **raupian-morphospace** — 96/100 · April 2025 · PlaygroundViewer
-- **logical-morphogenesis** — 96/100 · December 2025 · PlaygroundViewer
-- **descent-and-closure** — 96/100 · January 2026 · PlaygroundViewer
-- **geometry-of-fragmentation** — 96/100 · January 2026 · PlaygroundViewer
+- **artificial-death** — 40/100 · June 2024 · assumptions.ts (missing); calibration.ts (missing); research companion (missing); in data.ts (not registered); lime palette; valid topics/operations (no registry entry) · 1 `rounded` className(s) — verify none are on main containers/buttons
+- **byte-birth** — 40/100 · June 2024 · assumptions.ts (missing); calibration.ts (missing); research companion (missing); in data.ts (not registered); lime palette; valid topics/operations (no registry entry) · 1 `rounded` className(s) — verify none are on main containers/buttons
 
 ## Full scorecard
 
@@ -161,6 +158,9 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | estigrade | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | September 2024 |
 | coasellular-morphogenesis | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | November 2024 |
 | fracqunx | 100 | cal ✓ (fit 16%) | 100% | 100% | 100% | 100% | 100% | February 2025 |
+| halley-window | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | February 2025 |
+| hsp90-canalization | 100 | cal ✓ (fit 20%) | 100% | 100% | 100% | 100% | 100% | April 2025 |
+| raupian-morphospace | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | April 2025 |
 | bifurcation-speciation | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | May 2025 |
 | lefebvrian-conscience | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | May 2025 |
 | debt-singularity | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | June 2025 |
@@ -170,6 +170,7 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | trauma-eustress-dynamics | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | June 2025 |
 | agency-erosion | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | July 2025 |
 | criticality | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | July 2025 |
+| crystallographic-groups | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | July 2025 |
 | entropy-cafe | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | July 2025 |
 | expected-free-energy | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | July 2025 |
 | geometry-becoming-topology | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | July 2025 |
@@ -193,8 +194,11 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | chladni-generator | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | December 2025 |
 | cipolla-quadrant | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | December 2025 |
 | do-calculus | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | December 2025 |
+| logical-morphogenesis | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | December 2025 |
 | unknot-studio | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | December 2025 |
 | activation-functions-lab | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | January 2026 |
+| descent-and-closure | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | January 2026 |
+| geometry-of-fragmentation | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | January 2026 |
 | kernel-smoothing | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | January 2026 |
 | nested-observer-windows | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | January 2026 |
 | author-function-atlas | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | February 2026 |
@@ -219,7 +223,7 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | counterfactual-growth-engine | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | April 2026 |
 | epistemic-lensing | 100 | – | 100% | 100% | 100% | 100% | 100% | April 2026 |
 | moral-phase-space | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | April 2026 |
-| morphologies-of-stability | 100 | cal ✓ (fit 1%) | 100% | 100% | 100% | 100% | 100% | April 2026 |
+| morphologies-of-stability | 100 | cal ✓✓ (fit 1%) | 100% | 100% | 100% | 100% | 100% | April 2026 |
 | morphospace-engine | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | April 2026 |
 | ontogenic-engine | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | April 2026 |
 | ontometrics | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | April 2026 |
@@ -234,19 +238,12 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | no-global-section | 100 | – | 100% | 100% | 100% | 100% | 100% | May 2026 |
 | salience-engine | 100 | – | 100% | 100% | 100% | 100% | 100% | May 2026 |
 | uncare-engine | 100 | – | 100% | 100% | 100% | 100% | 100% | May 2026 |
-| arithmetic-dynamics | 100 | cal ✓ (fit 27%) | 100% | 100% | 100% | 100% | 100% | June 2026 |
+| arithmetic-dynamics | 100 | cal ✓✓ (fit 27%) | 100% | 100% | 100% | 100% | 100% | June 2026 |
 | family-threshold | 100 | – | 100% | 100% | 100% | 100% | 100% | June 2026 |
 | ideological-bent | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | June 2026 |
-| lexical-liar | 100 | cal ✓ (fit 900%) | 100% | 100% | 100% | 100% | 100% | June 2026 |
+| lexical-liar | 100 | cal ~ (showcase) | 100% | 100% | 100% | 100% | 100% | June 2026 |
 | political-autoimmunity | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | June 2026 |
 | rotary-fields | 100 | – | 100% | 100% | 100% | 100% | 100% | June 2026 |
 | trisquare | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | June 2026 |
-| hsp90-canalization | 96 | cal ✓ (fit 20%) | 100% | 100% | 80% | 100% | 100% | April 2025 |
-| raupian-morphospace | 96 | cal ✓ (fit 0%) | 100% | 100% | 80% | 100% | 100% | April 2025 |
-| logical-morphogenesis | 96 | cal ✓ (fit 0%) | 100% | 100% | 80% | 100% | 100% | December 2025 |
-| descent-and-closure | 96 | cal ✓ (fit 0%) | 100% | 100% | 80% | 100% | 100% | January 2026 |
-| geometry-of-fragmentation | 96 | cal ✓ (fit 0%) | 100% | 100% | 80% | 100% | 100% | January 2026 |
-| halley-window | 94 | cal ✓ (fit 0%) | 100% | 100% | 70% | 100% | 100% | February 2025 |
-| crystallographic-groups | 94 | cal ✓ (fit 0%) | 100% | 100% | 70% | 100% | 100% | July 2025 |
-| artificial-death | 46 | – | 100% | 13% | 65% | 0% | 40% | June 2024 |
-| byte-birth | 46 | – | 100% | 13% | 65% | 0% | 40% | June 2024 |
+| artificial-death | 40 | STUB | 100% | 13% | 65% | 0% | 40% | June 2024 |
+| byte-birth | 40 | STUB | 100% | 13% | 65% | 0% | 40% | June 2024 |
