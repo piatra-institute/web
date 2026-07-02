@@ -8,6 +8,7 @@ import PlaygroundViewer from '@/components/PlaygroundViewer';
 import Button from '@/components/Button';
 import Equation from '@/components/Equation';
 import AssumptionPanel from '@/components/AssumptionPanel';
+import CalibrationPanel from '@/components/CalibrationPanel';
 import VersionSelector from '@/components/VersionSelector';
 import ModelChangelog from '@/components/ModelChangelog';
 import ResearchPromptButton from '@/components/ResearchPromptButton';
@@ -27,6 +28,7 @@ import {
     type PresetKey,
 } from './logic';
 import { assumptions } from './assumptions';
+import { buildCalibration } from './calibration';
 import { versions, changelog } from './versions';
 import type {
     MetricSample,
@@ -62,6 +64,8 @@ export default function EntropyCafePlayground({ sourceContext }: Props) {
     );
 
     const narrative = useMemo(() => computeNarrative(metrics, peakComplexity), [metrics, peakComplexity]);
+
+    const calibration = useMemo(() => buildCalibration(), []);
 
     const handleMetricsUpdate = useCallback((sample: SimulationMetrics) => {
         const finite = (v: number) => (Number.isFinite(v) ? v : 0);
@@ -270,6 +274,19 @@ export default function EntropyCafePlayground({ sourceContext }: Props) {
                                 );
                             })}
                         </div>
+                    </div>
+
+                    <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">Calibration</h3>
+                        <p className="leading-relaxed text-sm mb-4">
+                            The live fluid is stochastic, so there is no single number per setting to
+                            fit. What is exactly checkable is the coarse-grained metric itself. Each
+                            case below reruns the entropy and complexity math (the same formulas the
+                            GPU runs) on a known voxel field for one of the three mixing stages, and
+                            checks it against the closed-form value. Entropy climbs across the stages;
+                            complexity peaks in the middle.
+                        </p>
+                        <CalibrationPanel results={calibration} outputLabel="coarse-grained metric" />
                     </div>
 
                     <AssumptionPanel assumptions={assumptions} />

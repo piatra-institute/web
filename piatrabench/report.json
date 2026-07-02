@@ -1,7 +1,7 @@
 {
-  "generated": "2026-06-24T07:53:00.439Z",
+  "generated": "2026-07-02T04:26:17.848Z",
   "n": 101,
-  "avg": 98.5,
+  "avg": 98.6,
   "build": true,
   "links": false,
   "eras": {
@@ -12,8 +12,8 @@
     },
     "2025": {
       "n": 39,
-      "score": 3869,
-      "infra": 155
+      "score": 3876,
+      "infra": 156
     },
     "2026": {
       "n": 49,
@@ -26,12 +26,12 @@
       "key": "claude opus 4.8",
       "label": "Claude Opus 4.8",
       "n": 99,
-      "mean": 99.6,
+      "mean": 99.7,
       "meanByCat": {
         "build": 100,
         "meta": 100,
         "structure": 98.4,
-        "infra": 99.7,
+        "infra": 100,
         "style": 100
       },
       "best": {
@@ -42,8 +42,8 @@
     }
   ],
   "honestyCounts": {
-    "verified": 84,
-    "notAutoVerifiable": 17,
+    "verified": 85,
+    "notAutoVerifiable": 16,
     "failed": 0,
     "flagged": 0
   },
@@ -6773,7 +6773,7 @@
       "name": "entropy café",
       "model": "Claude Opus 4.8",
       "modelKey": "claude opus 4.8",
-      "score": 93,
+      "score": 100,
       "byCat": {
         "build": {
           "earned": 25,
@@ -6788,7 +6788,7 @@
           "total": 20
         },
         "infra": {
-          "earned": 18,
+          "earned": 25,
           "total": 25
         },
         "style": {
@@ -6800,7 +6800,7 @@
         "build": 100,
         "meta": 100,
         "structure": 100,
-        "infra": 72,
+        "infra": 100,
         "style": 100
       },
       "checks": [
@@ -6926,7 +6926,7 @@
           "label": "calibration.ts",
           "category": "infra",
           "weight": 7,
-          "ratio": 0,
+          "ratio": 1,
           "detail": "",
           "applicable": true
         },
@@ -6976,33 +6976,34 @@
           "applicable": true
         }
       ],
-      "failed": [
-        {
-          "id": "calibration",
-          "label": "calibration.ts",
-          "lost": 7,
-          "detail": ""
-        }
-      ],
+      "failed": [],
       "warnings": [],
-      "infraCount": 3,
+      "infraCount": 4,
       "citations": [
         "https://arxiv.org/abs/1405.6903",
         "https://www.youtube.com/watch?v=SWP2ktac34k"
       ],
       "calibration": {
-        "status": "na",
-        "fit": null
+        "status": "verified",
+        "n": 6,
+        "fit": {
+          "mean": 0.000033333333333333335,
+          "worst": 0.0002
+        },
+        "message": null
       },
       "honestyWarnings": [],
       "honesty": {
-        "calibration": "na",
-        "fit": null,
+        "calibration": "verified",
+        "fit": {
+          "mean": 0.000033333333333333335,
+          "worst": 0.0002
+        },
         "citations": "unchecked",
         "flags": [],
         "verdict": "ok"
       },
-      "headline": 93
+      "headline": 100
     },
     {
       "slug": "expected-free-energy",
