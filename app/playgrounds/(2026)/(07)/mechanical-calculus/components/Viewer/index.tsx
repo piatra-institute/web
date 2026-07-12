@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
     LineChart,
     Line,
@@ -24,6 +24,7 @@ import {
     MachineSpec,
     Metrics,
     Params,
+    PatchSpec,
     ScaleLandscape,
     Snapshot,
     SweepDatum,
@@ -31,13 +32,15 @@ import {
     TracePoint,
     PARAM_SPECS,
     X_END,
+    activeParamSpecs,
     formatGain,
 } from '../../logic';
-import Machine3D, { CameraPreset, MODULE_COPY, ModuleId } from '../Machine3D';
+import Machine3D, { CameraPreset, ModuleId, buildModuleCopy } from '../Machine3D';
 import PatchDiagram from '../PatchDiagram';
 
 
 interface ViewerProps {
+    patch: PatchSpec;
     trace: TracePoint[];
     animIndex: number;
     params: Params;
@@ -63,6 +66,7 @@ const CHART_POINTS = 320;
 
 
 export default function Viewer({
+    patch,
     trace,
     animIndex,
     params,
@@ -79,8 +83,15 @@ export default function Viewer({
     onSweepParamChange,
     running,
 }: ViewerProps) {
-    const [module, setModule] = useState<ModuleId>('integrator-1');
+    const [module, setModule] = useState<ModuleId>(patch.integrators[0]?.id ?? 'shaft-bank');
     const [camera, setCamera] = useState<CameraPreset>('overview');
+
+    // A new patch is a new machine: reselect its first integrator.
+    useEffect(() => {
+        setModule(patch.integrators[0]?.id ?? 'shaft-bank');
+    }, [patch.equation, patch.integrators]);
+
+    const moduleCopy = useMemo(() => buildModuleCopy(patch, params), [patch, params]);
 
     const stride = Math.max(1, Math.floor(trace.length / CHART_POINTS));
 
@@ -116,14 +127,22 @@ export default function Viewer({
 
     const sweepSpec = PARAM_SPECS.find(s => s.key === sweepParam);
     const sweepLabel = sweepSpec?.label ?? sweepParam;
+    const sweepChoices = activeParamSpecs(params);
 
-    const copy = MODULE_COPY[module];
+    const copy = moduleCopy[module] ?? moduleCopy['shaft-bank'];
+
+    const driftCell: { label: string; value: string; warn?: boolean } =
+        params.equation === 'van-der-pol'
+            ? { label: 'measured period', value: metrics.period > 0 ? metrics.period.toFixed(2) : 'none' }
+            : params.equation === 'exponential-decay'
+                ? { label: 'headroom', value: `${metrics.headroomDb.toFixed(1)} dB`, warn: metrics.headroomDb < 0 }
+                : { label: 'phase drift', value: `${Math.abs(metrics.phaseDrift).toFixed(1)}°` };
 
     const cells: { label: string; value: string; warn?: boolean }[] = [
         { label: 'useful digits', value: metrics.usefulDigits.toFixed(2), warn: metrics.usefulDigits < 1 },
         { label: 'error', value: `${(metrics.relError * 100).toFixed(2)}%`, warn: metrics.relError > 0.1 },
         { label: 'creep', value: `${metrics.creepPct.toFixed(3)}%`, warn: metrics.grossSlip },
-        { label: 'phase drift', value: `${Math.abs(metrics.phaseDrift).toFixed(1)}°` },
+        driftCell,
         { label: 'dynamic range', value: `${metrics.dynamicRangeDb.toFixed(0)} dB` },
         { label: 'one run', value: `${metrics.runtimeMinutes.toFixed(0)} min` },
     ];
@@ -174,6 +193,7 @@ export default function Viewer({
             <div className="border border-lime-500/20">
                 <div style={{ width: '100%', height: 440 }}>
                     <Machine3D
+                        patch={patch}
                         trace={trace}
                         index={animIndex}
                         params={params}
@@ -195,7 +215,7 @@ export default function Viewer({
                 </div>
             </div>
 
-            <PatchDiagram params={params} spec={spec} metrics={metrics} />
+            <PatchDiagram patch={patch} params={params} spec={spec} metrics={metrics} />
 
             {/* What the pen drew, against what it should have drawn. */}
             <div>
@@ -393,7 +413,7 @@ export default function Viewer({
                 <div className="flex items-center gap-2 mb-2 flex-wrap">
                     <span className="text-xs text-lime-200/60 font-mono">sweep</span>
                     <div className="flex gap-1 flex-wrap">
-                        {PARAM_SPECS.map(spec2 => (
+                        {sweepChoices.map(spec2 => (
                             <button
                                 key={spec2.key}
                                 onClick={() => onSweepParamChange(spec2.key)}
@@ -483,7 +503,9 @@ export default function Viewer({
             <div className="text-xs text-lime-200/30 -mt-4 px-1">
                 These cases check the simulated mechanism against the mechanics it claims to obey: the exact solution of the
                 equation, the characteristic roots of its own loop, the travel limit of a carriage, and the invariance that
-                makes a scale factor a change of units rather than a change of machine.
+                makes a scale factor a change of units rather than a change of machine. The last three repatch the bench:
+                the decay patch must draw the exponential, the forced patch must find the resonance law, and the van der Pol
+                patch must forget its initial condition, although the stepper contains none of those equations.
             </div>
         </div>
     );

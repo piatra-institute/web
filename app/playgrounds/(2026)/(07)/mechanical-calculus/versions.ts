@@ -14,6 +14,18 @@ export const versions: ModelVersion[] = [
 
 export const changelog: ChangelogEntry[] = [
     {
+        version: 'v2',
+        date: 'July 2026',
+        changes: [
+            'The equation now lives only in the patch: the simulator integrates wheel-on-disc kinematics, adders and gear ratios, and the differential equation emerges from the wiring rather than being hard-coded in the stepper',
+            'Four setup sheets: damped oscillator (unchanged behaviour, verified against the previous model to the last digit), exponential decay (one integrator, one change gear), forced oscillator (live input table), van der Pol in Lienard form (squares built by parts on discs geared to y)',
+            'Operator tracking error as a fifth error source: a deterministic quasi-periodic wobble of the input-table cross-hair, a set fraction of the forcing amplitude',
+            'Per-integrator scale factors as fixed multiples of the common k, written into each setup sheet the way an operator would have derived them',
+            'Loop lag is now a property of one marked feedback edge per loop, matching the lumped-lag assumption instead of being applied globally',
+            'Three new calibration cases: a repatched machine must draw the exponential, the forced patch must find the resonance law, and the van der Pol limit cycle must forget its initial condition',
+        ],
+    },
+    {
         version: 'v1.1',
         date: 'July 2026',
         changes: [

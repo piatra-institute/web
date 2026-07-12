@@ -26,14 +26,10 @@ export const M = {
 export interface Motion {
     /** Independent variable x. */
     x: number;
-    /** Velocity carried by integrator 1's output. */
-    v: number;
-    /** Displacement carried by integrator 2's output. */
-    y: number;
-    /** Integrator 1 carriage offset, mm (clipped at the rim). */
-    offA: number;
-    /** Integrator 2 carriage offset, mm (clipped at the rim). */
-    offV: number;
+    /** Every bus variable of the active patch at this instant. */
+    vars: Record<string, number>;
+    /** Carriage offset per integrator id, mm (clipped at the rim). */
+    offsets: Record<string, number>;
 }
 
 export type Angle = () => number;
@@ -884,7 +880,27 @@ export function Plotter({
  * Input table: idle here, but fully rigged.
  * ---------------------------------------------------------------- */
 
-export function InputTable({ selected }: { selected: boolean }) {
+export function InputTable({
+    selected,
+    live = false,
+    crankAngle,
+    cursorX,
+}: {
+    selected: boolean;
+    /** True when the patch wires the table into the loop. */
+    live?: boolean;
+    /** Crank rotation, when live. */
+    crankAngle?: Angle;
+    /** Cross-hair carriage position, -1..1 across the table, when live. */
+    cursorX?: () => number;
+}) {
+    const cursor = useRef<THREE.Group>(null);
+    useFrame(() => {
+        if (cursor.current && cursorX) {
+            cursor.current.position.x = THREE.MathUtils.clamp(cursorX(), -1, 1) * 0.85;
+        }
+    });
+
     const curve = useMemo(
         () => Array.from({ length: 60 }, (_, i) => {
             const x = -0.9 + (i / 59) * 1.8;
@@ -902,26 +918,47 @@ export function InputTable({ selected }: { selected: boolean }) {
                 <boxGeometry args={[1.95, 0.02, 1.25]} />
                 <meshStandardMaterial color={M.paper} roughness={0.95} />
             </mesh>
-            <Line points={curve} color={M.limeDeep} lineWidth={1.4} />
+            <Line points={curve} color={live ? M.lime : M.limeDeep} lineWidth={1.4} />
 
-            {/* Cross-hair carriage on its two screws, waiting for an operator. */}
-            <AxleShaft position={[0, 0.12, -0.68]} length={1.9} axis="x" radius={0.02} />
-            <mesh position={[0, 0.14, 0]} castShadow>
-                <boxGeometry args={[0.035, 0.09, 1.25]} />
-                <meshStandardMaterial color={M.steel} metalness={0.7} roughness={0.4} />
-            </mesh>
-            <mesh position={[0, 0.2, 0]} castShadow>
-                <boxGeometry args={[0.09, 0.03, 0.09]} />
-                <meshStandardMaterial color={M.bright} metalness={0.7} roughness={0.35} />
-            </mesh>
+            {/* Cross-hair carriage on its two screws. */}
+            <AxleShaft position={[0, 0.12, -0.68]} length={1.9} axis="x" radius={0.02} angle={live ? crankAngle : undefined} accent={live} />
+            <group ref={cursor}>
+                <mesh position={[0, 0.14, 0]} castShadow>
+                    <boxGeometry args={[0.035, 0.09, 1.25]} />
+                    <meshStandardMaterial color={live ? M.lime : M.steel} metalness={0.7} roughness={0.4} />
+                </mesh>
+                <mesh position={[0, 0.2, 0]} castShadow>
+                    <boxGeometry args={[0.09, 0.03, 0.09]} />
+                    <meshStandardMaterial
+                        color={M.bright}
+                        emissive={live ? M.limeDeep : '#000000'}
+                        emissiveIntensity={live ? 0.6 : 0}
+                        metalness={0.7}
+                        roughness={0.35}
+                    />
+                </mesh>
+            </group>
 
-            {/* Hand cranks. */}
+            {/* Hand cranks: turning when an operator is tracing. */}
             {([-0.55, 0.55] as const).map(hx => (
                 <group key={hx} position={[hx, 0.1, 0.82]}>
-                    <mesh rotation={[Math.PI / 2, 0, 0]} castShadow>
-                        <torusGeometry args={[0.09, 0.016, 6, 20]} />
-                        <meshStandardMaterial color={M.steel} metalness={0.8} roughness={0.3} />
-                    </mesh>
+                    {live && crankAngle ? (
+                        <Spin angle={crankAngle} axis="z" flip={hx < 0}>
+                            <mesh rotation={[Math.PI / 2, 0, 0]} castShadow>
+                                <torusGeometry args={[0.09, 0.016, 6, 20]} />
+                                <meshStandardMaterial color={M.bright} metalness={0.8} roughness={0.3} />
+                            </mesh>
+                            <mesh position={[0.07, 0.03, 0]}>
+                                <boxGeometry args={[0.03, 0.06, 0.03]} />
+                                <meshStandardMaterial color={M.frame} />
+                            </mesh>
+                        </Spin>
+                    ) : (
+                        <mesh rotation={[Math.PI / 2, 0, 0]} castShadow>
+                            <torusGeometry args={[0.09, 0.016, 6, 20]} />
+                            <meshStandardMaterial color={M.steel} metalness={0.8} roughness={0.3} />
+                        </mesh>
+                    )}
                     <mesh rotation={[Math.PI / 2, 0, 0]}>
                         <cylinderGeometry args={[0.02, 0.02, 0.1, 8]} />
                         <meshStandardMaterial color={M.frame} />
@@ -937,25 +974,19 @@ export function InputTable({ selected }: { selected: boolean }) {
  * The interconnection shaft bank: the program.
  * ---------------------------------------------------------------- */
 
+export interface BankRow {
+    z: number;
+    angle?: Angle;
+}
+
 export function ShaftBank({
-    driveAngle,
-    vAngle,
-    yAngle,
+    rows,
     selected,
 }: {
-    driveAngle: Angle;
-    vAngle: Angle;
-    yAngle: Angle;
+    /** Six rows; a row with an angle is patched and turns, the rest idle. */
+    rows: BankRow[];
     selected: boolean;
 }) {
-    const rows: { z: number; angle?: Angle }[] = [
-        { z: -0.6, angle: driveAngle },
-        { z: -0.36, angle: vAngle },
-        { z: -0.12, angle: yAngle },
-        { z: 0.12 },
-        { z: 0.36 },
-        { z: 0.6 },
-    ];
     const radius = selected ? 0.036 : 0.028;
     return (
         <group>

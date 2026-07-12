@@ -17,6 +17,8 @@ import {
     Snapshot,
     SweepableParam,
     presetParams,
+    buildPatch,
+    activeParamSpecs,
     machineSpec,
     runMachine,
     computeMetrics,
@@ -45,14 +47,22 @@ export default function MechanicalCalculusPlayground({ sourceContext }: Props) {
     const [animTime, setAnimTime] = useState(0);
     const frameRef = useRef<number | null>(null);
 
+    const patch = useMemo(() => buildPatch(params), [params]);
     const spec = useMemo(() => machineSpec(params), [params]);
     const run = useMemo(() => runMachine(params), [params]);
-    const metrics = useMemo(() => computeMetrics(params), [params]);
+    const metrics = useMemo(() => computeMetrics(params, undefined, run), [params, run]);
     const narrative = useMemo(() => computeNarrative(metrics, params), [metrics, params]);
     const sweep = useMemo(() => computeSweep(params, sweepParam), [params, sweepParam]);
     const landscape = useMemo(() => computeScaleLandscape(params), [params]);
     const sensitivityBars = useMemo(() => computeSensitivity(params), [params]);
     const calibrationResults = useMemo(() => buildCalibration(), []);
+
+    // A sweep parameter can stop applying when the equation changes.
+    useEffect(() => {
+        if (!activeParamSpecs(params).some(s => s.key === sweepParam)) {
+            setSweepParam('torqueGain');
+        }
+    }, [params, sweepParam]);
 
     const animIndex = Math.round(animTime * (run.trace.length - 1));
 
@@ -148,6 +158,7 @@ export default function MechanicalCalculusPlayground({ sourceContext }: Props) {
             content: (
                 <PlaygroundViewer controls={controls}>
                     <Viewer
+                        patch={patch}
                         trace={run.trace}
                         animIndex={animIndex}
                         params={params}
@@ -314,15 +325,48 @@ export default function MechanicalCalculusPlayground({ sourceContext }: Props) {
                     </div>
 
                     <div>
+                        <h3 className="text-lime-400 font-semibold mb-3">The equation is the wiring</h3>
+                        <p className="leading-relaxed text-sm">
+                            The simulator here contains no differential equation. Its state is the
+                            accumulated rotation of each integrator wheel, and its update rule is the
+                            kinematics of a wheel on a disc, a differential gear, a gear train with lost
+                            motion, and a servo with lag. The equation lives entirely in the patch: which
+                            shaft turns each disc, which shaft each carriage is screwed to, and which
+                            change-gear ratios feed the adders. Choose a different equation in the settings
+                            and you are not selecting a different formula; you are rewiring the bench.
+                        </p>
+                        <div className="border-l-2 border-lime-500/40 pl-4 mt-4">
+                            <p className="text-lime-200/80 mb-2">
+                                The patch is the program. The stepper only knows how metal moves.
+                            </p>
+                        </div>
+                        <p className="leading-relaxed text-sm mt-4">
+                            Four setup sheets ship. The damped oscillator is the classic two-integrator
+                            loop. The exponential decay is the smallest possible program: one integrator and
+                            one sign-reversing gear, closed on itself. The forced oscillator wires the input
+                            table into the adder, and with it the operator&rsquo;s hand: the cross-hair
+                            wanders a fraction of a percent off the forcing curve, and that wander is stirred
+                            into the answer. The van der Pol equation is the machine at full stretch: its
+                            squares are built by integrators whose discs are geared to{' '}
+                            <Equation math="y" /> itself, since{' '}
+                            <Equation math="\textstyle\int y\,dy = y^2/2" />, so the products are integrals
+                            too. Multiplication by parts costs two more integrators and pays the creep budget
+                            twice, which is why the calibration panel checks that the limit cycle still
+                            forgets its initial condition.
+                        </p>
+                    </div>
+
+                    <div>
                         <h3 className="text-lime-400 font-semibold mb-3">What this model leaves out</h3>
                         <p className="leading-relaxed text-sm">
                             Four error sources are modeled: microslip, backlash, follow-up lag, and
-                            saturation. A real machine also has disc runout, wheel wear, shafts that wind up
-                            under load, paper that stretches, temperature, and an operator with a hand on the
-                            input table. Both integrators here share one scale factor, where a real operator
-                            would have scaled them separately, so the saturation cliff is harsher here than
-                            it needed to be in 1931. The lag is lumped into a single first-order term rather
-                            than the second-order transmission it really was.
+                            saturation, plus the operator&rsquo;s tracking error when a patch uses the input
+                            table. A real machine also has disc runout, wheel wear, shafts that wind up
+                            under load, paper that stretches, and temperature. Each integrator runs at a
+                            fixed multiple of one common scale factor, written into the setup sheet; the
+                            hours an operator spent deriving those multiples are assumed already spent, and
+                            re-scaling mid-run is not represented. The lag is lumped into a single
+                            first-order term rather than the second-order transmission it really was.
                         </p>
                         <p className="leading-relaxed text-sm mt-2">
                             None of the constants are fitted to a historical accuracy figure. The calibration

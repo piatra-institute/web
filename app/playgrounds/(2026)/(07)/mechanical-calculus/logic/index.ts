@@ -1,14 +1,14 @@
 /**
  * Mechanical calculus: an error model of a wheel-and-disc differential analyzer.
  *
- * The machine solves the damped oscillator
- *
- *     y'' + 2*zeta*omega*y' + omega^2*y = 0,   y(0) = y0,  y'(0) = 0
- *
- * by patching two integrators in a loop: integrator 1 carries the acceleration
- * on its wheel and delivers the velocity on its output shaft; integrator 2
- * carries the velocity and delivers the displacement, which is fed back to
- * integrator 1 and drawn by the pen.
+ * The machine is programmed by a patch (logic/patch.ts): which shaft turns each
+ * disc, which shaft each carriage is screwed to, and which change-gear ratios
+ * feed the adders. The simulator (logic/engine.ts) integrates only the
+ * mechanism's kinematics; the differential equation being solved appears
+ * nowhere in the stepper. It emerges from the wiring, exactly as it did on the
+ * bench. Four setup sheets ship: the damped oscillator, an exponential decay,
+ * a forced oscillator with a live input table, and the van der Pol equation
+ * with its squares built by parts.
  *
  * Wheel-and-disc kinematics. A disc turning through angle Theta drags a wheel
  * of radius rho sitting at radial offset r, so the wheel turns through
@@ -19,7 +19,7 @@
  * the carriage placing the wheel at r = k*V (k in mm per unit of the integrand),
  * the output shaft accumulates (k / rho) * integral(V dx) turns. So one turn of
  * an output shaft is worth rho/k units of the integral: the scale factor k is
- * the whole of "programming" this machine.
+ * the whole of "programming" this machine, together with the patch.
  *
  * Four physical error sources act on that ideal relation:
  *
@@ -33,11 +33,10 @@
  *   lag        the follow-up servos take real time to null an error. Running the
  *              independent variable at S units per real second turns a real-time
  *              lag into a lag of tau = S * lag_real in the problem's own units.
- *              The value reaching a carriage is the value its shaft carried tau
- *              ago, taken to first order: y(x - tau) = y - tau * g * v, since the
- *              represented y advances at g*v. In a feedback loop that lag eats
- *              damping, zeta_eff = zeta - g*omega*tau/2, and once it has eaten
- *              all of it the machine oscillates on its own.
+ *              Each loop's lag is lumped onto one marked feedback edge and
+ *              applied to first order. In a feedback loop that lag eats damping,
+ *              zeta_eff = zeta - g*omega*tau/2, and once it has eaten all of it
+ *              the machine oscillates on its own.
  *   saturation the wheel cannot leave the disc, so |k*V| <= R.
  *
  * The loop is integrated with RK4 so that numerical error stays several orders
@@ -46,6 +45,44 @@
  * the end of it.
  */
 
+import {
+    CoeffSpec,
+    EquationCoeffs,
+    EquationKey,
+    EQUATIONS,
+    EQUATION_KEYS,
+    PatchSpec,
+    SLOT_POSITIONS,
+    X_END,
+    buildPatchFor,
+    idealY,
+    idealV,
+} from './patch';
+import {
+    MachineRun,
+    Mechanism,
+    TracePoint,
+    idealRun,
+    idealSeries,
+    idealEnvelopeRate,
+    measurePeriod,
+    measureEnvelopeRate,
+    runPatch,
+} from './engine';
+
+export { X_END, idealY, idealV, EQUATIONS, EQUATION_KEYS, SLOT_POSITIONS, buildPatchFor };
+export { measurePeriod, measureEnvelopeRate };
+export type { EquationKey, EquationCoeffs, CoeffSpec, PatchSpec };
+export type { MachineRun, TracePoint, Mechanism };
+export type {
+    AdderSpec,
+    AdderTerm,
+    IntegratorSpec,
+    InputTableSpec,
+    SlotId,
+} from './patch';
+
+
 export type PresetKey =
     | 'kelvin-1876'
     | 'construction-set'
@@ -53,11 +90,24 @@ export type PresetKey =
     | 'run-it-fast'
     | 'mis-scaled';
 
-export interface Params {
-    /** omega: the problem's natural frequency, radians per unit of x. */
+export interface Params extends EquationCoeffs {
+    /** Which setup sheet the machine is wired to. */
+    equation: EquationKey;
+
+    /** omega: the oscillator's natural frequency, radians per unit of x. */
     frequency: number;
-    /** zeta: the problem's damping ratio. */
+    /** zeta: the oscillator's damping ratio. */
     damping: number;
+    /** lambda: the decay equation's rate constant. */
+    lambda: number;
+    /** mu: the van der Pol nonlinearity. */
+    mu: number;
+    /** A: forcing amplitude on the input table. */
+    amplitude: number;
+    /** Omega: forcing frequency on the input table. */
+    forceFrequency: number;
+    /** Operator curve-following error, percent of the forcing amplitude. */
+    trackingError: number;
 
     /** G: torque amplifier gain. 1 means no amplifier at all. */
     torqueGain: number;
@@ -73,15 +123,13 @@ export interface Params {
     backlash: number;
     /** S: how fast the drive turns the independent variable, x-units per real second. */
     machineSpeed: number;
-    /** k: scale factor, mm of wheel offset per unit of the integrand. */
+    /** k: common scale factor, mm of wheel offset per unit of the integrand.
+     *  Each integrator uses relScale_i * k, per its setup sheet. */
     scaleFactor: number;
 
     preset: PresetKey;
 }
 
-
-/** Units of the independent variable covered by one run of the machine. */
-export const X_END = 30;
 
 /** Integration step for the displayed run. */
 const DT = 0.005;
@@ -105,8 +153,14 @@ export const ANIMATION_TOTAL_FRAMES = 260;
 
 
 export const DEFAULT_PARAMS: Params = {
+    equation: 'damped-oscillator',
     frequency: 1.2,
     damping: 0.05,
+    lambda: 0.2,
+    mu: 1.0,
+    amplitude: 0.5,
+    forceFrequency: 0.8,
+    trackingError: 0.5,
     torqueGain: 12000,
     friction: 0.28,
     wheelLoad: 25,
@@ -152,6 +206,7 @@ export function presetParams(key: PresetKey): Params {
     switch (key) {
         case 'kelvin-1876':
             return {
+                ...DEFAULT_PARAMS,
                 frequency: 1.2, damping: 0.05,
                 torqueGain: 1, friction: 0.28, wheelLoad: 25, wheelRadius: 20,
                 discRadius: 120, backlash: 4, machineSpeed: 0.01, scaleFactor: 60,
@@ -159,6 +214,7 @@ export function presetParams(key: PresetKey): Params {
             };
         case 'construction-set':
             return {
+                ...DEFAULT_PARAMS,
                 frequency: 1.2, damping: 0.05,
                 torqueGain: 5000, friction: 0.15, wheelLoad: 8, wheelRadius: 15,
                 discRadius: 60, backlash: 90, machineSpeed: 0.03, scaleFactor: 35,
@@ -168,6 +224,7 @@ export function presetParams(key: PresetKey): Params {
             return { ...DEFAULT_PARAMS, preset: key };
         case 'run-it-fast':
             return {
+                ...DEFAULT_PARAMS,
                 frequency: 1.3, damping: 0.01,
                 torqueGain: 12000, friction: 0.28, wheelLoad: 25, wheelRadius: 20,
                 discRadius: 120, backlash: 4, machineSpeed: 0.6, scaleFactor: 60,
@@ -175,6 +232,7 @@ export function presetParams(key: PresetKey): Params {
             };
         case 'mis-scaled':
             return {
+                ...DEFAULT_PARAMS,
                 frequency: 1.2, damping: 0.05,
                 torqueGain: 12000, friction: 0.28, wheelLoad: 25, wheelRadius: 20,
                 discRadius: 120, backlash: 4, machineSpeed: 0.01, scaleFactor: 150,
@@ -184,48 +242,32 @@ export function presetParams(key: PresetKey): Params {
 }
 
 
-/* ---------------------------------------------------------------- *
- * The exact solution the machine is trying to draw.
- * ---------------------------------------------------------------- */
-
-/** y(x) for the underdamped oscillator with y(0) = 1, y'(0) = 0. */
-export function idealY(x: number, omega: number, zeta: number): number {
-    const wd = omega * Math.sqrt(1 - zeta * zeta);
-    return Math.exp(-zeta * omega * x) * (Math.cos(wd * x) + (zeta * omega / wd) * Math.sin(wd * x));
+/**
+ * The preset stories are told on the damped oscillator. Selecting one there
+ * restores it exactly; on any other equation only the machine's condition
+ * carries over, and the equation keeps its coefficients.
+ */
+export function applyPreset(key: PresetKey, current: Params): Params {
+    const preset = presetParams(key);
+    if (current.equation === 'damped-oscillator') return preset;
+    return {
+        ...current,
+        torqueGain: preset.torqueGain,
+        friction: preset.friction,
+        wheelLoad: preset.wheelLoad,
+        wheelRadius: preset.wheelRadius,
+        discRadius: preset.discRadius,
+        backlash: preset.backlash,
+        machineSpeed: preset.machineSpeed,
+        scaleFactor: preset.scaleFactor,
+        preset: key,
+    };
 }
 
-/** y'(x) for the same initial conditions. */
-export function idealV(x: number, omega: number, zeta: number): number {
-    const wd = omega * Math.sqrt(1 - zeta * zeta);
-    return -Math.exp(-zeta * omega * x) * ((omega * omega) / wd) * Math.sin(wd * x);
-}
 
-
-interface PeakRates {
-    /** Largest |y''| over the run: what integrator 1's carriage must represent. */
-    accel: number;
-    /** Largest |y'| over the run: what integrator 2's carriage must represent. */
-    velocity: number;
-    /** Largest |y'''| over the run: how fast a carriage must be slewed. */
-    jerk: number;
-}
-
-function peakRates(omega: number, zeta: number, y0: number): PeakRates {
-    let accel = 0;
-    let velocity = 0;
-    let jerk = 0;
-
-    for (let x = 0; x <= X_END; x += 0.02) {
-        const y = idealY(x, omega, zeta);
-        const v = idealV(x, omega, zeta);
-        const a = -2 * zeta * omega * v - omega * omega * y;
-        const j = -2 * zeta * omega * a - omega * omega * v;
-        accel = Math.max(accel, Math.abs(a));
-        velocity = Math.max(velocity, Math.abs(v));
-        jerk = Math.max(jerk, Math.abs(j));
-    }
-
-    return { accel: accel * y0, velocity: velocity * y0, jerk: jerk * y0 };
+/** The active patch: the machine's program, derived from the parameters. */
+export function buildPatch(params: Params): PatchSpec {
+    return buildPatchFor(params.equation, params);
 }
 
 
@@ -248,36 +290,74 @@ export interface MachineSpec {
     lagReal: number;
     /** tau: the same lag expressed in units of the independent variable. */
     lag: number;
-    /** The lag at which the loop's effective damping reaches zero. */
-    lagCritical: number;
+    /** The lag at which the loop's effective damping reaches zero.
+     *  Null when the equation has no linearised loop to analyse. */
+    lagCritical: number | null;
     stable: boolean;
-    /** Gear-train lost motion, in units of the transmitted variable. */
+    /** Gear-train lost motion at the pen's integrator, in represented units. */
     deadBand: number;
-    /** R / k: the largest integrand the disc can represent. */
+    /** R / k at the pen's integrator: the largest integrand it can represent. */
     ceiling: number;
-    /** The largest integrand the problem actually demands. */
+    /** The largest integrand the patch actually demands, in common-k units. */
     peakIntegrand: number;
     /** Ratio of the two, in decibels. Negative means the wheel leaves the disc. */
     headroomDb: number;
     /** 20 log10(R / (rho * beta)): the mechanism's intrinsic resolution span. */
     dynamicRangeDb: number;
-    /** zeta_eff = zeta - g*omega*tau/2. Negative means a growing oscillation. */
-    effDamping: number;
-    /** g * omega: the frequency the machine actually runs at. */
-    machineOmega: number;
+    /** zeta_eff = zeta - g*omega*tau/2. Null for equations without a zeta. */
+    effDamping: number | null;
+    /** g * omega: the frequency the machine actually runs at. Null likewise. */
+    machineOmega: number | null;
     /** How long one run takes on the real machine, minutes. */
     runtimeMinutes: number;
 }
 
 
-export function machineSpec(params: Params, y0: number = 1): MachineSpec {
-    const { frequency: omega, damping: zeta } = params;
-    const rhoM = params.wheelRadius / 1000;
+/** Peak carriage demand per integrator, in the represented variable's units. */
+function patchPeaks(
+    params: Params,
+    y0: number,
+): { integrands: Record<string, number>; slew: number } {
+    const eq = EQUATIONS[params.equation];
+    if (eq.peaks) return eq.peaks(params, y0);
 
-    const peaks = peakRates(omega, zeta, y0);
+    // No closed form: measure the ideal run on the coarse grid.
+    const spec = buildPatch(params);
+    const run = idealRun(params.equation, params, y0, DT_SWEEP);
+    const integrands: Record<string, number> = {};
+    let slew = 0;
+
+    for (const int of spec.integrators) {
+        let peak = 0;
+        let peakSlew = 0;
+        const trace = run.trace;
+        for (let i = 0; i < trace.length; i++) {
+            const c = Math.abs(trace[i].vars[int.carriage] ?? 0);
+            peak = Math.max(peak, c);
+            if (i > 0) {
+                const prev = trace[i - 1].vars[int.carriage] ?? 0;
+                const here = trace[i].vars[int.carriage] ?? 0;
+                peakSlew = Math.max(peakSlew, Math.abs(here - prev) / DT_SWEEP);
+            }
+        }
+        integrands[int.id] = peak;
+        slew = Math.max(slew, int.relScale * peakSlew);
+    }
+
+    return { integrands, slew };
+}
+
+
+export function machineSpec(params: Params, y0?: number): MachineSpec {
+    const eq = EQUATIONS[params.equation];
+    const y = y0 ?? eq.defaultY0;
+    const rhoM = params.wheelRadius / 1000;
+    const spec = buildPatch(params);
+
+    const peaks = patchPeaks(params, y);
 
     const frictionLimit = params.friction * params.wheelLoad * rhoM;
-    const carriageSlew = params.scaleFactor * peaks.jerk;
+    const carriageSlew = params.scaleFactor * peaks.slew;
     const loadTorque = T_STATIC + C_CARRIAGE * carriageSlew;
 
     const creep = loadTorque / Math.max(params.torqueGain * frictionLimit, 1e-12);
@@ -286,20 +366,33 @@ export function machineSpec(params: Params, y0: number = 1): MachineSpec {
 
     const lagReal = C_SERVO / params.torqueGain + T_GEAR;
     const lag = Math.min(params.machineSpeed * lagReal, MAX_LAG);
-    const lagCritical = gain > 0 ? (2 * zeta) / (gain * omega) : Infinity;
+
+    const linear = eq.linear ?? null;
+    const omega = linear ? linear.omega(params) : null;
+    const zeta = linear ? linear.zeta(params) : null;
+
+    const lagCritical = linear && omega !== null && zeta !== null
+        ? (gain > 0 ? (2 * zeta) / (gain * omega) : Infinity)
+        : null;
+    const effDamping = linear && omega !== null && zeta !== null
+        ? zeta - (gain * omega * lag) / 2
+        : null;
+    const machineOmega = omega !== null ? gain * omega : null;
 
     const backlashTurns = params.backlash * TURNS_PER_ARCMIN;
-    const deadBand = (backlashTurns * params.wheelRadius) / params.scaleFactor;
+    const penInt = spec.integrators.find(i => i.out === spec.penVar) ?? spec.integrators[0];
+    const deadBand = (backlashTurns * params.wheelRadius) / (penInt.relScale * params.scaleFactor);
 
+    // The tightest integrator: peak demand as a multiple of the common k.
+    let peakIntegrand = 1e-9;
+    for (const int of spec.integrators) {
+        peakIntegrand = Math.max(peakIntegrand, int.relScale * (peaks.integrands[int.id] ?? 0));
+    }
     const ceiling = params.discRadius / params.scaleFactor;
-    const peakIntegrand = Math.max(peaks.accel, peaks.velocity, 1e-9);
     const headroomDb = 20 * Math.log10(ceiling / peakIntegrand);
 
     const resolutionSpan = params.discRadius / (params.wheelRadius * Math.max(backlashTurns, 1e-7));
     const dynamicRangeDb = Math.min(20 * Math.log10(resolutionSpan), 160);
-
-    const effDamping = zeta - (gain * omega * lag) / 2;
-    const machineOmega = gain * omega;
 
     return {
         frictionLimit,
@@ -310,7 +403,7 @@ export function machineSpec(params: Params, y0: number = 1): MachineSpec {
         lagReal,
         lag,
         lagCritical,
-        stable: gain > 0 && lag < lagCritical,
+        stable: lagCritical === null ? gain > 0 : gain > 0 && lag < lagCritical,
         deadBand,
         ceiling,
         peakIntegrand,
@@ -327,179 +420,39 @@ export function machineSpec(params: Params, y0: number = 1): MachineSpec {
  * Running the machine.
  * ---------------------------------------------------------------- */
 
-export interface TracePoint {
-    x: number;
-    /** The exact solution: what the pen should be drawing. */
-    ideal: number;
-    /** What the pen is actually drawing. */
-    machine: number;
-    /** Signed departure of the pen from the truth. */
-    error: number;
-    /** The velocity arriving at integrator 2's carriage. */
-    velocity: number;
-    /** Integrator 1 wheel offset from the disc centre, mm. */
-    offsetA: number;
-    /** Integrator 2 wheel offset from the disc centre, mm. */
-    offsetV: number;
-    /** 1 when a wheel is being held at the rim by the carriage stop. */
-    clipped: number;
-}
-
-export interface MachineRun {
+export interface Snapshot {
+    params: Params;
+    metrics: Metrics;
     trace: TracePoint[];
-    /** RMS(machine - ideal) / RMS(ideal) over the whole run. */
-    relError: number;
-    /** Decimal digits of the answer the machine got right. */
-    usefulDigits: number;
-    /** Period measured from the machine's own zero crossings, 0 if unmeasurable. */
-    period: number;
-    /** Log-slope of the machine's amplitude envelope. Positive means it is hunting. */
-    envelopeRate: number;
-    /** Fraction of the run spent riding a carriage stop. */
-    clipFraction: number;
-    peakExcursion: number;
-    diverged: boolean;
+    label: string;
 }
 
 
-/** Standard lost-motion model: the output holds until the play is taken up. */
-function play(input: number, held: number, band: number): number {
-    if (band <= 0) return input;
-    const half = band / 2;
-    if (input - held > half) return input - half;
-    if (held - input > half) return input + half;
-    return held;
-}
+export function runMachine(params: Params, y0?: number, dt: number = DT): MachineRun {
+    const eq = EQUATIONS[params.equation];
+    const y = y0 ?? eq.defaultY0;
+    const spec = machineSpec(params, y);
+    const patch = buildPatch(params);
 
-
-/** One instant of the machine: where the wheels sit and how fast the shafts turn. */
-interface Stage {
-    dv: number;
-    dy: number;
-    offsetA: number;
-    offsetV: number;
-    transmittedY: number;
-    transmittedV: number;
-    clipped: boolean;
-}
-
-
-export function runMachine(params: Params, y0: number = 1, dt: number = DT): MachineRun {
-    const spec = machineSpec(params, y0);
-    const { frequency: omega, damping: zeta, scaleFactor: k, discRadius: R } = params;
-    const { gain: g, deadBand, lag } = spec;
-
-    /**
-     * The whole machine at one instant. `heldY` and `heldV` are the values the
-     * gear trains are currently presenting downstream; they are frozen across an
-     * RK4 step and taken up at the end of it.
-     */
-    const stage = (y: number, v: number, heldY: number, heldV: number): Stage => {
-        const transmittedV = play(v, heldV, deadBand);
-        const transmittedY = play(y, heldY, deadBand);
-
-        // What integrator 1's carriage is told to represent, tau of lag ago.
-        const lagged = transmittedY - lag * g * transmittedV;
-        const command = -2 * zeta * omega * transmittedV - omega * omega * lagged;
-
-        let offsetA = k * command;
-        const clipA = Math.abs(offsetA) > R;
-        if (clipA) offsetA = Math.sign(offsetA) * R;
-
-        let offsetV = k * transmittedV;
-        const clipV = Math.abs(offsetV) > R;
-        if (clipV) offsetV = Math.sign(offsetV) * R;
-
-        return {
-            dv: (g * offsetA) / k,
-            dy: (g * offsetV) / k,
-            offsetA,
-            offsetV,
-            transmittedY,
-            transmittedV,
-            clipped: clipA || clipV,
-        };
-    };
-
-    const steps = Math.round(X_END / dt);
-    const trace: TracePoint[] = [];
-
-    // The wheels' accumulated rotations, and what survives the gear trains.
-    let y = y0;
-    let v = 0;
-    let heldY = y0;
-    let heldV = 0;
-
-    let clipCount = 0;
-    let peakExcursion = 0;
-    let diverged = false;
-
-    for (let n = 0; n <= steps; n++) {
-        const x = n * dt;
-        const s1 = stage(y, v, heldY, heldV);
-
-        if (s1.clipped) clipCount++;
-        peakExcursion = Math.max(peakExcursion, Math.abs(s1.transmittedY));
-
-        const ideal = y0 * idealY(x, omega, zeta);
-        trace.push({
-            x,
-            ideal,
-            machine: s1.transmittedY,
-            error: s1.transmittedY - ideal,
-            velocity: s1.transmittedV,
-            offsetA: s1.offsetA,
-            offsetV: s1.offsetV,
-            clipped: s1.clipped ? 1 : 0,
-        });
-
-        if (n === steps) break;
-
-        const h = dt / 2;
-        const s2 = stage(y + h * s1.dy, v + h * s1.dv, heldY, heldV);
-        const s3 = stage(y + h * s2.dy, v + h * s2.dv, heldY, heldV);
-        const s4 = stage(y + dt * s3.dy, v + dt * s3.dv, heldY, heldV);
-
-        y += (dt / 6) * (s1.dy + 2 * s2.dy + 2 * s3.dy + s4.dy);
-        v += (dt / 6) * (s1.dv + 2 * s2.dv + 2 * s3.dv + s4.dv);
-
-        if (!Number.isFinite(y) || !Number.isFinite(v) || Math.abs(y) > 1e5) {
-            y = Number.isFinite(y) ? Math.sign(y) * Math.min(Math.abs(y), 1e5) : 1e5;
-            v = Number.isFinite(v) ? Math.sign(v) * Math.min(Math.abs(v), 1e5) : 0;
-            diverged = true;
-        }
-
-        // The gear trains take up their play once per step.
-        heldV = play(v, heldV, deadBand);
-        heldY = play(y, heldY, deadBand);
+    const backlashTurns = params.backlash * TURNS_PER_ARCMIN;
+    const deadBands: Record<string, number> = {};
+    const scales: Record<string, number> = {};
+    for (const int of patch.integrators) {
+        const k = int.relScale * params.scaleFactor;
+        scales[int.id] = k;
+        deadBands[int.out] = (backlashTurns * params.wheelRadius) / k;
     }
 
-    let sumErr = 0;
-    let sumIdeal = 0;
-    for (const p of trace) {
-        sumErr += p.error * p.error;
-        sumIdeal += p.ideal * p.ideal;
-    }
-    const rmsIdeal = Math.sqrt(sumIdeal / trace.length);
-    const rmsErr = Math.sqrt(sumErr / trace.length);
-    const relError = rmsIdeal > 1e-12 ? rmsErr / rmsIdeal : rmsErr;
-
-    const digits = Math.max(0, Math.min(7, -Math.log10(Math.max(relError, 1e-7))));
-
-    return {
-        trace,
-        relError,
-        // Rounded because this one lands in a server-rendered style attribute (the
-        // tornado bars). Math.exp and friends differ by an ulp between the V8 in
-        // Node and the V8 in the browser, six thousand RK4 steps carry that into
-        // the last digits, and React then finds the two renders disagree.
-        usefulDigits: Math.round(digits * 1e6) / 1e6,
-        period: measurePeriod(trace),
-        envelopeRate: measureEnvelopeRate(trace),
-        clipFraction: clipCount / trace.length,
-        peakExcursion,
-        diverged,
+    const mech: Mechanism = {
+        g: spec.gain,
+        lag: spec.lag,
+        R: params.discRadius,
+        deadBands,
+        scales,
     };
+
+    const ideal = idealSeries(params.equation, params, y, dt);
+    return runPatch(patch, params, mech, y, dt, (_x, n) => ideal[n] ?? 0);
 }
 
 
@@ -507,54 +460,11 @@ export function runMachine(params: Params, y0: number = 1, dt: number = DT): Mac
 export function peakWheelOffset(run: MachineRun): number {
     let peak = 0;
     for (const p of run.trace) {
-        peak = Math.max(peak, Math.abs(p.offsetA), Math.abs(p.offsetV));
+        for (const off of Object.values(p.offsets)) {
+            peak = Math.max(peak, Math.abs(off));
+        }
     }
     return peak;
-}
-
-
-/** Period read off the machine's own trace, the way an operator would read it. */
-export function measurePeriod(trace: TracePoint[]): number {
-    const crossings: number[] = [];
-    for (let i = 1; i < trace.length; i++) {
-        const a = trace[i - 1].machine;
-        const b = trace[i].machine;
-        if (a <= 0 && b > 0) {
-            const t = a === b ? 0 : -a / (b - a);
-            crossings.push(trace[i - 1].x + t * (trace[i].x - trace[i - 1].x));
-        }
-    }
-    if (crossings.length < 2) return 0;
-    return (crossings[crossings.length - 1] - crossings[0]) / (crossings.length - 1);
-}
-
-
-/** Log-slope of the amplitude envelope, fitted through the trace's own peaks. */
-export function measureEnvelopeRate(trace: TracePoint[]): number {
-    const xs: number[] = [];
-    const ys: number[] = [];
-
-    for (let i = 1; i < trace.length - 1; i++) {
-        const prev = Math.abs(trace[i - 1].machine);
-        const here = Math.abs(trace[i].machine);
-        const next = Math.abs(trace[i + 1].machine);
-        if (here > prev && here >= next && here > 1e-6) {
-            xs.push(trace[i].x);
-            ys.push(Math.log(here));
-        }
-    }
-    if (xs.length < 3) return 0;
-
-    const n = xs.length;
-    const meanX = xs.reduce((a, b) => a + b, 0) / n;
-    const meanY = ys.reduce((a, b) => a + b, 0) / n;
-    let num = 0;
-    let den = 0;
-    for (let i = 0; i < n; i++) {
-        num += (xs[i] - meanX) * (ys[i] - meanY);
-        den += (xs[i] - meanX) ** 2;
-    }
-    return den > 1e-12 ? num / den : 0;
 }
 
 
@@ -592,15 +502,16 @@ export type Regime =
     | 'lag-limited';
 
 export interface Metrics {
+    equation: EquationKey;
     relError: number;
     usefulDigits: number;
     creepPct: number;
-    /** Degrees of phase the machine has lost by the end of the run. */
+    /** Degrees of phase (or log-amplitude drift) the machine loses per run. */
     phaseDrift: number;
     clipPct: number;
     lag: number;
-    lagCritical: number;
-    effDamping: number;
+    lagCritical: number | null;
+    effDamping: number | null;
     dynamicRangeDb: number;
     headroomDb: number;
     runtimeMinutes: number;
@@ -614,13 +525,27 @@ export interface Metrics {
 
 
 /** Which of the four error sources is currently doing the most damage. */
-function classify(params: Params, spec: MachineSpec, run: MachineRun): Regime {
+function classify(
+    params: Params,
+    spec: MachineSpec,
+    run: MachineRun,
+    idealEnv: number,
+): Regime {
+    const eq = EQUATIONS[params.equation];
+
     if (spec.grossSlip) return 'gross slip';
-    if (!spec.stable || run.envelopeRate > 0) return 'hunting';
+
+    if (eq.linear) {
+        if (!spec.stable || run.envelopeRate > 0) return 'hunting';
+    } else if (run.diverged || run.envelopeRate > idealEnv + 0.02) {
+        return 'hunting';
+    }
+
     if (run.clipFraction > 0.01) return 'saturated';
 
-    const phaseCost = spec.creep * params.frequency * X_END;
-    const lagCost = (params.damping - spec.effDamping) * params.frequency * X_END;
+    const rate = eq.rateScale(params, run.period);
+    const phaseCost = spec.creep * rate * X_END;
+    const lagCost = ((spec.gain * rate * spec.lag) / 2) * rate * X_END;
     const backlashCost = spec.deadBand * 20;
 
     if (backlashCost >= phaseCost && backlashCost >= lagCost) return 'backlash-limited';
@@ -629,12 +554,18 @@ function classify(params: Params, spec: MachineSpec, run: MachineRun): Regime {
 }
 
 
-export function computeMetrics(params: Params, dt: number = DT): Metrics {
+export function computeMetrics(params: Params, dt: number = DT, precomputedRun?: MachineRun): Metrics {
+    const eq = EQUATIONS[params.equation];
     const spec = machineSpec(params);
-    const run = runMachine(params, 1, dt);
-    const regime = classify(params, spec, run);
+    const run = precomputedRun ?? runMachine(params, undefined, dt);
 
-    const phaseDrift = spec.creep * params.frequency * X_END * (180 / Math.PI);
+    const ideal = idealSeries(params.equation, params, eq.defaultY0, dt);
+    const idealEnv = idealEnvelopeRate(ideal, dt);
+
+    const regime = classify(params, spec, run, idealEnv);
+
+    const rate = eq.rateScale(params, run.period);
+    const phaseDrift = spec.creep * rate * X_END * (180 / Math.PI);
 
     const interpretation = {
         'gross slip': 'The contact has broken loose. The machine turns and computes nothing.',
@@ -646,6 +577,7 @@ export function computeMetrics(params: Params, dt: number = DT): Metrics {
     }[regime];
 
     return {
+        equation: params.equation,
         relError: run.relError,
         usefulDigits: run.usefulDigits,
         creepPct: spec.creep * 100,
@@ -669,13 +601,20 @@ export function computeMetrics(params: Params, dt: number = DT): Metrics {
 
 export function computeNarrative(metrics: Metrics, params: Params): string {
     const spec = machineSpec(params);
+    const eq = EQUATIONS[params.equation];
 
     if (metrics.grossSlip) {
         return `The carriage, gears and pen demand ${spec.loadTorque.toFixed(2)} N·m, and the wheel-disc contact can pass only ${(spec.frictionLimit * params.torqueGain).toFixed(2)} N·m. The wheel spins on the disc without gripping it. This is exactly the wall Kelvin hit in 1876, and it is what Nieman’s torque amplifier climbed over.`;
     }
 
-    if (!metrics.stable) {
-        return `The drive train needs ${spec.lagReal.toFixed(2)} s to follow an order, and at ${params.machineSpeed.toFixed(2)} x-units per second that is a lag of ${metrics.lag.toFixed(3)} x-units. The loop can only afford ${metrics.lagCritical.toFixed(3)}. Effective damping has gone negative (${metrics.effDamping.toFixed(3)}), so the machine feeds its own oscillation and the pen climbs off the paper.`;
+    if (!metrics.stable || metrics.regime === 'hunting') {
+        const budget = metrics.lagCritical !== null && Number.isFinite(metrics.lagCritical)
+            ? ` The loop can only afford ${metrics.lagCritical.toFixed(3)}.`
+            : '';
+        const damping = metrics.effDamping !== null
+            ? ` Effective damping has gone negative (${metrics.effDamping.toFixed(3)}), so the machine feeds its own oscillation and the pen climbs off the paper.`
+            : ' The lag feeds the loop faster than the patch can dissipate it, and the pen climbs off the paper.';
+        return `The drive train needs ${spec.lagReal.toFixed(2)} s to follow an order, and at ${params.machineSpeed.toFixed(2)} x-units per second that is a lag of ${metrics.lag.toFixed(3)} x-units.${budget}${damping}`;
     }
 
     const parts: string[] = [];
@@ -684,9 +623,21 @@ export function computeNarrative(metrics: Metrics, params: Params): string {
         parts.push(`The carriage is asking for ±${(spec.peakIntegrand * params.scaleFactor).toFixed(0)} mm on a disc of radius ${params.discRadius} mm, so a wheel rides its stop for ${metrics.clipPct.toFixed(0)}% of the run and the peaks come out flat.`);
     }
 
-    parts.push(`Each integrator loses ${metrics.creepPct.toFixed(3)}% to microslip. That sounds like nothing, but it is a frequency error, and by the end of ${X_END} x-units the pen is ${Math.abs(metrics.phaseDrift).toFixed(1)}° out of phase with the truth.`);
+    if (params.equation === 'exponential-decay') {
+        parts.push(`Each integrator loses ${metrics.creepPct.toFixed(3)}% to microslip. Here that is a rate error: the machine decays at ${(spec.gain * params.lambda).toFixed(4)} instead of ${params.lambda.toFixed(4)}, so the drawn tail is systematically fat.`);
+    } else {
+        parts.push(`Each integrator loses ${metrics.creepPct.toFixed(3)}% to microslip. That sounds like nothing, but it is a frequency error, and by the end of ${X_END} x-units the pen is ${Math.abs(metrics.phaseDrift).toFixed(1)}° out of phase with the truth.`);
+    }
 
-    if (params.damping - metrics.effDamping > 0.1 * params.damping) {
+    if (params.equation === 'van-der-pol') {
+        parts.push(`The squares in this patch are built by integrators whose discs are geared to y itself, so every product pays the creep twice: the nonlinear terms are softer than the mathematics wants them.`);
+    }
+
+    if (params.equation === 'forced-oscillator' && params.trackingError > 0) {
+        parts.push(`The forcing arrives through an operator's hand: the cross-hair wanders ${params.trackingError.toFixed(1)}% of the curve's amplitude, and that wander is stirred straight into the answer.`);
+    }
+
+    if (eq.linear && metrics.effDamping !== null && params.damping - metrics.effDamping > 0.1 * params.damping) {
         const stolen = ((params.damping - metrics.effDamping) / params.damping) * 100;
         parts.push(`Servo lag has quietly taken ${stolen.toFixed(0)}% of the damping, so the machine’s oscillation dies more slowly than the real one.`);
     }
@@ -697,15 +648,7 @@ export function computeNarrative(metrics: Metrics, params: Params): string {
 }
 
 
-export interface Snapshot {
-    params: Params;
-    metrics: Metrics;
-    trace: TracePoint[];
-    label: string;
-}
-
-
-export type SweepableParam = keyof Omit<Params, 'preset'>;
+export type SweepableParam = keyof Omit<Params, 'preset' | 'equation'>;
 
 export interface ParamSpec {
     key: SweepableParam;
@@ -716,6 +659,8 @@ export interface ParamSpec {
     /** Sweep and plot this one on a logarithmic axis. */
     log?: boolean;
     unit?: string;
+    /** Restrict to these equations; absent means the spec always applies. */
+    appliesTo?: EquationKey[];
 }
 
 export const PARAM_SPECS: ParamSpec[] = [
@@ -727,9 +672,20 @@ export const PARAM_SPECS: ParamSpec[] = [
     { key: 'wheelRadius', label: 'wheel radius', min: 5, max: 40, step: 1, unit: ' mm' },
     { key: 'friction', label: 'friction', min: 0.05, max: 0.6, step: 0.01 },
     { key: 'wheelLoad', label: 'wheel load', min: 2, max: 60, step: 1, unit: ' N' },
-    { key: 'frequency', label: 'frequency', min: 0.5, max: 2.5, step: 0.05 },
-    { key: 'damping', label: 'damping', min: 0.005, max: 0.3, step: 0.005 },
+    { key: 'frequency', label: 'frequency', min: 0.5, max: 2.5, step: 0.05, appliesTo: ['damped-oscillator', 'forced-oscillator'] },
+    { key: 'damping', label: 'damping', min: 0.005, max: 0.3, step: 0.005, appliesTo: ['damped-oscillator', 'forced-oscillator'] },
+    { key: 'lambda', label: 'decay rate', min: 0.05, max: 1.2, step: 0.01, appliesTo: ['exponential-decay'] },
+    { key: 'mu', label: 'nonlinearity', min: 0.2, max: 2.5, step: 0.05, appliesTo: ['van-der-pol'] },
+    { key: 'amplitude', label: 'forcing amplitude', min: 0.1, max: 1.5, step: 0.05, appliesTo: ['forced-oscillator'] },
+    { key: 'forceFrequency', label: 'forcing frequency', min: 0.2, max: 2.5, step: 0.05, appliesTo: ['forced-oscillator'] },
+    { key: 'trackingError', label: 'operator error', min: 0, max: 2, step: 0.1, unit: ' %', appliesTo: ['forced-oscillator'] },
 ];
+
+
+/** The parameter specs that make sense for the current equation. */
+export function activeParamSpecs(params: Params): ParamSpec[] {
+    return PARAM_SPECS.filter(s => !s.appliesTo || s.appliesTo.includes(params.equation));
+}
 
 
 export interface SweepDatum {
@@ -771,7 +727,7 @@ export interface SensitivityBar {
 }
 
 export function computeSensitivity(params: Params): SensitivityBar[] {
-    return PARAM_SPECS.map(spec => {
+    return activeParamSpecs(params).map(spec => {
         const atMin = computeMetrics({ ...params, [spec.key]: spec.min }, DT_SWEEP).usefulDigits;
         const atMax = computeMetrics({ ...params, [spec.key]: spec.max }, DT_SWEEP).usefulDigits;
         return {

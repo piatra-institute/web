@@ -4,6 +4,7 @@ import React from 'react';
 
 import SliderInput from '@/components/SliderInput';
 import Button from '@/components/Button';
+import Equation from '@/components/Equation';
 import MetricDelta from '@/components/MetricDelta';
 
 import {
@@ -11,8 +12,11 @@ import {
     PresetKey,
     Metrics,
     Snapshot,
+    EquationKey,
+    EQUATIONS,
+    EQUATION_KEYS,
     PRESET_DESCRIPTIONS,
-    presetParams,
+    applyPreset,
     formatGain,
 } from '../../logic';
 
@@ -46,12 +50,54 @@ export default function Settings({
     onClearSnapshot,
 }: SettingsProps) {
     const set = (partial: Partial<Params>) => onParamsChange({ ...params, ...partial });
-    const selectPreset = (key: PresetKey) => onParamsChange(presetParams(key));
+    const selectPreset = (key: PresetKey) => onParamsChange(applyPreset(key, params));
+    const selectEquation = (key: EquationKey) => set({ equation: key });
 
     const presetDesc = PRESET_DESCRIPTIONS[params.preset];
+    const equationDef = EQUATIONS[params.equation];
 
     return (
         <div className="space-y-6">
+            <div className="space-y-3">
+                <h3 className="text-lime-400 font-semibold text-sm">the equation</h3>
+                <div className="text-xs text-lime-200/40 leading-relaxed">
+                    The patch is the program: each equation is a different wiring of the same six integrators.
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                    {EQUATION_KEYS.map(key => (
+                        <button
+                            key={key}
+                            onClick={() => selectEquation(key)}
+                            className={`py-1.5 px-2 text-xs border transition-colors cursor-pointer ${
+                                params.equation === key
+                                    ? 'border-lime-500 bg-lime-500/10 text-lime-400'
+                                    : 'border-lime-500/20 text-lime-200/60 hover:border-lime-500/40'
+                            }`}
+                        >
+                            {EQUATIONS[key].label}
+                        </button>
+                    ))}
+                </div>
+                <div className="border border-lime-500/20 p-3 space-y-2">
+                    <Equation mode="block" math={equationDef.latex} />
+                    <div className="text-xs text-lime-200/40">{equationDef.description}</div>
+                </div>
+                {equationDef.coeffSpecs.map(spec => (
+                    <SliderInput
+                        key={spec.key}
+                        label={spec.label}
+                        min={spec.min}
+                        max={spec.max}
+                        step={spec.step}
+                        value={params[spec.key]}
+                        onChange={v => set({ [spec.key]: v })}
+                        showDecimals
+                    />
+                ))}
+            </div>
+
+            <div className="border-t border-lime-500/20" />
+
             <div className="space-y-3">
                 <h3 className="text-lime-400 font-semibold text-sm">experiment</h3>
                 <div className="grid grid-cols-2 gap-2">
@@ -73,6 +119,11 @@ export default function Settings({
                     <div className="border border-lime-500/20 p-3 space-y-2">
                         <div className="text-xs text-lime-400 italic">{presetDesc.question}</div>
                         <div className="text-xs text-lime-200/40">{presetDesc.expectation}</div>
+                        {params.equation !== 'damped-oscillator' && (
+                            <div className="text-xs text-lime-200/30">
+                                The preset stories are told on the damped oscillator; here only the machine&rsquo;s condition carries over.
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
@@ -136,29 +187,6 @@ export default function Settings({
                         </div>
                     </div>
                 )}
-            </div>
-
-            <div className="border-t border-lime-500/20" />
-
-            <div className="space-y-3">
-                <h3 className="text-lime-400 font-semibold text-sm">the problem</h3>
-                <div className="text-xs text-lime-200/40 leading-relaxed">
-                    The equation the machine is wired to solve. A stiffer problem needs more disc and a slower drive.
-                </div>
-                <SliderInput
-                    label="frequency &omega;"
-                    min={0.5} max={2.5} step={0.05}
-                    value={params.frequency}
-                    onChange={v => set({ frequency: v })}
-                    showDecimals
-                />
-                <SliderInput
-                    label="damping &zeta;"
-                    min={0.005} max={0.3} step={0.005}
-                    value={params.damping}
-                    onChange={v => set({ damping: v })}
-                    showDecimals
-                />
             </div>
 
             <div className="border-t border-lime-500/20" />

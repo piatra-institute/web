@@ -36,9 +36,16 @@ A disc turns through an angle. A wheel of radius rho rests on its face at a dist
 
 Now drive the disc with the independent variable, and put the wheel on a carriage that holds it at `r = k * V`, where V is some other variable in the problem and `k` is a scale factor in millimetres per unit. The output shaft comes out carrying the integral of V. That is calculus, done by a wheel.
 
-The playground wires two of them into the classic patch for a damped oscillator. Integrator 1's carriage is positioned by the acceleration; its shaft delivers the velocity. Integrator 2's carriage is positioned by that velocity; its shaft delivers the displacement, which drives the pen and is fed back to integrator 1. The loop is the equation.
+The playground's default patch wires two of them into the classic loop for a damped oscillator. Integrator 1's carriage is positioned by the acceleration; its shaft delivers the velocity. Integrator 2's carriage is positioned by that velocity; its shaft delivers the displacement, which drives the pen and is fed back to integrator 1. The loop is the equation.
 
-Then the mechanism starts lying to you, in four distinct ways.
+That sentence is meant literally, and the simulation is built to honour it. The stepper underneath contains no differential equation at all: its state is the accumulated rotation of each wheel, and its update rule is the kinematics of a wheel on a disc, a differential gear, a gear train with lost motion, and a servo with lag. The equation exists only as a patch: a table saying which shaft turns each disc, which shaft each carriage is screwed to, and which change-gear ratios feed the adders. Four such setup sheets ship with the playground:
+
+- **Damped oscillator**: the classic two-integrator loop above.
+- **Exponential decay** `y' = -lambda * y`: the smallest program the machine can run, one integrator and one sign-reversing change gear, closed on itself.
+- **Forced oscillator** `y'' + 2*zeta*omega*y' + omega^2*y = A*sin(Omega*x)`: the same loop with the input table wired into the adder. An operator traces the forcing curve by hand, and the model gives that hand a wobble, a set fraction of the curve's amplitude, which is stirred directly into the answer.
+- **Van der Pol** `y'' - mu*(1 - y^2)*y' + y = 0`, patched in Lienard form: the machine at full stretch. The squares are built the machine's own way, by integrators whose discs are geared to y itself, because `integral(y dy) = y^2 / 2`. Multiplication is integration by parts, it costs two extra integrators, and every product passes through a second friction contact and pays the creep budget twice.
+
+Then the mechanism starts lying to you, in four distinct ways (five, when an operator is tracing).
 
 **Microslip.** Below the friction limit the contact does not grip perfectly; it creeps, losing a fraction of every turn roughly proportional to how hard it is being asked to work:
 
@@ -80,9 +87,9 @@ Turn the scale factor up and you buy resolution and spend headroom. Turn it down
 
 A great deal, and it is worth being blunt about it.
 
-**Only four error sources are modeled.** Real machines also suffered disc runout, wheel wear, shafts that wound up under load, paper that stretched, temperature, and an operator with a hand on the input table. The playground solves a homogeneous equation precisely so that the input table is idle and the human term drops out; a forced problem would have added a curve-following error of roughly half a percent of full scale, which for some problems would have swamped everything modeled here.
+**Only four mechanical error sources are modeled.** Real machines also suffered disc runout, wheel wear, shafts that wound up under load, paper that stretched, and temperature. When a patch uses the input table a fifth, human term is added: the operator's curve-following error, modeled as a fixed quasi-periodic wobble of the cross-hair at a set fraction of the forcing amplitude. That stand-in is deliberately crude; a real operator errs with the curvature of the curve, with fatigue, and with the machine speed, and none of that structure is carried.
 
-**Both integrators share one scale factor.** A real operator would have scaled each integrator separately, and it was a large part of the job. The single shared scale factor makes the saturation cliff sharper than it needed to be in 1931, particularly when the frequency is far from unity and the acceleration and the velocity differ greatly in magnitude. The playground therefore blames the machine for something that was partly a matter of how well you programmed it.
+**Per-integrator scales are fixed ratios of one knob.** Each integrator runs at a fixed multiple of the common scale factor, with the multiples written into the setup sheet of each patch, the way an operator would have derived them before the run. The slider moves them all together. What is not represented is the hours of arithmetic that produced those multiples, or the occasional practice of stopping mid-run to re-scale a variable that was outgrowing its disc.
 
 **The lag is lumped and linearised.** The whole drive train, torque amplifier, gears, shafts and carriage servos, is squeezed into a single first-order follow-up lag, applied to first order. A real transmission is a distributed second-order system with its own torsional resonance, and if that resonance fell inside the loop bandwidth this model would mispredict the onset of hunting.
 
@@ -103,6 +110,8 @@ Then **Bush, 1931**: two digits, bought with fifty minutes of turning. Look at w
 Then **run it fast**, which is the same machine impatient. The lag eats the damping and the pen leaves the paper. Analog computers were slow for a reason that is not about horsepower.
 
 Then **mis-scaled**, which is the same machine programmed badly. The carriage asks for 216 millimetres of travel on a disc with a radius of 120, and the peaks come out flat.
+
+Then change the equation, and watch what "programming" means here. The decay patch idles four of the six integrators and computes with almost nothing; the van der Pol patch fills the back bench, gears two discs to y itself, and the calibration panel checks that the limit cycle it settles into forgets where it started, which is a property of the wiring and not of any formula in the code. The forced patch turns the input table's cranks and adds the one error source no amount of machining could remove: the operator.
 
 And then, if you want the one idea to keep: look at the scaling panel and notice that the plateau is *flat*. Over a wide range of scale factors the machine is exactly as good, because a scale factor is a change of units, not a change of machine. The mechanism computes rotations of shafts. It has no idea what they mean. That, in the end, is what an analog computer is: a physical system that has been talked into agreeing with your equation, and which will go on obeying its own physics regardless of whether you have chosen the right units to listen in.
 
