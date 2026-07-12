@@ -2,8 +2,8 @@
 
 Deterministic conformance of all playgrounds to the current template (CLAUDE.md). No model judgement.
 
-- Generated: 2026-07-02T05:22:57.755Z
-- Playgrounds: **101**
+- Generated: 2026-07-12T05:56:21.380Z
+- Playgrounds: **102**
 - Mean score: **98.8/100**
 - Build check: enabled (tsc --noEmit, attributed per-playground)
 - Citation resolution: disabled (run with --links)
@@ -16,7 +16,7 @@ Scoring categories (weights): build & types 25, registration & metadata 15, stru
 | --- | --- | --- | --- |
 | 2024 | 13 | 91.7 | 3.4 |
 | 2025 | 39 | 100.0 | 4.0 |
-| 2026 | 49 | 100.0 | 4.0 |
+| 2026 | 50 | 100.0 | 4.0 |
 
 ## Model leaderboard
 
@@ -25,6 +25,7 @@ Mean Layer 0 conformance per generating model (from each playground's versions.t
 | model | playgrounds | mean score | build | meta | structure | infra | style | best |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Claude Opus 4.8 | 99 | **100** | 100% | 100% | 100% | 100% | 100% | self-sorted-arrays (100) |
+| Claude Fable 5 | 1 | **100** | 100% | 100% | 100% | 100% | 100% | mechanical-calculus (100) |
 | _(unattributed)_ | 2 | – | | | | | | |
 
 ## Honesty
@@ -32,7 +33,7 @@ Mean Layer 0 conformance per generating model (from each playground's versions.t
 Honesty is a gate, not a deduction: a failing check caps the headline score so polish cannot buy back fabrication. Calibration is executed headlessly and graded on three axes — is `predicted` genuinely computed (not a hardcoded or laundered literal), is it independent of `expected` (not circular), and does the declared fit hold. Calibrations declare their kind via `calibrationMeta` (see CLAUDE.md): **reproduction** (default; `expected` are derived identities), **validation** (`expected` from external/literature targets), or **showcase** (a deliberately poor model, exempt from fit-gating).
 
 - **validated** (computed, independent, fits an external target): **2**
-- **reproduces** (computed and independent; self-consistency target): 82
+- **reproduces** (computed and independent; self-consistency target): 83
 - **showcase** (intentionally poor fit, declared): 1
 - not auto-verifiable (no calibration, or prediction computed in-component): 16
 - **failed** (dead citation, hardcoded, self-identical, or miscalibrated fit, all capped): 0
@@ -53,6 +54,7 @@ Calibration fit, where `predicted` is verifiable (high error is not necessarily 
 | trisquare | 4 | 0.1% | 0.1% |
 | entropy-cafe | 6 | 0.0% | 0.0% |
 | everything-relevant | 4 | 0.0% | 0.0% |
+| mechanical-calculus | 6 | 0.0% | 0.0% |
 | self-sorted-arrays | 5 | 0.0% | 0.0% |
 | cpt-variance | 6 | 0.0% | 0.0% |
 | eyevolution | 5 | 0.0% | 0.0% |
@@ -245,5 +247,6 @@ Sorted by ascending conformance. "Top losses" are the highest-weight failing che
 | political-autoimmunity | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | June 2026 |
 | rotary-fields | 100 | – | 100% | 100% | 100% | 100% | 100% | June 2026 |
 | trisquare | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | June 2026 |
+| mechanical-calculus | 100 | cal ✓ (fit 0%) | 100% | 100% | 100% | 100% | 100% | July 2026 |
 | artificial-death | 40 | STUB | 100% | 13% | 65% | 0% | 40% | June 2024 |
 | byte-birth | 40 | STUB | 100% | 13% | 65% | 0% | 40% | June 2024 |

@@ -807,4 +807,12 @@ export const playgrounds: {
         topics: ['political-science', 'economics', 'psychology'],
         operations: ['anatomy', 'tension'],
     },
+    {
+        name: 'mechanical calculus',
+        link: '/playgrounds/mechanical-calculus',
+        description: 'the error budget of a differential analyzer: slip, backlash, lag, and the rim of the disc',
+        date: 'July 2026',
+        topics: ['computer-science', 'physics', 'mathematics'],
+        operations: ['threshold', 'tension'],
+    },
 ];
