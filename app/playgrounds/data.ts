@@ -815,4 +815,12 @@ export const playgrounds: {
         topics: ['computer-science', 'physics', 'mathematics'],
         operations: ['threshold', 'tension'],
     },
+    {
+        name: 'one more cat',
+        link: '/playgrounds/one-more-cat',
+        description: 'a systems model of how a household crosses from one cat to a hundred, and where care capacity breaks',
+        date: 'July 2026',
+        topics: ['economics', 'psychology', 'sociology'],
+        operations: ['threshold', 'tension'],
+    },
 ];
