@@ -47,7 +47,7 @@ export default function IndexLayout({
     return (
         <div
             ref={containerRef}
-            className="relative select-none"
+            className="relative select-none overflow-x-clip"
             style={{ scrollSnapType: 'y mandatory' }}
         >
             {/* Section 1: Intro with logo */}
